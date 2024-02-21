@@ -1,0 +1,43 @@
+<?php
+
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjetController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AcademicProjetController;
+use App\Models\Projet;
+use App\Models\AcademicProjet;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
+Route::get('/', function () {
+    $projets = Projet::all();
+    $academicProjects = AcademicProjet::all();
+    return view('welcome', compact('projets', 'academicProjects'));
+});
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard/ajouter-projet', [ProjetController::class, 'create'])->name('projets.create');
+Route::post('/projets', [ProjetController::class, 'store'])->name('projets.store');
+Route::get('/dashboard/ajouter-projet-academique', [AcademicProjetController::class, 'create'])->name('academic_projets.create');
+Route::post('/academic_projets', [AcademicProjetController::class, 'store'])->name('academic_projets.store');
+Route::get('/academic-projects', [AcademicProjetController::class, 'index'])->name('academic_projects.index');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__ . '/auth.php';
