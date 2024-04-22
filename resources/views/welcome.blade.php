@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel</title>
+    <title>Home - NA</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -17,318 +17,379 @@
         @tailwind base;
         @tailwind components;
         @tailwind utilities;
+
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Ajoutez ici vos styles supplémentaires */
+
     </style>
     @vite('resources/css/app.css')
 </head>
 
 <body>
-    <div class="relative h-screen bg-black"
-        style="background-image: url('{{ asset('car-hero.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-        <div x-data="{ open: false }">
-            <nav class="flex items-center justify-between px-4 py-8">
-                <button @click="open = !open" class="space-y-2 focus:outline-none">
-                    <!-- Icône du menu (hamburger) pour mobile -->
-                    <div class="w-8 h-0.5 bg-white"></div>
-                    <div class="w-8 h-0.5 bg-white"></div>
-                    <div class="w-8 h-0.5 bg-white"></div>
+    <div id="app">
+        <!-- Header avec le logo et le menu hamburger (qui remplace les nav links sur les petits écrans) -->
+        <div class="flex flex-col py-12 bg-gray-900">
+            <div class="flex justify-between items-center self-center mt-1 w-full max-w-[1298px] px-4">
+                <div class="text-3xl font-bold text-white">NA</div>
+                <!-- Bouton du menu hamburger (visible uniquement sur les petits écrans) -->
+                <button id="hamburgerBtn" class="md:hidden block text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
                 </button>
-                <!-- Logo -->
-                <a href="/" class="text-3xl text-white uppercase logo transition duration-500">NAWFEL AJARI</a>
-                <div class="hidden sm:flex">
-                    @if(Route::has('login'))
-                    @auth
-                    <a class="text-white pr-2 hover:text-yellow-500" href="{{ url('/dashboard') }}"
-                        style="cursor: pointer;">ADMIN</a>
-                    <span class="text-white pr-2">|</span>
-                    <span class="pr-4 text-white hover:text-yellow-500" style="cursor: pointer;"
-                        onclick="window.location.href='{{ url('profile') }}'">{{ Auth::user()->name }}</span>
-                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <img class="inline cursor-pointer h-7" src="{{ asset('logout.png') }}" alt="Déconnexion">
-                    </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf
-                    </form>
-                    @endauth
-                    @endif
-                </div>
-            </nav>
+                <!-- Navigation (cachez ceci sur les petits écrans et montrez-le sur les plus grands) -->
+                <div id="navLinks"
+                    class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap">
+                    <div>
+    <a href="" class="text-teal-300 hover:text-teal-300">Accueil</a>
+</div>
+<div>
+    <a href="#about" class="hover:text-teal-300">Services</a>
+</div>
+<div>
+    <a href="#projects" class="hover:text-teal-300">Projets</a>
+</div>
+<div>
+    <a href="{{ route('about') }}" class="hover:text-teal-300">À propos</a>
+</div>
+<div>
+    <a href="" class="hover:text-teal-300">Nouveautés</a>
+</div>
+<div>
+    <a href="{{ route('contact') }}" class="hover:text-teal-300">Contact</a>
+</div>
 
-            <!-- Sidebar mobile -->
-            <div class="absolute top-0 left-0 w-64 h-screen transition-transform duration-200 transform bg-black"
-                :class="{'-translate-x-full': !open, 'translate-x-0': open}">
-                <button @click="open = false" class="p-4 text-white hover:text-red-400">
-                    <img src="/close-menu-icon.png" alt="closing the menu button icon" class="w-8 h-8">
-                </button>
-                <div class="flex flex-col p-4">
-                    <!-- Liens de navigation -->
-                    <a href="{{ url('/') }}" class="py-2 text-yellow-500 border-b-2 border-gray-100">Accueil</a>
-                    <a href="{{ url('/services') }}" class="py-2 text-white hover:text-yellow-500">Services</a>
-                    <a href="{{ url('/about') }}" class="py-2 text-white hover:text-yellow-500">À propos</a>
-                    <a href="{{ url('/contact') }}" class="py-2 text-white hover:text-yellow-500">Contact</a>
-                    @if(Route::has('login'))
-                    @auth
-                    <a href="{{ url('/dashboard') }}" class="py-2 text-gray-400 hover:text-yellow-500">Réservations</a>
-                    <a href="{{ url('/membres') }}" class="py-2 text-gray-400 hover:text-yellow-500">Membres</a>
-                    <a href="{{ url('/cars/create') }}" class="py-2 text-gray-400 hover:text-yellow-500">MyCARS</a>
-                    <a href="{{ url('/user/create') }}" class="py-2 text-gray-400 hover:text-yellow-500">MyADMIN</a>
-                    <a href="{{ url('/profile') }}" class="sm:hidden py-2 text-gray-400 hover:text-yellow-500">Mon
-                        compte</a>
-                    <a href="#" class="sm:hidden py-2 text-gray-400 hover:text-yellow-500"
-                        onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit();">
-                        <img class="inline cursor-pointer h-3" src="{{ asset('logout.png') }}" alt="Déconnexion">
-                        Déconnexion
-                    </a>
-                    @endauth
-                    @endif
                 </div>
             </div>
+            <div
+                class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
+                <div class="flex flex-col flex-1 px-5 max-md:max-w-full">
+                    <div class="text-xl font-medium text-neutral-400 max-md:max-w-full">
+                        Développement web, mobile et software | Montage vidéo et graphisme | Photographie
+                    </div>
+                    <div class="mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
+                        We’re creative
+                        <br />
+                        digital studio.
+                    </div>
+                </div>
+                <img loading="lazy"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/67ee580b211125b63e48b5b003eee10ff257e9dee311f1fc25d332dd76e09b3f?apiKey=d3784f4c52b7403885832573b3287702&"
+                    class="self-start aspect-[0.61] w-[49px]" />
+            </div>
+            <div class="flex gap-2.5 items-start self-center px-5 mt-44 max-w-full w-[350px] max-md:mt-10">
+                <img loading="lazy"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&"
+                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full" />
+                <img loading="lazy"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&"
+                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full" />
+                <img loading="lazy"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&"
+                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full" />
+            </div>
+            <div class="self-center mt-48 w-full max-w-[1300px] max-md:mt-10 max-md:max-w-full">
+                <div class="flex gap-5 max-md:flex-col max-md:gap-0 max-md:">
+                    <div class="flex flex-col w-[56%] max-md:ml-0 max-md:w-full">
+                        <div
+                            class="flex flex-col grow px-5 text-3xl leading-10 text-white max-md:mt-10 max-md:max-w-full">
+                            <div class="text-xl max-md:max-w-full">Notre philosophie</div>
+                            <div class="mt-11 font-bold max-md:mt-10 max-md:max-w-full">
+                            Mon approche est ancrée dans la conviction que la cohérence et la créativité sont essentielles pour construire une marque forte.
+                            </div>
+                            <div class="mt-16 font-bold max-md:mt-10 max-md:max-w-full">
+                            En combinant mes compétences en développement web et mobile avec mon expertise en photographie, montage vidéo et design de logo, je m'engage à créer des stratégies marketing holistiques qui racontent une histoire captivante et laissent une impression durable.
+                            </div>
+                            <div
+                                class="justify-center self-start px-7 py-5 mt-14 text-base leading-6 text-teal-300 uppercase whitespace-nowrap border-2 border-teal-300 border-solid rounded-[29.5px] max-md:px-5 max-md:mt-10">
+                                Meet the team
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col ml-5 w-[44%] max-md:ml-0 max-md:w-full">
+                        <div class="mx-auto mt-14 max-w-full h-[474px] w-[530px] max-md:mt-10">
+                            <img src="/justlogo.png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <h1 class="mt-20 text-3xl font-bold text-center text-white lg:text-5xl lg:px-32 duration-[2000ms]">
-            Développemet web, mobile et montage vidéo
-        </h1>
+        <div class="flex items-center justify-center max-w-full w-[824px] mt-20 ml-16 max-md:flex-col max-md:w-full max-md:mt-10 max-md:ml-5">
+    <div class="max-w-[70%] max-md:max-w-full">
+        <div class="text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center" id="about">
+            Nos services
+        </div>
+        <div class="mt-8 text-3xl font-semibold text-black">Développement web</div>
+        <div class="mt-4 text-2xl text-neutral-400">
+            Plateformes de réservation | Marchés en ligne | Plateformes d'apprentissage en ligne | Sites de petites annonces | Plateformes de crowdfunding | Réseaux professionnels
+        </div>
+        <div class="mt-8 text-3xl font-semibold text-black">Développement mobile</div>
+        <div class="mt-4 text-2xl text-neutral-400">
+            Applications nativement codées | Applications hybrides | Applications web progressives (PWA) | Applications d'e-commerce mobile | Applications de médias sociaux mobiles
+        </div>
+        <div class="mt-8 text-3xl font-semibold text-black">Développement software</div>
+        <div class="mt-4 text-2xl text-neutral-400">
+            Applications de bureau | Applications d'entreprise | Applications de gestion de projet | Systèmes de gestion de contenu (CMS) | Systèmes de gestion de base de données (SGBD) | Applications de bureau à distance | Systèmes de planification des ressources d'entreprise (ERP)
+        </div>
     </div>
+    <div class="ml-16 max-w-[30%] max-md:ml-0 max-md:max-w-full">
+        <img class="w-full" src="/design.png" alt="">
     </div>
-    </section>
+</div>
 
 
-    <section class="py-32 text-black bg-gray-100">
-        <h1 class="text-5xl font-semibold text-center">Sites web publiés</h1>
-        <h3 class="mt-4 text-lg text-center lg:px-56">
-            Découvrez ci-dessous divers types de sites web que j'ai développés. La liste n'inclut pas les sites
-            portfolios conçus pour des profils individuels. Vous trouverez également des informations sur le temps de
-            développement, les langages de programmation utilisés, le niveau de satisfaction des clients, ainsi que le
-            nombre de collaborations entre développeurs.
-        </h3>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-20 lg:px-20">
-            @foreach ($projets as $projet)
-            <div class="flex flex-col p-2 transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
-                <img src="{{ Storage::url($projet->image) }}" alt="Project Image"
-                    class="w-full h-48 object-cover rounded-t-3xl">
-                <div class="p-2">
-                    <h4 class="text-lg font-semibold">{{ $projet->nom_societe }}</h4>
-                    <div class="flex flex-row items-end">
-                        <div class="flex flex-col mr-4">
-                            <h5 class="text-4xl font-bold">
-                                {{ $projet->type_societe }}
-                            </h5>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-sm text-gray-500">
-                                {{ $projet->type_site }}
-                            </span>
-                            <span class="text-sm text-gray-500">
-                                {{ $projet->lieu }}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="flex flex-row items-center justify-between px-8 py-2 my-4 bg-gray-100 rounded-xl">
-                        <div class="flex flex-col">
-                            <img src="/speedometer.png" class="self-center icons" alt="development time icon" />
-                            <span>{{ $projet->jours_developpement }} J</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span>
-                                {{ $projet->langage_programmation }}
-                            </span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span>
-                                {{ $projet->etoiles }}
-                            </span>
-                        </div>
-                        <div class="flex flex-col">
-                            <img src="/users.png" class="self-center icons" alt="team icon" />
-                            <span> {{ $projet->nombre_collaborateurs }} personnes</span>
-                        </div>
-                    </div>
-                    <a href="{{ $projet->lien }}"
-                        class="transition duration-150 hover:duration-150 block w-full px-4 py-2 font-medium text-center text-black transition-colors border-2 border-black rounded-3xl hover:bg-green-500 hover:text-white">
-                        Visiter
-                    </a>
-                </div>
+
+
+
+        <div class="mt-4 w-full bg-gray-200 min-h-[1px] max-md:max-w-full"></div>
+
+        <!-- Graphic Design -->
+        <div class="flex flex-col gap-5 mt-20 ml-16 max-w-full max-md:mt-10 max-md:ml-5">
+            <div class="text-3xl font-semibold text-black max-md:text-center">Montage vidéo et graphisme</div>
+            <div class="text-2xl text-neutral-400 max-md:text-center">
+            Montage narratif | Montage promotionnel | Montage publicitaire | Montage documentaire | Montage expérimental | Conception de logos, d'affiches, de cartes de visite et de brochures | Design d'interface utilisateur (UI) et d'expérience utilisateur (UX) | Infographie
             </div>
-            @endforeach
         </div>
-        <div class="flex justify-center lg:py-12">
-            <button id="voirPlusBtn"
-                class="text-white transition-colors bg-black border-2 rounded-3xl hover:bg-gray-500 border-inherit hover:border-black mt-20">
-                <h4 class="w-full px-8 py-4">Voir plus</h4>
-            </button>
-        </div>
-    </section>
+        <div class="mt-4 w-full bg-gray-200 min-h-[1px] max-md:max-w-full"></div>
 
-
-    <section class="py-32 text-black bg-gray-100">
-
-
-        <h1 class="text-5xl font-semibold text-center">Projets à but non-lucratif</h1>
-        <h3 class="mt-4 text-lg text-center lg:px-56">
-            Découvrez mes contributions à des projets à but non lucratif, où innovation et collaboration se rencontrent
-            pour créer des solutions technologiques uniques. Cette sélection reflète mon engagement envers le
-            développement communautaire et l'open source, mettant en lumière le temps de développement, les langages
-            utilisés et l'impact de ces initiatives. Explorez ces réalisations pour comprendre comment nous pouvons
-            ensemble faire avancer la technologie pour le bien commun.
-        </h3>
-
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-20 lg:px-20">
-            @foreach ($academicProjects as $academicProjet)
-            <div class="flex flex-col p-2 transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
-                <img src="{{ Storage::url($academicProjet->image) }}" alt="Project Image"
-                    class="w-full h-48 object-cover rounded-t-3xl">
-                <div class="p-2">
-                    <h4 class="text-lg font-semibold">{{ $academicProjet->nom_societe }}</h4>
-                    <div class="flex flex-row items-end">
-                        <div class="flex flex-col mr-4">
-                            <h5 class="text-4xl font-bold">
-                                {{ $academicProjet->type_societe }}
-                            </h5>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-sm text-gray-500">
-                                {{ $academicProjet->type_site }}
-                            </span>
-                            <span class="text-sm text-gray-500">
-                                {{ $academicProjet->lieu }}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="flex flex-row items-center justify-between px-8 py-2 my-4 bg-gray-100 rounded-xl">
-                        <div class="flex flex-col">
-                            <img src="/speedometer.png" class="self-center icons" alt="development time icon" />
-                            <span>{{ $academicProjet->jours_developpement }} J</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span>
-                                {{ $academicProjet->langage_programmation }}
-                            </span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span>
-                                {{ $academicProjet->etoiles }}
-                            </span>
-                        </div>
-                        <div class="flex flex-col">
-                            <img src="/users.png" class="self-center icons" alt="team icon" />
-                            <span> {{ $academicProjet->nombre_collaborateurs }} personnes</span>
-                        </div>
-                    </div>
-                    <a href="{{ $academicProjet->lien }}"
-                        class="transition duration-150 hover:duration-150 block w-full px-4 py-2 font-medium text-center text-black transition-colors border-2 border-black rounded-3xl hover:bg-green-500 hover:text-white">
-                        Visiter
-                    </a>
-                </div>
+        <!-- Strategy -->
+        <div class="flex flex-col gap-5 mt-20 ml-16 max-w-full max-md:mt-10 max-md:ml-5 mb-20">
+            <div class="text-3xl font-semibold text-black max-md:text-center">Photographie</div>
+            <div class="text-2xl text-neutral-400 max-md:text-center">
+           Portrait | Photographie documentaire | Sport
             </div>
-            @endforeach
         </div>
-        <div class="flex justify-center lg:py-12">
-            <button id="voirPlusBtn"
-                class="text-white transition-colors bg-black border-2 rounded-3xl hover:bg-gray-500 border-inherit hover:border-black mt-20">
-                <h4 class="w-full px-8 py-4">Voir plus</h4>
-            </button>
+    
+        <section class="py-32 text-black bg-gray-100">
+        <div class="ml-16 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center" id="projects">
+            Nos projets
         </div>
-    </section>
+            <h1 class="text-5xl font-semibold text-center mt-20">Sites web publiés</h1>
+            <h3 class="mt-4 text-lg text-center lg:px-56">
+                Découvrez ci-dessous divers types de sites web que j'ai développés. La liste n'inclut pas les sites
+                portfolios conçus pour des profils individuels. Vous trouverez également des informations sur le temps
+                de
+                développement, les langages de programmation utilisés, le niveau de satisfaction des clients, ainsi que
+                le
+                nombre de collaborations entre développeurs.
+            </h3>
 
-    <section class="px-4 py-8 sm:px-8 md:px-16 lg:px-32 lg:py-32">
-        <h1 class="text-3xl font-semibold text-center md:text-4xl lg:text-5xl">Comment ça marche</h1>
-        <h3 class="mt-4 text-center text-base md:text-lg lg:px-56">
-            Louer une voiture au Maroc n'a jamais été aussi simple. Notre processus optimisé rend la réservation et la
-            confirmation de votre véhicule de choix en ligne facile et rapide.
-        </h3>
-
-        <div class="flex flex-col lg:flex-row mt-16">
-            <div class="relative flex flex-col">
-                <!-- Bloc 1 -->
-                <div class="flex flex-col lg:flex-row items-center gap-4 p-8 bg-white border-2 border-gray rounded-3xl">
-                    <div class="flex items-center h-full px-4 bg-gray-200 rounded-xl">
-                        <img src="/search.png" alt="magnifier icon for search" class="icons-2">
-                    </div>
-                    <div class="flex flex-col w-full gap-4">
-                        <h3 class="text-xl font-semibold">Parcourez et sélectionnez</h3>
-                        <p>Choisissez parmi notre gamme de voitures, sélectionnez les dates et les lieux de prise en
-                            charge qui vous conviennent le mieux.</p>
-                    </div>
-                </div>
-                <!-- Bloc 2 -->
-                <div class="flex flex-col lg:flex-row items-center gap-4 p-8 bg-white border-2 border-gray rounded-3xl">
-                    <div class="flex items-center h-full px-4 bg-gray-200 rounded-xl">
-                        <img src="/calendar.png" alt="calendar icon" class="icons-2">
-                    </div>
-                    <div class="flex flex-col w-full gap-4">
-                        <h3 class="text-xl font-semibold">Réservez et confirmez</h3>
-                        <p>Réservez la voiture de votre choix en seulement quelques clics et recevez une confirmation
-                            instantanée par e-mail ou SMS.</p>
-                    </div>
-                </div>
-                <!-- Bloc 3 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-20 lg:px-20">
+                @foreach ($projets as $projet)
                 <div
-                    class="flex flex-col lg:flex-row items-center gap-4 p-8 mb-16 bg-white border-2 border-gray rounded-3xl">
-                    <div class="flex items-center h-full px-4 bg-gray-200 rounded-xl">
-                        <img src="/face-happy.png" alt="smiley icon" class="icons-2">
-                    </div>
-                    <div class="flex flex-col w-full gap-4">
-                        <h3 class="text-xl font-semibold">Profitez de votre trajet</h3>
-                        <p>Récupérez votre voiture à l'emplacement désigné et profitez de votre expérience de conduite
-                            haut de gamme avec notre service de qualité supérieure.</p>
+                    class="flex flex-col p-2 transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
+                    <img src="{{ Storage::url($projet->image) }}" alt="Project Image"
+                        class="w-full h-48 object-cover rounded-t-3xl">
+                    <div class="p-2">
+                        <h4 class="text-lg font-semibold">{{ $projet->nom_societe }}</h4>
+                        <div class="flex flex-row items-end">
+                            <div class="flex flex-col mr-4">
+                                <h5 class="text-4xl font-bold">
+                                    {{ $projet->type_societe }}
+                                </h5>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-sm text-gray-500">
+                                    {{ $projet->type_site }}
+                                </span>
+                                <span class="text-sm text-gray-500">
+                                    {{ $projet->lieu }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex flex-row items-center justify-between px-8 py-2 my-4 bg-gray-100 rounded-xl">
+                            <div class="flex flex-col">
+                                <img src="/speedometer.png" class="self-center icons" alt="development time icon" />
+                                <span>{{ $projet->jours_developpement }} J</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span>
+                                    {{ $projet->langage_programmation }}
+                                </span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span>
+                                    {{ $projet->etoiles }}
+                                </span>
+                            </div>
+                            <div class="flex flex-col">
+                                <img src="/users.png" class="self-center icons" alt="team icon" />
+                                <span> {{ $projet->nombre_collaborateurs }} personnes</span>
+                            </div>
+                        </div>
+                        <a href="{{ $projet->lien }}"
+                            class="transition duration-150 hover:duration-150 block w-full px-4 py-2 font-medium text-center text-black transition-colors border-2 border-black rounded-3xl hover:bg-green-500 hover:text-white">
+                            Visiter
+                        </a>
                     </div>
                 </div>
+                @endforeach
+            </div>
+        </section>
 
-                <div class="absolute right-0 w-40 h-full bg-gray-100 -z-10 rounded-l-3xl hidden lg:block"></div>
+
+        <section class="py-32 text-black bg-gray-100">
+
+
+            <h1 class="text-5xl font-semibold text-center">Projets à but non-lucratif</h1>
+            <h3 class="mt-4 text-lg text-center lg:px-56">
+                Découvrez mes contributions à des projets à but non lucratif, où innovation et collaboration se
+                rencontrent
+                pour créer des solutions technologiques uniques. Cette sélection reflète mon engagement envers le
+                développement communautaire et l'open source, mettant en lumière le temps de développement, les langages
+                utilisés et l'impact de ces initiatives. Explorez ces réalisations pour comprendre comment nous pouvons
+                ensemble faire avancer la technologie pour le bien commun.
+            </h3>
+
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-20 lg:px-20">
+                @foreach ($academicProjects as $academicProjet)
+                <div
+                    class="flex flex-col p-2 transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
+                    <img src="{{ Storage::url($academicProjet->image) }}" alt="Project Image"
+                        class="w-full h-48 object-cover rounded-t-3xl">
+                    <div class="p-2">
+                        <h4 class="text-lg font-semibold">{{ $academicProjet->nom_societe }}</h4>
+                        <div class="flex flex-row items-end">
+                            <div class="flex flex-col mr-4">
+                                <h5 class="text-4xl font-bold">
+                                    {{ $academicProjet->type_societe }}
+                                </h5>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-sm text-gray-500">
+                                    {{ $academicProjet->type_site }}
+                                </span>
+                                <span class="text-sm text-gray-500">
+                                    {{ $academicProjet->lieu }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex flex-row items-center justify-between px-8 py-2 my-4 bg-gray-100 rounded-xl">
+                            <div class="flex flex-col">
+                                <img src="/speedometer.png" class="self-center icons" alt="development time icon" />
+                                <span>{{ $academicProjet->jours_developpement }} J</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span>
+                                    {{ $academicProjet->langage_programmation }}
+                                </span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span>
+                                    {{ $academicProjet->etoiles }}
+                                </span>
+                            </div>
+                            <div class="flex flex-col">
+                                <img src="/users.png" class="self-center icons" alt="team icon" />
+                                <span> {{ $academicProjet->nombre_collaborateurs }} personnes</span>
+                            </div>
+                        </div>
+                        <a href="{{ $academicProjet->lien }}"
+                            class="transition duration-150 hover:duration-150 block w-full px-4 py-2 font-medium text-center text-black transition-colors border-2 border-black rounded-3xl hover:bg-green-500 hover:text-white">
+                            Visiter
+                        </a>
+                    </div>
+                </div>
+                @endforeach
             </div>
 
-            <div class="flex items-center p-8 bg-gray-100 rounded-r-full hidden lg:block">
-                <img src="/jeep.png" alt="jeep car" class="w-full h-auto">
+        </section>
+
+        <section class="flex flex-col items-center justify-center">
+    <div class="w-full bg-gray-200 min-h-[1px] mt-4 max-md:max-w-full"></div>
+    <div
+            class="flex gap-5 justify-between self-center px-5 mt-20 w-full max-w-[1070px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
+            <img loading="lazy"
+            src="/designteal.png"
+                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" style="width: 100px; height: auto;" />
+            <img loading="lazy"
+            src="/designteal.png"
+                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" style="width: 100px; height: auto;"/>
+            <img loading="lazy"
+            src="/designteal.png"
+                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" style="width: 100px; height: auto;"/>
+            <img loading="lazy"
+            src="/designteal.png"
+                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" style="width: 100px; height: auto;"/>
+            <img loading="lazy"
+            src="/designteal.png"
+                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" style="width: 100px; height: auto;"/>
+        </div>
+    <div class="mt-36 text-2xl font-medium text-black whitespace-nowrap max-md:mt-10">
+        Collaborations
+    </div>
+    <div class="flex flex-wrap justify-center gap-5 px-5 mt-20 w-full max-w-[1070px] max-md:flex-col max-md:mt-10 max-md:max-w-full">
+        <!-- Vos images ici -->
+    </div>
+    <div class="mt-28 text-xl whitespace-nowrap text-neutral-400 max-md:mt-10">
+        Envie de commencer un projet?
+    </div>
+    <div class="mt-14 text-9xl font-semibold text-black max-md:mt-10 max-md:max-w-full max-md:text-4xl">
+        Discutons-en!
+    </div>
+    <a href="{{ route('contact') }}" class="px-10 py-5 mt-20 text-base leading-6 text-white bg-teal-300 hover:bg-teal-500 uppercase rounded-[29.5px] border-none focus:outline-none max-md:px-5 max-md:mt-10">
+        Contactez-nous
+    </a>
+    <div class="text-3xl font-bold text-black mt-5">NA</div>
+    <div class="text-xs font-medium text-neutral-400 mb-5">
+        Ingénieur software et développeur fullstack
+    </div>
+</div>
+</section>
+
+
+
+<footer class="bg-gray-100 py-12">
+    <div class="container mx-auto">
+        <div class="border-t border-gray-300"></div>
+        <div class="flex justify-between items-center mt-8">
+            <div class="w-1/2 md:w-2/3 lg:w-1/3">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">À propos de NA</h2>
+                <p class="text-sm text-gray-600">NA est un ingénieur software et développeur fullstack diplômé et formé à la Haute Ecole Erasmus de Bruxelles. </p>
+                <div class="flex items-center mt-6">
+                    <img loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&"
+                        class="aspect-square w-[50px]" />
+                    <img loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&"
+                        class="aspect-square w-[50px]" />
+                    <img loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&"
+                        class="aspect-square w-[50px]" />
+              
+                </div>
+            </div>
+            <div class="w-1/2 md:w-1/3 lg:w-1/4">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact</h2>
+                <div class="text-sm text-gray-600">
+                    <p class="mb-2">170 Nijverheidskaai, Anderlecht</p>
+                    <p class="mb-2">info@nawfelajari.be</p>
+                    <p>+977-9876543210</p>
+                </div>
             </div>
         </div>
-    </section>
+        <div class="border-t border-gray-300 mt-12"></div>
+    </div>
+</footer>
 
 
-
-    <footer class="text-white bg-black border-t-2 border-gray-200">
-        <div class="flex flex-col lg:flex-row items-center justify-between py-4 px-4 lg:px-12 gap-4">
-            <div>
-                <h1 class="text-2xl lg:text-3xl uppercase logo">Bxcars</h1>
-            </div>
-            <div class="flex justify-between gap-2 lg:gap-4">
-                <a href="{{ url('/about') }}" class="text-gray-300 transition-colors hover:text-white">À propos</a>
-                <a href="/services#section1" class="text-gray-300 transition-colors hover:text-white">Conditions</a>
-                <a href="/contact" class="text-gray-300 transition-colors hover:text-white">Contact</a>
-            </div>
-            <div class="flex flex-row gap-2 lg:gap-4">
-                <a href="https://www.instagram.com/bx_cars_rental/" target="_blank" rel="noopener noreferrer">
-                    <div
-                        class="flex items-center justify-center w-8 h-8 transition-transform bg-gray-300 rounded-full hover:bg-gray-200 hover:scale-110">
-                        <img src="/instagram.svg" alt="instagram icon">
-                    </div>
-                </a>
-
-                <!-- Facebook -->
-                <a href="https://www.facebook.com/people/Bx-Cars/pfbid0K5HQSNgyJPMsKygqBWgqgy8Mtrr99SHEcJt2s2LckipK9GatJLFvcA8r6zeYxiFel/"
-                    target="_blank" rel="noopener noreferrer">
-                    <div
-                        class="flex items-center justify-center w-8 h-8 transition-transform bg-gray-300 rounded-full hover:bg-gray-200 hover:scale-110">
-                        <img src="{{ asset('facebook.svg') }}" alt="facebook icon">
-                    </div>
-                </a>
-
-                <!-- Snapchat -->
-                <a href="https://www.snapchat.com/add/bxcars-tanger?share_id=HxAMeEKaQeY&locale=fr-BE" target="_blank"
-                    rel="noopener noreferrer">
-                    <div
-                        class="flex items-center justify-center w-8 h-8 transition-transform bg-gray-300 rounded-full hover:bg-gray-200 hover:scale-110">
-                        <img src="{{ asset('snapchat.svg') }}" alt="snapchat icon">
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="w-full text-xs lg:text-sm text-center py-2 bg-yellow-500 custom-font">
-            <p>MADE IT WITH PASSION ♥ ~ <a href="http://nawfelajari.be" class="text-white hover:text-gray-800"
-                    target="_blank" rel="noopener noreferrer">NAWFEL AJARI</a> &#169; 2024</p>
-        </div>
-    </footer>
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const navLinks = document.getElementById('navLinks');
 
+            hamburgerBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('hidden');
+            });
+        });
     </script>
 </body>
 
