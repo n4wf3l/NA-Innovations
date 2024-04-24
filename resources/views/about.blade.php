@@ -143,16 +143,19 @@
 
         <section class="px-8 py-12 bg-gray-100">
     <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-bold mb-6 text-center">Qui suis-je ?</h2>
-
-        <p class="text-lg mb-6">
-            Bonjour, je m'appelle Nawfel Ajari et je suis un ingénieur en informatique passionné par la création d'expériences en ligne captivantes et fonctionnelles. En fusionnant créativité et compétences techniques solides, je m'efforce de donner vie à des concepts numériques innovants. Mon objectif est de créer des sites web et des applications mobiles qui attirent non seulement visuellement mais offrent également des performances optimales et une convivialité exceptionnelle.
-        </p>
-
-        <p class="text-lg mb-6">
-            Au-delà de ma passion pour la programmation, je possède également des compétences en rédaction sportive et en montage vidéo. Bien que j'aie moins d'expérience dans ce domaine, je vous invite à jeter un œil à la vidéo située sur le côté droit de votre écran. Elle reflète mon désir constant de diversifier mes compétences et de relever de nouveaux défis.
-        </p>
-
+<h2 class="text-3xl font-bold mb-6 text-center">Qui suis-je ?</h2>
+<p class="text-lg mb-6">
+    Bonjour, je m'appelle Nawfel Ajari et je suis un ingénieur en informatique passionné par la création d'expériences en ligne captivantes et fonctionnelles. En fusionnant créativité et compétences techniques solides, je m'efforce de donner vie à des concepts numériques innovants. Mon objectif est de créer des sites web et des applications mobiles qui attirent non seulement visuellement mais offrent également des performances optimales et une convivialité exceptionnelle.
+</p>
+<p class="text-lg mb-6">
+En 2023, j'ai franchi une nouvelle étape en me lançant dans l'entrepreneuriat en proposant mes propres services. C'est ainsi que NA Tech Forge a vu le jour, une initiative visant à offrir des solutions numériques innovantes et à répondre aux besoins variés de nos clients.
+</p>
+<p class="text-lg mb-6">
+Un an plus tard, j'ai diversifié mon activité en me lançant également dans les montages vidéos, notamment des reportages et des interviews avec des footballeurs professionnels, ainsi que dans la photographie, principalement pour couvrir des événements sportifs.
+</p>
+<p class="text-lg mb-6">
+Ma société s'est vue renforcée par des collaborations avec de véritables professionnels du montage vidéo et du graphisme, des services qui font désormais partie intégrante de nos offres.
+</p>
         <h2 class="text-3xl font-bold mb-6 text-center">Compétences</h2>
 
 <p class="text-lg mb-6">
@@ -204,6 +207,44 @@
     </div>
 </section>
 </div>
+
+<section class="px-8 py-12 bg-gray-100">
+    <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold mb-6 text-center">Ma vision</h2>
+
+        <p class="text-lg mb-6">En tant qu'ingénieur en informatique, ma passion réside dans la création d'expériences numériques innovantes et hautement fonctionnelles. Je m'efforce de marier la créativité avec une expertise technique solide pour façonner des solutions logicielles qui transcendent les attentes.
+        </p>
+
+        <p class="text-lg mb-6">Mon objectif premier est de concevoir des sites web et des applications mobiles qui allient esthétique, performance et convivialité. Je m'engage à comprendre pleinement les besoins de mes clients afin de traduire leur vision en solutions concrètes et innovantes.
+        </p>
+
+        <p class="text-lg mb-6">
+        Fort d'une spécialisation dans les systèmes sportifs, en particulier le football, je cherche à redéfinir la manière dont les clubs interagissent avec leurs fans et gèrent leurs opérations. Je développe des fonctionnalités avancées et des expériences immersives pour renforcer l'engagement des utilisateurs.
+        </p>
+        <p class="text-lg mb-6">
+        En parallèle, je suis constamment en quête d'apprentissage et d'amélioration, explorant de nouvelles technologies et élargissant mes compétences pour rester à la pointe de l'innovation. Mon objectif ultime est de fournir des solutions de classe mondiale qui transforment réellement le paysage numérique.
+        </p>
+        <h2 class="text-3xl font-bold mb-6 text-center">Unique</h2>
+
+<p class="text-lg mb-6">
+    En tant qu'ingénieur en informatique, je me distingue par ma polyvalence exceptionnelle. Doté de compétences techniques étendues, je suis à l'aise dans le développement de logiciels, le montage graphique et la photographie. Cette capacité à jongler entre plusieurs domaines me permet d'offrir des solutions complètes et intégrées à mes clients. De plus, ma maîtrise des langues française, néerlandaise et anglaise me permet de communiquer efficacement avec une clientèle diversifiée, renforçant ainsi ma portée et ma capacité à livrer des projets de qualité à l'échelle internationale. 🌐
+</p>
+
+<p class="text-lg mb-6">
+    En Belgique, je suis le seul professionnel à proposer des services spécialisés dans le domaine du football. Fort de mon partenariat avec la Fédération belge de football et mes projets académiques réalisés en collaboration avec des clubs renommés, j'ai acquis une connaissance approfondie de l'écosystème footballistique belge. Cette expertise unique me permet de concevoir des solutions sur mesure qui répondent aux besoins spécifiques des clubs, des fans et des organisations sportives, tout en restant à la pointe des dernières tendances et technologies. ⚽
+</p>
+
+<p class="text-lg mb-6">
+    La qualité et le prix sont des éléments essentiels dans tout projet, et je m'efforce d'offrir une combinaison inégalée des deux. En tant que professionnel du secteur, je suis déterminé à fournir des solutions de haute qualité qui surpassent les attentes de mes clients, tout en restant compétitif sur le plan tarifaire. Mon approche axée sur la valeur ajoutée garantit que mes clients bénéficient non seulement de résultats exceptionnels, mais aussi d'un excellent rapport qualité-prix qui optimise leur retour sur investissement. 💼💰
+</p>
+
+<p class="text-lg mb-6">
+    Mon engagement envers l'excellence est au cœur de tout ce que je fais. Je m'efforce constamment d'atteindre les plus hauts standards de qualité dans chaque projet que j'entreprends. Que ce soit en développant des solutions logicielles innovantes, en capturant des moments précieux à travers la photographie ou en créant des visuels percutants grâce au montage graphique, je mets un point d'honneur à offrir un travail d'une qualité exceptionnelle à chaque étape du processus. Ma passion pour l'excellence se reflète dans les résultats que je livre à mes clients, faisant de moi un partenaire de confiance pour leurs projets les plus ambitieux. 🏅🚀
+</p>
+
+
+    </div>
+</section>
 
 <footer class="bg-gray-100 py-12">
         <div class="container mx-auto">
