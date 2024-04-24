@@ -148,7 +148,7 @@
     Bonjour, je m'appelle Nawfel Ajari et je suis un ingénieur en informatique passionné par la création d'expériences en ligne captivantes et fonctionnelles. En fusionnant créativité et compétences techniques solides, je m'efforce de donner vie à des concepts numériques innovants. Mon objectif est de créer des sites web et des applications mobiles qui attirent non seulement visuellement mais offrent également des performances optimales et une convivialité exceptionnelle.
 </p>
 <p class="text-lg mb-6">
-En 2023, j'ai franchi une nouvelle étape en me lançant dans l'entrepreneuriat en proposant mes propres services. C'est ainsi que NA Tech Forge a vu le jour, une initiative visant à offrir des solutions numériques innovantes et à répondre aux besoins variés de nos clients.
+En 2023, j'ai franchi une nouvelle étape en me lançant dans l'entrepreneuriat en proposant mes propres services. C'est ainsi que <em>NA Innovations</em> a vu le jour, une initiative visant à offrir des solutions numériques innovantes et à répondre aux besoins variés de nos clients.
 </p>
 <p class="text-lg mb-6">
 Un an plus tard, j'ai diversifié mon activité en me lançant également dans les montages vidéos, notamment des reportages et des interviews avec des footballeurs professionnels, ainsi que dans la photographie, principalement pour couvrir des événements sportifs.

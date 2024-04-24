@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjetController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AboutController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AcademicProjetController;
@@ -46,5 +47,6 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/about', [App\Http\Controllers\AboutController::class, 'index'])->name('about');
 Route::get('/contact', [App\Http\Controllers\ContactController::class, 'index'])->name('contact');
+Route::post('/send-email', [ContactController::class, 'sendEmail'])->name('send-email');
 
 require __DIR__ . '/auth.php';

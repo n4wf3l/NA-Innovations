@@ -142,7 +142,8 @@
                 </div>
             </div>
             <div class="flex flex-col ml-5 w-full max-md:w-full">
-    <form action="envoyer-email.php" method="post" class="flex flex-col text-sm text-white max-md:max-w-full">
+            <form action="{{ route('send-email') }}" method="post" class="flex flex-col text-sm text-white max-md:max-w-full">
+    @csrf
         <div class="max-md:max-w-full">Nom complet</div>
         <input type="text" name="name" class="mt-4 bg-neutral-100 h-[46px] max-md:max-w-full text-gray-900" required placeholder="Stijn Mertens"/>
         <div class="mt-7 max-md:max-w-full">Email</div>
@@ -164,9 +165,9 @@
         <input type="number" name="budget" class="mt-4 bg-neutral-100 h-[46px] max-md:max-w-full text-gray-900" required placeholder="600€" />
         <div class="mt-7 max-md:max-w-full">Message</div>
         <textarea name="message" class="mt-4 bg-neutral-100 h-[165px] max-md:max-w-full text-gray-900" required placeholder="Hello..."></textarea>
-        <a href="/about" class="justify-center self-start px-7 py-5 mt-8 text-base leading-6 text-teal-300 uppercase whitespace-nowrap border-2 border-teal-300 border-solid rounded-[29.5px] max-md:px-5 max-md:mt-10 hover:bg-teal-300 hover:text-white transition-colors duration-300">
-                            Envoyer
-                            </a>
+        <button type="submit" class="justify-center self-start px-7 py-5 mt-8 text-base leading-6 text-teal-300 uppercase whitespace-nowrap border-2 border-teal-300 border-solid rounded-[29.5px] max-md:px-5 max-md:mt-10 hover:bg-teal-300 hover:text-white transition-colors duration-300">
+        Envoyer
+    </button>
             </form>
                 </div>
             </div>
