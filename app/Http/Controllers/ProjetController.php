@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Projet;
+use Illuminate\Support\Facades\Auth;
 
 class ProjetController extends Controller
 {
     public function index()
     {
         $projets = Projet::all();
-        return view('/', compact('projets'));
+        return view('welcome', compact('projets'));
     }
 
     public function create()
@@ -22,6 +23,20 @@ class ProjetController extends Controller
     {
         return view('projets.show', compact('projet'));
     }
+
+    public function destroy($id)
+    {
+        $projet = Projet::findOrFail($id);
+        
+        if (Auth::id() != $projet->user_id) {
+
+        }
+        
+        $projet->delete();
+        
+
+    }
+
     public function store(Request $request)
     {
         // Valider les données entrantes
@@ -64,6 +79,5 @@ class ProjetController extends Controller
 
         return redirect('/dashboard')->with('success', 'Projet ajouté avec succès!');
     }
-
-
+    
 }

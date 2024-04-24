@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
     <!-- Styles -->
     <style>
@@ -31,8 +32,29 @@
     <div id="app">
         <!-- Header avec le logo et le menu hamburger (qui remplace les nav links sur les petits écrans) -->
         <div class="flex flex-col py-12 bg-gray-900">
-            <div class="flex justify-between items-center self-center mt-1 w-full max-w-[1298px] px-4">
-                <div class="text-3xl font-bold text-white">NA</div>
+            <div class="flex justify-between items-center self-center mt-1 w-full max-w-[1298px] px-4 relative"> <!-- Ajoutez relative ici pour positionner les éléments absolus par rapport à celui-ci -->
+                <div class="text-3xl font-bold text-white">NA
+                    @auth <!-- Vérifie si l'utilisateur est connecté -->
+                    <span id="logoutMenuBtn" class="ml-2 text-teal-300 cursor-pointer"> <!-- Ajoutez un ID pour le bouton de déconnexion -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block transform rotate-90"
+                                viewBox="0 0 20 20" fill="currentColor"> <!-- Ajoute une icône de flèche déroulante -->
+                                <path fill-rule="evenodd"
+                                    d="M10 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1.447-.895l8 6a1 1 0 0 1 0 1.79l-8 6A1 1 0 0 1 10 18z"></path>
+                            </svg>
+                            <div id="logoutMenu"
+                                class="absolute mt-2 bg-gray-900 border border-gray-300 rounded-md shadow-md hidden"> <!-- Utilisez top-full pour positionner le menu en dessous de la flèche déroulante -->
+                                <a href="{{ route('logout') }}"
+                                    class="block px-4 py-2 text-sm text-white hover:bg-red-800 hover:text-white transition duration-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> <!-- Lien de déconnexion -->
+                                    {{ __('Log Out') }}
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                    style="display: none;">
+                                    @csrf
+                                </form>
+                            </div>
+                        </span>
+                        @endauth
+                </div>
                 <!-- Bouton du menu hamburger (visible uniquement sur les petits écrans) -->
                 <button id="hamburgerBtn" class="md:hidden block text-white">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -45,25 +67,34 @@
                 <div id="navLinks"
                     class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap">
                     <div>
-    <a href="" class="text-teal-300 hover:text-teal-300">Accueil</a>
-</div>
-<div>
-    <a href="#about" class="hover:text-teal-300">Services</a>
-</div>
-<div>
-    <a href="#projects" class="hover:text-teal-300">Projets</a>
-</div>
-<div>
-    <a href="{{ route('about') }}" class="hover:text-teal-300">À propos</a>
-</div>
-<div>
-    <a href="" class="hover:text-teal-300">Nouveautés</a>
-</div>
-<div>
-    <a href="{{ route('contact') }}" class="hover:text-teal-300">Contact</a>
-</div>
+                        <a href="" class="text-teal-300 hover:text-teal-300 transition duration-500">Accueil</a>
+                    </div>
+                    <div>
+                        <a href="#about" class="hover:text-teal-300 transition duration-500">Services</a>
+                    </div>
+                    <div>
+                        <a href="#projects" class="hover:text-teal-300 transition duration-500">Projets</a>
+                    </div>
+                    <div>
+                        <a href="{{ route('about') }}" class="hover:text-teal-300 transition duration-500">À propos</a>
+                    </div>
+                    <div>
+                        <a href="" class="hover:text-teal-300 transition duration-500">Nouveautés</a>
+                    </div>
+                    <div>
+                        <a href="{{ route('contact') }}" class="hover:text-teal-300 transition duration-500">Contact</a>
+                    </div>
+                    @auth
+                    |
+                    <div>
+                        <a href="{{ url('/dashboard') }}"
+                            class="hover:text-teal-300">Dashboard</a>
+                    </div>
+                    @endauth
                 </div>
             </div>
+
+            
             <div
                 class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
                 <div class="flex flex-col flex-1 px-5 max-md:max-w-full">
@@ -83,13 +114,13 @@
             <div class="flex gap-2.5 items-start self-center px-5 mt-44 max-w-full w-[350px] max-md:mt-10">
                 <img loading="lazy"
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&"
-                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full" />
+                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer" />
                 <img loading="lazy"
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&"
-                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full" />
+                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer" />
                 <img loading="lazy"
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&"
-                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full" />
+                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer" />
             </div>
             <div class="self-center mt-48 w-full max-w-[1300px] max-md:mt-10 max-md:max-w-full">
                 <div class="flex gap-5 max-md:flex-col max-md:gap-0 max-md:">
@@ -184,29 +215,42 @@
 
 
     
-        <section class="py-32 text-black bg-gray-100">
-        <div class="ml-16 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center" id="projects">
-            Nos projets
-        </div>
-            <h1 class="text-5xl font-semibold text-center mt-20">Sites web publiés</h1>
-            <h3 class="mt-4 text-lg text-center lg:px-56">
-                Découvrez ci-dessous divers types de sites web que j'ai développés. La liste n'inclut pas les sites
-                portfolios conçus pour des profils individuels. Vous trouverez également des informations sur le temps
-                de
-                développement, les langages de programmation utilisés, le niveau de satisfaction des clients, ainsi que
-                le
-                nombre de collaborations entre développeurs.
-            </h3>
+<section class="py-32 text-black bg-gray-100">
+<div class="ml-16 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center" id="projects">
+    Nos projets
+</div>
+<h1 class="text-5xl font-semibold text-center mt-20">Sites web publiés</h1>
+<h3 class="mt-4 text-lg text-center lg:px-56">
+    Découvrez ci-dessous divers types de sites web que j'ai développés. La liste n'inclut pas les sites
+    portfolios conçus pour des profils individuels. Vous trouverez également des informations sur le temps
+    de
+    développement, les langages de programmation utilisés, le niveau de satisfaction des clients, ainsi que
+    le
+    nombre de collaborations entre développeurs.
+</h3>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-20 lg:px-20">
-                @foreach ($projets as $projet)
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-20 lg:px-20">
+@foreach ($projets as $projet)
                 <div
                     class="flex flex-col p-2 transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
                     <img src="{{ Storage::url($projet->image) }}" alt="Project Image"
                         class="w-full h-48 object-cover rounded-t-3xl">
+                        
                     <div class="p-2">
                         <h4 class="text-lg font-semibold">{{ $projet->nom_societe }}</h4>
                         <div class="flex flex-row items-end">
+                              <!-- Bouton Supprimer -->
+                    @auth
+    <form id="deleteForm{{ $projet->id }}" action="{{ route('projets.destroy', $projet->id) }}" method="POST">
+        @csrf
+        @method('DELETE')
+        <button type="submit" onclick="deleteProjet('{{ $projet->id }}')" class="mr-3 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:bg-red-600">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+</button>
+    </form>
+    @endauth
                             <div class="flex flex-col mr-4">
                                 <h5 class="text-4xl font-bold">
                                     {{ $projet->type_societe }}
@@ -252,6 +296,7 @@
         </section>
 
 
+
         <section class="py-32 text-black bg-gray-100">
 
 
@@ -275,6 +320,18 @@
                     <div class="p-2">
                         <h4 class="text-lg font-semibold">{{ $academicProjet->nom_societe }}</h4>
                         <div class="flex flex-row items-end">
+                             <!-- Bouton Supprimer -->
+                             @auth
+        <form id="deleteForm{{ $academicProjet->id }}" action="{{ route('academic_projets.destroy', $academicProjet->id) }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <button type="button" onclick="deleteAcademicProjet('{{ $academicProjet->id }}')" class="mr-3 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:bg-red-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </form>
+        @endauth
                             <div class="flex flex-col mr-4">
                                 <h5 class="text-4xl font-bold">
                                     {{ $academicProjet->type_societe }}
@@ -413,6 +470,59 @@
                 navLinks.classList.toggle('hidden');
             });
         });
+
+  
+        document.addEventListener('DOMContentLoaded', function () {
+            const logoutMenuBtn = document.getElementById('logoutMenuBtn');
+            const logoutMenu = document.getElementById('logoutMenu');
+
+            // Fonction pour basculer l'affichage du menu de déconnexion
+            function toggleLogoutMenu() {
+                logoutMenu.classList.toggle('hidden');
+            }
+
+            // Ajoutez un gestionnaire d'événements pour le clic sur le bouton de menu de déconnexion
+            logoutMenuBtn.addEventListener('click', function () {
+                toggleLogoutMenu();
+            });
+
+            // Ajoutez un gestionnaire d'événements pour masquer le menu de déconnexion lorsque l'utilisateur clique en dehors de celui-ci
+            document.addEventListener('click', function (event) {
+                if (!logoutMenuBtn.contains(event.target) && !logoutMenu.contains(event.target)) {
+                    logoutMenu.classList.add('hidden');
+                }
+            });
+        });
+
+        function deleteProjet(projetId) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
+        // Envoi de la requête de suppression AJAX
+        axios.delete(`/projets/${projetId}`)
+            .then(response => {
+                // Redirection ou mise à jour de la page si nécessaire
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Une erreur s\'est produite lors de la suppression du projet :', error);
+                // Gérer les erreurs si nécessaire
+            });
+    }
+}
+
+function deleteAcademicProjet(academicProjetId) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce projet académique ?')) {
+        // Envoi de la requête de suppression AJAX
+        axios.delete(`/academic_projets/${academicProjetId}`)
+            .then(response => {
+                // Redirection ou mise à jour de la page si nécessaire
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Une erreur s\'est produite lors de la suppression du projet académique :', error);
+                // Gérer les erreurs si nécessaire
+            });
+    }
+}
     </script>
 </body>
 

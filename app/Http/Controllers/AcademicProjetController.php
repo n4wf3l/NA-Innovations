@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AcademicProjet;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 class AcademicProjetController extends Controller
 {
 
@@ -13,18 +13,15 @@ class AcademicProjetController extends Controller
     {
         $academicProjects = AcademicProjet::all();
         return view('welcome', compact('academicProjects'));
-
     }
 
     public function create()
     {
-        // Retourner la vue pour créer un nouveau projet académique
         return view('academic_projects.create');
     }
 
     public function store(Request $request)
     {
-        // Valider les données entrantes
         $validatedData = $request->validate([
             'nom_societe' => 'required|string|max:255',
             'type_societe' => 'required|string|max:255',
@@ -38,10 +35,9 @@ class AcademicProjetController extends Controller
             'image' => 'required|image',
         ]);
 
-        // Charger l'image et obtenir le chemin
+
         $path = $request->file('image')->store('public/images');
 
-        // Création de l'instance du modèle et assignation des champs
         $projet = new AcademicProjet();
         $projet->nom_societe = $validatedData['nom_societe'];
         $projet->type_societe = $validatedData['type_societe'];
@@ -52,9 +48,20 @@ class AcademicProjetController extends Controller
         $projet->etoiles = $validatedData['etoiles'];
         $projet->nombre_collaborateurs = $validatedData['nombre_collaborateurs'];
         $projet->lien = $validatedData['lien'];
-        $projet->image = $path; // Sauvegarder le chemin de l'image
-        $projet->save(); // Sauvegarder l'instance dans la base de données
+        $projet->image = $path;
+        $projet->save(); 
 
         return redirect('/dashboard')->with('success', 'Projet ajouté avec succès!');
+    }
+
+    public function destroy($id)
+    {
+
+        $academic_projet = AcademicProjet::findOrFail($id);
+        
+        if (Auth::id() != $academic_projet->user_id) {
+        }
+        
+        $academic_projet->delete();
     }
 }

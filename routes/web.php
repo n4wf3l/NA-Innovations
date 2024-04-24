@@ -35,6 +35,9 @@ Route::get('/dashboard/ajouter-projet-academique', [AcademicProjetController::cl
 Route::post('/academic_projets', [AcademicProjetController::class, 'store'])->name('academic_projets.store');
 Route::get('/academic-projects', [AcademicProjetController::class, 'index'])->name('academic_projects.index');
 
+Route::delete('/projets/{projet}', [ProjetController::class, 'destroy'])->name('projets.destroy');
+Route::delete('/academic_projets/{academic_projet}', [AcademicProjetController::class, 'destroy'])->name('academic_projets.destroy');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
