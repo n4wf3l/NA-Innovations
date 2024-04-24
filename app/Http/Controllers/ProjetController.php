@@ -18,6 +18,10 @@ class ProjetController extends Controller
         return view('ajouter_projet');
     }
 
+    public function show(Projet $projet)
+    {
+        return view('projets.show', compact('projet'));
+    }
     public function store(Request $request)
     {
         // Valider les données entrantes

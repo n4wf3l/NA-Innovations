@@ -62,7 +62,6 @@
 <div>
     <a href="{{ route('contact') }}" class="hover:text-teal-300">Contact</a>
 </div>
-
                 </div>
             </div>
             <div
@@ -117,14 +116,37 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
-        <div class="flex items-center justify-center max-w-full w-[824px] mt-20 ml-16 max-md:flex-col max-md:w-full max-md:mt-10 max-md:ml-5">
-    <div class="max-w-[70%] max-md:max-w-full">
-        <div class="text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center" id="about">
+                <div class="ml-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center" id="about">
             Nos services
         </div>
+        <div class="max-w-lg mx-auto text-gray-600">
+    <div class="text-center mt-8 mb-6">
+        <h2 class="text-3xl font-bold text-black">Développement Web de Qualité</h2>
+        <p class="mt-4">Vous recherchez une équipe de développement web passionnée et hautement qualifiée pour donner vie à vos idées en ligne? Vous êtes au bon endroit. Notre équipe de développeurs web chevronnés est prête à transformer vos concepts en solutions numériques innovantes qui captiveront votre audience et stimuleront votre croissance.</p>
+    </div>
+
+    <div class="text-center mb-6">
+        <h3 class="text-2xl font-bold text-black">Expertise en Développement Web</h3>
+        <p class="mt-4">En tant que diplômé en programmation et spécialisé dans le développement web, notre expertise ne se limite pas seulement à la création de sites web. Nous avons une passion pour l'innovation technologique et une compréhension approfondie des dernières tendances et technologies du secteur. Que vous ayez besoin d'un site web d'entreprise dynamique, d'une plateforme de commerce électronique robuste ou d'une application web interactive, nous sommes là pour répondre à vos besoins avec créativité et expertise.</p>
+    </div>
+
+    <div class="text-center mb-6">
+        <h3 class="text-2xl font-bold text-black">Spécialisation en Football et API</h3>
+        <p class="mt-4">Mais notre engagement envers l'excellence ne s'arrête pas là. Nous avons également une spécialisation unique dans le développement de logiciels liés au football et à ses API. Grâce à notre passion pour le football et notre maîtrise des technologies de pointe, nous sommes en mesure de créer des solutions sur mesure pour les clubs, les plateformes de fans et les fournisseurs de contenu dans le domaine du football. Que ce soit pour intégrer des données en temps réel, analyser les performances des joueurs ou créer des expériences interactives pour les fans, nous sommes prêts à relever tous les défis pour vous aider à atteindre vos objectifs.</p>
+    </div>
+
+    <div class="text-center mb-8">
+        <h3 class="text-2xl font-bold text-black">Collaborons Ensemble</h3>
+        <p class="mt-4">Faites équipe avec nous pour une collaboration exceptionnelle qui marie l'expertise du développement web avec une spécialisation pointue dans le domaine passionnant du football. Ensemble, créons une présence en ligne qui se démarque et qui fait vivre une expérience immersive à vos utilisateurs.</p>
+    </div>
+</div>
+
+
+<div class="flex flex-row max-w-full mt-20 mb-20 ml-10 mr-20 border border-black">
+    <!-- Development -->
+    <div class="w-1/3 text-center pl-5 pr-5">
         <div class="mt-8 text-3xl font-semibold text-black">Développement web</div>
         <div class="mt-4 text-2xl text-neutral-400">
             Plateformes de réservation | Marchés en ligne | Plateformes d'apprentissage en ligne | Sites de petites annonces | Plateformes de crowdfunding | Réseaux professionnels
@@ -134,38 +156,33 @@
             Applications nativement codées | Applications hybrides | Applications web progressives (PWA) | Applications d'e-commerce mobile | Applications de médias sociaux mobiles
         </div>
         <div class="mt-8 text-3xl font-semibold text-black">Développement software</div>
-        <div class="mt-4 text-2xl text-neutral-400">
+        <div class="mt-4 text-2xl text-neutral-400 mb-10">
             Applications de bureau | Applications d'entreprise | Applications de gestion de projet | Systèmes de gestion de contenu (CMS) | Systèmes de gestion de base de données (SGBD) | Applications de bureau à distance | Systèmes de planification des ressources d'entreprise (ERP)
         </div>
     </div>
-    <div class="ml-16 max-w-[30%] max-md:ml-0 max-md:max-w-full">
-        <img class="w-full" src="/design.png" alt="">
+
+    <!-- Graphic Design -->
+    <div class="w-1/3 text-center  ml-10 mr-10">
+        <div class="mt-8 text-3xl font-semibold text-black">Montage vidéo</div>
+        <div class="mt-4 text-2xl text-neutral-400">
+            Montage narratif | Montage promotionnel | Montage publicitaire | Montage documentaire | Montage expérimental
+        </div>
+        <div class="mt-8 text-3xl font-semibold text-black">Graphisme</div>
+        <div class="mt-4 text-2xl text-neutral-400">
+            Conception de logos, d'affiches, de cartes de visite et de brochures | Design d'interface utilisateur (UI) et d'expérience utilisateur (UX) | Infographie
+        </div>
+    </div>
+
+    <!-- Strategy -->
+    <div class="w-1/3 text-center pl-5 pr-5">
+        <div class="mt-8 text-3xl font-semibold text-black">Photographie</div>
+        <div class="mt-4 text-2xl text-neutral-400">
+            Portrait | Photographie documentaire | Sport
+        </div>
     </div>
 </div>
 
 
-
-
-
-
-        <div class="mt-4 w-full bg-gray-200 min-h-[1px] max-md:max-w-full"></div>
-
-        <!-- Graphic Design -->
-        <div class="flex flex-col gap-5 mt-20 ml-16 max-w-full max-md:mt-10 max-md:ml-5">
-            <div class="text-3xl font-semibold text-black max-md:text-center">Montage vidéo et graphisme</div>
-            <div class="text-2xl text-neutral-400 max-md:text-center">
-            Montage narratif | Montage promotionnel | Montage publicitaire | Montage documentaire | Montage expérimental | Conception de logos, d'affiches, de cartes de visite et de brochures | Design d'interface utilisateur (UI) et d'expérience utilisateur (UX) | Infographie
-            </div>
-        </div>
-        <div class="mt-4 w-full bg-gray-200 min-h-[1px] max-md:max-w-full"></div>
-
-        <!-- Strategy -->
-        <div class="flex flex-col gap-5 mt-20 ml-16 max-w-full max-md:mt-10 max-md:ml-5 mb-20">
-            <div class="text-3xl font-semibold text-black max-md:text-center">Photographie</div>
-            <div class="text-2xl text-neutral-400 max-md:text-center">
-           Portrait | Photographie documentaire | Sport
-            </div>
-        </div>
     
         <section class="py-32 text-black bg-gray-100">
         <div class="ml-16 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center" id="projects">
@@ -326,9 +343,15 @@
     <div class="mt-36 text-2xl font-medium text-black whitespace-nowrap max-md:mt-10">
         Collaborations
     </div>
-    <div class="flex flex-wrap justify-center gap-5 px-5 mt-20 w-full max-w-[1070px] max-md:flex-col max-md:mt-10 max-md:max-w-full">
-        <!-- Vos images ici -->
+    <div class="flex flex-wrap justify-center gap-5 mt-20 w-full max-w-[1070px] max-md:flex-col max-md:mt-10 max-md:max-w-full">
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <a href="https://www.bashir-studios.com/">
+            <img src="logomouise.png" alt="Logo" style="transition: transform 0.3s ease-in-out;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+        </a>
+        <p>Bashir Studio's</p>
     </div>
+</div>
+
     <div class="mt-28 text-xl whitespace-nowrap text-neutral-400 max-md:mt-10">
         Envie de commencer un projet?
     </div>
