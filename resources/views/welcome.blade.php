@@ -13,6 +13,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <!-- Styles -->
     <style>
         @tailwind base;
@@ -24,11 +26,26 @@
         }
         /* Ajoutez ici vos styles supplémentaires */
 
+        #scrollToTop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #000;
+            color: #fff;
+            padding: 10px;
+            border-radius: 50%;
+            display: none; /* Caché au début */
+            cursor: pointer;
+        }
+        #scrollToTop.show {
+            display: block; /* Affiché lorsque l'utilisateur fait défiler */
+        }
     </style>
     @vite('resources/css/app.css')
 </head>
 
 <body>
+<a href="#" id="scrollToTop"><i class="fas fa-arrow-up"></i></a>
     <div id="app">
         <!-- Header avec le logo et le menu hamburger (qui remplace les nav links sur les petits écrans) -->
         <div class="flex flex-col py-12 bg-gray-900">
@@ -96,7 +113,7 @@
 
             
             <div
-                class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
+                class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full border border-white p-4">
                 <div class="flex flex-col flex-1 px-5 max-md:max-w-full">
                     <div class="text-xl font-medium text-neutral-400 max-md:max-w-full">
                         Développement web, mobile et software | Montage vidéo et graphisme | Photographie
@@ -115,40 +132,42 @@
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/67ee580b211125b63e48b5b003eee10ff257e9dee311f1fc25d332dd76e09b3f?apiKey=d3784f4c52b7403885832573b3287702&"
                     class="self-start aspect-[0.61] w-[49px]" />
             </div>
+
             <div class="flex gap-2.5 items-start self-center px-5 mt-44 max-w-full w-[350px] max-md:mt-10">
-                <img loading="lazy"
+            <a href="https://www.instagram.com" class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer">    
+            <img loading="lazy"
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&"
-                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer" />
+                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer"/></a>
+                    <a href="https://www.twitter.com" class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer">   
                 <img loading="lazy"
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&"
-                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer" />
+                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer" /></a>
+                    <a href="https://www.linkedin.com" class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer">   
                 <img loading="lazy"
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&"
-                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer" />
+                    class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer" /></a>
             </div>
-            <div class="self-center mt-48 w-full max-w-[1300px] max-md:mt-10 max-md:max-w-full">
+            <div class="self-center mt-48 w-full max-w-[1300px] max-md:mt-10 max-md:max-w-full border border-white p-4">
                 <div class="flex gap-5 max-md:flex-col max-md:gap-0 max-md:">
                     <div class="flex flex-col w-[56%] max-md:ml-0 max-md:w-full">
                         <div
                             class="flex flex-col grow px-5 text-3xl leading-10 text-white max-md:mt-10 max-md:max-w-full">
-                            <div class="text-xl max-md:max-w-full">Notre philosophie</div>
+                            <div class="text-xl font-medium text-neutral-400 max-md:max-w-full">Notre philosophie</div>
                             <div class="mt-11 font-bold max-md:mt-10 max-md:max-w-full">
                             Mon approche est ancrée dans la conviction que la cohérence et la créativité sont essentielles pour construire une marque forte.
                             </div>
                             <div class="mt-16 font-bold max-md:mt-10 max-md:max-w-full">
                             En combinant mes compétences en développement web et mobile avec mon expertise en photographie, montage vidéo et design de logo, je m'engage à créer des stratégies marketing holistiques qui racontent une histoire captivante et laissent une impression durable.
                             </div>
-                            <div
-                                class="justify-center self-start px-7 py-5 mt-14 text-base leading-6 text-teal-300 uppercase whitespace-nowrap border-2 border-teal-300 border-solid rounded-[29.5px] max-md:px-5 max-md:mt-10">
-                                À propos de nous
-                            </div>
+                            <a href="/about" class="justify-center self-start px-7 py-5 mt-14 text-base leading-6 text-teal-300 uppercase whitespace-nowrap border-2 border-teal-300 border-solid rounded-[29.5px] max-md:px-5 max-md:mt-10 hover:bg-teal-300 hover:text-white transition-colors duration-300">
+                            À propos de nous
+                            </a>
                         </div>
                     </div>
-                    <div class="flex flex-col ml-5 w-[44%] max-md:ml-0 max-md:w-full">
                         <div class="mx-auto mt-14 max-w-full h-[474px] w-[530px] max-md:mt-10">
                             <img src="/justlogo.png" alt="">
                         </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -203,18 +222,18 @@
 </div>
 </div>
 
-<div class="flex flex-row max-w-full mt-20 mb-20 ml-10 mr-20 border border-black">
+<div class="flex flex-row max-w-full mt-20 mb-20 ml-10 mr-20 border-4 border-teal-300" style="background-image: url('giphy.gif'); background-size:cover; background-repeat: no-repeat; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;">
     <!-- Development -->
     <div class="w-1/3 text-center pl-5 pr-5">
-        <div class="mt-8 text-3xl font-semibold text-black">Développement web</div>
+        <div class="mt-8 text-3xl font-semibold text-white">Développement web</div>
         <div class="mt-4 text-2xl text-neutral-400">
             Plateformes de réservation | Marchés en ligne | Plateformes d'apprentissage en ligne | Sites de petites annonces | Plateformes de crowdfunding | Réseaux professionnels
         </div>
-        <div class="mt-8 text-3xl font-semibold text-black">Développement mobile</div>
+        <div class="mt-8 text-3xl font-semibold text-white">Développement mobile</div>
         <div class="mt-4 text-2xl text-neutral-400">
             Applications nativement codées | Applications hybrides | Applications web progressives (PWA) | Applications d'e-commerce mobile | Applications de médias sociaux mobiles
         </div>
-        <div class="mt-8 text-3xl font-semibold text-black">Développement software</div>
+        <div class="mt-8 text-3xl font-semibold text-white">Développement software</div>
         <div class="mt-4 text-2xl text-neutral-400 mb-10">
             Football API | Applications de bureau | Applications d'entreprise | Applications de gestion de projet | Systèmes de gestion de contenu (CMS) | Systèmes de gestion de base de données (SGBD) | Applications de bureau à distance | Systèmes de planification des ressources d'entreprise (ERP)
         </div>
@@ -222,11 +241,11 @@
 
     <!-- Graphic Design -->
     <div class="w-1/3 text-center  ml-10 mr-10">
-        <div class="mt-8 text-3xl font-semibold text-black">Montage vidéo</div>
+        <div class="mt-8 text-3xl font-semibold text-white">Montage vidéo</div>
         <div class="mt-4 text-2xl text-neutral-400">
             Montage narratif | Montage promotionnel | Montage publicitaire | Montage documentaire | Montage expérimental
         </div>
-        <div class="mt-8 text-3xl font-semibold text-black">Graphisme</div>
+        <div class="mt-8 text-3xl font-semibold text-white">Graphisme</div>
         <div class="mt-4 text-2xl text-neutral-400">
             Conception de logos, d'affiches, de cartes de visite et de brochures | Design d'interface utilisateur (UI) et d'expérience utilisateur (UX) | Infographie
         </div>
@@ -234,7 +253,7 @@
 
     <!-- Strategy -->
     <div class="w-1/3 text-center pl-5 pr-5">
-        <div class="mt-8 text-3xl font-semibold text-black">Photographie</div>
+        <div class="mt-8 text-3xl font-semibold text-white">Photographie</div>
         <div class="mt-4 text-2xl text-neutral-400">
             Portrait | Photographie documentaire | Sport
         </div>
@@ -531,6 +550,23 @@ function deleteAcademicProjet(academicProjetId) {
             });
     }
 }
+
+window.addEventListener('scroll', function() {
+        var scrollToTop = document.getElementById('scrollToTop');
+        if (window.scrollY > 100) { // Afficher la flèche lorsque l'utilisateur a fait défiler plus de 100px
+            scrollToTop.classList.add('show');
+        } else {
+            scrollToTop.classList.remove('show');
+        }
+    });
+    // Fonction pour remonter en haut de la page lorsque la flèche est cliquée
+    document.getElementById('scrollToTop').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
     </script>
 </body>
 

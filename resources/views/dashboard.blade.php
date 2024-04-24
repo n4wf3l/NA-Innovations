@@ -85,9 +85,9 @@
     </div>
     </header>
 
+    <main>
     <section class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-semibold mb-6">Dashboard</h1>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="bg-white rounded-lg p-6">
                 <h2 class="text-xl font-semibold mb-4">Ajouter un site publié</h2>
@@ -200,7 +200,7 @@
     </div>
     </div>
 </section>
-
+    </main>
 
 
 
