@@ -63,7 +63,7 @@
                             d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
                 </button>
-                <!-- Navigation (cachez ceci sur les petits écrans et montrez-le sur les plus grands) -->
+ 
                 <div id="navLinks"
                     class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap">
                     <div>
@@ -106,6 +106,10 @@
                         <br />
                         digital studio.
                     </div>
+                    <div class="mt-11 text-1xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl flex">
+                        <img src="logokbvb.png" width="5%"alt="">
+                        <p class="mt-10 ml-3">Specialized in Football Software and API's</p>
+                    </div>
                 </div>
                 <img loading="lazy"
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/67ee580b211125b63e48b5b003eee10ff257e9dee311f1fc25d332dd76e09b3f?apiKey=d3784f4c52b7403885832573b3287702&"
@@ -136,7 +140,7 @@
                             </div>
                             <div
                                 class="justify-center self-start px-7 py-5 mt-14 text-base leading-6 text-teal-300 uppercase whitespace-nowrap border-2 border-teal-300 border-solid rounded-[29.5px] max-md:px-5 max-md:mt-10">
-                                Meet the team
+                                À propos de nous
                             </div>
                         </div>
                     </div>
@@ -152,28 +156,52 @@
                 <div class="ml-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center" id="about">
             Nos services
         </div>
-        <div class="max-w-lg mx-auto text-gray-600">
-    <div class="text-center mt-8 mb-6">
-        <h2 class="text-3xl font-bold text-black">Développement Web de Qualité</h2>
-        <p class="mt-4">Vous recherchez une équipe de développement web passionnée et hautement qualifiée pour donner vie à vos idées en ligne? Vous êtes au bon endroit. Notre équipe de développeurs web chevronnés est prête à transformer vos concepts en solutions numériques innovantes qui captiveront votre audience et stimuleront votre croissance.</p>
-    </div>
+        <hr class="mb-10">
+        <div class="grid grid-cols-2">
+    <div class="col-span-1 max-w-xl mx-auto text-gray-600 text-left">
+        <div class="mt-8 mb-6">
+            <h2 class="text-3xl font-bold text-black">Développement Web de Qualité</h2>
+            <p class="mt-4">Vous recherchez une équipe de développement web passionnée et hautement qualifiée pour donner vie à vos idées en ligne? Vous êtes au bon endroit. Notre équipe de développeurs web chevronnés est prête à transformer vos concepts en solutions numériques innovantes qui captiveront votre audience et stimuleront votre croissance.</p>
+        </div>
 
-    <div class="text-center mb-6">
+    <div class="mb-6">
         <h3 class="text-2xl font-bold text-black">Expertise en Développement Web</h3>
         <p class="mt-4">En tant que diplômé en programmation et spécialisé dans le développement web, notre expertise ne se limite pas seulement à la création de sites web. Nous avons une passion pour l'innovation technologique et une compréhension approfondie des dernières tendances et technologies du secteur. Que vous ayez besoin d'un site web d'entreprise dynamique, d'une plateforme de commerce électronique robuste ou d'une application web interactive, nous sommes là pour répondre à vos besoins avec créativité et expertise.</p>
     </div>
 
-    <div class="text-center mb-6">
+    <div class="mb-6">
         <h3 class="text-2xl font-bold text-black">Spécialisation en Football et API</h3>
         <p class="mt-4">Mais notre engagement envers l'excellence ne s'arrête pas là. Nous avons également une spécialisation unique dans le développement de logiciels liés au football et à ses API. Grâce à notre passion pour le football et notre maîtrise des technologies de pointe, nous sommes en mesure de créer des solutions sur mesure pour les clubs, les plateformes de fans et les fournisseurs de contenu dans le domaine du football. Que ce soit pour intégrer des données en temps réel, analyser les performances des joueurs ou créer des expériences interactives pour les fans, nous sommes prêts à relever tous les défis pour vous aider à atteindre vos objectifs.</p>
     </div>
 
-    <div class="text-center mb-8">
+    <div class="mb-8">
         <h3 class="text-2xl font-bold text-black">Collaborons Ensemble</h3>
         <p class="mt-4">Faites équipe avec nous pour une collaboration exceptionnelle qui marie l'expertise du développement web avec une spécialisation pointue dans le domaine passionnant du football. Ensemble, créons une présence en ligne qui se démarque et qui fait vivre une expérience immersive à vos utilisateurs.</p>
     </div>
 </div>
 
+<div class="col-span-1 max-w-xl mx-auto text-gray-600 text-right">
+        <div class="mt-8 mb-6">
+            <h2 class="text-3xl font-bold text-black">Services de Montage Vidéo</h2>
+            <p class="mt-4">Notre équipe de montage vidéo offre une gamme complète de services pour répondre à vos besoins en matière de création de contenu visuel. Du montage narratif aux montages promotionnels en passant par les publicités et les documentaires, nous mettons notre expertise au service de votre projet pour produire des vidéos captivantes et de haute qualité qui captent l'attention de votre audience.</p>
+        </div>
+
+    <div class="mt-8 mb-6">
+        <h2 class="text-3xl font-bold text-black">Services de Conception Graphique</h2>
+        <p class="mt-4">En tant qu'experts en conception graphique, nous vous offrons des solutions créatives pour tous vos besoins en communication visuelle. De la conception de logos à la création d'infographies, en passant par le design d'interfaces utilisateur et d'expériences utilisateur, notre équipe talentueuse vous aide à créer une identité visuelle forte et à fournir des expériences utilisateur exceptionnelles.</p>
+    </div>
+
+    <div class="mt-8 mb-6">
+        <h2 class="text-3xl font-bold text-black">Services de Montage Narratif et Promotionnel</h2>
+        <p class="mt-4">Nos services de montage narratif et promotionnel sont conçus pour vous aider à raconter des histoires convaincantes et à promouvoir efficacement vos produits ou services. Que vous ayez besoin d'un montage pour un court métrage, un documentaire, une publicité ou une vidéo promotionnelle, nous travaillons avec vous pour créer un contenu vidéo percutant qui répond à vos objectifs marketing et engage votre public cible.</p>
+    </div>
+
+    <div class="mt-8 mb-6">
+        <h2 class="text-3xl font-bold text-black">Services de Design et de Création</h2>
+        <p class="mt-4">En plus de nos services de montage vidéo et de conception graphique, nous proposons une gamme étendue de services de design et de création pour répondre à tous vos besoins créatifs. Que vous recherchiez des designs de logos, d'affiches, de cartes de visite ou des solutions de design sur mesure, notre équipe expérimentée est là pour vous aider à donner vie à vos idées et à créer des visuels accrocheurs et professionnels.</p>
+    </div>
+</div>
+</div>
 
 <div class="flex flex-row max-w-full mt-20 mb-20 ml-10 mr-20 border border-black">
     <!-- Development -->
@@ -188,7 +216,7 @@
         </div>
         <div class="mt-8 text-3xl font-semibold text-black">Développement software</div>
         <div class="mt-4 text-2xl text-neutral-400 mb-10">
-            Applications de bureau | Applications d'entreprise | Applications de gestion de projet | Systèmes de gestion de contenu (CMS) | Systèmes de gestion de base de données (SGBD) | Applications de bureau à distance | Systèmes de planification des ressources d'entreprise (ERP)
+            Football API | Applications de bureau | Applications d'entreprise | Applications de gestion de projet | Systèmes de gestion de contenu (CMS) | Systèmes de gestion de base de données (SGBD) | Applications de bureau à distance | Systèmes de planification des ressources d'entreprise (ERP)
         </div>
     </div>
 
@@ -378,29 +406,10 @@
         </section>
 
         <section class="flex flex-col items-center justify-center">
-    <div class="w-full bg-gray-200 min-h-[1px] mt-4 max-md:max-w-full"></div>
-    <div
-            class="flex gap-5 justify-between self-center px-5 mt-20 w-full max-w-[1070px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
-            <img loading="lazy"
-            src="/designteal.png"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" style="width: 100px; height: auto;" />
-            <img loading="lazy"
-            src="/designteal.png"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" style="width: 100px; height: auto;"/>
-            <img loading="lazy"
-            src="/designteal.png"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" style="width: 100px; height: auto;"/>
-            <img loading="lazy"
-            src="/designteal.png"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" style="width: 100px; height: auto;"/>
-            <img loading="lazy"
-            src="/designteal.png"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" style="width: 100px; height: auto;"/>
+        <div class="ml-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center" id="about">
+            Collab's
         </div>
-    <div class="mt-36 text-2xl font-medium text-black whitespace-nowrap max-md:mt-10">
-        Collaborations
-    </div>
-    <div class="flex flex-wrap justify-center gap-5 mt-20 w-full max-w-[1070px] max-md:flex-col max-md:mt-10 max-md:max-w-full">
+    <div class="flex flex-wrap justify-center gap-5 w-full max-w-[1070px] max-md:flex-col max-md:mt-10 max-md:max-w-full">
     <div style="display: flex; flex-direction: column; align-items: center;">
         <a href="https://www.bashir-studios.com/">
             <img src="logomouise.png" alt="Logo" style="transition: transform 0.3s ease-in-out;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
@@ -408,14 +417,13 @@
         <p>Bashir Studio's</p>
     </div>
 </div>
-
     <div class="mt-28 text-xl whitespace-nowrap text-neutral-400 max-md:mt-10">
         Envie de commencer un projet?
     </div>
     <div class="mt-14 text-9xl font-semibold text-black max-md:mt-10 max-md:max-w-full max-md:text-4xl">
         Discutons-en!
     </div>
-    <a href="{{ route('contact') }}" class="px-10 py-5 mt-20 text-base leading-6 text-white bg-teal-300 hover:bg-teal-500 uppercase rounded-[29.5px] border-none focus:outline-none max-md:px-5 max-md:mt-10">
+    <a href="{{ route('contact') }}" class="px-10 py-5 mt-20 text-base leading-6 text-white bg-gray-600 hover:bg-teal-500 uppercase rounded-[29.5px] border-none focus:outline-none max-md:px-5 max-md:mt-10">
         Contactez-nous
     </a>
     <div class="text-3xl font-bold text-black mt-5">NA</div>

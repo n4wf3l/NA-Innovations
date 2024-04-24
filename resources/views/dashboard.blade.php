@@ -29,10 +29,32 @@
 
 <body>
     <header>
-    <div id="app">
+<div id="app">
+        <!-- Header avec le logo et le menu hamburger (qui remplace les nav links sur les petits écrans) -->
         <div class="flex flex-col py-12 bg-gray-900">
-            <div class="flex justify-between items-center self-center mt-1 w-full max-w-[1298px] px-4">
-                <div class="text-3xl font-bold text-white">NA</div>
+            <div class="flex justify-between items-center self-center mt-1 w-full max-w-[1298px] px-4 relative"> <!-- Ajoutez relative ici pour positionner les éléments absolus par rapport à celui-ci -->
+                <div class="text-3xl font-bold text-white">NA
+                    @auth <!-- Vérifie si l'utilisateur est connecté -->
+                    <span id="logoutMenuBtn" class="ml-2 text-teal-300 cursor-pointer"> <!-- Ajoutez un ID pour le bouton de déconnexion -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block transform rotate-90"
+                                viewBox="0 0 20 20" fill="currentColor"> <!-- Ajoute une icône de flèche déroulante -->
+                                <path fill-rule="evenodd"
+                                    d="M10 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1.447-.895l8 6a1 1 0 0 1 0 1.79l-8 6A1 1 0 0 1 10 18z"></path>
+                            </svg>
+                            <div id="logoutMenu"
+                                class="absolute mt-2 bg-gray-900 border border-gray-300 rounded-md shadow-md hidden"> <!-- Utilisez top-full pour positionner le menu en dessous de la flèche déroulante -->
+                                <a href="{{ route('logout') }}"
+                                    class="block px-4 py-2 text-sm text-white hover:bg-red-800 hover:text-white transition duration-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> <!-- Lien de déconnexion -->
+                                    {{ __('Log Out') }}
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                    style="display: none;">
+                                    @csrf
+                                </form>
+                            </div>
+                        </span>
+                        @endauth
+                </div>
                 <button id="hamburgerBtn" class="md:hidden block text-white">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"d="M4 6h16M4 12h16m-7 6h7"></path>
@@ -43,10 +65,10 @@
             </div>
 
             <div>
-                <a href="#about" class="hover:text-teal-300">Services</a>
-            </div>
+    <a href="{{ url('/') }}#about" class="hover:text-teal-300">Services</a>
+</div>
             <div>
-                <a href="#projects" class="hover:text-teal-300">Projets</a>
+                <a href="{{ url('/') }}#projects" class="hover:text-teal-300">Projets</a>
             </div>
             <div>
             <a href="{{ route('about') }}" class="hover:text-teal-300">À propos</a>
@@ -223,6 +245,28 @@
 
             hamburgerBtn.addEventListener('click', () => {
                 navLinks.classList.toggle('hidden');
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const logoutMenuBtn = document.getElementById('logoutMenuBtn');
+            const logoutMenu = document.getElementById('logoutMenu');
+
+            // Fonction pour basculer l'affichage du menu de déconnexion
+            function toggleLogoutMenu() {
+                logoutMenu.classList.toggle('hidden');
+            }
+
+            // Ajoutez un gestionnaire d'événements pour le clic sur le bouton de menu de déconnexion
+            logoutMenuBtn.addEventListener('click', function () {
+                toggleLogoutMenu();
+            });
+
+            // Ajoutez un gestionnaire d'événements pour masquer le menu de déconnexion lorsque l'utilisateur clique en dehors de celui-ci
+            document.addEventListener('click', function (event) {
+                if (!logoutMenuBtn.contains(event.target) && !logoutMenu.contains(event.target)) {
+                    logoutMenu.classList.add('hidden');
+                }
             });
         });
     </script>
