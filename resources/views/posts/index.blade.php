@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Contact - NA</title>
+    <title>MyBlog - NA</title>
     <link rel="icon" href="{{ asset('logonai.png') }}" type="image/x-icon" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -69,10 +69,10 @@
             <a href="{{ route('about') }}" class="hover:text-teal-300">À propos</a>
             </div>
         <div>
-        <a href="{{ route('posts.index') }}" class="hover:text-teal-300">Nouveautés</a>
+        <a href="{{ route('posts.index') }}" class="text-teal-300 hover:text-teal-300 transition duration-500">Nouveautés</a>
         </div>
     <div>
-    <a href="{{ route('contact') }}" class="text-teal-300 hover:text-teal-300 transition duration-500">Contact</a>
+    <a href="{{ route('contact') }}" class="hover:text-teal-300">Contact</a>
         </div>            @auth |
         <div>
         <a href="{{ url('/dashboard') }}"  class="hover:text-teal-300">Dashboard</a>
@@ -84,7 +84,7 @@
     <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
                 <div class="flex flex-col flex-1 px-5 max-md:max-w-full">
                     <div class="mt-11 text-9xl font-bold text-center text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
-                        Contact
+                        MyBlog
                     </div>
         <div
             class="flex gap-5 justify-between self-center px-5 mt-20 w-full max-w-[1070px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full mb-20">
@@ -109,72 +109,29 @@
 
     <div class="flex flex-col items-center px-16 py-12 max-md:px-5 bg-gray-900 text-white">
     <div class="justify-center w-full max-w-[1267px] border border-white p-6">
-        <div class="flex gap-5 max-md:flex-col max-md:gap-0">
-            <div class="flex flex-col w-full max-md:w-full">
-                <div class="flex flex-col items-start my-auto text-base max-md:max-w-full">
-                    <div class="self-stretch text-6xl font-bold max-md:max-w-full max-md:text-4xl">
-                        Let’s Talk
-                    </div>
-                    <div class="self-stretch mt-5 text-xl max-md:max-w-full">
-                    Besoin d'un devis pour votre projet ? Remplissez ce formulaire et nous vous fournirons une estimation gratuite et sans engagement.
-                    </div>
-                    <div class="mt-14 text-3xl font-bold max-md:mt-10">Email</div>
-                    <div class="mt-5"><i class="fas fa-envelope"></i> info@nawfelajari.be</div>
-                    <div class="mt-14 text-3xl font-bold max-md:mt-10">Réseaux sociaux</div>
-                    <div class="flex items-center mb-2">
-    <img loading="lazy"
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&"
-        class="aspect-square w-[50px] mt-2 bg-teal-300 rounded-full" />
-    <a href="https://www.instagram.com/natechforge/" class="ml-2 hover:text-teal-300 transition duration-150">Instagram</a>
-</div>
-<div class="flex items-center">
-    <img loading="lazy"
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&"
-        class="aspect-square w-[50px] bg-teal-300 rounded-full" />
-    <a href="https://twitter.com/AjariNawfel" class="ml-2 hover:text-teal-300 transition duration-150">Twitter</a>
-</div>
-<div class="flex items-center">
-    <img loading="lazy"
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&"
-        class="aspect-square w-[50px] mt-2 bg-teal-300 rounded-full" />
-    <a href="https://be.linkedin.com/in/nawfel-ajari" class="ml-2 hover:text-teal-300 transition duration-150">LinkedIn</a>
-</div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        @foreach ($posts as $post)
+            <div class="bg-white overflow-hidden shadow-md rounded-lg">
+                @if ($post->photo)
+                    <img class="w-full h-64 object-cover object-center" src="{{ asset('storage/' . $post->photo) }}" alt="Post Image">
+                @endif
+                <div class="px-6 py-4">
+                    <div class="font-bold text-xl mb-2 text-black">{{ $post->title }}</div>
+                    <p class="text-gray-500 text-base">{{ $post->description }}</p>
+                </div>
+                <div class="px-6 py-4">
+                    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">#{{ $post->subject }}</span>
+                    <a href="{{ route('posts.show', $post->id) }}" class="inline-block bg-teal-300 rounded-full px-3 py-1 text-sm font-semibold text-white hover:bg-teal-400">Voir détails</a>
                 </div>
             </div>
-            <div class="flex flex-col ml-5 w-full max-md:w-full">
-            <form action="{{ route('send-email') }}" method="post" class="flex flex-col text-sm text-white max-md:max-w-full">
-    @csrf
-        <div class="max-md:max-w-full">Nom complet</div>
-        <input type="text" name="name" class="mt-4 bg-neutral-100 h-[46px] max-md:max-w-full text-gray-900" required placeholder="Stijn Mertens"/>
-        <div class="mt-7 max-md:max-w-full">Email</div>
-        <input type="email" name="email" class="mt-4 bg-neutral-100 h-[46px] max-md:max-w-full text-gray-900" required placeholder="stijnmertens@hotmail.com" />
-        <div class="mt-7 max-md:max-w-full">
-            Quel type de demande ?
-        </div>
-        <!-- Ajoutez votre code pour la sélection du service -->
-        <select name="service" class="mt-4 bg-neutral-100 h-[46px] max-md:max-w-full text-gray-900" required>
-            <option value="service1">Développement web</option>
-            <option value="service2">Développement mobile</option>
-            <option value="service3">Développement software</option>
-            <option value="service4">Montage vidéo</option>
-            <option value="service5">Graphisme</option>
-            <option value="service6">Photographie</option>
-        </select>
-        <div class="mt-7 max-md:max-w-full">Estimation budget</div>
-        <!-- Ajoutez votre code pour la sélection du budget -->
-        <input type="number" name="budget" class="mt-4 bg-neutral-100 h-[46px] max-md:max-w-full text-gray-900" required placeholder="600€" />
-        <div class="mt-7 max-md:max-w-full">Message</div>
-        <textarea name="message" class="mt-4 bg-neutral-100 h-[165px] max-md:max-w-full text-gray-900" required placeholder="Hello..."></textarea>
-        <button type="submit" class="justify-center self-start px-7 py-5 mt-8 text-base leading-6 text-teal-300 uppercase whitespace-nowrap border-2 border-teal-300 border-solid rounded-[29.5px] max-md:px-5 max-md:mt-10 hover:bg-teal-300 hover:text-white transition-colors duration-300">
-        Envoyer
-    </button>
-            </form>
-                </div>
-            </div>
-        </div>
+        @endforeach
     </div>
 </div>
 
+    </div>
+</div>
+</div>
 
 
         <footer class="bg-gray-100 py-12">

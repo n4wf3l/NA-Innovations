@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="//unpkg.com/alpinejs" defer></script>
     <!-- Styles -->
     <style>
@@ -44,12 +45,32 @@
     object-fit: cover;
 }
 
+html {
+            scroll-behavior: smooth;
+        }
+        /* Ajoutez ici vos styles supplémentaires */
+
+        #scrollToTop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #000;
+            color: #fff;
+            padding: 10px;
+            border-radius: 50%;
+            display: none; /* Caché au début */
+            cursor: pointer;
+        }
+        #scrollToTop.show {
+            display: block; /* Affiché lorsque l'utilisateur fait défiler */
+        }
 
     </style>
     @vite('resources/css/app.css')
 </head>
 
 <body>
+<a href="#" id="scrollToTop"><i class="fas fa-arrow-up"></i></a>
     <div id="app">
         <!-- Header avec le logo et le menu hamburger (qui remplace les nav links sur les petits écrans) -->
         <div class="flex flex-col py-12 bg-gray-900">
@@ -100,7 +121,7 @@
                         <a href="{{ route('about') }}" class="text-teal-300 hover:text-teal-300 transition duration-500">À propos</a>
                     </div>
                     <div>
-                        <a href="" class="hover:text-teal-300 transition duration-500">Nouveautés</a>
+                        <a href="{{ route('posts.index') }}" class="hover:text-teal-300 transition duration-500">Nouveautés</a>
                     </div>
                     <div>
                         <a href="{{ route('contact') }}" class="hover:text-teal-300 transition duration-500">Contact</a>
@@ -314,6 +335,23 @@ Ma société s'est vue renforcée par des collaborations avec de véritables pro
                 }
             });
         });
+
+        window.addEventListener('scroll', function() {
+        var scrollToTop = document.getElementById('scrollToTop');
+        if (window.scrollY > 100) { // Afficher la flèche lorsque l'utilisateur a fait défiler plus de 100px
+            scrollToTop.classList.add('show');
+        } else {
+            scrollToTop.classList.remove('show');
+        }
+    });
+    // Fonction pour remonter en haut de la page lorsque la flèche est cliquée
+    document.getElementById('scrollToTop').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
     </script>
 </body>
 

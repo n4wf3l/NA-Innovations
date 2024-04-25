@@ -96,7 +96,7 @@
                         <a href="{{ route('about') }}" class="hover:text-teal-300 transition duration-500">À propos</a>
                     </div>
                     <div>
-                        <a href="" class="hover:text-teal-300 transition duration-500">Nouveautés</a>
+                        <a href="{{ route('posts.index') }}" class="hover:text-teal-300 transition duration-500">Nouveautés</a>
                     </div>
                     <div>
                         <a href="{{ route('contact') }}" class="hover:text-teal-300 transition duration-500">Contact</a>
@@ -165,7 +165,7 @@
                         </div>
                     </div>
                         <div class="mx-auto mt-14 max-w-full h-[474px] w-[530px] max-md:mt-10">
-                            <img src="/justlogo.png" alt="">
+                            <img src="/logonai.png" alt="">
                         </div>
 
                 </div>
@@ -281,10 +281,13 @@
                 <div
                     class="flex flex-col p-2 transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
                     <img src="{{ Storage::url($projet->image) }}" alt="Project Image"
-                        class="w-full h-48 object-cover rounded-t-3xl">
+                    class="w-full h-80 object-cover rounded-t-3xl">
                         
-                    <div class="p-2">
+                        <div>
+                    <div class="p-2 flex flex-row">
+                    <img src="/seo-and-web.png" width="20px"class="self-center icons mr-2" alt="team icon" />
                         <h4 class="text-lg font-semibold">{{ $projet->nom_societe }}</h4>
+    </div>
                         <div class="flex flex-row items-end">
                               <!-- Bouton Supprimer -->
                     @auth
@@ -299,15 +302,17 @@
     </form>
     @endauth
                             <div class="flex flex-col mr-4">
-                                <h5 class="text-4xl font-bold">
+                                <h5 class="text-4xl font-bold ml-4">
                                     {{ $projet->type_societe }}
                                 </h5>
                             </div>
                             <div class="flex flex-col">
-                                <span class="text-sm text-gray-500">
+                                <span class="text-sm text-gray-500 flex flex-row">
+                                <img src="/page.png" width="20px"class="self-center icons mr-2" alt="team icon" />
                                     {{ $projet->type_site }}
                                 </span>
-                                <span class="text-sm text-gray-500">
+                                <span class="text-sm text-gray-500 flex flex-row">
+                                <img src="/location.png" width="20px"class="self-center icons mr-2" alt="team icon" />
                                     {{ $projet->lieu }}
                                 </span>
                             </div>
@@ -318,11 +323,13 @@
                                 <span>{{ $projet->jours_developpement }} J</span>
                             </div>
                             <div class="flex flex-col">
+                            <img src="/coding.png" width="40px"class="self-center icons" alt="team icon" />
                                 <span>
                                     {{ $projet->langage_programmation }}
                                 </span>
                             </div>
                             <div class="flex flex-col">
+                            <img src="/star.png" width="40px"class="self-center icons" alt="team icon" />
                                 <span>
                                     {{ $projet->etoiles }}
                                 </span>
@@ -363,9 +370,11 @@
                 <div
                     class="flex flex-col p-2 transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
                     <img src="{{ Storage::url($academicProjet->image) }}" alt="Project Image"
-                        class="w-full h-48 object-cover rounded-t-3xl">
-                    <div class="p-2">
+                    class="w-full h-80 object-cover rounded-t-3xl">
+                    <div class="p-2 flex flex-row">
+                    <img src="/seo-and-web.png" width="20px"class="self-center icons mr-2" alt="team icon" />
                         <h4 class="text-lg font-semibold">{{ $academicProjet->nom_societe }}</h4>
+    </div>
                         <div class="flex flex-row items-end">
                              <!-- Bouton Supprimer -->
                              @auth
@@ -380,15 +389,17 @@
         </form>
         @endauth
                             <div class="flex flex-col mr-4">
-                                <h5 class="text-4xl font-bold">
+                                <h5 class="text-4xl font-bold ml-4">
                                     {{ $academicProjet->type_societe }}
                                 </h5>
                             </div>
                             <div class="flex flex-col">
-                                <span class="text-sm text-gray-500">
+                                <span class="text-sm text-gray-500 flex flex-row">
+                                <img src="/page.png" width="20px"class="self-center icons mr-2" alt="team icon" />
                                     {{ $academicProjet->type_site }}
                                 </span>
-                                <span class="text-sm text-gray-500">
+                                <span class="text-sm text-gray-500 flex flex-row">
+                                <img src="/location.png" width="20px"class="self-center icons mr-2" alt="team icon" />
                                     {{ $academicProjet->lieu }}
                                 </span>
                             </div>
@@ -399,11 +410,13 @@
                                 <span>{{ $academicProjet->jours_developpement }} J</span>
                             </div>
                             <div class="flex flex-col">
+                            <img src="/coding.png" width="40px"class="self-center icons" alt="team icon" />
                                 <span>
                                     {{ $academicProjet->langage_programmation }}
                                 </span>
                             </div>
                             <div class="flex flex-col">
+                            <img src="/star.png" width="40px"class="self-center icons" alt="team icon" />
                                 <span>
                                     {{ $academicProjet->etoiles }}
                                 </span>
@@ -420,36 +433,34 @@
                     </div>
                 </div>
                 @endforeach
-            </div>
-
+                </div>  
         </section>
 
-        <section class="flex flex-col items-center justify-center">
-        <div class="ml-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center" id="about">
-            Collab's
+        <section class="flex flex-col items-center justify-center bg-gray-900">
+    <h1 class="text-9xl font-semibold text-white md:text-4xl text-center mt-10" id="about">
+        Collab's
+    </h1>
+    <div class="flex flex-wrap justify-center w-full max-w-[1070px] md:flex-col md:max-w-full md:mt-10">
+        <div class="flex flex-col items-center">
+            <a href="https://www.bashir-studios.com/">
+                <img src="logomouise.png" alt="Logo" class="transition-transform transform hover:scale-105" />
+            </a>
+            <p class="text-white">Bashir Studio's</p>
         </div>
-    <div class="flex flex-wrap justify-center gap-5 w-full max-w-[1070px] max-md:flex-col max-md:mt-10 max-md:max-w-full">
-    <div style="display: flex; flex-direction: column; align-items: center;">
-        <a href="https://www.bashir-studios.com/">
-            <img src="logomouise.png" alt="Logo" style="transition: transform 0.3s ease-in-out;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
-        </a>
-        <p>Bashir Studio's</p>
     </div>
-</div>
-    <div class="mt-28 text-xl whitespace-nowrap text-neutral-400 max-md:mt-10">
+    <div class="mt-28 text-xl whitespace-nowrap text-neutral-400 md:mt-10">
         Envie de commencer un projet?
     </div>
-    <div class="mt-14 text-9xl font-semibold text-black max-md:mt-10 max-md:max-w-full max-md:text-4xl">
+    <div class="mt-14 text-9xl font-semibold text-neutral-400 md:max-w-full md:text-4xl">
         Discutons-en!
     </div>
-    <a href="{{ route('contact') }}" class="px-10 py-5 mt-20 text-base leading-6 text-white bg-gray-600 hover:bg-teal-500 uppercase rounded-[29.5px] border-none focus:outline-none max-md:px-5 max-md:mt-10">
+    <a href="{{ route('contact') }}" class="px-10 py-5 mt-20 text-base leading-6 text-teal-300 hover:bg-teal-300 hover:text-white transition-colors duration-300 uppercase rounded-[29.5px] focus:outline-none md:px-5 md:mt-10 border-2 border-teal-300 border-solid rounded-[29.5px]">
         Contactez-nous
     </a>
-    <div class="text-3xl font-bold text-black mt-5">NA</div>
+    <div class="text-3xl font-bold text-neutral-400 mt-5">NA</div>
     <div class="text-xs font-medium text-neutral-400 mb-5">
         Ingénieur software et développeur fullstack
     </div>
-</div>
 </section>
 
 

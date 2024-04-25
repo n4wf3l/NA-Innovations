@@ -28,7 +28,6 @@
 </head>
 
 <body>
-    <header>
 <div id="app">
         <!-- Header avec le logo et le menu hamburger (qui remplace les nav links sur les petits écrans) -->
         <div class="flex flex-col py-12 bg-gray-900">
@@ -74,7 +73,7 @@
             <a href="{{ route('about') }}" class="hover:text-teal-300">À propos</a>
             </div>
         <div>
-        <a href="" class="hover:text-teal-300">Nouveautés</a>
+        <a href="{{ route('posts.index') }}" class="hover:text-teal-300">Nouveautés</a>
         </div>
     <div>
     <a href="{{ route('contact') }}" class="hover:text-teal-300">Contact</a>
@@ -83,11 +82,10 @@
         <a href="{{ url('/dashboard') }}"  class="text-teal-300 hover:text-teal-300">Dashboard</a>
         </div>
     </div>
-    </header>
-
+    </div>
     <main class="px-4 py-8">
     <section class="container mx-auto">
-        <h1 class="text-3xl font-semibold mb-6">Dashboard</h1>
+        <h1 class="text-3xl font-semibold mb-6 text-white mt-40">Dashboard</h1>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="bg-white rounded-lg p-6 border border-black">
                 <h2 class="text-xl font-semibold mb-4">Ajouter un site publié</h2>
@@ -200,6 +198,38 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </section>
+
+    <section class="container mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
+            <!-- Autres éléments de votre tableau de bord -->
+            <div class="bg-white rounded-lg p-6 border border-black">
+            <h2 class="text-xl font-semibold mb-4">Créer une nouvelle publication</h2>
+                <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-4">
+                        <label for="title" class="block text-sm font-medium text-gray-700">Titre:</label>
+                        <input type="text" name="title" id="title" value="{{ old('title') }}" class="border border-gray-300 p-2 rounded-md w-full">
+                    </div>
+                    <div class="mb-4">
+                        <label for="subject" class="block text-sm font-medium text-gray-700">Sujet:</label>
+                        <input type="text" name="subject" id="subject" value="{{ old('subject') }}" class="border border-gray-300 p-2 rounded-md w-full">
+                    </div>
+                    <div class="mb-4">
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description:</label>
+                        <textarea name="description" id="description" class="border border-gray-300 p-2 rounded-md w-full">{{ old('description') }}</textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="photo" class="block text-sm font-medium text-gray-700">Photo:</label>
+                        <input type="file" name="photo" id="photo" class="border border-gray-300 p-2 rounded-md w-full">
+                    </div>
+                    <div>
+                        <button type="submit" class="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-500">Créer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
         </div>
     </section>
 </main>
