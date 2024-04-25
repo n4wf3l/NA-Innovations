@@ -112,7 +112,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         @foreach ($posts as $post)
-            <div class="bg-white overflow-hidden shadow-md rounded-lg">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg transition-transform transform hover:scale-105 hover:bg-gray-200">
                 @if ($post->photo)
                     <img class="w-full h-64 object-cover object-center" src="{{ asset('storage/' . $post->photo) }}" alt="Post Image">
                 @endif
@@ -122,7 +122,7 @@
                 </div>
                 <div class="px-6 py-4">
                     <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">#{{ $post->subject }}</span>
-                    <a href="{{ route('posts.show', $post->id) }}" class="inline-block bg-teal-300 rounded-full px-3 py-1 text-sm font-semibold text-white hover:bg-teal-400">Voir détails</a>
+                    <a href="{{ route('posts.show', $post->id) }}" class="inline-block bg-gray-900 rounded-full px-3 py-1 text-sm font-semibold text-white hover:bg-teal-300 hover:text-gray-900">Voir détails</a>
                 </div>
             </div>
         @endforeach

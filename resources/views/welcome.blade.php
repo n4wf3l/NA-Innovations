@@ -128,9 +128,9 @@
                         <p class="mt-10 ml-3">Specialized in Football Software and API's</p>
                     </div>
                 </div>
-                <img loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/67ee580b211125b63e48b5b003eee10ff257e9dee311f1fc25d332dd76e09b3f?apiKey=d3784f4c52b7403885832573b3287702&"
-                    class="self-start aspect-[0.61] w-[49px]" />
+                <button id="background-toggle-button" class="toggle-button">
+    <span id="toggle-icon" class="toggle-icon">🌞</span>
+</button>
             </div>
 
             <div class="flex gap-2.5 items-start self-center px-5 mt-44 max-w-full w-[350px] max-md:mt-10">
@@ -583,6 +583,43 @@ window.addEventListener('scroll', function() {
             behavior: 'smooth'
         });
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    // Sélectionnez le bouton et l'élément dont vous souhaitez changer la couleur de fond
+    const button = document.getElementById('background-toggle-button');
+    const targetElement = document.querySelector('.flex-1');
+
+    // Récupérez la couleur de fond initiale du premier div
+    const initialColor = window.getComputedStyle(targetElement.parentNode).backgroundColor;
+
+    // Ajoutez un gestionnaire d'événements pour le clic sur le bouton
+    button.addEventListener('click', function() {
+        // Récupérez la couleur de fond actuelle du premier div
+        const currentColor = window.getComputedStyle(targetElement.parentNode).backgroundColor;
+
+        // Définissez les couleurs possibles
+        const colors = [
+            { name: 'yellow', rgb: 'rgb(255, 255, 0)' },
+            { name: 'red', rgb: 'rgb(255, 0, 0)' },
+            { name: 'gray', rgb: initialColor }
+        ];
+
+        // Trouvez l'objet couleur correspondant à la couleur actuelle
+        const currentColorObj = colors.find(color => color.rgb === currentColor);
+
+        // Calculez l'index de la prochaine couleur dans le tableau
+        const nextIndex = (colors.indexOf(currentColorObj) + 1) % colors.length;
+
+        // Changez la couleur de fond du premier div en fonction de l'index de la prochaine couleur
+        targetElement.parentNode.style.backgroundColor = colors[nextIndex].rgb;
+
+        // Changez l'icône du bouton en conséquence
+        const toggleIcon = document.getElementById('toggle-icon');
+        toggleIcon.textContent = colors[nextIndex].name === 'red' ? '🌞' : '🌙';
+    });
+});
+
+
     </script>
 </body>
 
