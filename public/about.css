@@ -54,3 +54,13 @@ html {
     font-weight: 400;
     font-style: normal;
 }
+
+@media (max-width: 768px) {
+    #navLinks {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: #1a202c;
+        z-index: 1000;
+    }
+}

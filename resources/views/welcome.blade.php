@@ -26,17 +26,18 @@
 <a href="#" id="scrollToTop"><i class="fas fa-arrow-up"></i></a>
     <div id="app">
 <div class="flex flex-col py-12 bg-gray-900">
+    <!-- Logo NA with icone to Logout if Connected -->
     <div class="flex justify-between items-center self-center w-full max-w-[1298px] px-4 relative">
                 <div class="text-3xl font-bold text-white">NA
                     @auth 
                     <span id="logoutMenuBtn" class="ml-2 text-teal-300 cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block transform rotate-90"
-                                viewBox="0 0 20 20" fill="currentColor"> <!-- Ajoute une icône de flèche déroulante -->
+                                viewBox="0 0 20 20" fill="currentColor"> 
                                 <path fill-rule="evenodd"
                                     d="M10 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1.447-.895l8 6a1 1 0 0 1 0 1.79l-8 6A1 1 0 0 1 10 18z"></path>
                             </svg>
                             <div id="logoutMenu"
-                                class="absolute mt-2 bg-gray-900 border border-gray-300 rounded-md shadow-md hidden"> <!-- Utilisez top-full pour positionner le menu en dessous de la flèche déroulante -->
+                                class="absolute mt-2 bg-gray-900 border border-gray-300 rounded-md shadow-md hidden">
                                 <a href="{{ route('logout') }}"
                                     class="block px-4 py-2 text-sm text-white hover:bg-red-800 hover:text-white transition duration-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> <!-- Lien de déconnexion -->
                                     {{ __('Log Out') }}
@@ -264,11 +265,11 @@
 
 
 <section class="py-16 text-black bg-gray-100">
-    <div class="ml-8 text-5xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" id="projects">
-        Nos projets
-    </div>
+<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" id="about">
+    Nos projets
+</div>
     <hr class="mt-8">
-    <h1 class="text-3xl font-semibold text-center mt-12 p-2 bebas-neue-regular" style="letter-spacing: 2px">Sites web publiés</h1>
+    <h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular" style="letter-spacing: 2px">Sites web publiés</h1>
     <h3 class="mt-4 text-base text-center lg:px-20 bebas-neue-regular" style="letter-spacing: 0px">
         Découvrez ci-dessous divers types de sites web que j'ai développés. La liste n'inclut pas les sites
         portfolios conçus pour des profils individuels. Vous trouverez également des informations sur le temps
@@ -348,7 +349,7 @@
 
 
 <section class="py-16 text-black bg-teal-100" style="background-image: url('codingpicture.jpg'); background-size:cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;">
-    <h1 class="text-3xl font-semibold text-center bebas-neue-regular text-white" style="letter-spacing: 2px">Projets à but non-lucratif</h1>
+    <h1 class="text-2xl font-semibold text-center bebas-neue-regular text-white" style="letter-spacing: 2px">Projets à but non-lucratif</h1>
     <h3 class="mt-4 text-base text-center lg:px-20 bebas-neue-regular text-white" style="letter-spacing: 0px">
         Découvrez mes contributions à des projets à but non lucratif, où innovation et collaboration se
         rencontrent
