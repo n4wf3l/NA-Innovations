@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>MyBlog - NA</title>
+    <title>MyBlog — NA</title>
     <link rel="icon" href="{{ asset('logonai.png') }}" type="image/x-icon" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -53,35 +53,41 @@
                     </svg>
                 </button>
                 <div id="navLinks" class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap bebas-neue-regular" style="letter-spacing: 2px"><div>
-                <a href="{{ url('/') }}"  class="hover:text-teal-300">Accueil</a>
+                <a href="{{ url('/') }}"  class="hover:text-teal-300">Home</a>
             </div>
 
             <div>
     <a href="{{ url('/') }}#about" class="hover:text-teal-300">Services</a>
 </div>
-            <div>
-                <a href="{{ url('/') }}#projects" class="hover:text-teal-300">Projets</a>
-            </div>
-            <div>
-            <a href="{{ route('about') }}" class="hover:text-teal-300">À propos</a>
-            </div>
-        <div>
-        <a href="{{ route('posts.index') }}" class="text-teal-300 hover:text-teal-300 transition duration-500">Nouveautés</a>
-        </div>
-    <div>
+
+<div>
+    <a href="{{ url('/') }}#projects" class="hover:text-teal-300">Projects</a>
+</div>
+
+<div>
+    <a href="{{ route('about') }}" class="hover:text-teal-300">About</a>
+</div>
+
+<div>
+    <a href="{{ route('posts.index') }}" class="text-teal-300 hover:text-teal-300 transition duration-500">News</a>
+</div>
+
+<div>
     <a href="{{ route('contact') }}" class="hover:text-teal-300">Contact</a>
-        </div>            @auth
-        <div>
-        | <a href="{{ url('/dashboard') }}"  class="hover:text-teal-300">Dashboard</a>
-        </div>
-        @endauth
+</div>
+
+@auth
+<div>
+    | <a href="{{ url('/dashboard') }}"  class="hover:text-teal-300">Dashboard</a>
+</div>
+@endauth
     </div>
     </div>
 
     <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full w-full max-w-[1012px] mx-auto">
                 <div class="flex flex-col flex-1 px-5 max-md:max-w-full">
                     <div class="text-center mb-10 mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
-                        MyBLOG
+                        News
                     </div>
                  <div class="hidden mt-10 md:flex flex-wrap gap-5 justify-between self-center mb-20 max-w-[1070px]">
         <img loading="lazy"
@@ -102,39 +108,38 @@
             </div>
         </div>
 
-    <div class="flex flex-col items-center px-16 py-12 max-md:px-5 bg-gray-900 text-white">
+        <div class="flex flex-col items-center px-16 py-12 max-md:px-5 bg-gray-900 text-white">
     <div class="justify-center w-full max-w-[1267px] border border-white p-6">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        @foreach ($posts as $post)
-            <div class="bg-white overflow-hidden shadow-md rounded-lg transition-transform transform hover:scale-105 hover:bg-gray-200">
-                @if ($post->photo)
-                    <img class="w-full h-64 object-cover object-center" src="{{ asset('storage/' . $post->photo) }}" alt="Post Image">
-                @endif
-                <div class="px-6 py-4">
-                    <div class="font-bold text-xl mb-2 text-black">{{ $post->title }}</div>
-                    <p class="text-gray-500 text-base">{{ Illuminate\Support\Str::limit($post->description, 100) }}</p>
-                </div>
-                <div class="px-6 py-4">
-                    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">#{{ $post->subject }}</span>
-                    <a href="{{ route('posts.show', $post->id) }}" class="inline-block bg-gray-900 rounded-full px-3 py-1 text-sm font-semibold text-white hover:bg-teal-300 hover:text-gray-900">Voir détails</a>
-                </div>
-                @auth <!-- Vérifiez si l'utilisateur est connecté -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @foreach ($posts as $post)
+                    <div class="bg-white overflow-hidden shadow-md rounded-lg transition-transform transform hover:scale-105 hover:bg-gray-200">
+                        @if ($post->photo)
+                            <img class="w-full h-64 object-cover object-center" src="{{ asset('storage/' . $post->photo) }}" alt="Post Image">
+                        @endif
+                        <div class="px-6 py-4">
+                            <div class="font-bold text-xl mb-2 text-black">{{ $post->title }}</div>
+                            <p class="text-gray-500 text-base">{{ Illuminate\Support\Str::limit($post->description, 100) }}</p>
+                        </div>
+                        <div class="px-6 py-4">
+                            <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">#{{ $post->subject }}</span>
+                            <a href="{{ route('posts.show', $post->id) }}" class="inline-block bg-gray-900 rounded-full px-3 py-1 text-sm font-semibold text-white hover:bg-teal-300 hover:text-gray-900">See Details</a>
+                        </div>
+                        @auth <!-- Check if the user is authenticated -->
                             <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="absolute top-2 right-2">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">Supprimer</button>
+                                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">Delete</button>
                             </form>
                         @endauth
+                    </div>
+                @endforeach
             </div>
-        @endforeach
-    </div>
-</div>
+        </div>
 
     </div>
 </div>
 </div>
-
 
 
 <footer class="bg-gray-100 py-12">
@@ -142,8 +147,8 @@
         <div class="border-t border-gray-300"></div>
         <div class="flex flex-col md:flex-row justify-between items-center mt-8 md:items-start md:text-left">
             <div class="w-full md:w-2/3 lg:w-1/3 mb-8 md:mb-0 text-center md:text-left">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">À propos de NA</h2>
-                <p class="text-sm text-gray-600">NA est un ingénieur software et développeur fullstack diplômé en Belgique. </p>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">About NA</h2>
+                <p class="text-sm text-gray-600">NA is a software engineer and fullstack developer graduated in Belgium.</p>
                 <div class="flex items-center mt-6 justify-center md:justify-start">
                     <a href="https://www.instagram.com/natechforge/" target="_blank" rel="noopener noreferrer">
                         <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
@@ -165,7 +170,6 @@
                 <div class="text-sm text-gray-600">
                     <p class="mb-2">170 Nijverheidskaai, Anderlecht</p>
                     <p class="mb-2">info@nawfelajari.be</p>
-                    <p>+977-9876543210</p>
                 </div>
             </div>
         </div>

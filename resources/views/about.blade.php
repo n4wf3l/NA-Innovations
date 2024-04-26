@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>À propos - NA</title>
+    <title>About — NA</title>
     <link rel="icon" href="{{ asset('logonai.png') }}" type="image/x-icon" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -56,38 +56,38 @@
                 </button>
  
                 <div id="navLinks"
-                    class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap bebas-neue-regular" style="letter-spacing: 2px">
-                    <div>
-                        <a href="/" class="hover:text-teal-300 transition duration-500">Accueil</a>
-                    </div>
-                    <div>
-                        <a href="{{ url('/') }}#about" class="hover:text-teal-300 transition duration-500">Services</a>
-                    </div>
-                    <div>
-                        <a href="{{ url('/') }}#projects" class="hover:text-teal-300 transition duration-500">Projets</a>
-                    </div>
-                    <div>
-                        <a href="{{ route('about') }}" class="text-teal-300 hover:text-teal-300 transition duration-500">À propos</a>
-                    </div>
-                    <div>
-                        <a href="{{ route('posts.index') }}" class="hover:text-teal-300 transition duration-500">Nouveautés</a>
-                    </div>
-                    <div>
-                        <a href="{{ route('contact') }}" class="hover:text-teal-300 transition duration-500">Contact</a>
-                    </div>
-                    @auth
-                    <div>
-                    | <a href="{{ url('/dashboard') }}"
-                            class="hover:text-teal-300">Dashboard</a>
-                    </div>
-                    @endauth
-                </div>
-            </div>
+    class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap bebas-neue-regular"
+    style="letter-spacing: 2px">
+    <div>
+        <a href="/" class="hover:text-teal-300 transition duration-500">Home</a>
+    </div>
+    <div>
+        <a href="{{ url('/') }}#about" class="hover:text-teal-300 transition duration-500">Services</a>
+    </div>
+    <div>
+        <a href="{{ url('/') }}#projects" class="hover:text-teal-300 transition duration-500">Projects</a>
+    </div>
+    <div>
+        <a href="{{ route('about') }}" class="text-teal-300 hover:text-teal-300 transition duration-500">About</a>
+    </div>
+    <div>
+        <a href="{{ route('posts.index') }}" class="hover:text-teal-300 transition duration-500">News</a>
+    </div>
+    <div>
+        <a href="{{ route('contact') }}" class="hover:text-teal-300 transition duration-500">Contact</a>
+    </div>
+    @auth
+    <div>
+        | <a href="{{ url('/dashboard') }}" class="hover:text-teal-300">Dashboard</a>
+    </div>
+    @endauth
+</div>
+</div>
 
             <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full w-full max-w-[1012px] mx-auto">
                 <div class="flex flex-col flex-1 px-5 max-md:max-w-full">
                     <div class="text-center mb-10 mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
-                        À propos de moi
+                        ABOUT ME
                     </div>
                  <div class="hidden mt-10 md:flex flex-wrap gap-5 justify-between self-center mb-20 max-w-[1070px]">
         <img loading="lazy"
@@ -110,105 +110,117 @@
 
         <section class="px-8 py-12 bg-gray-100">
     <div class="max-w-4xl mx-auto">
-<h2 class="text-3xl font-bold mb-6 text-center">Qui suis-je ?</h2>
+    <h2 class="text-3xl font-bold mb-6 text-center">Who am I?</h2>
 <p class="text-lg mb-6 text-center">
-    Bonjour, je m'appelle Nawfel Ajari et je suis un ingénieur en informatique passionné par la création d'expériences en ligne captivantes et fonctionnelles. En fusionnant créativité et compétences techniques solides, je m'efforce de donner vie à des concepts numériques innovants. Mon objectif est de créer des sites web et des applications mobiles qui attirent non seulement visuellement mais offrent également des performances optimales et une convivialité exceptionnelle.
+    Hello, my name is Nawfel Ajari and I am a computer engineer passionate about creating captivating and functional online experiences. By merging creativity with solid technical skills, I strive to bring innovative digital concepts to life. My goal is to create websites and mobile applications that not only attract visually but also offer optimal performance and exceptional user-friendliness.
 </p>
 <p class="text-lg mb-6 text-center">
-En 2023, j'ai franchi une nouvelle étape en me lançant dans l'entrepreneuriat en proposant mes propres services. C'est ainsi que <em>NA Innovations</em> a vu le jour, une initiative visant à offrir des solutions numériques innovantes et à répondre aux besoins variés de nos clients.
+    In 2023, I took a new step forward by venturing into entrepreneurship and offering my own services. This is how <em>NA Innovations</em> was born, an initiative aimed at providing innovative digital solutions and meeting the diverse needs of our clients. With NA, every pixel becomes a promise of the future.
 </p>
 <p class="text-lg mb-6 text-center">
-Un an plus tard, j'ai diversifié mon activité en me lançant également dans les montages vidéos, notamment des reportages et des interviews avec des footballeurs professionnels, ainsi que dans la photographie, principalement pour couvrir des événements sportifs.
+    A year later, I diversified my activities by also venturing into video editing, particularly with documentaries and interviews with professional footballers, as well as photography, mainly covering sporting events.
 </p>
 <p class="text-lg mb-6 text-center">
-Ma société s'est vue renforcée par des collaborations avec de véritables professionnels du montage vidéo et du graphisme, des services qui font désormais partie intégrante de nos offres.
+    My company has been strengthened by collaborations with true professionals in video editing and graphic design, services that are now an integral part of our offerings.
 </p>
-        <h2 class="text-3xl font-bold mb-6 text-center">Compétences</h2>
+
+<!-- Logos -->
+<div class="flex justify-center items-center mb-10">
+        <div class="flex flex-col items-center mr-10">
+            <img src="justlogo.png" alt="Logo 2023" class="h-24 mb-2">
+            <p class="text-sm text-center">2023 - 2024</p>
+        </div>
+        <div class="flex flex-col items-center">
+            <img src="logonai.png" alt="Logo 2024" class="h-24 mb-2">
+            <p class="text-sm text-center">Since 2024</p>
+        </div>
+    </div>
+
+    <h2 class="text-3xl font-bold mb-6 text-center">Skills</h2>
 
 <p class="text-lg mb-6">
-    En tant que développeur passionné, j'ai acquis une solide expertise technique et une capacité avérée à créer des solutions logicielles efficaces. Voici un aperçu de mes compétences techniques :
+    As a passionate developer, I have acquired strong technical expertise and a proven ability to create effective software solutions. Here is an overview of my technical skills:
 </p>
 
 <ul class="list-disc pl-6 mb-6">
     <li class="text-lg mb-4">
-        👨🏽‍💻 Portefeuille diversifié sur GitHub : Mon engagement envers la résolution de problèmes complexes et le travail d'équipe se reflète dans mes nombreux projets disponibles sur GitHub. Chacun de ces projets démontre ma capacité à développer des solutions logicielles efficaces et innovantes.
+        👨🏽‍💻 Diverse Portfolio on GitHub: My commitment to solving complex problems and teamwork is reflected in my numerous projects available on GitHub. Each of these projects demonstrates my ability to develop efficient and innovative software solutions.
     </li>
     <li class="text-lg mb-4">
-        📚 Bases solides et ambition de croissance : Diplômé en programmation de l'Erasmushogeschool Brussel, j'ai acquis une base solide dans les principes fondamentaux du développement logiciel. Actuellement, je me spécialise en ingénierie logicielle, avec une expertise particulière en Laravel 10 PHP, pour approfondir mes compétences et ma compréhension des systèmes logiciels.
+        📚 Strong Foundation and Growth Ambition: Graduated in programming from Erasmushogeschool Brussel, I have acquired a solid foundation in the fundamental principles of software development. Currently, I specialize in software engineering, with particular expertise in Laravel 10 PHP, to deepen my skills and understanding of software systems.
     </li>
     <li class="text-lg mb-4">
-        💻 Compétences techniques : Je suis compétent dans une variété de langages de programmation, notamment JavaScript (React, Node.js), C#, et Java pour Android. De plus, je suis à l'aise avec les frameworks modernes qui me permettent de développer des applications web et mobiles robustes et évolutives.
+        💻 Technical Skills: I am proficient in a variety of programming languages, including JavaScript (React, Node.js), C#, and Java for Android. Additionally, I am comfortable with modern frameworks that allow me to develop robust and scalable web and mobile applications.
     </li>
     <li class="text-lg mb-4">
-        🌐 Maîtrise des langues et adaptabilité : En plus de mes compétences techniques, je suis également fluent en anglais, néerlandais et français, ce qui me permet de m'adapter et de collaborer efficacement dans des environnements multiculturels.
+        🌐 Language Mastery and Adaptability: In addition to my technical skills, I am also fluent in English, Dutch, and French, enabling me to adapt and collaborate effectively in multicultural environments.
     </li>
 </ul>
-
     </div>
 </section>
 
       <section class="px-8 py-12 text-white">
         <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-bold mb-6 text-center">Spécialisation</h2>
+        <h2 class="text-3xl font-bold mb-6 text-center">Specialization</h2>
 
         <p class="text-lg mb-6 text-right">
-        Ma spécialisation se concentre sur tous les aspects liés aux systèmes sportifs, avec une emphase particulière sur le football. Mon expertise s'étend à la création de diverses plateformes, telles que des sites de rédaction sportive, des portails pour les clubs de football ou de futsal, ainsi que des systèmes d'administration destinés à ces clubs. 
-        </p>
+        My specialization focuses on all aspects related to sports systems, with a particular emphasis on football. My expertise extends to the creation of various platforms, such as sports writing websites, portals for football or futsal clubs, as well as administration systems for these clubs.
+    </p>
 
-        <p class="text-lg mb-6">
-        Je suis capable de concevoir des fonctionnalités avancées, telles que les onze types de la semaine, en utilisant des données provenant d'API spécialisées dans le domaine du football. Ces fonctionnalités visent à offrir une expérience immersive et interactive aux utilisateurs, tout en répondant aux besoins spécifiques des clubs et des fans.
-        </p>
+    <p class="text-lg mb-6">
+        I am capable of designing advanced features, such as the team of the week, using data from APIs specialized in the field of football. These features aim to provide an immersive and interactive experience to users, while meeting the specific needs of clubs and fans.
+    </p>
 
-        <p class="text-lg mb-6 text-right">
-        La plupart de mes projets académiques réalisés à l'Erasmushogeschool ont été développés en collaboration avec la Fédération belge de football. Certains de ces projets sont disponibles sur mon profil GitHub, offrant ainsi un aperçu de mon travail et de mes compétences dans ce domaine passionnant.
-        </p>
+    <p class="text-lg mb-6 text-right">
+        Most of my academic projects completed at Erasmushogeschool were developed in collaboration with the Belgian Football Federation. Some of these projects are available on my GitHub profile, providing an insight into my work and skills in this exciting field.
+    </p>
 
-        <div class="flex justify-center mt-20 mb-20">
-            <div class="videoContainer">
-                <iframe allowfullscreen="allowfullscreen" class="mainVideo" controls="controls"
-                    src="https://www.youtube.com/embed/AHnA9_U4K5o"></iframe>
-                <img class="dotsImg image-block"
-                    src="https://workik-widget-assets.s3.amazonaws.com/widget-assets/images/cw3.svg">
-            </div>
+    <div class="flex justify-center mt-20 mb-20">
+        <div class="videoContainer">
+            <iframe allowfullscreen="allowfullscreen" class="mainVideo" controls="controls"
+                src="https://www.youtube.com/embed/AHnA9_U4K5o"></iframe>
+            <img class="dotsImg image-block"
+                src="https://workik-widget-assets.s3.amazonaws.com/widget-assets/images/cw3.svg">
         </div>
     </div>
+</div>
 </section>
 </div>
 
 <section class="px-8 py-12 bg-gray-100">
     <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-bold mb-6 text-center">Ma vision</h2>
+        <h2 class="text-3xl font-bold mb-6 text-center">My vision</h2>
 
-        <p class="text-lg mb-6 text-center">En tant qu'ingénieur en informatique, ma passion réside dans la création d'expériences numériques innovantes et hautement fonctionnelles. Je m'efforce de marier la créativité avec une expertise technique solide pour façonner des solutions logicielles qui transcendent les attentes.
-        </p>
+        <p class="text-lg mb-6 text-center">As a computer engineer, my passion lies in creating innovative and highly functional digital experiences. I strive to blend creativity with solid technical expertise to shape software solutions that surpass expectations.
+    </p>
 
-        <p class="text-lg mb-6 text-center">Mon objectif premier est de concevoir des sites web et des applications mobiles qui allient esthétique, performance et convivialité. Je m'engage à comprendre pleinement les besoins de mes clients afin de traduire leur vision en solutions concrètes et innovantes.
-        </p>
+    <p class="text-lg mb-6 text-center">My primary goal is to design websites and mobile applications that combine aesthetics, performance, and user-friendliness. I am committed to fully understanding the needs of my clients in order to translate their vision into tangible and innovative solutions.
+    </p>
 
-        <p class="text-lg mb-6 text-center">
-        Fort d'une spécialisation dans les systèmes sportifs, en particulier le football, je cherche à redéfinir la manière dont les clubs interagissent avec leurs fans et gèrent leurs opérations. Je développe des fonctionnalités avancées et des expériences immersives pour renforcer l'engagement des utilisateurs.
-        </p>
-        <p class="text-lg mb-6 text-center">
-        En parallèle, je suis constamment en quête d'apprentissage et d'amélioration, explorant de nouvelles technologies et élargissant mes compétences pour rester à la pointe de l'innovation. Mon objectif ultime est de fournir des solutions de classe mondiale qui transforment réellement le paysage numérique.
-        </p>
-        <h2 class="text-3xl font-bold mb-6 text-center">Unique</h2>
+    <p class="text-lg mb-6 text-center">
+    With a specialization in sports systems, particularly football, I seek to redefine how clubs interact with their fans and manage their operations. I develop advanced features and immersive experiences to enhance user engagement.
+    </p>
+    <p class="text-lg mb-6 text-center">
+    Additionally, I am constantly seeking learning and improvement, exploring new technologies and expanding my skills to remain at the forefront of innovation. My ultimate goal is to deliver world-class solutions that truly transform the digital landscape.
+    </p>
+    <h2 class="text-3xl font-bold mb-6 text-center">Distinctive</h2>
 
-<p class="text-lg mb-6">
-    En tant qu'ingénieur en informatique, je me distingue par ma polyvalence exceptionnelle. Doté de compétences techniques étendues, je suis à l'aise dans le développement de logiciels, le montage graphique et la photographie. Cette capacité à jongler entre plusieurs domaines me permet d'offrir des solutions complètes et intégrées à mes clients. De plus, ma maîtrise des langues française, néerlandaise et anglaise me permet de communiquer efficacement avec une clientèle diversifiée, renforçant ainsi ma portée et ma capacité à livrer des projets de qualité à l'échelle internationale. 🌐
-</p>
+    <p class="text-lg mb-6">
+    As a computer engineer, I stand out for my exceptional versatility. With extensive technical skills, I am proficient in software development, graphic editing, and photography. This ability to juggle multiple domains allows me to offer comprehensive and integrated solutions to my clients. Moreover, my fluency in French, Dutch, and English enables me to effectively communicate with a diverse clientele, enhancing my reach and ability to deliver quality projects internationally. 🌐
+    </p>
 
-<p class="text-lg mb-6">
-    En Belgique, je suis le seul professionnel à proposer des services spécialisés dans le domaine du football. Fort de mon partenariat avec la Fédération belge de football et mes projets académiques réalisés en collaboration avec des clubs renommés, j'ai acquis une connaissance approfondie de l'écosystème footballistique belge. Cette expertise unique me permet de concevoir des solutions sur mesure qui répondent aux besoins spécifiques des clubs, des fans et des organisations sportives, tout en restant à la pointe des dernières tendances et technologies. ⚽
-</p>
+    <p class="text-lg mb-6">
+    In Belgium, I am the only professional offering specialized services in the field of football. Leveraging my partnership with the Belgian Football Federation and my academic projects carried out in collaboration with renowned clubs, I have gained a deep understanding of the Belgian football ecosystem. This unique expertise allows me to design tailor-made solutions that meet the specific needs of clubs, fans, and sports organizations, while staying ahead of the latest trends and technologies. ⚽
+    </p>
 
-<p class="text-lg mb-6">
-    La qualité et le prix sont des éléments essentiels dans tout projet, et je m'efforce d'offrir une combinaison inégalée des deux. En tant que professionnel du secteur, je suis déterminé à fournir des solutions de haute qualité qui surpassent les attentes de mes clients, tout en restant compétitif sur le plan tarifaire. Mon approche axée sur la valeur ajoutée garantit que mes clients bénéficient non seulement de résultats exceptionnels, mais aussi d'un excellent rapport qualité-prix qui optimise leur retour sur investissement. 💼💰
-</p>
+    <p class="text-lg mb-6">
+    Quality and price are essential elements in any project, and I strive to offer an unmatched combination of both. As a industry professional, I am committed to providing high-quality solutions that exceed my clients' expectations while remaining competitive in terms of pricing. My value-added approach ensures that my clients not only benefit from outstanding results but also from excellent value for money that optimizes their return on investment. 💼💰
+    </p>
 
-<p class="text-lg mb-6">
-    Mon engagement envers l'excellence est au cœur de tout ce que je fais. Je m'efforce constamment d'atteindre les plus hauts standards de qualité dans chaque projet que j'entreprends. Que ce soit en développant des solutions logicielles innovantes, en capturant des moments précieux à travers la photographie ou en créant des visuels percutants grâce au montage graphique, je mets un point d'honneur à offrir un travail d'une qualité exceptionnelle à chaque étape du processus. Ma passion pour l'excellence se reflète dans les résultats que je livre à mes clients, faisant de moi un partenaire de confiance pour leurs projets les plus ambitieux. 🏅🚀
-</p>
-    </div>
+    <p class="text-lg mb-6">
+    My commitment to excellence is at the core of everything I do. I constantly strive to achieve the highest standards of quality in every project I undertake. Whether developing innovative software solutions, capturing precious moments through photography, or creating impactful visuals through graphic editing, I pride myself on delivering work of exceptional quality at every stage of the process. My passion for excellence is reflected in the results I deliver to my clients, making me a trusted partner for their most ambitious projects. 🏅🚀
+    </p>
+</div>
 </section>
 
 
@@ -217,8 +229,8 @@ Ma société s'est vue renforcée par des collaborations avec de véritables pro
         <div class="border-t border-gray-300"></div>
         <div class="flex flex-col md:flex-row justify-between items-center mt-8 md:items-start md:text-left">
             <div class="w-full md:w-2/3 lg:w-1/3 mb-8 md:mb-0 text-center md:text-left">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">À propos de NA</h2>
-                <p class="text-sm text-gray-600">NA est un ingénieur software et développeur fullstack diplômé en Belgique. </p>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">About NA</h2>
+                <p class="text-sm text-gray-600">NA is a software engineer and fullstack developer graduated in Belgium.</p>
                 <div class="flex items-center mt-6 justify-center md:justify-start">
                     <a href="https://www.instagram.com/natechforge/" target="_blank" rel="noopener noreferrer">
                         <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
@@ -240,7 +252,6 @@ Ma société s'est vue renforcée par des collaborations avec de véritables pro
                 <div class="text-sm text-gray-600">
                     <p class="mb-2">170 Nijverheidskaai, Anderlecht</p>
                     <p class="mb-2">info@nawfelajari.be</p>
-                    <p>+977-9876543210</p>
                 </div>
             </div>
         </div>

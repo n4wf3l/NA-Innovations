@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function deleteProjet(projetId) {
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) {
+    if (confirm("Are you sure you want to delete this project?")) {
         axios
             .delete(`/projets/${projetId}`)
             .then((response) => {
@@ -37,7 +37,7 @@ function deleteProjet(projetId) {
             })
             .catch((error) => {
                 console.error(
-                    "Une erreur s'est produite lors de la suppression du projet :",
+                    "An error occurred while deleting the project:",
                     error
                 );
             });
@@ -45,7 +45,7 @@ function deleteProjet(projetId) {
 }
 
 function deleteAcademicProjet(academicProjetId) {
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce projet académique ?")) {
+    if (confirm("Are you sure you want to delete this academic project?")) {
         axios
             .delete(`/academic_projets/${academicProjetId}`)
             .then((response) => {
@@ -53,7 +53,7 @@ function deleteAcademicProjet(academicProjetId) {
             })
             .catch((error) => {
                 console.error(
-                    "Une erreur s'est produite lors de la suppression du projet académique :",
+                    "An error occurred while deleting the academic project.",
                     error
                 );
             });
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleIcon.innerHTML = colors[nextIndex].icon;
         if (nextIndex === 1) {
             alert(
-                "Les curieux comme vous sont ceux avec le plus de goûts design"
+                "Who would have thought that by clicking on this button, you would unleash an avalanche of creativity? Welcome to my universe, where every pixel tells a story."
             );
         }
     });
