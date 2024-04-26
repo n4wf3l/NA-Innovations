@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjetController;
 use App\Http\Controllers\ContactController;
@@ -26,6 +26,12 @@ Route::get('/', function () {
     $projets = Projet::all();
     $academicProjects = AcademicProjet::all();
     return view('welcome', compact('projets', 'academicProjects'));
+});
+
+Route::group(['middleware' => 'web'], function () {
+    Route::get('/register', function () {
+        abort(403, 'Access Forbidden');
+    });
 });
 
 Route::get('/dashboard', function () {
