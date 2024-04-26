@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactFormMail;
+use Illuminate\Support\Facades\Session;
+
+
 class ContactController extends Controller
 {
     public function index()
@@ -33,4 +36,5 @@ class ContactController extends Controller
     Mail::to('nawfel.ajari@student.ehb.be')->send(new ContactFormMail($request->all()));
     return redirect()->back()->with('success', 'Votre e-mail a été envoyé avec succès ! Nous vous contacterons bientôt.');
 }
+
 }

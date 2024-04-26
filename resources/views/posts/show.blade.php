@@ -15,11 +15,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <!-- Styles -->
-    <style>
-        @tailwind base;
-        @tailwind components;
-        @tailwind utilities;
-    </style>
+    <link rel="stylesheet" href="{{ asset('/show.css') }}">
     @vite('resources/css/app.css')
 </head>
 
@@ -55,7 +51,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
                 </button>
-                <div id="navLinks" class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap"><div>
+                <div id="navLinks" class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap bebas-neue-regular" style="letter-spacing: 2px"><div>
                 <a href="{{ url('/') }}"  class="hover:text-teal-300">Accueil</a>
             </div>
 
@@ -84,7 +80,7 @@
     <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
                 <div class="flex flex-col flex-1 px-5 max-md:max-w-full">
                     <div class="mt-11 text-9xl font-bold text-center text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
-                        MyBlog
+                    MyBlog : {{ $post->subject }}
                     </div>
         <div
             class="flex gap-5 justify-between self-center px-5 mt-20 w-full max-w-[1070px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full mb-20">
@@ -107,19 +103,26 @@
         </div>
         </div>
 
-    <div class="flex flex-col items-center px-16 py-12 max-md:px-5 bg-gray-900 text-white">
-    <div class="justify-center w-full max-w-[1267px] border border-white p-6">
-   
-    <div class="max-w-4xl mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-4">{{ $post->title }}</h1>
-        <p class="text-gray-700 mb-4"><strong>Sujet:</strong> {{ $post->subject }}</p>
-        <p class="text-gray-700 mb-4"><strong>Description:</strong> {{ $post->description }}</p>
-        @if ($post->photo)
-            <img src="{{ asset('storage/' . $post->photo) }}" alt="Photo" class="w-full rounded-lg mb-4">
-        @endif
-        <a href="{{ route('posts.index') }}" class="inline-block bg-teal-300 hover:bg-teal-400 text-white px-4 py-2 rounded-lg">Retour aux publications</a>
+        <div class="flex flex-col items-center px-16 py-12 max-md:px-5 text-white">
+    <div class="flex justify-center w-full max-w-[1267px] border border-2 border-white bg-gray-800 rounded-lg overflow-hidden">
+        <div class="max-w-4xl mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold mb-4 text-center">{{ $post->title }}</h1>
+            <p class="text-white mb-2 text-center font-semibold"><em>{{ $post->subject }}</em></p>
+            <p class="text-gray-300 mb-6 text-center"><strong></p>
+            <div class="text-gray-300 mb-6 leading-relaxed">
+            BRUSSELS —</strong> {!! nl2br(e($post->description)) !!}
+            </div>
+            @if ($post->photo)
+                <div class="mb-6">
+                    <img src="{{ asset('storage/' . $post->photo) }}" alt="Photo" class="w-full rounded-lg">
+                </div>
+            @endif
+            <a href="{{ route('posts.index') }}" class="inline-block bg-teal-300 hover:bg-teal-400 text-white px-4 py-2 rounded-lg">Retour aux publications</a>
+        </div>
     </div>
-    </div>
+</div>
+
+
 </div>
 
 
@@ -162,38 +165,7 @@
         <div class="border-t border-gray-300 mt-12"></div>
     </div>
 </footer>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
-            const navLinks = document.getElementById('navLinks');
-
-            hamburgerBtn.addEventListener('click', () => {
-                navLinks.classList.toggle('hidden');
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const logoutMenuBtn = document.getElementById('logoutMenuBtn');
-            const logoutMenu = document.getElementById('logoutMenu');
-
-            // Fonction pour basculer l'affichage du menu de déconnexion
-            function toggleLogoutMenu() {
-                logoutMenu.classList.toggle('hidden');
-            }
-
-            // Ajoutez un gestionnaire d'événements pour le clic sur le bouton de menu de déconnexion
-            logoutMenuBtn.addEventListener('click', function () {
-                toggleLogoutMenu();
-            });
-
-            // Ajoutez un gestionnaire d'événements pour masquer le menu de déconnexion lorsque l'utilisateur clique en dehors de celui-ci
-            document.addEventListener('click', function (event) {
-                if (!logoutMenuBtn.contains(event.target) && !logoutMenu.contains(event.target)) {
-                    logoutMenu.classList.add('hidden');
-                }
-            });
-        });
-    </script>
+<script src="{{ asset('/show.js') }}"></script>
 </body>
 
 </html>

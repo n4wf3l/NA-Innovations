@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+
+html {
+    scroll-behavior: smooth;
+}
+/* Ajoutez ici vos styles supplémentaires */
+
+#scrollToTop {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #000;
+    color: #fff;
+    padding: 10px;
+    border-radius: 50%;
+    display: none; /* Caché au début */
+    cursor: pointer;
+}
+#scrollToTop.show {
+    display: block; /* Affiché lorsque l'utilisateur fait défiler */
+}
+
+.messages-container {
+    overflow: hidden;
+    width: 100%;
+}
+
+.messages-list {
+    list-style-type: none;
+    padding-left: 0;
+    white-space: nowrap;
+    animation: scrollLeft 30s linear infinite;
+}
+
+@keyframes scrollLeft {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.bebas-neue-regular {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}

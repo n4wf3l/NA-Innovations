@@ -14,58 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="//unpkg.com/alpinejs" defer></script>
     <!-- Styles -->
-    <style>
-        @tailwind base;
-        @tailwind components;
-        @tailwind utilities;
-
-        .mainVideo {
-    width: 100%;
-    height: 450px;
-    border-radius: 10px;
-    position: relative;
-    z-index: 10;
-}
-
-.videoContainer {
-    width: 100%;
-    height: 450px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
-
-.dotsImg {
-    position: absolute;
-    width: 90%;
-    height: 90%; /* Ajustez la taille selon vos besoins */
-    top: -10%; /* Décalage vers le haut */
-    right: -10%; /* Décalage vers la droite */
-    object-fit: cover;
-}
-
-html {
-            scroll-behavior: smooth;
-        }
-        /* Ajoutez ici vos styles supplémentaires */
-
-        #scrollToTop {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #000;
-            color: #fff;
-            padding: 10px;
-            border-radius: 50%;
-            display: none; /* Caché au début */
-            cursor: pointer;
-        }
-        #scrollToTop.show {
-            display: block; /* Affiché lorsque l'utilisateur fait défiler */
-        }
-
-    </style>
+    <link rel="stylesheet" href="{{ asset('/about.css') }}">
     @vite('resources/css/app.css')
 </head>
 
@@ -107,7 +56,7 @@ html {
                 </button>
  
                 <div id="navLinks"
-                    class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap">
+                    class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap bebas-neue-regular" style="letter-spacing: 2px">
                     <div>
                         <a href="/" class="hover:text-teal-300 transition duration-500">Accueil</a>
                     </div>
@@ -165,16 +114,16 @@ html {
         <section class="px-8 py-12 bg-gray-100">
     <div class="max-w-4xl mx-auto">
 <h2 class="text-3xl font-bold mb-6 text-center">Qui suis-je ?</h2>
-<p class="text-lg mb-6">
+<p class="text-lg mb-6 text-center">
     Bonjour, je m'appelle Nawfel Ajari et je suis un ingénieur en informatique passionné par la création d'expériences en ligne captivantes et fonctionnelles. En fusionnant créativité et compétences techniques solides, je m'efforce de donner vie à des concepts numériques innovants. Mon objectif est de créer des sites web et des applications mobiles qui attirent non seulement visuellement mais offrent également des performances optimales et une convivialité exceptionnelle.
 </p>
-<p class="text-lg mb-6">
+<p class="text-lg mb-6 text-center">
 En 2023, j'ai franchi une nouvelle étape en me lançant dans l'entrepreneuriat en proposant mes propres services. C'est ainsi que <em>NA Innovations</em> a vu le jour, une initiative visant à offrir des solutions numériques innovantes et à répondre aux besoins variés de nos clients.
 </p>
-<p class="text-lg mb-6">
+<p class="text-lg mb-6 text-center">
 Un an plus tard, j'ai diversifié mon activité en me lançant également dans les montages vidéos, notamment des reportages et des interviews avec des footballeurs professionnels, ainsi que dans la photographie, principalement pour couvrir des événements sportifs.
 </p>
-<p class="text-lg mb-6">
+<p class="text-lg mb-6 text-center">
 Ma société s'est vue renforcée par des collaborations avec de véritables professionnels du montage vidéo et du graphisme, des services qui font désormais partie intégrante de nos offres.
 </p>
         <h2 class="text-3xl font-bold mb-6 text-center">Compétences</h2>
@@ -205,7 +154,7 @@ Ma société s'est vue renforcée par des collaborations avec de véritables pro
         <div class="max-w-4xl mx-auto">
         <h2 class="text-3xl font-bold mb-6 text-center">Spécialisation</h2>
 
-        <p class="text-lg mb-6">
+        <p class="text-lg mb-6 text-right">
         Ma spécialisation se concentre sur tous les aspects liés aux systèmes sportifs, avec une emphase particulière sur le football. Mon expertise s'étend à la création de diverses plateformes, telles que des sites de rédaction sportive, des portails pour les clubs de football ou de futsal, ainsi que des systèmes d'administration destinés à ces clubs. 
         </p>
 
@@ -213,7 +162,7 @@ Ma société s'est vue renforcée par des collaborations avec de véritables pro
         Je suis capable de concevoir des fonctionnalités avancées, telles que les onze types de la semaine, en utilisant des données provenant d'API spécialisées dans le domaine du football. Ces fonctionnalités visent à offrir une expérience immersive et interactive aux utilisateurs, tout en répondant aux besoins spécifiques des clubs et des fans.
         </p>
 
-        <p class="text-lg mb-6">
+        <p class="text-lg mb-6 text-right">
         La plupart de mes projets académiques réalisés à l'Erasmushogeschool ont été développés en collaboration avec la Fédération belge de football. Certains de ces projets sont disponibles sur mon profil GitHub, offrant ainsi un aperçu de mon travail et de mes compétences dans ce domaine passionnant.
         </p>
 
@@ -233,16 +182,16 @@ Ma société s'est vue renforcée par des collaborations avec de véritables pro
     <div class="max-w-4xl mx-auto">
         <h2 class="text-3xl font-bold mb-6 text-center">Ma vision</h2>
 
-        <p class="text-lg mb-6">En tant qu'ingénieur en informatique, ma passion réside dans la création d'expériences numériques innovantes et hautement fonctionnelles. Je m'efforce de marier la créativité avec une expertise technique solide pour façonner des solutions logicielles qui transcendent les attentes.
+        <p class="text-lg mb-6 text-center">En tant qu'ingénieur en informatique, ma passion réside dans la création d'expériences numériques innovantes et hautement fonctionnelles. Je m'efforce de marier la créativité avec une expertise technique solide pour façonner des solutions logicielles qui transcendent les attentes.
         </p>
 
-        <p class="text-lg mb-6">Mon objectif premier est de concevoir des sites web et des applications mobiles qui allient esthétique, performance et convivialité. Je m'engage à comprendre pleinement les besoins de mes clients afin de traduire leur vision en solutions concrètes et innovantes.
+        <p class="text-lg mb-6 text-center">Mon objectif premier est de concevoir des sites web et des applications mobiles qui allient esthétique, performance et convivialité. Je m'engage à comprendre pleinement les besoins de mes clients afin de traduire leur vision en solutions concrètes et innovantes.
         </p>
 
-        <p class="text-lg mb-6">
+        <p class="text-lg mb-6 text-center">
         Fort d'une spécialisation dans les systèmes sportifs, en particulier le football, je cherche à redéfinir la manière dont les clubs interagissent avec leurs fans et gèrent leurs opérations. Je développe des fonctionnalités avancées et des expériences immersives pour renforcer l'engagement des utilisateurs.
         </p>
-        <p class="text-lg mb-6">
+        <p class="text-lg mb-6 text-center">
         En parallèle, je suis constamment en quête d'apprentissage et d'amélioration, explorant de nouvelles technologies et élargissant mes compétences pour rester à la pointe de l'innovation. Mon objectif ultime est de fournir des solutions de classe mondiale qui transforment réellement le paysage numérique.
         </p>
         <h2 class="text-3xl font-bold mb-6 text-center">Unique</h2>
@@ -304,55 +253,7 @@ Ma société s'est vue renforcée par des collaborations avec de véritables pro
         <div class="border-t border-gray-300 mt-12"></div>
     </div>
 </footer>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
-            const navLinks = document.getElementById('navLinks');
-
-            hamburgerBtn.addEventListener('click', () => {
-                navLinks.classList.toggle('hidden');
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const logoutMenuBtn = document.getElementById('logoutMenuBtn');
-            const logoutMenu = document.getElementById('logoutMenu');
-
-            // Fonction pour basculer l'affichage du menu de déconnexion
-            function toggleLogoutMenu() {
-                logoutMenu.classList.toggle('hidden');
-            }
-
-            // Ajoutez un gestionnaire d'événements pour le clic sur le bouton de menu de déconnexion
-            logoutMenuBtn.addEventListener('click', function () {
-                toggleLogoutMenu();
-            });
-
-            // Ajoutez un gestionnaire d'événements pour masquer le menu de déconnexion lorsque l'utilisateur clique en dehors de celui-ci
-            document.addEventListener('click', function (event) {
-                if (!logoutMenuBtn.contains(event.target) && !logoutMenu.contains(event.target)) {
-                    logoutMenu.classList.add('hidden');
-                }
-            });
-        });
-
-        window.addEventListener('scroll', function() {
-        var scrollToTop = document.getElementById('scrollToTop');
-        if (window.scrollY > 100) { // Afficher la flèche lorsque l'utilisateur a fait défiler plus de 100px
-            scrollToTop.classList.add('show');
-        } else {
-            scrollToTop.classList.remove('show');
-        }
-    });
-    // Fonction pour remonter en haut de la page lorsque la flèche est cliquée
-    document.getElementById('scrollToTop').addEventListener('click', function(e) {
-        e.preventDefault();
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-    </script>
+<script src="{{ asset('/about.js') }}"></script>
 </body>
 
 </html>

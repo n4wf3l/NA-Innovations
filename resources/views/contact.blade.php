@@ -15,11 +15,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <!-- Styles -->
-    <style>
-        @tailwind base;
-        @tailwind components;
-        @tailwind utilities;
-    </style>
+    <link rel="stylesheet" href="{{ asset('/contact.css') }}">
     @vite('resources/css/app.css')
 </head>
 
@@ -55,7 +51,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
                 </button>
-                <div id="navLinks" class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap"><div>
+                <div id="navLinks" class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap bebas-neue-regular" style="letter-spacing: 2px"><div>
                 <a href="{{ url('/') }}"  class="hover:text-teal-300">Accueil</a>
             </div>
 
@@ -125,7 +121,7 @@
     <img loading="lazy"
         src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&"
         class="aspect-square w-[50px] mt-2 bg-teal-300 rounded-full" />
-    <a href="https://www.instagram.com/natechforge/" class="ml-2 hover:text-teal-300 transition duration-150">Instagram</a>
+    <a href="https://www.instagram.com/natechforge/" class="ml-2 mt-2 hover:text-teal-300 transition duration-150">Instagram</a>
 </div>
 <div class="flex items-center">
     <img loading="lazy"
@@ -137,7 +133,7 @@
     <img loading="lazy"
         src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&"
         class="aspect-square w-[50px] mt-2 bg-teal-300 rounded-full" />
-    <a href="https://be.linkedin.com/in/nawfel-ajari" class="ml-2 hover:text-teal-300 transition duration-150">LinkedIn</a>
+    <a href="https://be.linkedin.com/in/nawfel-ajari" class="ml-2 mt-3 hover:text-teal-300 transition duration-150">LinkedIn</a>
 </div>
                 </div>
             </div>
@@ -151,7 +147,6 @@
         <div class="mt-7 max-md:max-w-full">
             Quel type de demande ?
         </div>
-        <!-- Ajoutez votre code pour la sélection du service -->
         <select name="service" class="mt-4 bg-neutral-100 h-[46px] max-md:max-w-full text-gray-900" required>
             <option value="service1">Développement web</option>
             <option value="service2">Développement mobile</option>
@@ -161,7 +156,6 @@
             <option value="service6">Photographie</option>
         </select>
         <div class="mt-7 max-md:max-w-full">Estimation budget</div>
-        <!-- Ajoutez votre code pour la sélection du budget -->
         <input type="number" name="budget" class="mt-4 bg-neutral-100 h-[46px] max-md:max-w-full text-gray-900" required placeholder="600€" />
         <div class="mt-7 max-md:max-w-full">Message</div>
         <textarea name="message" class="mt-4 bg-neutral-100 h-[165px] max-md:max-w-full text-gray-900" required placeholder="Hello..."></textarea>
@@ -174,8 +168,6 @@
         </div>
     </div>
 </div>
-
-
 
         <footer class="bg-gray-100 py-12">
         <div class="container mx-auto">
@@ -204,7 +196,7 @@
 
             </div>
             <div class="w-1/2 md:w-1/3 lg:w-1/4">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact</h2>
+                <h2 class="text-lg font-bold text-gray-800 mb-4">Contact</h2>
                 <div class="text-sm text-gray-600">
                     <p class="mb-2">170 Nijverheidskaai, Anderlecht</p>
                     <p class="mb-2">info@nawfelajari.be</p>
@@ -215,38 +207,7 @@
         <div class="border-t border-gray-300 mt-12"></div>
     </div>
 </footer>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
-            const navLinks = document.getElementById('navLinks');
-
-            hamburgerBtn.addEventListener('click', () => {
-                navLinks.classList.toggle('hidden');
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const logoutMenuBtn = document.getElementById('logoutMenuBtn');
-            const logoutMenu = document.getElementById('logoutMenu');
-
-            // Fonction pour basculer l'affichage du menu de déconnexion
-            function toggleLogoutMenu() {
-                logoutMenu.classList.toggle('hidden');
-            }
-
-            // Ajoutez un gestionnaire d'événements pour le clic sur le bouton de menu de déconnexion
-            logoutMenuBtn.addEventListener('click', function () {
-                toggleLogoutMenu();
-            });
-
-            // Ajoutez un gestionnaire d'événements pour masquer le menu de déconnexion lorsque l'utilisateur clique en dehors de celui-ci
-            document.addEventListener('click', function (event) {
-                if (!logoutMenuBtn.contains(event.target) && !logoutMenu.contains(event.target)) {
-                    logoutMenu.classList.add('hidden');
-                }
-            });
-        });
-    </script>
+<script src="{{ asset('/contact.js') }}"></script>
 </body>
 
 </html>

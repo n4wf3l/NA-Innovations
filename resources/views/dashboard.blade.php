@@ -203,31 +203,47 @@
 
     <section class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
     <div class="bg-white rounded-lg p-6 border border-black">
-            <!-- Autres éléments de votre tableau de bord -->
-            <h2 class="text-xl font-semibold mb-4">Créer une nouvelle publication</h2>
-                <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
-                    @csrf
-                    <div class="mb-4">
-                        <label for="title" class="block text-sm font-medium text-gray-700">Titre:</label>
-                        <input type="text" name="title" id="title" value="{{ old('title') }}" class="border border-gray-300 p-2 rounded-md w-full">
-                    </div>
-                    <div class="mb-4">
-                        <label for="subject" class="block text-sm font-medium text-gray-700">Sujet:</label>
-                        <input type="text" name="subject" id="subject" value="{{ old('subject') }}" class="border border-gray-300 p-2 rounded-md w-full">
-                    </div>
-                    <div class="mb-4">
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description:</label>
-                        <textarea name="description" id="description" class="border border-gray-300 p-2 rounded-md w-full">{{ old('description') }}</textarea>
-                    </div>
-                    <div class="mb-4">
-                        <label for="photo" class="block text-sm font-medium text-gray-700">Photo:</label>
-                        <input type="file" name="photo" id="photo" class="border border-gray-300 p-2 rounded-md w-full">
-                    </div>
-                    <div>
-                        <button type="submit" class="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-500">Créer</button>
-                    </div>
-                </form>
+    <!-- Autres éléments de votre tableau de bord -->
+    <h2 class="text-xl font-semibold mb-4">Créer une nouvelle publication</h2>
+    <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
+        @csrf
+        <div class="mb-4">
+            <label for="title" class="block text-sm font-medium text-gray-700">Titre:</label>
+            <input type="text" name="title" id="title" value="{{ old('title') }}" class="border border-gray-300 p-2 rounded-md w-full">
         </div>
+        <div class="mb-4">
+            <label for="subject" class="block text-sm font-medium text-gray-700">Sujet:</label>
+            <input type="text" name="subject" id="subject" value="{{ old('subject') }}" class="border border-gray-300 p-2 rounded-md w-full">
+        </div>
+        <div class="mb-4">
+            <label for="description" class="block text-sm font-medium text-gray-700">Description:</label>
+            <textarea name="description" id="description" class="border border-gray-300 p-2 rounded-md w-full">{{ old('description') }}</textarea>
+        </div>
+        <div class="mb-4">
+            <label for="font-size" class="block text-sm font-medium text-gray-700">Taille de police:</label>
+            <select name="font-size" id="font-size" class="border border-gray-300 p-2 rounded-md">
+                <option value="small">Petite</option>
+                <option value="medium">Moyenne</option>
+                <option value="large">Grande</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label for="text-color" class="block text-sm font-medium text-gray-700">Couleur du texte:</label>
+            <input type="color" name="text-color" id="text-color" class="border border-gray-300 p-2 rounded-md">
+        </div>
+        <div class="mb-4">
+            <label for="underline" class="block text-sm font-medium text-gray-700">Souligner:</label>
+            <input type="checkbox" name="underline" id="underline" class="border border-gray-300 p-2 rounded-md">
+        </div>
+        <div class="mb-4">
+            <label for="photo" class="block text-sm font-medium text-gray-700">Photo:</label>
+            <input type="file" name="photo" id="photo" class="border border-gray-300 p-2 rounded-md w-full">
+        </div>
+        <div>
+            <button type="submit" class="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-500">Créer</button>
+        </div>
+    </form>
+</div>
 
 
         <div class="bg-white rounded-lg p-6 border border-black">
@@ -256,6 +272,7 @@
                 <button type="submit" class="px-4 py-2 bg-gray-900 text-white hover:bg-teal-500 rounded-md">Ajouter le message</button>
             </div>
         </form>
+    </div>
     </div>
 </section>
 

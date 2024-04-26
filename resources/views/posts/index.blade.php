@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -15,11 +16,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <!-- Styles -->
-    <style>
-        @tailwind base;
-        @tailwind components;
-        @tailwind utilities;
-    </style>
+    <link rel="stylesheet" href="{{ asset('/posts.css') }}">
     @vite('resources/css/app.css')
 </head>
 
@@ -55,7 +52,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
                 </button>
-                <div id="navLinks" class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap"><div>
+                <div id="navLinks" class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap bebas-neue-regular" style="letter-spacing: 2px"><div>
                 <a href="{{ url('/') }}"  class="hover:text-teal-300">Accueil</a>
             </div>
 
@@ -118,7 +115,7 @@
                 @endif
                 <div class="px-6 py-4">
                     <div class="font-bold text-xl mb-2 text-black">{{ $post->title }}</div>
-                    <p class="text-gray-500 text-base">{{ $post->description }}</p>
+                    <p class="text-gray-500 text-base">{{ Illuminate\Support\Str::limit($post->description, 100) }}</p>
                 </div>
                 <div class="px-6 py-4">
                     <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">#{{ $post->subject }}</span>
@@ -179,38 +176,6 @@
         <div class="border-t border-gray-300 mt-12"></div>
     </div>
 </footer>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
-            const navLinks = document.getElementById('navLinks');
-
-            hamburgerBtn.addEventListener('click', () => {
-                navLinks.classList.toggle('hidden');
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const logoutMenuBtn = document.getElementById('logoutMenuBtn');
-            const logoutMenu = document.getElementById('logoutMenu');
-
-            // Fonction pour basculer l'affichage du menu de déconnexion
-            function toggleLogoutMenu() {
-                logoutMenu.classList.toggle('hidden');
-            }
-
-            // Ajoutez un gestionnaire d'événements pour le clic sur le bouton de menu de déconnexion
-            logoutMenuBtn.addEventListener('click', function () {
-                toggleLogoutMenu();
-            });
-
-            // Ajoutez un gestionnaire d'événements pour masquer le menu de déconnexion lorsque l'utilisateur clique en dehors de celui-ci
-            document.addEventListener('click', function (event) {
-                if (!logoutMenuBtn.contains(event.target) && !logoutMenu.contains(event.target)) {
-                    logoutMenu.classList.add('hidden');
-                }
-            });
-        });
-    </script>
+<script src="{{ asset('/posts.js') }}"></script>
 </body>
-
 </html>
