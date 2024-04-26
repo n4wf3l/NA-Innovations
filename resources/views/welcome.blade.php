@@ -44,14 +44,13 @@
         .messages-container {
     overflow: hidden;
     width: 100%;
-    background-color: teal-300; /* Ajout de l'arrière-plan teal-300 */
 }
 
 .messages-list {
     list-style-type: none;
     padding-left: 0;
     white-space: nowrap;
-    animation: scrollLeft 20s linear infinite;
+    animation: scrollLeft 30s linear infinite;
 }
 
 @keyframes scrollLeft {
