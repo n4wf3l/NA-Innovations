@@ -250,15 +250,21 @@
 
 
 <section class="py-16 text-black bg-gray-100">
-    <div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" id="about">
-        Our Projects
-    </div>
-    <hr class="mt-8">
-    <h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular" style="letter-spacing: 2px">💼 Published Websites</h1>
-    <h3 class="mt-4 text-base text-center lg:px-20 bebas-neue-regular" style="letter-spacing: 0px">
-        Explore below various types of websites that I have developed. The list does not include portfolio sites designed for individual profiles. You will also find information about development time, programming languages used, client satisfaction level, and number of developer collaborations.
-    </h3>
-
+<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" id="about">
+    Our Projects
+</div>
+<hr class="mt-8">
+<h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular" style="letter-spacing: 2px">💼 Published Websites</h1>
+<div class="container mx-auto text-lg text-center max-md:max-w-full mt-12 p-4">
+    <h3 class="mt-4 font-bold text-xl mb-4">Explore our diverse collection of custom-crafted websites tailored to meet the unique needs of our clients.</h3>
+    <p class="mb-4">Each project is the result of close collaboration, where we leverage our expertise in design and development to bring unique visions to life. Whether for a thriving business, an innovative startup, or an art enthusiast, every site we create is infused with meticulous attention to detail and a passion for excellence.</p>
+    <h3 class="mt-4 font-bold text-xl mb-4">Dive into our gallery of creations and discover the variety of styles, industries, and challenges we've successfully tackled.</h3>
+    <p class="mb-4">From sleek and minimalist websites to interactive and dynamic platforms, our portfolio reflects our commitment to delivering personalized and innovative solutions.</p>
+    <h3 class="mt-4 font-bold text-xl mb-4">Every website we design is more than just an online presence.</h3>
+    <p class="mb-4">It's a showcase for your brand, an experience for your visitors, and a powerful tool for achieving your business goals. We pride ourselves on understanding the unique needs of each client and creating sites that captivate, convert, and inspire.</p>
+    <h3 class="mt-4 font-bold text-xl mb-4">Whether you're looking for a website redesign, a robust e-commerce site, or a custom web application, we're here to turn your vision into digital reality.</h3>
+    <p class="mb-4">Browse our portfolio and be inspired by the endless possibilities of web design. With us, every site is a story to tell, an experience to live, and a long-term partnership for your online success.</p>
+</div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20">
         @foreach ($projets as $projet)
         <div class="flex flex-col p-2 transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
@@ -328,16 +334,19 @@ self-center icons" alt="team icon" />
     </div>
 </section>
 
+
 <section class="py-16 text-black bg-gray-900">
-    <h1 class="text-2xl font-semibold text-center bebas-neue-regular text-white" style="letter-spacing: 2px">🌱 Non-Profit Projects</h1>
-    <h3 class="mt-4 text-base text-center lg:px-20 bebas-neue-regular text-white" style="letter-spacing: 0px">
-        Explore my contributions to non-profit projects, where innovation and collaboration come together
-        to create unique technological solutions. This selection reflects my commitment to community development
-        and open source, highlighting development time, programming languages used, and the impact of these initiatives.
-        Explore these achievements to understand how we can collectively advance technology for the common good.
-    </h3>
-
-
+<h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular text-white" style="letter-spacing: 2px">🌱 Open Source Projects</h1>
+<div class="container mx-auto text-lg text-center max-md:max-w-full mt-12 p-4">
+    <h3 class="font-bold text-xl mb-4 text-white">Welcome to my collection of open source projects!</h3>
+    <p class="mb-4 text-white">Each of these projects represents a milestone in my journey in the field of computer science, where I have explored and contributed to various non-profit initiatives.</p>
+    <h3 class="font-bold text-xl mb-4 text-white">As a technology enthusiast,</h3>
+    <p class="mb-4 text-white">I have dedicated time and energy to these projects, using different programming languages and implementing innovative solutions. These open source projects, most of which are academic, reflect my commitment to collaboration and knowledge sharing in the computer science community.</p>
+    <h3 class="font-bold text-xl mb-4 text-white">Explore this collection to discover my achievements,</h3>
+    <p class="mb-4 text-white">each accompanied by its own link to the corresponding GitHub repository. Whether you're a computer science student, a development enthusiast, or simply curious about new technologies, these projects are designed to spark interest and inspiration.</p>
+    <h3 class="font-bold text-xl mb-4 text-white">Explore these projects to understand my skills,</h3>
+    <p class="mb-4 text-white">my interests, and my contribution to the open source community. Each project represents a step forward in my career in computer science and an opportunity for continuous learning. Join me in this exploration of technology, innovation, and knowledge sharing!</p>
+</div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20">
         @foreach ($academicProjects as $academicProjet)
         <div class="flex flex-col p-2 transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">

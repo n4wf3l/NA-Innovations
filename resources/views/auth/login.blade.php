@@ -1,3 +1,15 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Login — NA</title>
+    <link rel="icon" href="{{ asset('logonai.png') }}" type="image/x-icon" />
+</head>
+
+<body>
 <x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
@@ -45,3 +57,5 @@
         </div>
     </form>
 </x-guest-layout>
+
+</body>

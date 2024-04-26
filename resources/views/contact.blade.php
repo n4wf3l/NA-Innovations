@@ -110,8 +110,10 @@
                     Let’s Talk
                 </div>
                 <div class="mt-5 text-base max-md:max-w-full">
-                    Need a quote for your project? Fill out this form and we'll provide you with a free, no-obligation estimate.
-                </div>
+    <p>Ready to bring your online project to life? Fill out the form below to get a free, customized quote! Whether you need a website, a mobile app, or other digital services, we're here to help you turn your ideas into reality. We look forward to hearing from you and collaborating with you to create something exceptional!</p>
+
+    <p class="mt-5">Have questions or special requirements? Feel free to reach out to us using the form below. We're here to address any concerns you may have and tailor our services to meet your unique needs. Your satisfaction is our priority, and we're committed to providing you with the best possible solutions for your project.</p>
+</div>
                 <div class="mt-14 text-3xl font-bold max-md:mt-10">Email</div>
                 <div class="mt-2"><i class="fas fa-envelope"></i> info@nawfelajari.be</div>
                 <div class="mt-14 text-3xl font-bold max-md:mt-10">Social Media</div>
