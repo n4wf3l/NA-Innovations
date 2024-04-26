@@ -25,6 +25,21 @@ class PostController extends Controller
         return view('dashboard'); 
     }
 
+    public function destroy($id)
+    {
+        // Recherchez le post à supprimer
+        $post = Post::findOrFail($id);
+
+        // Assurez-vous que l'utilisateur actuel est autorisé à supprimer ce post
+        // Vous pouvez ajouter des vérifications supplémentaires ici, par exemple, vérifier si l'utilisateur est l'auteur du post
+
+        // Supprimez le post
+        $post->delete();
+
+        // Redirigez l'utilisateur vers la page d'index des posts avec un message de succès
+        return redirect()->route('posts.index')->with('success', 'Post supprimé avec succès!');
+    }
+
     public function store(Request $request)
     {
         $request->validate([

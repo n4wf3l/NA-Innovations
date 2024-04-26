@@ -40,6 +40,30 @@
         #scrollToTop.show {
             display: block; /* Affiché lorsque l'utilisateur fait défiler */
         }
+   
+        .messages-container {
+    overflow: hidden;
+    width: 100%;
+    background-color: teal-300; /* Ajout de l'arrière-plan teal-300 */
+}
+
+.messages-list {
+    list-style-type: none;
+    padding-left: 0;
+    white-space: nowrap;
+    animation: scrollLeft 20s linear infinite;
+}
+
+@keyframes scrollLeft {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+
+}
+
     </style>
     @vite('resources/css/app.css')
 </head>
@@ -129,7 +153,7 @@
                     </div>
                 </div>
                 <button id="background-toggle-button" class="toggle-button">
-    <span id="toggle-icon" class="toggle-icon">🌞</span>
+    <span id="toggle-icon" class="toggle-icon">🌙</span>
 </button>
             </div>
 
@@ -171,7 +195,13 @@
                 </div>
             </div>
         </div>
-
+        <div class="messages-container bg-teal-300 text-white text-3xl">
+    <ul class="messages-list">
+        @foreach($messages as $message)
+            <li>{{ $message->content }}</li>
+        @endforeach
+    </ul>
+</div>
                 <div class="ml-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center" id="about">
             Nos services
         </div>
@@ -524,12 +554,10 @@
                 logoutMenu.classList.toggle('hidden');
             }
 
-            // Ajoutez un gestionnaire d'événements pour le clic sur le bouton de menu de déconnexion
             logoutMenuBtn.addEventListener('click', function () {
                 toggleLogoutMenu();
             });
 
-            // Ajoutez un gestionnaire d'événements pour masquer le menu de déconnexion lorsque l'utilisateur clique en dehors de celui-ci
             document.addEventListener('click', function (event) {
                 if (!logoutMenuBtn.contains(event.target) && !logoutMenu.contains(event.target)) {
                     logoutMenu.classList.add('hidden');
@@ -539,15 +567,12 @@
 
         function deleteProjet(projetId) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
-        // Envoi de la requête de suppression AJAX
         axios.delete(`/projets/${projetId}`)
             .then(response => {
-                // Redirection ou mise à jour de la page si nécessaire
                 window.location.reload();
             })
             .catch(error => {
                 console.error('Une erreur s\'est produite lors de la suppression du projet :', error);
-                // Gérer les erreurs si nécessaire
             });
     }
 }
@@ -587,21 +612,20 @@ window.addEventListener('scroll', function() {
     document.addEventListener('DOMContentLoaded', function() {
     // Sélectionnez le bouton et l'élément dont vous souhaitez changer la couleur de fond
     const button = document.getElementById('background-toggle-button');
-    const targetElement = document.querySelector('.flex-1');
+    const targetElement = document.querySelector('.flex-1').parentNode;
 
     // Récupérez la couleur de fond initiale du premier div
-    const initialColor = window.getComputedStyle(targetElement.parentNode).backgroundColor;
+    const initialColor = window.getComputedStyle(targetElement).backgroundColor;
 
     // Ajoutez un gestionnaire d'événements pour le clic sur le bouton
     button.addEventListener('click', function() {
         // Récupérez la couleur de fond actuelle du premier div
-        const currentColor = window.getComputedStyle(targetElement.parentNode).backgroundColor;
+        const currentColor = window.getComputedStyle(targetElement).backgroundColor;
 
-        // Définissez les couleurs possibles
         const colors = [
-            { name: 'yellow', rgb: 'rgb(255, 255, 0)' },
-            { name: 'red', rgb: 'rgb(255, 0, 0)' },
-            { name: 'gray', rgb: initialColor }
+            { name: 'yellow', rgb: 'rgb(255, 255, 0)', icon: '🌞' },
+            { name: 'red', rgb: 'rgb(200, 0, 0)', icon: '😎' }, // Drapeau de la Belgique (code HTML)
+            { name: 'gray', rgb: initialColor, icon: '🌙' }
         ];
 
         // Trouvez l'objet couleur correspondant à la couleur actuelle
@@ -611,12 +635,27 @@ window.addEventListener('scroll', function() {
         const nextIndex = (colors.indexOf(currentColorObj) + 1) % colors.length;
 
         // Changez la couleur de fond du premier div en fonction de l'index de la prochaine couleur
-        targetElement.parentNode.style.backgroundColor = colors[nextIndex].rgb;
+        targetElement.style.backgroundColor = colors[nextIndex].rgb;
 
         // Changez l'icône du bouton en conséquence
         const toggleIcon = document.getElementById('toggle-icon');
-        toggleIcon.textContent = colors[nextIndex].name === 'red' ? '🌞' : '🌙';
+        toggleIcon.innerHTML = colors[nextIndex].icon;
+
+        // Si c'est le deuxième clic, affichez l'alerte
+        if (nextIndex === 1) {
+            alert("Les curieux comme vous sont ceux avec le plus de goûts design");
+        }
     });
+});
+
+document.querySelector('.messages-container').addEventListener('mouseenter', function() {
+    var messagesList = document.querySelector('.messages-list');
+    messagesList.style.animationPlayState = 'paused';
+});
+
+document.querySelector('.messages-container').addEventListener('mouseleave', function() {
+    var messagesList = document.querySelector('.messages-list');
+    messagesList.style.animationPlayState = 'running';
 });
 
 

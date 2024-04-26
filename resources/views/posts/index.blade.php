@@ -124,6 +124,13 @@
                     <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">#{{ $post->subject }}</span>
                     <a href="{{ route('posts.show', $post->id) }}" class="inline-block bg-gray-900 rounded-full px-3 py-1 text-sm font-semibold text-white hover:bg-teal-300 hover:text-gray-900">Voir détails</a>
                 </div>
+                @auth <!-- Vérifiez si l'utilisateur est connecté -->
+                            <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="absolute top-2 right-2">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">Supprimer</button>
+                            </form>
+                        @endauth
             </div>
         @endforeach
     </div>

@@ -201,10 +201,9 @@
         </div>
     </section>
 
-    <section class="container mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
+    <section class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
+    <div class="bg-white rounded-lg p-6 border border-black">
             <!-- Autres éléments de votre tableau de bord -->
-            <div class="bg-white rounded-lg p-6 border border-black">
             <h2 class="text-xl font-semibold mb-4">Créer une nouvelle publication</h2>
                 <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
                     @csrf
@@ -228,10 +227,38 @@
                         <button type="submit" class="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-500">Créer</button>
                     </div>
                 </form>
+        </div>
+
+
+        <div class="bg-white rounded-lg p-6 border border-black">
+        <h2 class="text-xl font-semibold mb-4">Ajouter un nouveau message</h2>
+   
+        <!-- Affichage message -->
+         <div class="mt-8 mb-8">
+            @foreach($messages as $message)
+                <div class="bg-gray-200 p-4 rounded-lg">
+                    <p>{{ $message->content }}</p>
+                </div>
+            @endforeach
+    </div>
+        <form action="{{ route('messages.store') }}" method="POST">
+            @csrf
+            <div class="mb-4">
+                <label for="content" class="block text-sm font-medium text-gray-700">Contenu du message</label>
+                <textarea name="content" id="content" rows="3" class="border border-gray-300 p-2 rounded-md w-full" required>{{ $message->content ?? '' }}</textarea>
             </div>
-        </div>
-        </div>
-    </section>
+            <div class="mb-4">
+                <input type="hidden" name="enabled" value="1"> <!-- Champ caché avec la valeur 1 -->
+                <input type="checkbox" name="enabled_checkbox" id="enabled" class="border border-gray-300 rounded-md" {{ isset($message) && $message->enabled ? 'checked' : '' }} disabled> <!-- Champ de case à cocher désactivé -->
+                <label for="enabled" class="inline-block text-sm font-medium text-gray-700 ml-2">Activer le message</label>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="px-4 py-2 bg-gray-900 text-white hover:bg-teal-500 rounded-md">Ajouter le message</button>
+            </div>
+        </form>
+    </div>
+</section>
+
 </main>
 
 <footer class="bg-gray-100 py-12">
