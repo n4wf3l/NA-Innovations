@@ -180,44 +180,44 @@
 <div class="grid grid-cols-1 md:grid-cols-2 mr-2 ml-2">
     <div class="col-span-1 max-w-xl mx-auto text-gray-600 text-left md:text-left bebas-neue-regular" style="letter-spacing: 0px">
         <div class="mt-8 mb-6">
-            <h2 class="text-3xl font-bold text-black">Développement Web de Qualité</h2>
+            <h2 class="text-3xl font-bold text-black">- Développement Web de Qualité</h2>
             <p class="mt-4">Vous recherchez une équipe de développement web passionnée et hautement qualifiée pour donner vie à vos idées en ligne? Vous êtes au bon endroit. Notre équipe de développeurs web chevronnés est prête à transformer vos concepts en solutions numériques innovantes qui captiveront votre audience et stimuleront votre croissance.</p>
         </div>
 
         <div class="mb-6">
-            <h3 class="text-2xl font-bold text-black">Expertise en Développement Web</h3>
+            <h3 class="text-2xl font-bold text-black">💻🔧 Expertise en Développement Web</h3>
             <p class="mt-4">En tant que diplômé en programmation et spécialisé dans le développement web, notre expertise ne se limite pas seulement à la création de sites web. Nous avons une passion pour l'innovation technologique et une compréhension approfondie des dernières tendances et technologies du secteur. Que vous ayez besoin d'un site web d'entreprise dynamique, d'une plateforme de commerce électronique robuste ou d'une application web interactive, nous sommes là pour répondre à vos besoins avec créativité et expertise.</p>
         </div>
 
         <div class="mb-6">
-            <h3 class="text-2xl font-bold text-black">Spécialisation en Football et API</h3>
+            <h3 class="text-2xl font-bold text-black">⚽📊 Spécialisation en Football et API</h3>
             <p class="mt-4">Mais notre engagement envers l'excellence ne s'arrête pas là. Nous avons également une spécialisation unique dans le développement de logiciels liés au football et à ses API. Grâce à notre passion pour le football et notre maîtrise des technologies de pointe, nous sommes en mesure de créer des solutions sur mesure pour les clubs, les plateformes de fans et les fournisseurs de contenu dans le domaine du football. Que ce soit pour intégrer des données en temps réel, analyser les performances des joueurs ou créer des expériences interactives pour les fans, nous sommes prêts à relever tous les défis pour vous aider à atteindre vos objectifs.</p>
         </div>
 
         <div class="mb-8">
-            <h3 class="text-2xl font-bold text-black">Collaborons Ensemble</h3>
+            <h3 class="text-2xl font-bold text-black">🤝👥 Collaborons Ensemble</h3>
             <p class="mt-4">Faites équipe avec nous pour une collaboration exceptionnelle qui marie l'expertise du développement web avec une spécialisation pointue dans le domaine passionnant du football. Ensemble, créons une présence en ligne qui se démarque et qui fait vivre une expérience immersive à vos utilisateurs.</p>
         </div>
     </div>
 
     <div class="col-span-1 max-w-xl mx-auto text-gray-600 text-left md:text-leftà bebas-neue-regular" style="letter-spacing: 0px">
         <div class="mt-8 mb-6">
-            <h2 class="text-3xl font-bold text-black">Services de Montage Vidéo</h2>
+            <h2 class="text-3xl font-bold text-black">- Services de Montage Vidéo</h2>
             <p class="mt-4">Notre équipe de montage vidéo offre une gamme complète de services pour répondre à vos besoins en matière de création de contenu visuel. Du montage narratif aux montages promotionnels en passant par les publicités et les documentaires, nous mettons notre expertise au service de votre projet pour produire des vidéos captivantes et de haute qualité qui captent l'attention de votre audience.</p>
         </div>
 
         <div class="mt-8 mb-6">
-            <h2 class="text-3xl font-bold text-black">Services de Conception Graphique</h2>
+            <h2 class="text-2xl font-bold text-black">💡🎨 Services de Conception Graphique</h2>
             <p class="mt-4">En tant qu'experts en conception graphique, nous vous offrons des solutions créatives pour tous vos besoins en communication visuelle. De la conception de logos à la création d'infographies, en passant par le design d'interfaces utilisateur et d'expériences utilisateur, notre équipe talentueuse vous aide à créer une identité visuelle forte et à fournir des expériences utilisateur exceptionnelles.</p>
         </div>
 
         <div class="mt-8 mb-6">
-            <h2 class="text-3xl font-bold text-black">Services de Montage Narratif et Promotionnel</h2>
+            <h2 class="text-2xl font-bold text-black">🎬📣 Services de Montage Narratif et Promotionnel</h2>
             <p class="mt-4">Nos services de montage narratif et promotionnel sont conçus pour vous aider à raconter des histoires convaincantes et à promouvoir efficacement vos produits ou services. Que vous ayez besoin d'un montage pour un court métrage, un documentaire, une publicité ou une vidéo promotionnelle, nous travaillons avec vous pour créer un contenu vidéo percutant qui répond à vos objectifs marketing et engage votre public cible.</p>
         </div>
 
         <div class="mt-8 mb-6">
-            <h2 class="text-3xl font-bold text-black">Services de Design et de Création</h2>
+            <h2 class="text-2xl font-bold text-black">🖌️✨ Services de Design et de Création</h2>
             <p class="mt-4">En plus de nos services de montage vidéo et de conception graphique, nous proposons une gamme étendue de services de design et de création pour répondre à tous vos besoins créatifs. Que vous recherchiez des designs de logos, d'affiches, de cartes de visite ou des solutions de design sur mesure, notre équipe expérimentée est là pour vous aider à donner vie à vos idées et à créer des visuels accrocheurs et professionnels.</p>
         </div>
     </div>
@@ -227,15 +227,15 @@
 <div class="flex flex-col md:flex-row max-w-full mt-20 mb-20 mx-4 md:mx-20 border-4 border-teal-300 bebas-neue-regular" style="background-image: url('codingpicture.jpg'); background-size:cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;">
     <!-- Development -->
     <div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0">
-        <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">Développement web</div>
+        <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">🌐 Développement web</div>
         <div class="mt-4 text-2xl text-neutral-400">
             Plateformes de réservation | Marchés en ligne | Plateformes d'apprentissage en ligne | Sites de petites annonces | Plateformes de crowdfunding | Réseaux professionnels
         </div>
-        <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">Développement mobile</div>
+        <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">📱 Développement mobile</div>
         <div class="mt-4 text-2xl text-neutral-400">
             Applications nativement codées | Applications hybrides | Applications web progressives (PWA) | Applications d'e-commerce mobile | Applications de médias sociaux mobiles
         </div>
-        <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">Développement software</div>
+        <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">💻 Développement software</div>
         <div class="mt-4 text-2xl text-neutral-400 mb-10">
             Football API | Applications de bureau | Applications d'entreprise | Applications de gestion de projet | Systèmes de gestion de contenu (CMS) | Systèmes de gestion de base de données (SGBD) | Applications de bureau à distance | Systèmes de planification des ressources d'entreprise (ERP)
         </div>
@@ -243,11 +243,11 @@
 
     <!-- Graphic Design -->
     <div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0">
-        <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">Montage vidéo</div>
+        <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">🎥 Montage vidéo</div>
         <div class="mt-4 text-2xl text-neutral-400">
             Montage narratif | Montage promotionnel | Montage publicitaire | Montage documentaire | Montage expérimental
         </div>
-        <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">Graphisme</div>
+        <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">🎨 Graphisme</div>
         <div class="mt-4 text-2xl text-neutral-400">
             Conception de logos, d'affiches, de cartes de visite et de brochures | Design d'interface utilisateur (UI) et d'expérience utilisateur (UX) | Infographie
         </div>
@@ -255,7 +255,7 @@
 
     <!-- Strategy -->
     <div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0">
-        <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">Photographie</div>
+        <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">📷 Photographie</div>
         <div class="mt-4 text-2xl text-neutral-400 mb-5">
             Portrait | Photographie documentaire | Sport
         </div>
@@ -269,7 +269,7 @@
     Nos projets
 </div>
     <hr class="mt-8">
-    <h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular" style="letter-spacing: 2px">Sites web publiés</h1>
+    <h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular" style="letter-spacing: 2px">💼 Sites web publiés</h1>
     <h3 class="mt-4 text-base text-center lg:px-20 bebas-neue-regular" style="letter-spacing: 0px">
         Découvrez ci-dessous divers types de sites web que j'ai développés. La liste n'inclut pas les sites
         portfolios conçus pour des profils individuels. Vous trouverez également des informations sur le temps
@@ -348,8 +348,8 @@
 </section>
 
 
-<section class="py-16 text-black bg-teal-100" style="background-image: url('codingpicture.jpg'); background-size:cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;">
-    <h1 class="text-2xl font-semibold text-center bebas-neue-regular text-white" style="letter-spacing: 2px">Projets à but non-lucratif</h1>
+<section class="py-16 text-black bg-gray-900">
+    <h1 class="text-2xl font-semibold text-center bebas-neue-regular text-white" style="letter-spacing: 2px">🌱 Projets à but non-lucratif</h1>
     <h3 class="mt-4 text-base text-center lg:px-20 bebas-neue-regular text-white" style="letter-spacing: 0px">
         Découvrez mes contributions à des projets à but non lucratif, où innovation et collaboration se
         rencontrent
@@ -427,9 +427,9 @@
     </div>
 </section>
 
-        <section class="flex flex-col items-center justify-center bg-gray-900">
-    <h1 class="text-9xl font-semibold text-white md:text-4xl text-center mt-10 bebas-neue-regular" style="letter-spacing: 2px" id="about">
-        Collab's
+        <section class="flex flex-col items-center justify-center bg-gray-900"  style="background-image: url('codingpicture.jpg'); background-size:cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;">
+    <h1 class="text-7xl font-semibold text-white md:text-4xl text-center mt-10 bebas-neue-regular" style="letter-spacing: 2px" id="about">
+    🤝Collab's
     </h1>
     <div class="flex flex-wrap justify-center w-full max-w-[1070px] md:flex-col md:max-w-full md:mt-10">
         <div class="flex flex-col items-center">
