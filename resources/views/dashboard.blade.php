@@ -13,17 +13,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
     <!-- Styles -->
-    <style>
-        @tailwind base;
-        @tailwind components;
-        @tailwind utilities;
-
-        html {
-            scroll-behavior: smooth;
-        }
-        /* Ajoutez ici vos styles supplémentaires */
-
-    </style>
+    <link rel="stylesheet" href="{{ asset('/dashboard.css') }}">
     @vite('resources/css/app.css')
 </head>
 
@@ -59,7 +49,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
                 </button>
-                <div id="navLinks" class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap"><div>
+                <div id="navLinks" class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap bebas-neue-regular" style="letter-spacing: 2px"><div>
                 <a href="{{ url('/') }}"  class="hover:text-teal-300">Accueil</a>
             </div>
 
@@ -77,8 +67,8 @@
         </div>
     <div>
     <a href="{{ route('contact') }}" class="hover:text-teal-300">Contact</a>
-        </div> |
-        <div>
+        </div> 
+        <div>|
         <a href="{{ url('/dashboard') }}"  class="text-teal-300 hover:text-teal-300">Dashboard</a>
         </div>
     </div>
@@ -138,7 +128,7 @@
                         <input type="file" name="image" required class="border border-gray-300 p-2 rounded-md w-full">
                     </div>
                     <div>
-                        <button type="submit" class="px-4 py-2 bg-teal-300 text-white hover:bg-teal-500 rounded-md">Ajouter le projet</button>
+                        <button type="submit" class="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-500">Ajouter le projet</button>
                     </div>
                 </form>
             </div>
@@ -279,31 +269,29 @@
 </main>
 
 <footer class="bg-gray-100 py-12">
-    <div class="container mx-auto">
+    <div class="container mx-auto flex flex-col items-center">
         <div class="border-t border-gray-300"></div>
-        <div class="flex justify-between items-center mt-8">
-            <div class="w-1/2 md:w-2/3 lg:w-1/3">
+        <div class="flex flex-col md:flex-row justify-between items-center mt-8 md:items-start md:text-left">
+            <div class="w-full md:w-2/3 lg:w-1/3 mb-8 md:mb-0 text-center md:text-left">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">À propos de NA</h2>
-                <p class="text-sm text-gray-600">NA est un ingénieur software et développeur fullstack diplômé et formé à la Haute Ecole Erasmus de Bruxelles. </p>
-                <div class="flex items-center mt-6">
-                <a href="https://www.instagram.com/natechforge/" target="_blank" rel="noopener noreferrer">
-        <img loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&"
-            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
-    </a>
-    <a href="https://twitter.com/AjariNawfel" target="_blank" rel="noopener noreferrer">
-        <img loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&"
-            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
-    </a>
-    <a href="https://be.linkedin.com/in/nawfel-ajari" target="_blank" rel="noopener noreferrer">
-        <img loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&"
-            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
-    </a>
+                <p class="text-sm text-gray-600">NA est un ingénieur software et développeur fullstack diplômé en Belgique. </p>
+                <div class="flex items-center mt-6 justify-center md:justify-start">
+                    <a href="https://www.instagram.com/natechforge/" target="_blank" rel="noopener noreferrer">
+                        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
+                    </a>
+                    <a href="https://twitter.com/AjariNawfel" target="_blank" rel="noopener noreferrer">
+                        <img loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&"
+                            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
+                    </a>
+                    <a href="https://be.linkedin.com/in/nawfel-ajari" target="_blank" rel="noopener noreferrer">
+                        <img loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&"
+                            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
+                    </a>
                 </div>
             </div>
-            <div class="w-1/2 md:w-1/3 lg:w-1/4">
+            <div class="w-full md:w-1/3 lg:w-1/4 text-center md:text-left">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact</h2>
                 <div class="text-sm text-gray-600">
                     <p class="mb-2">170 Nijverheidskaai, Anderlecht</p>
@@ -315,40 +303,7 @@
         <div class="border-t border-gray-300 mt-12"></div>
     </div>
 </footer>
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
-            const navLinks = document.getElementById('navLinks');
-
-            hamburgerBtn.addEventListener('click', () => {
-                navLinks.classList.toggle('hidden');
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const logoutMenuBtn = document.getElementById('logoutMenuBtn');
-            const logoutMenu = document.getElementById('logoutMenu');
-
-            // Fonction pour basculer l'affichage du menu de déconnexion
-            function toggleLogoutMenu() {
-                logoutMenu.classList.toggle('hidden');
-            }
-
-            // Ajoutez un gestionnaire d'événements pour le clic sur le bouton de menu de déconnexion
-            logoutMenuBtn.addEventListener('click', function () {
-                toggleLogoutMenu();
-            });
-
-            // Ajoutez un gestionnaire d'événements pour masquer le menu de déconnexion lorsque l'utilisateur clique en dehors de celui-ci
-            document.addEventListener('click', function (event) {
-                if (!logoutMenuBtn.contains(event.target) && !logoutMenu.contains(event.target)) {
-                    logoutMenu.classList.add('hidden');
-                }
-            });
-        });
-    </script>
+<script src="{{ asset('/dashboard.js') }}"></script>
 </body>
 
 </html>

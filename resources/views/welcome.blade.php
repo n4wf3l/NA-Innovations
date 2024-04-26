@@ -80,8 +80,7 @@
                         <a href="{{ route('contact') }}" class="hover:text-teal-300 transition duration-500">Contact</a>
                     </div>
                     @auth
-                    |
-                    <div>
+                    <div>|
                         <a href="{{ url('/dashboard') }}"
                             class="hover:text-teal-300">Dashboard</a>
                     </div>

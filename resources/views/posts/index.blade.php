@@ -70,9 +70,9 @@
         </div>
     <div>
     <a href="{{ route('contact') }}" class="hover:text-teal-300">Contact</a>
-        </div>            @auth |
+        </div>            @auth
         <div>
-        <a href="{{ url('/dashboard') }}"  class="hover:text-teal-300">Dashboard</a>
+        | <a href="{{ url('/dashboard') }}"  class="hover:text-teal-300">Dashboard</a>
         </div>
         @endauth
     </div>
