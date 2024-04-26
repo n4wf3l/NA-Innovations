@@ -85,30 +85,28 @@
                 </div>
             </div>
 
-            <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
+            <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full w-full max-w-[1012px] mx-auto">
                 <div class="flex flex-col flex-1 px-5 max-md:max-w-full">
-                    <div class="mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
+                    <div class="text-center mb-10 mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
                         À propos de moi
                     </div>
-        <div
-            class="flex gap-5 justify-between self-center px-5 mt-20 w-full max-w-[1070px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full mb-20">
-            <img loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
-            <img loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
-            <img loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
-            <img loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
-            <img loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
-        </div>
-        </div>
+                 <div class="hidden mt-10 md:flex flex-wrap gap-5 justify-between self-center mb-20 max-w-[1070px]">
+        <img loading="lazy"
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
+            class="flex-1 w-full aspect-[1.49] fill-sky-200" /> <img loading="lazy"
+                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
+                                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
+                    <img loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
+                            class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
+                    <img loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
+                            class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
+                    <img loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
+                            class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
+                </div>
+            </div>
         </div>
 
         <section class="px-8 py-12 bg-gray-100">
@@ -211,37 +209,34 @@ Ma société s'est vue renforcée par des collaborations avec de véritables pro
 <p class="text-lg mb-6">
     Mon engagement envers l'excellence est au cœur de tout ce que je fais. Je m'efforce constamment d'atteindre les plus hauts standards de qualité dans chaque projet que j'entreprends. Que ce soit en développant des solutions logicielles innovantes, en capturant des moments précieux à travers la photographie ou en créant des visuels percutants grâce au montage graphique, je mets un point d'honneur à offrir un travail d'une qualité exceptionnelle à chaque étape du processus. Ma passion pour l'excellence se reflète dans les résultats que je livre à mes clients, faisant de moi un partenaire de confiance pour leurs projets les plus ambitieux. 🏅🚀
 </p>
-
-
     </div>
 </section>
 
+
 <footer class="bg-gray-100 py-12">
-        <div class="container mx-auto">
+    <div class="container mx-auto flex flex-col items-center">
         <div class="border-t border-gray-300"></div>
-        <div class="flex justify-between items-center mt-8">
-            <div class="w-1/2 md:w-2/3 lg:w-1/3">
+        <div class="flex flex-col md:flex-row justify-between items-center mt-8 md:items-start md:text-left">
+            <div class="w-full md:w-2/3 lg:w-1/3 mb-8 md:mb-0 text-center md:text-left">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">À propos de NA</h2>
-                <p class="text-sm text-gray-600">NA est un ingénieur software et développeur fullstack diplômé et formé à la Haute Ecole Erasmus de Bruxelles. </p>
-                <div class="flex items-center mt-6">
-                <a href="https://www.instagram.com/natechforge/" target="_blank" rel="noopener noreferrer">
-        <img loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&"
-            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
-    </a>
-    <a href="https://twitter.com/AjariNawfel" target="_blank" rel="noopener noreferrer">
-        <img loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&"
-            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
-    </a>
-    <a href="https://be.linkedin.com/in/nawfel-ajari" target="_blank" rel="noopener noreferrer">
-        <img loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&"
-            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
-    </a>
+                <p class="text-sm text-gray-600">NA est un ingénieur software et développeur fullstack diplômé en Belgique. </p>
+                <div class="flex items-center mt-6 justify-center md:justify-start">
+                    <a href="https://www.instagram.com/natechforge/" target="_blank" rel="noopener noreferrer">
+                        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
+                    </a>
+                    <a href="https://twitter.com/AjariNawfel" target="_blank" rel="noopener noreferrer">
+                        <img loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&"
+                            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
+                    </a>
+                    <a href="https://be.linkedin.com/in/nawfel-ajari" target="_blank" rel="noopener noreferrer">
+                        <img loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&"
+                            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
+                    </a>
                 </div>
             </div>
-            <div class="w-1/2 md:w-1/3 lg:w-1/4">
+            <div class="w-full md:w-1/3 lg:w-1/4 text-center md:text-left">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact</h2>
                 <div class="text-sm text-gray-600">
                     <p class="mb-2">170 Nijverheidskaai, Anderlecht</p>

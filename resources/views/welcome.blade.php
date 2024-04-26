@@ -229,7 +229,7 @@
     <div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0">
         <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">🌐 Développement web</div>
         <div class="mt-4 text-2xl text-neutral-400">
-            Plateformes de réservation | Marchés en ligne | Plateformes d'apprentissage en ligne | Sites de petites annonces | Plateformes de crowdfunding | Réseaux professionnels
+            Plateformes de réservation | Marchés en ligne | Plateformes d'apprentissage en ligne | Sites de petites annonces | Plateformes de crowdfunding | Réseaux professionnels | Google ADS | SEO
         </div>
         <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">📱 Développement mobile</div>
         <div class="mt-4 text-2xl text-neutral-400">
@@ -462,7 +462,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center mt-8 md:items-start md:text-left">
             <div class="w-full md:w-2/3 lg:w-1/3 mb-8 md:mb-0 text-center md:text-left">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">À propos de NA</h2>
-                <p class="text-sm text-gray-600">NA est un ingénieur software et développeur fullstack diplômé et formé à la Haute Ecole Erasmus de Bruxelles. </p>
+                <p class="text-sm text-gray-600">NA est un ingénieur software et développeur fullstack diplômé en Belgique. </p>
                 <div class="flex items-center mt-6 justify-center md:justify-start">
                     <a href="https://www.instagram.com/natechforge/" target="_blank" rel="noopener noreferrer">
                         <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
