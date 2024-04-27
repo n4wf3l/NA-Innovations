@@ -17,6 +17,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('/welcome.css') }}">
     @vite('resources/css/app.css')
@@ -27,7 +29,7 @@
     <div id="app">
 <div class="flex flex-col py-12 bg-gray-900">
     <!-- Logo NA with icone to Logout if Connected -->
-    <div class="flex justify-between items-center self-center w-full max-w-[1298px] px-4 relative">
+    <div class="flex justify-between items-center self-center w-full max-w-[1298px] px-4 relative" data-aos="zoom-in">
                 <div class="text-3xl font-bold text-white">NA
                     @auth 
                     <span id="logoutMenuBtn" class="ml-2 text-teal-300 cursor-pointer">
@@ -88,7 +90,7 @@
             </div>
 
             
-       <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full border border-white p-4">
+       <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full border border-white p-4" data-aos="zoom-in">
     <div class="flex flex-col flex-1 px-5 max-md:max-w-full mx-1">
         <div class="text-sm md:text-base lg:text-xl font-medium text-neutral-400 max-md:max-w-full bebas-neue-regular" style="letter-spacing: 2px">
             Web Development, Mobile, and Software | Video Editing and Graphic Design | Photography
@@ -109,7 +111,7 @@
 </div>
 
 <!-- Social media -->
-<div class="flex gap-2.5 items-start self-center px-5 mt-44 max-w-full w-[350px] max-md:mt-10 hidden md:flex">
+<div class="flex gap-2.5 items-start self-center px-5 mt-44 max-w-full w-[350px] max-md:mt-10 hidden md:flex" data-aos="zoom-in">
     <a href="https://www.instagram.com/natechforge/" class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer">    
         <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-auto max-w-[100%] aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer"/>
     </a>
@@ -125,7 +127,7 @@
 
 <!-- Our Philosophy -->
 <div class="self-center mt-48 w-full max-w-[1300px] max-md:mt-10 max-md:max-w-full border border-white p-4">
-    <div class="flex gap-5 max-md:flex-col max-md:gap-0 max-md:">
+    <div class="flex gap-5 max-md:flex-col max-md:gap-0 max-md:" data-aos="zoom-in">
         <div class="flex flex-col w-[56%] max-md:ml-0 max-md:w-full">
             <div class="flex flex-col grow px-5 text-3xl leading-10 text-white max-md:mt-10 max-md:max-w-full">
                 <div class="text-sm md:text-base lg:text-xl font-medium text-neutral-400 max-md:max-w-full bebas-neue-regular" style="letter-spacing: 2px">
@@ -157,13 +159,13 @@
     </ul>
 </div>
 
-<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" id="about">
+<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" id="about" data-aos="zoom-in">
     Our Services
 </div>
 <hr class="mt-10">
 
-<div class="grid grid-cols-1 md:grid-cols-2 mr-2 ml-2">
-    <div class="col-span-1 max-w-xl mx-auto text-gray-600 text-left md:text-left bebas-neue-regular" style="letter-spacing: 0px">
+<div class="grid grid-cols-1 md:grid-cols-2 mr-2 ml-2" data-aos="zoom-in">
+    <div class="col-span-1 max-w-xl mx-auto text-gray-600 text-left md:text-left bebas-neue-regular" style="letter-spacing: 0px" >
         <div class="mt-8 mb-6">
             <h2 class="text-3xl font-bold text-black">👉 Quality Web Development</h2>
             <p class="mt-4">Are you looking for a passionate and highly skilled web development team to bring your online ideas to life? You're in the right place. Our team of experienced web developers is ready to transform your concepts into innovative digital solutions that captivate your audience and drive your growth.</p>
@@ -210,7 +212,7 @@
 
 
 
-<div class="flex flex-col md:flex-row max-w-full mt-20 mb-20 mx-4 md:mx-20 border-4 border-teal-300 bebas-neue-regular" style="background-image: url('codingpicture.jpg'); background-size:cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;">
+<div class="flex flex-col md:flex-row max-w-full mt-20 mb-20 mx-4 md:mx-20 border-4 border-teal-300 bebas-neue-regular" style="background-image: url('codingpicture.jpg'); background-size:cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;" data-aos="zoom-in">
 <!-- Development -->
 <div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0">
     <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">🌐 Web Development</div>
@@ -250,12 +252,12 @@
 
 
 <section class="py-16 text-black bg-gray-100">
-<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" id="projects">
+<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" id="projects" data-aos="zoom-in">
     Our Projects
 </div>
 <hr class="mt-8">
-<h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular" style="letter-spacing: 2px">💼 Published Websites</h1>
-<div class="container mx-auto text-lg text-center max-md:max-w-full mt-12 p-4">
+<h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">💼 Published Websites</h1>
+<div class="container mx-auto text-lg text-center max-md:max-w-full mt-12 p-4" data-aos="zoom-in">
     <h3 class="mt-4 font-bold text-xl mb-4">Explore our diverse collection of custom-crafted websites tailored to meet the unique needs of our clients.</h3>
     <p class="mb-4">Each project is the result of close collaboration, where we leverage our expertise in design and development to bring unique visions to life. Whether for a thriving business, an innovative startup, or an art enthusiast, every site we create is infused with meticulous attention to detail and a passion for excellence.</p>
     <h3 class="mt-4 font-bold text-xl mb-4">Dive into our gallery of creations and discover the variety of styles, industries, and challenges we've successfully tackled.</h3>
@@ -265,7 +267,7 @@
     <h3 class="mt-4 font-bold text-xl mb-4">Whether you're looking for a website redesign, a robust e-commerce site, or a custom web application, we're here to turn your vision into digital reality.</h3>
     <p class="mb-4">Browse our portfolio and be inspired by the endless possibilities of web design. With us, every site is a story to tell, an experience to live, and a long-term partnership for your online success.</p>
 </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20" data-aos="zoom-in">
         @foreach ($projets as $projet)
         <div class="flex flex-col p-2 transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
             <img src="{{ Storage::url($projet->image) }}" alt="Project Image" class="w-full h-60 object-cover rounded-t-3xl">
@@ -336,8 +338,8 @@ self-center icons" alt="team icon" />
 
 
 <section class="py-16 text-black bg-gray-900">
-<h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular text-white" style="letter-spacing: 2px">🌱 Open Source Projects</h1>
-<div class="container mx-auto text-lg text-center max-md:max-w-full mt-12 p-4">
+<h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular text-white" style="letter-spacing: 2px" data-aos="zoom-in">🌱 Open Source Projects</h1>
+<div class="container mx-auto text-lg text-center max-md:max-w-full mt-12 p-4" data-aos="zoom-in">
     <h3 class="font-bold text-xl mb-4 text-white">Welcome to my collection of open source projects!</h3>
     <p class="mb-4 text-white">Each of these projects represents a milestone in my journey in the field of computer science, where I have explored and contributed to various non-profit initiatives.</p>
     <h3 class="font-bold text-xl mb-4 text-white">As a technology enthusiast,</h3>
@@ -347,7 +349,7 @@ self-center icons" alt="team icon" />
     <h3 class="font-bold text-xl mb-4 text-white">Explore these projects to understand my skills,</h3>
     <p class="mb-4 text-white">my interests, and my contribution to the open source community. Each project represents a step forward in my career in computer science and an opportunity for continuous learning. Join me in this exploration of technology, innovation, and knowledge sharing!</p>
 </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20" data-aos="zoom-in">
         @foreach ($academicProjects as $academicProjet)
         <div class="flex flex-col p-2 transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
             <img src="{{ Storage::url($academicProjet->image) }}" alt="Project Image" class="w-full h-60 object-cover rounded-t-3xl">
@@ -415,10 +417,10 @@ self-center icons" alt="team icon" />
 </section>
 
 <section class="flex flex-col items-center justify-center bg-gray-900"  style="background-image: url('codingpicture.jpg'); background-size:cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;">
-    <h1 class="text-7xl font-semibold text-white md:text-4xl text-center mt-10 bebas-neue-regular" style="letter-spacing: 2px" id="about">
+    <h1 class="text-7xl font-semibold text-white md:text-4xl text-center mt-10 bebas-neue-regular" style="letter-spacing: 2px" id="about" data-aos="zoom-in">
     🤝Collab's
     </h1>
-    <div class="flex flex-wrap justify-center w-full max-w-[1070px] md:flex-col md:max-w-full md:mt-10">
+    <div class="flex flex-wrap justify-center w-full max-w-[1070px] md:flex-col md:max-w-full md:mt-10" data-aos="zoom-in">
         <div class="flex flex-col items-center">
             <a href="https://www.bashir-studios.com/">
                 <img src="logomouise.png" alt="Logo" class="transition-transform transform hover:scale-105" />
@@ -426,13 +428,13 @@ self-center icons" alt="team icon" />
             <p class="text-white">Bashir Studio's</p>
         </div>
     </div>
-    <div class="mt-14 text-3xl font-semibold text-neutral-400 md:max-w-full md:text-2xl bebas-neue-regular" style="letter-spacing: 2px">
+    <div class="mt-14 text-3xl font-semibold text-neutral-400 md:max-w-full md:text-2xl bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">
         Let's discuss!
     </div>
-    <div class="mt-5 text-base whitespace-nowrap text-neutral-400 md:mt-3">
+    <div class="mt-5 text-base whitespace-nowrap text-neutral-400 md:mt-3" data-aos="zoom-in">
         <em>Looking to start a project?</em>
     </div>
-    <a href="{{ route('contact') }}" class="px-10 py-5 mt-8 md:mt-5 text-base leading-6 text-teal-300 hover:bg-teal-300 hover:text-white transition-colors duration-300 uppercase rounded-[29.5px] focus:outline-none md:px-5 border-2 border-teal-300 border-solid rounded-[29.5px]">
+    <a href="{{ route('contact') }}" class="px-10 py-5 mt-8 md:mt-5 text-base leading-6 text-teal-300 hover:bg-teal-300 hover:text-white transition-colors duration-300 uppercase rounded-[29.5px] focus:outline-none md:px-5 border-2 border-teal-300 border-solid rounded-[29.5px]" data-aos="zoom-in">
         Contact us
     </a>
     <div class="text-3xl font-bold text-neutral-400 mt-5">NA</div>

@@ -13,7 +13,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('/contact.css') }}">
     @vite('resources/css/app.css')
@@ -23,7 +24,7 @@
 <div id="app">
         <!-- Header avec le logo et le menu hamburger (qui remplace les nav links sur les petits écrans) -->
         <div class="flex flex-col py-12 bg-gray-900">
-            <div class="flex justify-between items-center self-center mt-1 w-full max-w-[1298px] px-4 relative"> <!-- Ajoutez relative ici pour positionner les éléments absolus par rapport à celui-ci -->
+            <div class="flex justify-between items-center self-center mt-1 w-full max-w-[1298px] px-4 relative" data-aos="zoom-in"> <!-- Ajoutez relative ici pour positionner les éléments absolus par rapport à celui-ci -->
                 <div class="text-3xl font-bold text-white">NA
                     @auth <!-- Vérifie si l'utilisateur est connecté -->
                     <span id="logoutMenuBtn" class="ml-2 text-teal-300 cursor-pointer"> <!-- Ajoutez un ID pour le bouton de déconnexion -->
@@ -78,7 +79,7 @@
 </div>
 </div>
 
-    <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full w-full max-w-[1012px] mx-auto">
+    <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full w-full max-w-[1012px] mx-auto" data-aos="zoom-in">
                 <div class="flex flex-col flex-1 px-5 max-md:max-w-full">
                     <div class="text-center mb-10 mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
                         Contact
@@ -102,10 +103,10 @@
             </div>
         </div>
 
-        <div class="flex flex-col items-center px-8 py-12 max-md:px-5 bg-gray-900 text-white">
+        <div class="flex flex-col items-center px-8 py-12 max-md:px-5 bg-gray-900 text-white" data-aos="zoom-in">
     <div class="w-full max-w-[1267px] border border-white p-6">
         <div class="flex flex-col gap-5 md:flex-row md:justify-between max-md:flex-col max-md:gap-0">
-            <div class="flex flex-col items-start text-center md:max-w-[50%] max-md:max-w-full">
+            <div class="flex flex-col items-start text-left md:max-w-[50%] max-md:max-w-full">
                 <div class="text-6xl font-bold max-md:text-4xl">
                     Let’s Talk
                 </div>
@@ -116,18 +117,18 @@
 </div>
                 <div class="mt-14 text-3xl font-bold max-md:mt-10">Email</div>
                 <div class="mt-2"><i class="fas fa-envelope"></i> info@nawfelajari.be</div>
-                <div class="mt-14 text-3xl font-bold max-md:mt-10">Social Media</div>
+                <div class="mt-14 text-3xl font-bold max-md:mt-10 mb-5">Social Media</div>
                 <div class="flex flex-col md:flex-row gap-5">
                     <div class="flex items-center mb-2">
-                        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="w-[50px] mt-2 bg-teal-300 rounded-full" />
+                        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="bg-white rounded-full aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
                         <a href="https://www.instagram.com/natechforge/" class="ml-2 hover:text-teal-300 transition duration-150">Instagram</a>
                     </div>
                     <div class="flex items-center mb-2">
-                        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&" class="w-[50px] bg-teal-300 rounded-full" />
+                        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&" class="bg-white rounded-full aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
                         <a href="https://twitter.com/AjariNawfel" class="ml-2 hover:text-teal-300 transition duration-150">Twitter</a>
                     </div>
-                    <div class="flex items-center mb-5 mt-2 md:mt-0">
-                        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&" class="w-[50px] mt-2 bg-teal-300 rounded-full" />
+                    <div class="flex items-center mb-2">
+                        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&" class="bg-white rounded-full aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
                         <a href="https://be.linkedin.com/in/nawfel-ajari" class="ml-2 hover:text-teal-300 transition duration-150">LinkedIn</a>
                     </div>
                 </div>
@@ -162,7 +163,7 @@
         </div>
     </div>
 </div>
-
+</div>
 
 <footer class="bg-gray-100 py-12">
     <div class="container mx-auto flex flex-col items-center">

@@ -44,3 +44,5 @@ document.getElementById("scrollToTop").addEventListener("click", function (e) {
         behavior: "smooth",
     });
 });
+
+AOS.init();

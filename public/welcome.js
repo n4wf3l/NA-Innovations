@@ -121,3 +121,5 @@ document
         var messagesList = document.querySelector(".messages-list");
         messagesList.style.animationPlayState = "running";
     });
+
+AOS.init();

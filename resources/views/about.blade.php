@@ -13,6 +13,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('/about.css') }}">
     @vite('resources/css/app.css')
@@ -24,7 +27,7 @@
         <!-- Header avec le logo et le menu hamburger (qui remplace les nav links sur les petits écrans) -->
         <div class="flex flex-col py-12 bg-gray-900">
             <div class="flex justify-between items-center self-center mt-1 w-full max-w-[1298px] px-4 relative"> <!-- Ajoutez relative ici pour positionner les éléments absolus par rapport à celui-ci -->
-                <div class="text-3xl font-bold text-white">NA
+                <div class="text-3xl font-bold text-white" data-aos="zoom-in">NA
                     @auth <!-- Vérifie si l'utilisateur est connecté -->
                     <span id="logoutMenuBtn" class="ml-2 text-teal-300 cursor-pointer"> <!-- Ajoutez un ID pour le bouton de déconnexion -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block transform rotate-90"
@@ -57,7 +60,7 @@
  
                 <div id="navLinks"
     class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap bebas-neue-regular"
-    style="letter-spacing: 2px">
+    style="letter-spacing: 2px" data-aos="zoom-in">
     <div>
         <a href="/" class="hover:text-teal-300 transition duration-500">Home</a>
     </div>
@@ -84,7 +87,7 @@
 </div>
 </div>
 
-            <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full w-full max-w-[1012px] mx-auto">
+            <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full w-full max-w-[1012px] mx-auto" data-aos="zoom-in">
                 <div class="flex flex-col flex-1 px-5 max-md:max-w-full">
                     <div class="text-center mb-10 mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
                         ABOUT ME
@@ -109,7 +112,7 @@
         </div>
 
         <section class="px-8 py-12 bg-gray-100">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-4xl mx-auto" data-aos="zoom-in">
     <h2 class="text-3xl font-bold mb-6 text-center">Who am I?</h2>
 <p class="text-lg mb-6 text-center">
     Hello, my name is Nawfel Ajari and I am a computer engineer passionate about creating captivating and functional online experiences. By merging creativity with solid technical skills, I strive to bring innovative digital concepts to life. My goal is to create websites and mobile applications that not only attract visually but also offer optimal performance and exceptional user-friendliness.
@@ -159,7 +162,7 @@
     </div>
 </section>
 
-      <section class="px-8 py-12 text-white">
+      <section class="px-8 py-12 text-white" data-aos="zoom-in">
         <div class="max-w-4xl mx-auto">
         <h2 class="text-3xl font-bold mb-6 text-center">Specialization</h2>
 
@@ -188,7 +191,7 @@
 </div>
 
 <section class="px-8 py-12 bg-gray-100">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-4xl mx-auto" data-aos="zoom-in">
         <h2 class="text-3xl font-bold mb-6 text-center">My vision</h2>
 
         <p class="text-lg mb-6 text-center">As a computer engineer, my passion lies in creating innovative and highly functional digital experiences. I strive to blend creativity with solid technical expertise to shape software solutions that surpass expectations.
@@ -203,21 +206,21 @@
     <p class="text-lg mb-6 text-center">
     Additionally, I am constantly seeking learning and improvement, exploring new technologies and expanding my skills to remain at the forefront of innovation. My ultimate goal is to deliver world-class solutions that truly transform the digital landscape.
     </p>
-    <h2 class="text-3xl font-bold mb-6 text-center">Distinctive</h2>
+    <h2 class="text-3xl font-bold mb-6 text-center" data-aos="zoom-in">Distinctive</h2>
 
-    <p class="text-lg mb-6">
+    <p class="text-lg mb-6" data-aos="zoom-in">
     As a computer engineer, I stand out for my exceptional versatility. With extensive technical skills, I am proficient in software development, graphic editing, and photography. This ability to juggle multiple domains allows me to offer comprehensive and integrated solutions to my clients. Moreover, my fluency in French, Dutch, and English enables me to effectively communicate with a diverse clientele, enhancing my reach and ability to deliver quality projects internationally. 🌐
     </p>
 
-    <p class="text-lg mb-6">
+    <p class="text-lg mb-6" data-aos="zoom-in">
     In Belgium, I am the only professional offering specialized services in the field of football. Leveraging my partnership with the Belgian Football Federation and my academic projects carried out in collaboration with renowned clubs, I have gained a deep understanding of the Belgian football ecosystem. This unique expertise allows me to design tailor-made solutions that meet the specific needs of clubs, fans, and sports organizations, while staying ahead of the latest trends and technologies. ⚽
     </p>
 
-    <p class="text-lg mb-6">
+    <p class="text-lg mb-6" data-aos="zoom-in">
     Quality and price are essential elements in any project, and I strive to offer an unmatched combination of both. As a industry professional, I am committed to providing high-quality solutions that exceed my clients' expectations while remaining competitive in terms of pricing. My value-added approach ensures that my clients not only benefit from outstanding results but also from excellent value for money that optimizes their return on investment. 💼💰
     </p>
 
-    <p class="text-lg mb-6">
+    <p class="text-lg mb-6" data-aos="zoom-in">
     My commitment to excellence is at the core of everything I do. I constantly strive to achieve the highest standards of quality in every project I undertake. Whether developing innovative software solutions, capturing precious moments through photography, or creating impactful visuals through graphic editing, I pride myself on delivering work of exceptional quality at every stage of the process. My passion for excellence is reflected in the results I deliver to my clients, making me a trusted partner for their most ambitious projects. 🏅🚀
     </p>
 </div>
