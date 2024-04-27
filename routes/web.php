@@ -67,6 +67,7 @@ Route::post('/messages', [MessageController::class, 'store'])->name('messages.st
 Route::get('/', [MessageController::class, 'welcomeMessages'])->name('welcome');
 
 
+
 Route::get('/contact', [App\Http\Controllers\ContactController::class, 'index'])->name('contact');
 Route::post('/send-email', [ContactController::class, 'sendEmail'])->name('send-email');
 

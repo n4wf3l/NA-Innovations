@@ -33,7 +33,22 @@ class ContactController extends Controller
             ->withInput();
     }
 
-    Mail::to('nawfel.ajari@student.ehb.be')->send(new ContactFormMail($request->all()));
+    
+    $formData = $request->all();
+
+    $serviceOptions = [
+        'service1' => 'Web Development',
+        'service2' => 'Mobile Development',
+        'service3' => 'Software Development',
+        'service4' => 'Video Editing',
+        'service5' => 'Graphic Design',
+        'service6' => 'Photography',
+    ];
+    $selectedService = $serviceOptions[$request->input('service')];
+    $formData['service'] = $selectedService;
+    
+    $recipientEmail = 'ajari.nawfel@gmail.com';
+    Mail::to($recipientEmail)->send(new ContactFormMail($formData));
     return redirect()->back()->with('success', 'Votre e-mail a été envoyé avec succès ! Nous vous contacterons bientôt.');
 }
 
