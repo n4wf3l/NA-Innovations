@@ -67,8 +67,8 @@
         <a href="#about" class="hover:text-teal-300 transition duration-500">Services</a>
     </div>
     <div>
-        <a href="#projects" class="hover:text-teal-300 transition duration-500">Projects</a>
-    </div>
+    <a href="#projects" class="hover:text-teal-300">Projects</a>
+</div>
     <div>
         <a href="{{ route('about') }}" class="hover:text-teal-300 transition duration-500">About</a>
     </div>
@@ -250,7 +250,7 @@
 
 
 <section class="py-16 text-black bg-gray-100">
-<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" id="about">
+<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" id="projects">
     Our Projects
 </div>
 <hr class="mt-8">
