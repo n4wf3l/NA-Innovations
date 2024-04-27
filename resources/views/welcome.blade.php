@@ -19,6 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spinkit/2.0.1/spinkit.min.css">
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('/welcome.css') }}">
     @vite('resources/css/app.css')
@@ -92,17 +93,17 @@
             
        <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full border border-white p-4" data-aos="zoom-in">
     <div class="flex flex-col flex-1 px-5 max-md:max-w-full mx-1">
-        <div class="text-sm md:text-base lg:text-xl font-medium text-neutral-400 max-md:max-w-full bebas-neue-regular" style="letter-spacing: 2px">
+        <div class="text-sm md:text-base lg:text-xl font-medium text-neutral-400 max-md:max-w-full bebas-neue-regular hover:text-teal-300 transition-colors duration-700" style="letter-spacing: 2px">
             Web Development, Mobile, and Software | Video Editing and Graphic Design | Photography
         </div>
-        <div class="mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
+        <div class="mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl hover:text-teal-300 transition-colors duration-700">
             We’re creative
             <br />
             digital studio.
         </div>
         <div class="mt-11 text-xs lg:text-sm font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl flex items-center">
             <img src="logokbvb.png" class="w-10 md:w-12 lg:w-16" alt="">
-            <p class="mt-10 ml-3 text-sm lg:text-base bebas-neue-regular" style="letter-spacing: 1px">Specialized in Football Software and API's</p>
+            <p class="mt-10 ml-3 text-sm lg:text-base bebas-neue-regular hover:text-teal-300 transition-colors duration-700" style="letter-spacing: 1px">Specialized in Football Software and API's</p>
         </div>
     </div>
     <button id="background-toggle-button" class="toggle-button">
@@ -126,11 +127,11 @@
 
 
 <!-- Our Philosophy -->
-<div class="self-center mt-48 w-full max-w-[1300px] max-md:mt-10 max-md:max-w-full border border-white p-4">
+<div class="self-center mt-48 w-full max-w-[1300px] max-md:mt-10 max-md:max-w-full border border-white p-4 mb-40">
     <div class="flex gap-5 max-md:flex-col max-md:gap-0 max-md:" data-aos="zoom-in">
         <div class="flex flex-col w-[56%] max-md:ml-0 max-md:w-full">
             <div class="flex flex-col grow px-5 text-3xl leading-10 text-white max-md:mt-10 max-md:max-w-full">
-                <div class="text-sm md:text-base lg:text-xl font-medium text-neutral-400 max-md:max-w-full bebas-neue-regular" style="letter-spacing: 2px">
+                <div class="text-sm md:text-base lg:text-xl font-medium text-neutral-400 max-md:max-w-full bebas-neue-regular hover:text-teal-300 transition-colors duration-700" style="letter-spacing: 2px">
                     Our Philosophy
                 </div>
                 <div class="mt-11 font-bold max-md:mt-10 max-md:max-w-full text-sm md:text-base lg:text-xl">
@@ -144,7 +145,7 @@
                 </a>
             </div>
         </div>
-        <div class="flex justify-center items-center max-w-full h-[474px] max-md:w-full">
+        <div class="flex justify-center items-center max-w-full h-[474px] max-md:w-full hover:bg-gray-800 hover:rounded-full cursor-pointer">
             <img src="/logonai.png" alt="">
         </div>
     </div>
@@ -212,9 +213,9 @@
 
 
 
-<div class="flex flex-col md:flex-row max-w-full mt-20 mb-20 mx-4 md:mx-20 border-4 border-teal-300 bebas-neue-regular" style="background-image: url('codingpicture.jpg'); background-size:cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;" data-aos="zoom-in">
+<div class="flex flex-col md:flex-row max-w-full mt-20 mb-20 mx-4 md:mx-20 border-4 border-teal-300 bebas-neue-regular" style="background-image: url('codingpicture.jpg'); background-size:cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;">
 <!-- Development -->
-<div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0">
+<div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0 " data-aos="zoom-in">
     <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">🌐 Web Development</div>
     <div class="mt-4 text-2xl text-neutral-400">
         Reservation Platforms | Online Markets | Online Learning Platforms | Classified Ads Websites | Crowdfunding Platforms | Professional Networks | Google ADS | SEO
@@ -230,7 +231,7 @@
 </div>
 
 <!-- Graphic Design -->
-<div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0">
+<div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0" data-aos="zoom-in">
     <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">🎥 Video Editing</div>
     <div class="mt-4 text-2xl text-neutral-400">
         Narrative Editing | Promotional Editing | Advertising Editing | Documentary Editing | Experimental Editing
@@ -242,7 +243,7 @@
 </div>
 
 <!-- Strategy -->
-<div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0">
+<div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0" data-aos="zoom-in">
     <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">📷 Photography</div>
     <div class="mt-4 text-2xl text-neutral-400 mb-5">
         Portrait | Documentary Photography | Sports
@@ -478,9 +479,6 @@ self-center icons" alt="team icon" />
         <div class="border-t border-gray-300 mt-12"></div>
     </div>
 </footer>
-
-
-
 <script src="{{ asset('/welcome.js') }}"></script>
 </body>
 

@@ -92,6 +92,9 @@
                     <div class="text-center mb-10 mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
                         ABOUT ME
                     </div>
+                    <div class="text-center mb-10 mt-11 text-4xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-2xl">
+                    <em>In every success story, there is an individual with a unique vision and deep values.</em>
+                    </div>
                  <div class="hidden mt-10 md:flex flex-wrap gap-5 justify-between self-center mb-20 max-w-[1070px]">
         <img loading="lazy"
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
@@ -129,14 +132,15 @@
 
 <!-- Logos -->
 <div class="flex justify-center items-center mb-10">
-        <div class="flex flex-col items-center mr-10">
-            <img src="justlogo.png" alt="Logo 2023" class="h-24 mb-2">
-            <p class="text-sm text-center">2023 - 2024</p>
-        </div>
-        <div class="flex flex-col items-center">
-            <img src="logonai.png" alt="Logo 2024" class="h-24 mb-2">
-            <p class="text-sm text-center">Since 2024</p>
-        </div>
+<div class="flex flex-col items-center mr-10">
+    <img src="justlogo.png" alt="Logo 2023" class="h-24 mb-2 transition-transform duration-300 transform hover:scale-110">
+    <p class="text-sm text-center">2023 - 2024</p>
+</div>
+<div class="flex flex-col items-center">
+    <img src="logonai.png" alt="Logo 2024" class="h-24 mb-2 transition-transform duration-300 transform hover:scale-110">
+    <p class="text-sm text-center">Since 2024</p>
+</div>
+
     </div>
 
     <h2 class="text-3xl font-bold mb-6 text-center">Skills</h2>

@@ -84,6 +84,9 @@
                     <div class="text-center mb-10 mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
                         Contact
                     </div>
+                    <div class="text-center mb-10 mt-11 text-4xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-2xl">
+                    <em>Reach out to start your project today!</em>
+                    </div>
                  <div class="hidden mt-10 md:flex flex-wrap gap-5 justify-between self-center mb-20 max-w-[1070px]">
         <img loading="lazy"
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"

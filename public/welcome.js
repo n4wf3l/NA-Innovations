@@ -123,3 +123,23 @@ document
     });
 
 AOS.init();
+
+window.addEventListener("load", function () {
+    document.body.classList.add("loaded");
+});
+
+doorElement.addEventListener("animationend", () => {
+    // Supprimez la classe qui désactive le défilement
+    document.body.classList.remove("no-scroll");
+
+    // Ajoutez l'élément "NA" au DOM lorsque la porte s'ouvre
+    const naText = document.createElement("div");
+    naText.textContent = "NA";
+    naText.classList.add("na-text");
+    document.body.appendChild(naText);
+
+    // Supprimez l'élément "NA" après un certain délai (par exemple, 1000 ms)
+    setTimeout(() => {
+        naText.remove();
+    }, 1000);
+});
