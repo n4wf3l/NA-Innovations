@@ -18,6 +18,8 @@
 </head>
 
 <body>
+@if(auth()->check())
+
 <div id="app">
         <!-- Header avec le logo et le menu hamburger (qui remplace les nav links sur les petits écrans) -->
         <div class="flex flex-col py-12 bg-gray-900">
@@ -310,6 +312,10 @@
     </div>
 </footer>
 <script src="{{ asset('/dashboard.js') }}"></script>
+
+@else
+<script>window.location = "{{ route('login') }}";</script>
+@endif
 </body>
 
 </html>

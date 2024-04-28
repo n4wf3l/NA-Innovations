@@ -162,6 +162,19 @@
                         Send
                     </button>
                 </form>
+                @if(session('success'))
+    <div class="alert alert-success" id="successMessage" style="background-color: green; color: white; position: fixed; top: 0; left: 0; right: 0; text-align: center; padding: 10px;">
+        {{ session('success') }}
+    </div>
+@endif
+
+<script>
+    setTimeout(function() {
+        var successMessage = document.getElementById('successMessage');
+        successMessage.style.display = 'none';
+    }, 3000);
+</script>
+
             </div>
         </div>
     </div>

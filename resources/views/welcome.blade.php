@@ -152,7 +152,7 @@
 </div>
 </div>
 
-<div class="messages-container bg-teal-300 text-white text-3xl bebas-neue-regular" style="letter-spacing:3px">
+<div class="messages-container bg-teal-300 text-white text-3xl bebas-neue-regular" style="letter-spacing:3px" id="about">
     <ul class="messages-list">
         @foreach($messages as $message)
             <li>{{ $message->content }}</li>
@@ -160,7 +160,7 @@
     </ul>
 </div>
 
-<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" id="about" data-aos="zoom-in">
+<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">
     Our Services
 </div>
 <hr class="mt-10">
@@ -252,8 +252,8 @@
 </div>
 
 
-<section class="py-16 text-black bg-gray-100">
-<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" id="projects" data-aos="zoom-in">
+<section class="py-16 text-black bg-gray-100" id="projects">
+<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">
     Our Projects
 </div>
 <hr class="mt-8">
@@ -270,25 +270,20 @@
 </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20" data-aos="zoom-in">
         @foreach ($projets as $projet)
-        <div class="flex flex-col p-2 transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
-            <img src="{{ Storage::url($projet->image) }}" alt="Project Image" class="w-full h-60 object-cover rounded-t-3xl">
+        <div class="flex flex-col p-2 relative transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
+    <img src="{{ Storage::url($projet->image) }}" alt="Project Image" class="w-full h-60 object-cover rounded-t-3xl">
+    @auth <!-- Check if the user is authenticated -->
+        <form id="deleteForm{{ $projet->id }}" action="{{ route('projets.destroy', $projet->id) }}" method="POST" class="absolute top-2 right-2">
+            @csrf
+            @method('DELETE')
+            <button type="submit" onclick="deleteProjet('{{ $projet->id }}')" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">Delete</button>
+        </form>
+    @endauth
             <div class="p-2 flex flex-row">
                 <img src="/seo-and-web.png" width="20px" class="self-center icons mr-2" alt="team icon" />
                 <h4 class="text-lg font-semibold">{{ $projet->nom_societe }}</h4>
             </div>
             <div class="flex flex-row items-end justify-between">
-                <!-- Delete Button -->
-                @auth
-                <form id="deleteForm{{ $projet->id }}" action="{{ route('projets.destroy', $projet->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" onclick="deleteProjet('{{ $projet->id }}')" class="mr-3 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:bg-red-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </form>
-                @endauth
                 <div class="flex flex-col mr-4">
                     <h5 class="text-xl font-bold ml-4">
                         {{ $projet->type_societe }}
@@ -299,7 +294,7 @@
                         <img src="/page.png" width="20px" class="self-center icons mr-2" alt="team icon" />
                         {{ $projet->type_site }}
                     </span>
-                    <span class="text-sm text-gray-500 flex flex-row">
+                    <span class="text-sm text-gray-500 flex flex-row mt-1">
                         <img src="/location.png" width="20px" class="self-center icons mr-2" alt="team icon" />
                         {{ $projet->lieu }}
                     </span>
@@ -308,7 +303,7 @@
             <div class="flex flex-row items-center justify-between px-6 py-2 my-4 bg-gray-100 rounded-xl">
                 <div class="flex flex-col">
                     <img src="/speedometer.png" class="self-center icons" alt="development time icon" />
-                    <span class="ml-3">{{ $projet->jours_developpement }} J</span>
+                    <span class="ml-2">{{ $projet->jours_developpement }} D</span>
                 </div>
                 <div class="flex flex-col">
                     <img src="/coding.png" width="40px" class="self-center icons" alt="team icon" />
@@ -326,11 +321,11 @@
                     <img src="/users.png" class="
 
 self-center icons" alt="team icon" />
-                    <span> {{ $projet->nombre_collaborateurs }} personnes</span>
+                    <span class="ml-3"> {{ $projet->nombre_collaborateurs }}</span>
                 </div>
             </div>
             <a href="{{ $projet->lien }}" class="bebas-neue-regular transition duration-150 hover:duration-150 block w-full px-4 py-2 font-medium text-center text-black transition-colors border-2 border-black rounded-3xl hover:bg-teal-300 hover:text-white" style="letter-spacing:2px">
-                VISIT
+                VISIT THE WEBSITE
             </a>
         </div>
         @endforeach
@@ -352,25 +347,21 @@ self-center icons" alt="team icon" />
 </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20" data-aos="zoom-in">
         @foreach ($academicProjects as $academicProjet)
-        <div class="flex flex-col p-2 transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
-            <img src="{{ Storage::url($academicProjet->image) }}" alt="Project Image" class="w-full h-60 object-cover rounded-t-3xl">
+        <div class="flex flex-col p-2 relative transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
+    <img src="{{ Storage::url($academicProjet->image) }}" alt="AcademicProject Image" class="w-full h-60 object-cover rounded-t-3xl">
+    @auth <!-- Check if the user is authenticated -->
+        <form id="deleteForm{{ $academicProjet->id }}" action="{{ route('academic_projets.destroy', $academicProjet->id) }}" method="POST" class="absolute top-2 right-2">
+            @csrf
+            @method('DELETE')
+            <button type="submit" onclick="deleteAcademicProjet('{{ $academicProjet->id }}')" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">Delete</button>
+        </form>
+    @endauth
+
             <div class="p-2 flex flex-row">
                 <img src="/seo-and-web.png" width="20px" class="self-center icons mr-2" alt="team icon" />
                 <h4 class="text-lg font-semibold">{{ $academicProjet->nom_societe }}</h4>
             </div>
             <div class="flex flex-row items-end justify-between">
-                <!-- Delete Button -->
-                @auth
-                <form id="deleteForm{{ $academicProjet->id }}" action="{{ route('academic_projets.destroy', $academicProjet->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="button" onclick="deleteAcademicProjet('{{ $academicProjet->id }}')" class="mr-3 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:bg-red-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </form>
-                @endauth
                 <div class="flex flex-col mr-4">
                     <h5 class="text-xl font-bold ml-4">
                         {{ $academicProjet->type_societe }}
@@ -381,7 +372,7 @@ self-center icons" alt="team icon" />
                         <img src="/page.png" width="20px" class="self-center icons mr-2" alt="team icon" />
                         {{ $academicProjet->type_site }}
                     </span>
-                    <span class="text-sm text-gray-500 flex flex-row">
+                    <span class="text-sm text-gray-500 flex flex-row mt-1">
                         <img src="/location.png" width="20px" class="self-center icons mr-2" alt="team icon" />
                         {{ $academicProjet->lieu }}
                     </span>
@@ -390,11 +381,11 @@ self-center icons" alt="team icon" />
             <div class="flex flex-row items-center justify-between px-6 py-2 my-4 bg-gray-100 rounded-xl">
                 <div class="flex flex-col">
                     <img src="/speedometer.png" class="self-center icons" alt="development time icon" />
-                    <span class="ml-3">{{ $academicProjet->jours_developpement }} J</span>
+                    <span class="ml-2">{{ $academicProjet->jours_developpement }} D</span>
                 </div>
                 <div class="flex flex-col">
                     <img src="/coding.png" width="40px" class="self-center icons" alt="team icon" />
-                    <span class="ml-2">
+                    <span class="ml-1">
                         {{ $academicProjet->langage_programmation }}
                     </span>
                 </div>
@@ -406,11 +397,11 @@ self-center icons" alt="team icon" />
                 </div>
                 <div class="flex flex-col">
                     <img src="/users.png" class="self-center icons" alt="team icon" />
-                    <span> {{ $academicProjet->nombre_collaborateurs }} personnes</span>
+                    <span class="ml-3"> {{ $academicProjet->nombre_collaborateurs }}</span>
                 </div>
             </div>
             <a href="{{ $academicProjet->lien }}" class="bebas-neue-regular transition duration-150 hover:duration-150 block w-full px-4 py-2 font-medium text-center text-black transition-colors border-2 border-black rounded-3xl hover:bg-teal-300 hover:text-white" style="letter-spacing:3px">
-               TAKE A LOOK
+               TAKE A LOOK ON GITHUB
             </a>
         </div>
         @endforeach

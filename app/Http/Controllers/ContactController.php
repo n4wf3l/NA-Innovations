@@ -49,7 +49,7 @@ class ContactController extends Controller
     
     $recipientEmail = 'ajari.nawfel@gmail.com';
     Mail::to($recipientEmail)->send(new ContactFormMail($formData));
-    return redirect()->back()->with('success', 'Votre e-mail a été envoyé avec succès ! Nous vous contacterons bientôt.');
+    return redirect()->back()->with('success', 'Your email has been successfully sent! We will contact you shortly.');
 }
 
 }

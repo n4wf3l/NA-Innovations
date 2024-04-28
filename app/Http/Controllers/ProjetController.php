@@ -77,7 +77,8 @@ class ProjetController extends Controller
         // Ensuite, stockez $lien dans la base de données
         $projet->lien = $lien;
 
-        return redirect('/dashboard')->with('success', 'Projet ajouté avec succès!');
+        return redirect('/#projects')->with('success', 'Projet ajouté avec succès!');
+
     }
     
 }

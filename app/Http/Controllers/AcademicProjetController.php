@@ -51,7 +51,7 @@ class AcademicProjetController extends Controller
         $projet->image = $path;
         $projet->save(); 
 
-        return redirect('/dashboard')->with('success', 'Projet ajouté avec succès!');
+        return redirect('/#projects')->with('success', 'Projet ajouté avec succès!');
     }
 
     public function destroy($id)
