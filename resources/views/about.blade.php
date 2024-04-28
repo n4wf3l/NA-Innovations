@@ -77,7 +77,7 @@
         <a href="{{ route('posts.index') }}" class="hover:text-teal-300 transition duration-500">News</a>
     </div>
     <div>
-        <a href="{{ route('contact') }}" class="hover:text-teal-300 transition duration-500">Contact</a>
+        <a href="{{ route('contact') }}" class="hover:text-teal-300 transition duration-500 border border-solid rounded-[20.5px] p-3"> <i class="fas fa-envelope"></i> Contact</a>
     </div>
     @auth
     <div>
@@ -143,46 +143,46 @@
 
     </div>
 
-    <h2 class="text-3xl font-bold mb-6 text-center">Skills</h2>
+    <h2 class="text-3xl font-bold mb-6 text-center" data-aos="zoom-in">Skills</h2>
 
-<p class="text-lg mb-6">
+<p class="text-lg mb-6" data-aos="zoom-in">
     As a passionate developer, I have acquired strong technical expertise and a proven ability to create effective software solutions. Here is an overview of my technical skills:
 </p>
 
 <ul class="list-disc pl-6 mb-6">
-    <li class="text-lg mb-4">
+    <li class="text-lg mb-4" data-aos="zoom-in">
         👨🏽‍💻 Diverse Portfolio on GitHub: My commitment to solving complex problems and teamwork is reflected in my numerous projects available on GitHub. Each of these projects demonstrates my ability to develop efficient and innovative software solutions.
     </li>
-    <li class="text-lg mb-4">
+    <li class="text-lg mb-4" data-aos="zoom-in">
         📚 Strong Foundation and Growth Ambition: Graduated in programming from Erasmushogeschool Brussel, I have acquired a solid foundation in the fundamental principles of software development. Currently, I specialize in software engineering, with particular expertise in Laravel 10 PHP, to deepen my skills and understanding of software systems.
     </li>
-    <li class="text-lg mb-4">
+    <li class="text-lg mb-4" data-aos="zoom-in">
         💻 Technical Skills: I am proficient in a variety of programming languages, including JavaScript (React, Node.js), C#, and Java for Android. Additionally, I am comfortable with modern frameworks that allow me to develop robust and scalable web and mobile applications.
     </li>
-    <li class="text-lg mb-4">
+    <li class="text-lg mb-4" data-aos="zoom-in">
         🌐 Language Mastery and Adaptability: In addition to my technical skills, I am also fluent in English, Dutch, and French, enabling me to adapt and collaborate effectively in multicultural environments.
     </li>
 </ul>
     </div>
 </section>
 
-      <section class="px-8 py-12 text-white" data-aos="zoom-in">
+      <section class="px-8 py-12 text-white">
         <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-bold mb-6 text-center">Specialization</h2>
+        <h2 class="text-3xl font-bold mb-6 text-center" data-aos="zoom-in">Specialization</h2>
 
-        <p class="text-lg mb-6 text-right">
+        <p class="text-lg mb-6 text-right" data-aos="zoom-in">
         My specialization focuses on all aspects related to sports systems, with a particular emphasis on football. My expertise extends to the creation of various platforms, such as sports writing websites, portals for football or futsal clubs, as well as administration systems for these clubs.
     </p>
 
-    <p class="text-lg mb-6">
+    <p class="text-lg mb-6" data-aos="zoom-in">
         I am capable of designing advanced features, such as the team of the week, using data from APIs specialized in the field of football. These features aim to provide an immersive and interactive experience to users, while meeting the specific needs of clubs and fans.
     </p>
 
-    <p class="text-lg mb-6 text-right">
+    <p class="text-lg mb-6 text-right" data-aos="zoom-in">
         Most of my academic projects completed at Erasmushogeschool were developed in collaboration with the Belgian Football Federation. Some of these projects are available on my GitHub profile, providing an insight into my work and skills in this exciting field.
     </p>
 
-    <div class="flex justify-center mt-20 mb-20">
+    <div class="flex justify-center mt-20 mb-20" data-aos="zoom-in">
         <div class="videoContainer">
             <iframe allowfullscreen="allowfullscreen" class="mainVideo" controls="controls"
                 src="https://www.youtube.com/embed/AHnA9_U4K5o"></iframe>

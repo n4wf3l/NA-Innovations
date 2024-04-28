@@ -79,7 +79,7 @@
         <a href="{{ route('posts.index') }}" class="hover:text-teal-300 transition duration-500">News</a>
     </div>
     <div>
-        <a href="{{ route('contact') }}" class="hover:text-teal-300 transition duration-500">Contact</a>
+        <a href="{{ route('contact') }}" class="hover:text-teal-300 transition duration-500 border border-solid rounded-[20.5px] p-3"> <i class="fas fa-envelope"></i> Contact</a>
     </div>
     @auth
     <div>|
@@ -160,62 +160,62 @@
     </ul>
 </div>
 
-<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">
+<div class="text-center ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">
     Our Services
 </div>
 <hr class="mt-10">
 
-<div class="grid grid-cols-1 md:grid-cols-2 mr-2 ml-2" data-aos="zoom-in">
-    <div class="col-span-1 max-w-xl mx-auto text-gray-600 text-left md:text-left bebas-neue-regular" style="letter-spacing: 0px" >
-        <div class="mt-8 mb-6">
-            <h2 class="text-3xl font-bold text-black">👉 Quality Web Development</h2>
-            <p class="mt-4">Are you looking for a passionate and highly skilled web development team to bring your online ideas to life? You're in the right place. Our team of experienced web developers is ready to transform your concepts into innovative digital solutions that captivate your audience and drive your growth.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 mr-2 ml-2">
+    <div class="col-span-1 max-w-xl mx-auto text-gray-600 text-left md:text-left" style="letter-spacing: 0px" >
+        <div class="mt-8 mb-6" data-aos="zoom-in">
+            <h2 class="text-3xl bebas-neue-regular text-black">👉 Quality Web Development</h2>
+            <p class="text-2xl mt-4">Are you looking for a passionate and highly skilled web development team to bring your online ideas to life? You're in the right place. Our team of experienced web developers is ready to transform your concepts into innovative digital solutions that captivate your audience and drive your growth.</p>
         </div>
 
-        <div class="mb-6">
-            <h3 class="text-2xl font-bold text-black">💻🔧 Web Development Expertise</h3>
-            <p class="mt-4">As a graduate in programming and specialized in web development, our expertise goes beyond just creating websites. We have a passion for technological innovation and a deep understanding of the latest industry trends and technologies. Whether you need a dynamic corporate website, a robust e-commerce platform, or an interactive web application, we are here to meet your needs with creativity and expertise.</p>
+        <div class="mb-6" data-aos="zoom-in">
+            <h3 class="text-3xl bebas-neue-regular text-black">💻🔧 Web Development Expertise</h3>
+            <p class="text-2xl mt-4">As a graduate in programming and specialized in web development, our expertise goes beyond just creating websites. We have a passion for technological innovation and a deep understanding of the latest industry trends and technologies. Whether you need a dynamic corporate website, a robust e-commerce platform, or an interactive web application, we are here to meet your needs with creativity and expertise.</p>
         </div>
 
-        <div class="mb-6">
-            <h3 class="text-2xl font-bold text-black">⚽📊 Football and API Specialization</h3>
-            <p class="mt-4">But our commitment to excellence doesn't stop there. We also have a unique specialization in football-related software and APIs. With our passion for football and mastery of cutting-edge technologies, we are able to create tailor-made solutions for clubs, fan platforms, and content providers in the football industry. Whether it's integrating real-time data, analyzing player performance, or creating interactive fan experiences, we are ready to tackle any challenge to help you achieve your goals.</p>
+        <div class="mb-6" data-aos="zoom-in">
+            <h3 class="text-3xl bebas-neue-regular text-black">⚽📊 Football and API Specialization</h3>
+            <p class="text-2xl mt-4">But our commitment to excellence doesn't stop there. We also have a unique specialization in football-related software and APIs. With our passion for football and mastery of cutting-edge technologies, we are able to create tailor-made solutions for clubs, fan platforms, and content providers in the football industry. Whether it's integrating real-time data, analyzing player performance, or creating interactive fan experiences, we are ready to tackle any challenge to help you achieve your goals.</p>
         </div>
 
-        <div class="mb-8">
-            <h3 class="text-2xl font-bold text-black">🤝👥 Let's Collaborate</h3>
-            <p class="mt-4">Partner with us for an exceptional collaboration that combines web development expertise with a sharp specialization in the exciting field of football. Together, let's create an online presence that stands out and delivers an immersive experience to your users.</p>
+        <div class="mb-8" data-aos="zoom-in">
+            <h3 class="text-3xl bebas-neue-regular text-black">🤝👥 Let's Collaborate</h3>
+            <p class="text-2xl mt-4">Partner with us for an exceptional collaboration that combines web development expertise with a sharp specialization in the exciting field of football. Together, let's create an online presence that stands out and delivers an immersive experience to your users.</p>
         </div>
     </div>
 
-    <div class="col-span-1 max-w-xl mx-auto text-gray-600 text-left md:text-leftà bebas-neue-regular" style="letter-spacing: 0px">
-        <div class="mt-8 mb-6">
-            <h2 class="text-3xl font-bold text-black">👉 Video Editing Services</h2>
-            <p class="mt-4">Our video editing team offers a full range of services to meet your visual content creation needs. From narrative editing to promotional montages to ads and documentaries, we leverage our expertise to produce captivating, high-quality videos that grab your audience's attention.</p>
+    <div class="col-span-1 max-w-xl mx-auto text-gray-600 text-left md:text-left" style="letter-spacing: 0px">
+        <div class="mt-8 mb-6" data-aos="zoom-in">
+            <h2 class="text-3xl bebas-neue-regular text-black">👉 Video Editing Services</h2>
+            <p class="text-2xl mt-4">Our video editing team offers a full range of services to meet your visual content creation needs. From narrative editing to promotional montages to ads and documentaries, we leverage our expertise to produce captivating, high-quality videos that grab your audience's attention.</p>
         </div>
 
-        <div class="mt-8 mb-6">
-            <h2 class="text-2xl font-bold text-black">💡🎨 Graphic Design Services</h2>
-            <p class="mt-4">As graphic design experts, we offer creative solutions for all your visual communication needs. From logo design to infographics to UI/UX design, our talented team helps you create a strong visual identity and deliver exceptional user experiences.</p>
+        <div class="mt-8 mb-6" data-aos="zoom-in">
+            <h2 class="text-3xl bebas-neue-regular text-black">💡🎨 Graphic Design Services</h2>
+            <p class="text-2xl mt-4">As graphic design experts, we offer creative solutions for all your visual communication needs. From logo design to infographics to UI/UX design, our talented team helps you create a strong visual identity and deliver exceptional user experiences.</p>
         </div>
 
-        <div class="mt-8 mb-6">
-            <h2 class="text-2xl font-bold text-black">🎬📣 Narrative and Promotional Editing Services</h2>
-            <p class="mt-4">Our narrative and promotional editing services are designed to help you tell compelling stories and effectively promote your products or services. Whether you need editing for a short film, documentary, advertisement, or promotional video, we work with you to create impactful video content that meets your marketing goals and engages your target audience.</p>
+        <div class="mt-8 mb-6" data-aos="zoom-in">
+            <h2 class="text-3xl bebas-neue-regular text-black">🎬📣 Narrative and Promotional Editing Services</h2>
+            <p class="text-2xl mt-4">Our narrative and promotional editing services are designed to help you tell compelling stories and effectively promote your products or services. Whether you need editing for a short film, documentary, advertisement, or promotional video, we work with you to create impactful video content that meets your marketing goals and engages your target audience.</p>
         </div>
 
-        <div class="mt-8 mb-6">
-            <h2 class="text-2xl font-bold text-black">🖌️✨ Design and Creative Services</h2>
-            <p class="mt-4">In addition to our video editing and graphic design services, we offer an extensive range of design and creative services to meet all your creative needs. Whether you're looking for logo designs, posters, business cards, or custom design solutions, our experienced team is here to help bring your ideas to life and create eye-catching, professional visuals.</p>
+        <div class="mt-8 mb-6" data-aos="zoom-in">
+            <h2 class="text-3xl bebas-neue-regular text-black">🖌️✨ Design and Creative Services</h2>
+            <p class="text-2xl mt-4">In addition to our video editing and graphic design services, we offer an extensive range of design and creative services to meet all your creative needs. Whether you're looking for logo designs, posters, business cards, or custom design solutions, our experienced team is here to help bring your ideas to life and create eye-catching, professional visuals.</p>
         </div>
     </div>
 </div>
 
 
 
-<div class="flex flex-col md:flex-row max-w-full mt-20 mb-20 mx-4 md:mx-20 border-4 border-teal-300 bebas-neue-regular" style="background-image: url('codingpicture.jpg'); background-size:cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;">
+<div class="flex flex-col md:flex-row max-w-full mt-20 mb-20 mx-4 md:mx-20 border-4 border-teal-300 bebas-neue-regular p-5" style="background-image: url('codingpicture.jpg'); background-size:cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;">
 <!-- Development -->
-<div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0 " data-aos="zoom-in">
+<div class="w-full md:w-1/3 text-center p-5 md:pl-0 md:pr-0" data-aos="zoom-in">
     <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">🌐 Web Development</div>
     <div class="mt-4 text-2xl text-neutral-400">
         Reservation Platforms | Online Markets | Online Learning Platforms | Classified Ads Websites | Crowdfunding Platforms | Professional Networks | Google ADS | SEO
@@ -253,7 +253,7 @@
 
 
 <section class="py-16 text-black bg-gray-100" id="projects">
-<div class="ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">
+<div class="text-center ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">
     Our Projects
 </div>
 <hr class="mt-8">
@@ -268,10 +268,10 @@
     <h3 class="mt-4 font-bold text-xl mb-4">Whether you're looking for a website redesign, a robust e-commerce site, or a custom web application, we're here to turn your vision into digital reality.</h3>
     <p class="mb-4">Browse our portfolio and be inspired by the endless possibilities of web design. With us, every site is a story to tell, an experience to live, and a long-term partnership for your online success.</p>
 </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20" data-aos="zoom-in">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20">
         @foreach ($projets as $projet)
         <div class="flex flex-col p-2 relative transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
-    <img src="{{ Storage::url($projet->image) }}" alt="Project Image" class="w-full h-60 object-cover rounded-t-3xl">
+    <img src="{{ Storage::url($projet->image) }}" alt="Project Image" class="w-full h-60 object-cover rounded-t-3xl" data-aos="zoom-in">
     @auth <!-- Check if the user is authenticated -->
         <form id="deleteForm{{ $projet->id }}" action="{{ route('projets.destroy', $projet->id) }}" method="POST" class="absolute top-2 right-2">
             @csrf
@@ -345,10 +345,10 @@ self-center icons" alt="team icon" />
     <h3 class="font-bold text-xl mb-4 text-white">Explore these projects to understand my skills,</h3>
     <p class="mb-4 text-white">my interests, and my contribution to the open source community. Each project represents a step forward in my career in computer science and an opportunity for continuous learning. Join me in this exploration of technology, innovation, and knowledge sharing!</p>
 </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20" data-aos="zoom-in">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20">
         @foreach ($academicProjects as $academicProjet)
         <div class="flex flex-col p-2 relative transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
-    <img src="{{ Storage::url($academicProjet->image) }}" alt="AcademicProject Image" class="w-full h-60 object-cover rounded-t-3xl">
+    <img src="{{ Storage::url($academicProjet->image) }}" alt="AcademicProject Image" class="w-full h-60 object-cover rounded-t-3xl" data-aos="zoom-in">
     @auth <!-- Check if the user is authenticated -->
         <form id="deleteForm{{ $academicProjet->id }}" action="{{ route('academic_projets.destroy', $academicProjet->id) }}" method="POST" class="absolute top-2 right-2">
             @csrf

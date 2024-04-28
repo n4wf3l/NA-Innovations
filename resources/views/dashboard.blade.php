@@ -73,7 +73,7 @@
     </div>
 
     <div>
-        <a href="{{ route('contact') }}" class="hover:text-teal-300">Contact</a>
+        <a href="{{ route('contact') }}" class="hover:text-teal-300 border border-solid rounded-[20.5px] p-3"> <i class="fas fa-envelope"></i> Contact</a>
     </div>
 
     <div>
@@ -219,22 +219,6 @@
             <div class="mb-4">
                 <label for="description" class="block text-sm font-medium text-gray-700">Description:</label>
                 <textarea name="description" id="description" class="border border-gray-300 p-2 rounded-md w-full">{{ old('description') }}</textarea>
-            </div>
-            <div class="mb-4">
-                <label for="font-size" class="block text-sm font-medium text-gray-700">Font Size:</label>
-                <select name="font-size" id="font-size" class="border border-gray-300 p-2 rounded-md">
-                    <option value="small">Small</option>
-                    <option value="medium">Medium</option>
-                    <option value="large">Large</option>
-                </select>
-            </div>
-            <div class="mb-4">
-                <label for="text-color" class="block text-sm font-medium text-gray-700">Text Color:</label>
-                <input type="color" name="text-color" id="text-color" class="border border-gray-300 p-2 rounded-md">
-            </div>
-            <div class="mb-4">
-                <label for="underline" class="block text-sm font-medium text-gray-700">Underline:</label>
-                <input type="checkbox" name="underline" id="underline" class="border border-gray-300 p-2 rounded-md">
             </div>
             <div class="mb-4">
                 <label for="photo" class="block text-sm font-medium text-gray-700">Photo:</label>

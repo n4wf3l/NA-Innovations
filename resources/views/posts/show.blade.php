@@ -73,7 +73,7 @@
 </div>
 
 <div>
-    <a href="{{ route('contact') }}" class="hover:text-teal-300">Contact</a>
+    <a href="{{ route('contact') }}" class="hover:text-teal-300 border border-solid rounded-[20.5px] p-3"> <i class="fas fa-envelope"></i> Contact</a>
 </div>
 
 @auth
@@ -89,24 +89,22 @@
                     <div class="mt-11 text-7xl font-bold text-center text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
                     {{ $post->subject }}
                     </div>
-        <div
-            class="flex gap-5 justify-between self-center px-5 mt-20 w-full max-w-[1070px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full mb-20">
-            <img loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
-            <img loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
-            <img loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
-            <img loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
-            <img loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
-                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
-        </div>
+                    <div class="hidden mt-10 md:flex flex-wrap gap-5 justify-between self-center mb-20 max-w-[1070px]">
+        <img loading="lazy"
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
+            class="flex-1 w-full aspect-[1.49] fill-sky-200" /> <img loading="lazy"
+                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
+                                class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
+                    <img loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
+                            class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
+                    <img loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
+                            class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
+                    <img loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/88cfe832740fbad72af762269deeb7853d23d146e7bb9ebd24562abdc05bfcb1?apiKey=d3784f4c52b7403885832573b3287702&"
+                            class="flex-1 shrink-0 w-full aspect-[1.49] fill-sky-200" />
+                </div>
         </div>
         </div>
 
@@ -115,7 +113,9 @@
         <div class="max-w-4xl mx-auto px-4 py-8">
             <h1 class="text-3xl font-bold mb-4 text-center" data-aos="zoom-in">{{ $post->title }}</h1>
             <p class="text-white mb-2 text-center font-semibold" data-aos="zoom-in"><em>{{ $post->subject }}</em></p>
-            <p class="text-gray-300 mb-6 text-center" data-aos="zoom-in"><strong></p>
+            <p class="text-gray-300 mb-6 text-center" data-aos="zoom-in"><strong>                         <div class="mb-10 inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white font-bold text-lg">
+    
+            </div></p>
             <div class="text-gray-300 mb-6 leading-relaxed" data-aos="zoom-in">
             BRUSSELS —</strong> {!! nl2br(e($post->description)) !!}
             </div>

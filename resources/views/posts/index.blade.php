@@ -75,7 +75,7 @@
 </div>
 
 <div>
-    <a href="{{ route('contact') }}" class="hover:text-teal-300">Contact</a>
+    <a href="{{ route('contact') }}" class="hover:text-teal-300 border border-solid rounded-[20.5px] p-3"> <i class="fas fa-envelope"></i> Contact</a>
 </div>
 
 @auth
@@ -121,6 +121,9 @@
                     <div class="bg-white overflow-hidden shadow-md rounded-lg transition-transform transform hover:scale-105 hover:bg-gray-200">
                         @if ($post->photo)
                             <img class="w-full h-64 object-cover object-center" src="{{ asset('storage/' . $post->photo) }}" alt="Post Image">
+                            <div class=" inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white font-bold text-lg">
+
+            </div>
                         @endif
                         <div class="px-6 py-4">
                             <div class="font-bold text-xl mb-2 text-black">{{ $post->title }}</div>

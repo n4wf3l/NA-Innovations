@@ -69,7 +69,7 @@
         <a href="{{ route('posts.index') }}" class="hover:text-teal-300">News</a>
     </div>
     <div>
-        <a href="{{ route('contact') }}" class="text-teal-300 hover:text-teal-300 transition duration-500">Contact</a>
+        <a href="{{ route('contact') }}" class="text-teal-300 hover:text-teal-300 transition duration-500 border border-solid rounded-[20.5px] p-3"> <i class="fas fa-envelope"></i>  Contact</a>
     </div>
     @auth
     <div>
@@ -162,6 +162,7 @@
                         Send
                     </button>
                 </form>
+                <div id="loadingMessage" class="hidden absolute top-0 left-0 right-0 bg-orange-900 text-white text-center py-2"><em>Sending email...</em></div>
                 @if(session('success'))
     <div class="alert alert-success" id="successMessage" style="background-color: green; color: white; position: fixed; top: 0; left: 0; right: 0; text-align: center; padding: 10px;">
         {{ session('success') }}
@@ -173,6 +174,10 @@
         var successMessage = document.getElementById('successMessage');
         successMessage.style.display = 'none';
     }, 3000);
+
+    document.querySelector('form').addEventListener('submit', function() {
+        document.getElementById('loadingMessage').classList.remove('hidden');
+    });
 </script>
 
             </div>
