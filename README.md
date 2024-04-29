@@ -34,8 +34,44 @@ Now open your browser on [http://127.0.0.1:8000] and enjoy our website!
     MAIL_PASSWORD=//yourpassword//
     MAIL_ENCRYPTION=ssl
     MAIL_FROM_ADDRESS=//youremail//
-    MAIL_FROM_NAME="nawfelajari.be
-    "
+    MAIL_FROM_NAME="nawfelajari.be"
+
+    The XAMPP software is essential to activate the Apache and MySQL modules. By clicking the 'Admin' button next to start for MySQL, you will have access to the database with PhpMyAdmin.
+
+    ### About Laravel
+
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+
+-   [Simple, fast routing engine](https://laravel.com/docs/routing).
+-   [Powerful dependency injection container](https://laravel.com/docs/container).
+-   Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+-   Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+-   Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+-   [Robust background job processing](https://laravel.com/docs/queues).
+-   [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
+
+### Learning Laravel
+
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+
+You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+
+## Programming languages, technologies and frameworks
+
+The programming language used in this project is PHP. A portion of the project has been generated using Laravel 10 framework. For the frontend, we utilized Tailwind to simplify the design of our views.
+
+-   Programming languages : PHP
+-   Framework : Laravel 20
+-   Database management system : PhpMyAdmin (via XAMPP)
+  
+-   Styling : HTML, CSS and JS
+-   JavaScript Framework: Ajax
+-   Styling frameworks : Tailwind
+  
 ## Usage
 
 Once the application is installed and running, you can use it to showcase your deployed sites and academic projects on the welcome page. The about page provides information about you or your business. You can manage your blog posts using the CRUD functionality accessible via the dashboard. Additionally, visitors can contact you using the functional email sender on the contact page.
