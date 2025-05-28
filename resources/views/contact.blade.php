@@ -52,24 +52,26 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
                 </button>
-                <div id="navLinks" class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap bebas-neue-regular" style="letter-spacing: 2px">
+                <div id="navLinks"
+    class="hidden md:flex gap-5 justify-between pr-5 text-lg font-medium text-white whitespace-nowrap bebas-neue-regular"
+    style="letter-spacing: 2px" data-aos="zoom-in">
     <div>
-        <a href="{{ url('/') }}" class="hover:text-teal-300">Home</a>
+        <a href="/" class="hover:text-teal-300 transition duration-500">Home</a>
     </div>
     <div>
-        <a href="{{ url('/') }}#about" class="hover:text-teal-300">Services</a>
+        <a href="{{ url('/') }}#about" class="hover:text-teal-300 transition duration-500">Services</a>
     </div>
     <div>
-        <a href="{{ url('/') }}#projects" class="hover:text-teal-300">Projects</a>
+        <a href="{{ url('/') }}#projects" class="hover:text-teal-300 transition duration-500">Projects</a>
     </div>
     <div>
-        <a href="{{ route('about') }}" class="hover:text-teal-300">About</a>
+        <a href="{{ route('about') }}" class="hover:text-teal-300 transition duration-500">About</a>
     </div>
     <div>
-        <a href="{{ route('posts.index') }}" class="hover:text-teal-300">News</a>
+        <a href="{{ route('posts.index') }}" class="hover:text-teal-300 transition duration-500">News</a>
     </div>
     <div>
-        <a href="{{ route('contact') }}" class="text-teal-300 hover:text-teal-300 transition duration-500 border border-solid rounded-[20.5px] p-3"> <i class="fas fa-envelope"></i>  Contact</a>
+        <a href="{{ route('contact') }}" class="text-teal-300 hover:text-teal-300 transition duration-500 border border-solid rounded-[20.5px] p-3"> <i class="fas fa-envelope"></i> Contact</a>
     </div>
     @auth
     <div>
@@ -79,7 +81,7 @@
 </div>
 </div>
 
-    <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full w-full max-w-[1012px] mx-auto" data-aos="zoom-in">
+    <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-64 max-md:max-w-full w-full max-w-[1012px] mx-auto" data-aos="zoom-in">
                 <div class="flex flex-col flex-1 px-5 max-md:max-w-full">
                     <div class="text-center mb-10 mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
                         Contact
@@ -119,7 +121,7 @@
     <p class="mt-5">Have questions or special requirements? Feel free to reach out to us using the form below. We're here to address any concerns you may have and tailor our services to meet your unique needs. Your satisfaction is our priority, and we're committed to providing you with the best possible solutions for your project.</p>
 </div>
                 <div class="mt-14 text-3xl font-bold max-md:mt-10">Email</div>
-                <div class="mt-2"><i class="fas fa-envelope"></i> info@nawfelajari.be</div>
+                <div class="mt-2"><i class="fas fa-envelope"></i> info@nainnovations.be</div>
                 <div class="mt-14 text-3xl font-bold max-md:mt-10 mb-5">Social Media</div>
                 <div class="flex flex-col md:flex-row gap-5">
                     <div class="flex items-center mb-2">
@@ -155,7 +157,7 @@
                         <option value="service6">Photography</option>
                     </select>
                     <div class="mt-7 max-md:max-w-full">Estimated Budget</div>
-                    <input type="number" name="budget" class="mt-4 bg-neutral-100 h-[46px] max-md:max-w-full text-gray-900" required placeholder="€600" />
+                    <input type="number" name="budget" class="mt-4 bg-neutral-100 h-[46px] max-md:max-w-full text-gray-900" required placeholder="€0" />
                     <div class="mt-7 max-md:max-w-full">Message</div>
                     <textarea name="message" class="mt-4 bg-neutral-100 h-[165px] max-md:max-w-full text-gray-900" required placeholder="Hello..."></textarea>
                     <button type="submit" class="justify-center self-start px-7 py-5 mt-8 text-base leading-6 text-teal-300 uppercase whitespace-nowrap border-2 border-teal-300 border-solid rounded-[29.5px] max-md:px-5 max-md:mt-10 hover:bg-teal-300 hover:text-white transition-colors duration-300">
@@ -213,7 +215,7 @@
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact</h2>
                 <div class="text-sm text-gray-600">
                     <p class="mb-2">170 Nijverheidskaai, Anderlecht</p>
-                    <p class="mb-2">info@nawfelajari.be</p>
+                    <p class="mb-2">info@nainnovations.be</p>
                 </div>
             </div>
         </div>

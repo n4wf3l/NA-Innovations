@@ -90,7 +90,7 @@
             <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full w-full max-w-[1012px] mx-auto" data-aos="zoom-in">
                 <div class="flex flex-col flex-1 px-5 max-md:max-w-full">
                     <div class="text-center mb-10 mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl">
-                        ABOUT ME
+                        About Me
                     </div>
                     <div class="text-center mb-10 mt-11 text-4xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-2xl">
                     <em>In every success story, there is an individual with a unique vision and deep values.</em>
@@ -132,16 +132,21 @@
 
 <!-- Logos -->
 <div class="flex justify-center items-center mb-10">
-<div class="flex flex-col items-center mr-10">
-    <img src="justlogo.png" alt="Logo 2023" class="h-24 mb-2 transition-transform duration-300 transform hover:scale-110">
-    <p class="text-sm text-center">2023 - 2024</p>
-</div>
-<div class="flex flex-col items-center">
-    <img src="logonai.png" alt="Logo 2024" class="h-24 mb-2 transition-transform duration-300 transform hover:scale-110">
-    <p class="text-sm text-center">Since 2024</p>
-</div>
-
+    <div class="flex flex-col items-center mr-10">
+        <img src="justlogo.png" alt="Logo 2023" class="h-24 mb-2 transition-transform duration-300 transform hover:scale-110">
+        <p class="text-sm text-center">2023 - 2024</p>
     </div>
+    <div class="flex flex-col items-center mr-10">
+        <img src="logonai.png" alt="Logo 2024" class="h-24 mb-2 transition-transform duration-300 transform hover:scale-110">
+        <p class="text-sm text-center">2024 - 2025</p>
+    </div>
+    <div class="flex flex-col items-center">
+        <div class="h-24 w-24 rounded-full overflow-hidden flex items-center justify-center bg-gray-900 mb-2 transition-transform duration-300 transform hover:scale-110">
+            <img src="NAlogo.jpg" alt="Logo 2025" class="object-contain h-full">
+        </div>
+        <p class="text-sm text-center">Since 2025</p>
+    </div>
+</div>
 
     <h2 class="text-3xl font-bold mb-6 text-center" data-aos="zoom-in">Skills</h2>
 
@@ -258,7 +263,7 @@
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact</h2>
                 <div class="text-sm text-gray-600">
                     <p class="mb-2">170 Nijverheidskaai, Anderlecht</p>
-                    <p class="mb-2">info@nawfelajari.be</p>
+                    <p class="mb-2">info@nainnovations.be</p>
                 </div>
             </div>
         </div>

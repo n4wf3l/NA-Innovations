@@ -177,7 +177,7 @@
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact</h2>
                 <div class="text-sm text-gray-600">
                     <p class="mb-2">170 Nijverheidskaai, Anderlecht</p>
-                    <p class="mb-2">info@nawfelajari.be</p>
+                    <p class="mb-2">info@nainnovations.be</p>
                 </div>
             </div>
         </div>

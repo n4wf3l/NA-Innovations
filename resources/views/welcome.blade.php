@@ -96,13 +96,13 @@
         <div class="text-sm md:text-base lg:text-xl font-medium text-neutral-400 max-md:max-w-full bebas-neue-regular hover:text-teal-300 transition-colors duration-700" style="letter-spacing: 2px">
             Web Development, Mobile, and Software | Video Editing and Graphic Design | Photography
         </div>
-        <div class="mt-11 text-9xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl hover:text-teal-300 transition-colors duration-700">
-            We’re creative
+        <div class="mt-11 text-8xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl hover:text-teal-300 transition-colors duration-700">
+            Innovative solutions
             <br />
-            digital studio.
+            designed for you.
         </div>
         <div class="mt-11 text-xs lg:text-sm font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl flex items-center">
-            <img src="logokbvb.png" class="w-10 md:w-12 lg:w-16" alt="">
+    
             <p class="mt-10 ml-3 text-sm lg:text-base bebas-neue-regular hover:text-teal-300 transition-colors duration-700" style="letter-spacing: 1px">Specialized in Football Software and API's</p>
         </div>
     </div>
@@ -112,43 +112,16 @@
 </div>
 
 <!-- Social media -->
-<div class="flex gap-2.5 items-start self-center px-5 mt-44 max-w-full w-[350px] max-md:mt-10 hidden md:flex" data-aos="zoom-in">
-    <a href="https://www.instagram.com/natechforge/" class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer">    
-        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-auto max-w-[100%] aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer"/>
+<div class="flex gap-2.5 items-start self-center px-5 mt-10 max-w-full w-[350px] max-md:mt-10 hidden md:flex" data-aos="zoom-in">
+    <a href="https://www.instagram.com/natechforge/" class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer group">    
+        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-auto max-w-[100%] aspect-square brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"/>
     </a>
-    <a href="https://twitter.com/AjariNawfel" class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer">   
-        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-auto max-w-[100%] aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer" />
+    <a href="https://twitter.com/AjariNawfel" class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer group">   
+        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-auto max-w-[100%] aspect-square brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" />
     </a>
-    <a href="https://be.linkedin.com/in/nawfel-ajari" class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer">   
-        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-auto max-w-[100%] aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer" />
+    <a href="https://be.linkedin.com/in/nawfel-ajari" class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer group">   
+        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-auto max-w-[100%] aspect-square brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" />
     </a>
-</div>
-
-
-
-<!-- Our Philosophy -->
-<div class="self-center mt-48 w-full max-w-[1300px] max-md:mt-10 max-md:max-w-full border border-white p-4 mb-40">
-    <div class="flex gap-5 max-md:flex-col max-md:gap-0 max-md:" data-aos="zoom-in">
-        <div class="flex flex-col w-[56%] max-md:ml-0 max-md:w-full">
-            <div class="flex flex-col grow px-5 text-3xl leading-10 text-white max-md:mt-10 max-md:max-w-full">
-                <div class="text-sm md:text-base lg:text-xl font-medium text-neutral-400 max-md:max-w-full bebas-neue-regular hover:text-teal-300 transition-colors duration-700" style="letter-spacing: 2px">
-                    Our Philosophy
-                </div>
-                <div class="mt-11 font-bold max-md:mt-10 max-md:max-w-full text-sm md:text-base lg:text-xl">
-                    My approach is rooted in the belief that consistency and creativity are essential in building a strong brand.
-                </div>
-                <div class="mt-16 font-bold max-md:mt-10 max-md:max-w-full text-sm md:text-base lg:text-xl">
-                    By combining my skills in web and mobile development with my expertise in photography, video editing, and logo design, I am committed to creating holistic marketing strategies that tell a compelling story and leave a lasting impression.
-                </div>
-                <a href="/about" class="justify-center self-start px-7 py-5 mt-20 text-base leading-6 text-teal-300 uppercase whitespace-nowrap border-2 border-teal-300 border-solid rounded-[29.5px] max-md:px-5 max-md:mt-10 hover:bg-teal-300 hover:text-white transition-colors duration-300">
-                    About Us
-                </a>
-            </div>
-        </div>
-        <div class="flex justify-center items-center max-w-full h-[474px] max-md:w-full hover:bg-gray-800 hover:rounded-full cursor-pointer">
-            <img src="/logonai.png" alt="">
-        </div>
-    </div>
 </div>
 </div>
 
@@ -169,44 +142,44 @@
     <div class="col-span-1 max-w-xl mx-auto text-gray-600 text-left md:text-left" style="letter-spacing: 0px" >
         <div class="mt-8 mb-6" data-aos="zoom-in">
             <h2 class="text-3xl bebas-neue-regular text-black">👉 Quality Web Development</h2>
-            <p class="text-2xl mt-4">Are you looking for a passionate and highly skilled web development team to bring your online ideas to life? You're in the right place. Our team of experienced web developers is ready to transform your concepts into innovative digital solutions that captivate your audience and drive your growth.</p>
+            <p class="text-2xl mt-4">Transforming your ideas into innovative digital solutions with our experienced development team.</p>
         </div>
 
         <div class="mb-6" data-aos="zoom-in">
             <h3 class="text-3xl bebas-neue-regular text-black">💻🔧 Web Development Expertise</h3>
-            <p class="text-2xl mt-4">As a graduate in programming and specialized in web development, our expertise goes beyond just creating websites. We have a passion for technological innovation and a deep understanding of the latest industry trends and technologies. Whether you need a dynamic corporate website, a robust e-commerce platform, or an interactive web application, we are here to meet your needs with creativity and expertise.</p>
+            <p class="text-2xl mt-4">From corporate websites to e-commerce platforms and interactive applications, we deliver solutions built with the latest technologies.</p>
         </div>
 
         <div class="mb-6" data-aos="zoom-in">
             <h3 class="text-3xl bebas-neue-regular text-black">⚽📊 Football and API Specialization</h3>
-            <p class="text-2xl mt-4">But our commitment to excellence doesn't stop there. We also have a unique specialization in football-related software and APIs. With our passion for football and mastery of cutting-edge technologies, we are able to create tailor-made solutions for clubs, fan platforms, and content providers in the football industry. Whether it's integrating real-time data, analyzing player performance, or creating interactive fan experiences, we are ready to tackle any challenge to help you achieve your goals.</p>
+            <p class="text-2xl mt-4">Custom software and APIs for clubs, fan platforms, and content providers with real-time data integration and performance analytics.</p>
         </div>
 
         <div class="mb-8" data-aos="zoom-in">
             <h3 class="text-3xl bebas-neue-regular text-black">🤝👥 Let's Collaborate</h3>
-            <p class="text-2xl mt-4">Partner with us for an exceptional collaboration that combines web development expertise with a sharp specialization in the exciting field of football. Together, let's create an online presence that stands out and delivers an immersive experience to your users.</p>
+            <p class="text-2xl mt-4">Partner with us to create an exceptional online presence that delivers immersive experiences to your users.</p>
         </div>
     </div>
 
     <div class="col-span-1 max-w-xl mx-auto text-gray-600 text-left md:text-left" style="letter-spacing: 0px">
         <div class="mt-8 mb-6" data-aos="zoom-in">
             <h2 class="text-3xl bebas-neue-regular text-black">👉 Video Editing Services</h2>
-            <p class="text-2xl mt-4">Our video editing team offers a full range of services to meet your visual content creation needs. From narrative editing to promotional montages to ads and documentaries, we leverage our expertise to produce captivating, high-quality videos that grab your audience's attention.</p>
+            <p class="text-2xl mt-4">Professional video editing for narratives, promotional content, ads, and documentaries that captivate your audience.</p>
         </div>
 
         <div class="mt-8 mb-6" data-aos="zoom-in">
             <h2 class="text-3xl bebas-neue-regular text-black">💡🎨 Graphic Design Services</h2>
-            <p class="text-2xl mt-4">As graphic design experts, we offer creative solutions for all your visual communication needs. From logo design to infographics to UI/UX design, our talented team helps you create a strong visual identity and deliver exceptional user experiences.</p>
+            <p class="text-2xl mt-4">Creative solutions from logo design to UI/UX, helping you build a strong visual identity that stands out.</p>
         </div>
 
         <div class="mt-8 mb-6" data-aos="zoom-in">
-            <h2 class="text-3xl bebas-neue-regular text-black">🎬📣 Narrative and Promotional Editing Services</h2>
-            <p class="text-2xl mt-4">Our narrative and promotional editing services are designed to help you tell compelling stories and effectively promote your products or services. Whether you need editing for a short film, documentary, advertisement, or promotional video, we work with you to create impactful video content that meets your marketing goals and engages your target audience.</p>
+            <h2 class="text-3xl bebas-neue-regular text-black">🎬📣 Narrative and Promotional Editing</h2>
+            <p class="text-2xl mt-4">Compelling storytelling and effective promotion through expertly crafted video content tailored to your marketing goals.</p>
         </div>
 
         <div class="mt-8 mb-6" data-aos="zoom-in">
             <h2 class="text-3xl bebas-neue-regular text-black">🖌️✨ Design and Creative Services</h2>
-            <p class="text-2xl mt-4">In addition to our video editing and graphic design services, we offer an extensive range of design and creative services to meet all your creative needs. Whether you're looking for logo designs, posters, business cards, or custom design solutions, our experienced team is here to help bring your ideas to life and create eye-catching, professional visuals.</p>
+            <p class="text-2xl mt-4">Comprehensive design solutions for logos, posters, business cards, and custom visuals that bring your ideas to life.</p>
         </div>
     </div>
 </div>
@@ -258,15 +231,9 @@
 </div>
 <hr class="mt-8">
 <h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">💼 Published Websites</h1>
-<div class="container mx-auto text-lg text-center max-md:max-w-full mt-12 p-4" data-aos="zoom-in">
-    <h3 class="mt-4 font-bold text-xl mb-4">Explore our diverse collection of custom-crafted websites tailored to meet the unique needs of our clients.</h3>
-    <p class="mb-4">Each project is the result of close collaboration, where we leverage our expertise in design and development to bring unique visions to life. Whether for a thriving business, an innovative startup, or an art enthusiast, every site we create is infused with meticulous attention to detail and a passion for excellence.</p>
-    <h3 class="mt-4 font-bold text-xl mb-4">Dive into our gallery of creations and discover the variety of styles, industries, and challenges we've successfully tackled.</h3>
-    <p class="mb-4">From sleek and minimalist websites to interactive and dynamic platforms, our portfolio reflects our commitment to delivering personalized and innovative solutions.</p>
-    <h3 class="mt-4 font-bold text-xl mb-4">Every website we design is more than just an online presence.</h3>
-    <p class="mb-4">It's a showcase for your brand, an experience for your visitors, and a powerful tool for achieving your business goals. We pride ourselves on understanding the unique needs of each client and creating sites that captivate, convert, and inspire.</p>
-    <h3 class="mt-4 font-bold text-xl mb-4">Whether you're looking for a website redesign, a robust e-commerce site, or a custom web application, we're here to turn your vision into digital reality.</h3>
-    <p class="mb-4">Browse our portfolio and be inspired by the endless possibilities of web design. With us, every site is a story to tell, an experience to live, and a long-term partnership for your online success.</p>
+<div class="container mx-auto text-lg text-center max-md:max-w-full mt-8 p-4" data-aos="zoom-in">
+    <p class="mb-4">Explore our portfolio of custom websites designed with precision and creativity for businesses across various industries.</p>
+    <p class="mb-4">Each project showcases our commitment to quality, attention to detail, and ability to transform client visions into powerful online experiences.</p>
 </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20">
         @foreach ($projets as $projet)
@@ -335,15 +302,9 @@ self-center icons" alt="team icon" />
 
 <section class="py-16 text-black bg-gray-900">
 <h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular text-white" style="letter-spacing: 2px" data-aos="zoom-in">🌱 Open Source Projects</h1>
-<div class="container mx-auto text-lg text-center max-md:max-w-full mt-12 p-4" data-aos="zoom-in">
-    <h3 class="font-bold text-xl mb-4 text-white">Welcome to my collection of open source projects!</h3>
-    <p class="mb-4 text-white">Each of these projects represents a milestone in my journey in the field of computer science, where I have explored and contributed to various non-profit initiatives.</p>
-    <h3 class="font-bold text-xl mb-4 text-white">As a technology enthusiast,</h3>
-    <p class="mb-4 text-white">I have dedicated time and energy to these projects, using different programming languages and implementing innovative solutions. These open source projects, most of which are academic, reflect my commitment to collaboration and knowledge sharing in the computer science community.</p>
-    <h3 class="font-bold text-xl mb-4 text-white">Explore this collection to discover my achievements,</h3>
-    <p class="mb-4 text-white">each accompanied by its own link to the corresponding GitHub repository. Whether you're a computer science student, a development enthusiast, or simply curious about new technologies, these projects are designed to spark interest and inspiration.</p>
-    <h3 class="font-bold text-xl mb-4 text-white">Explore these projects to understand my skills,</h3>
-    <p class="mb-4 text-white">my interests, and my contribution to the open source community. Each project represents a step forward in my career in computer science and an opportunity for continuous learning. Join me in this exploration of technology, innovation, and knowledge sharing!</p>
+<div class="container mx-auto text-lg text-center max-md:max-w-full mt-8 p-4" data-aos="zoom-in">
+    <p class="mb-4 text-white">Discover my collection of open source projects created using various programming languages and innovative solutions.</p>
+    <p class="mb-4 text-white">These academic and personal initiatives showcase my technical skills and commitment to knowledge sharing in the developer community.</p>
 </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20">
         @foreach ($academicProjects as $academicProjet)
@@ -408,33 +369,6 @@ self-center icons" alt="team icon" />
     </div>
 </section>
 
-<section class="flex flex-col items-center justify-center bg-gray-900"  style="background-image: url('codingpicture.jpg'); background-size:cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;">
-    <h1 class="text-7xl font-semibold text-white md:text-4xl text-center mt-10 bebas-neue-regular" style="letter-spacing: 2px" id="about" data-aos="zoom-in">
-    🤝Collab's
-    </h1>
-    <div class="flex flex-wrap justify-center w-full max-w-[1070px] md:flex-col md:max-w-full md:mt-10" data-aos="zoom-in">
-        <div class="flex flex-col items-center">
-            <a href="https://www.bashir-studios.com/">
-                <img src="logomouise.png" alt="Logo" class="transition-transform transform hover:scale-105" />
-            </a>
-            <p class="text-white">Bashir Studio's</p>
-        </div>
-    </div>
-    <div class="mt-14 text-3xl font-semibold text-neutral-400 md:max-w-full md:text-2xl bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">
-        Let's discuss!
-    </div>
-    <div class="mt-5 text-base whitespace-nowrap text-neutral-400 md:mt-3" data-aos="zoom-in">
-        <em>Looking to start a project?</em>
-    </div>
-    <a href="{{ route('contact') }}" class="px-10 py-5 mt-8 md:mt-5 text-base leading-6 text-teal-300 hover:bg-teal-300 hover:text-white transition-colors duration-300 uppercase rounded-[29.5px] focus:outline-none md:px-5 border-2 border-teal-300 border-solid rounded-[29.5px]" data-aos="zoom-in">
-        Contact us
-    </a>
-    <div class="text-3xl font-bold text-neutral-400 mt-5">NA</div>
-    <div class="text-xs font-medium text-neutral-400 mb-5">
-        Software Engineer and Fullstack Developer
-    </div>
-</section>
-
 
 <footer class="bg-gray-100 py-12">
     <div class="container mx-auto flex flex-col items-center">
@@ -463,7 +397,7 @@ self-center icons" alt="team icon" />
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact</h2>
                 <div class="text-sm text-gray-600">
                     <p class="mb-2">170 Nijverheidskaai, Anderlecht</p>
-                    <p class="mb-2">info@nawfelajari.be</p>
+                    <p class="mb-2">info@nainnovations.be</p>
                 </div>
             </div>
         </div>
