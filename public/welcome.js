@@ -1,10 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
     const hamburgerBtn = document.getElementById("hamburgerBtn");
     const navLinks = document.getElementById("navLinks");
+    const bitmojiImage = document.getElementById("bitmoji-image");
 
+    // Handle hamburger menu
     hamburgerBtn.addEventListener("click", () => {
         navLinks.classList.toggle("hidden");
     });
+
+    // Initialize bitmoji animation
+    if (bitmojiImage) {
+        setTimeout(() => {
+            bitmojiImage.classList.remove("opacity-0");
+        }, 500);
+    }
 });
 
 document.addEventListener("DOMContentLoaded", function () {

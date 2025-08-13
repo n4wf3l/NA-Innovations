@@ -50,6 +50,45 @@ html {
     font-style: normal;
 }
 
+/* Animation pour les images du bitmoji */
+.hover-trigger {
+    position: relative;
+    display: inline-block;
+}
+
+.hover-trigger img:first-child {
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.hover-trigger:hover img:first-child {
+    opacity: 0;
+}
+
+.hover-trigger img:last-child {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.hover-trigger:hover img:last-child {
+    opacity: 1;
+}
+
+@keyframes slideFromRight {
+    0% {
+        transform: translateX(100px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.animate-slide-left {
+    animation: slideFromRight 1s ease-out forwards;
+}
+
 @media (max-width: 768px) {
     #navLinks {
         position: absolute;

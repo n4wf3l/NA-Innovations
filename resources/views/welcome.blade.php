@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Home — NA</title>
-    <link rel="icon" href="{{ asset('logonai.png') }}" type="image/x-icon" />
+    <link rel="icon" href="{{ asset('NAlogo2.png') }}" type="image/x-icon" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
@@ -91,7 +91,7 @@
             </div>
 
             
-       <div class="flex gap-5 justify-between self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full border border-white p-4" data-aos="zoom-in">
+       <div class="flex gap-5 justify-between items-center self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full border border-white p-4 relative" data-aos="zoom-in">
     <div class="flex flex-col flex-1 px-5 max-md:max-w-full mx-1">
         <div class="text-sm md:text-base lg:text-xl font-medium text-neutral-400 max-md:max-w-full bebas-neue-regular hover:text-teal-300 transition-colors duration-700" style="letter-spacing: 2px">
             Web Development, Mobile, and Software | Video Editing and Graphic Design | Photography
@@ -103,26 +103,47 @@
         </div>
         <div class="mt-11 text-xs lg:text-sm font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl flex items-center">
     
-            <p class="mt-10 ml-3 text-sm lg:text-base bebas-neue-regular hover:text-teal-300 transition-colors duration-700" style="letter-spacing: 1px">Specialized in Football Software and API's</p>
+            <p class="mt-10 ml-3 text-sm lg:text-base bebas-neue-regular hover:text-teal-300 transition-colors duration-700" style="letter-spacing: 1px">From idea to application</p>
         </div>
     </div>
-    <button id="background-toggle-button" class="toggle-button">
+
+    <button id="background-toggle-button" class="toggle-button z-10">
         <span id="toggle-icon" class="toggle-icon">🌙</span>
     </button>
+
+<div class="flex flex-col items-center justify-center w-full gap-8">
+    <div class="relative hover-trigger" style=" height: auto;"> <!-- Force largeur -->
+        <div class="relative">
+            <img src="{{ asset('bitmoji.png') }}" 
+                 alt="Bitmoji" 
+                 class="w-full h-auto max-md:hidden transition-all duration-500 ease-in-out hover:opacity-0"
+                 style="width: 15rem; position: absolute; top: 0; left: 0;" 
+                 id="bitmoji-image">
+            <img src="{{ asset('bitmoji2.png') }}" 
+                 alt="Bitmoji Hover" 
+                 class="w-full h-auto max-md:hidden transition-all duration-500 ease-in-out"
+                 id="bitmoji-image-hover"
+                 style="width: 16rem;">
+        </div>
+    </div>
+
+    <!-- Social media -->
+    <div class="flex gap-8 items-center justify-center" data-aos="zoom-in">
+        <a href="https://www.instagram.com/na.innovations/" class="w-24 h-24 hover:bg-teal-300 hover:rounded-full cursor-pointer ">    
+            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-full brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"/>
+        </a>
+        <a href="https://twitter.com/AjariNawfel" class="w-24 h-24 hover:bg-teal-300 hover:rounded-full cursor-pointer">   
+            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-full brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" />
+        </a>
+        <a href="https://be.linkedin.com/in/nawfel-ajari" class="w-24 h-24 hover:bg-teal-300 hover:rounded-full cursor-pointer">   
+            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-full brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" />
+        </a>
+    </div>
 </div>
 
-<!-- Social media -->
-<div class="flex gap-2.5 items-start self-center px-5 mt-10 max-w-full w-[350px] max-md:mt-10 hidden md:flex" data-aos="zoom-in">
-    <a href="https://www.instagram.com/natechforge/" class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer group">    
-        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-auto max-w-[100%] aspect-square brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"/>
-    </a>
-    <a href="https://twitter.com/AjariNawfel" class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer group">   
-        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-auto max-w-[100%] aspect-square brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" />
-    </a>
-    <a href="https://be.linkedin.com/in/nawfel-ajari" class="flex-1 shrink-0 w-full aspect-square hover:bg-teal-300 hover:rounded-full cursor-pointer group">   
-        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-auto max-w-[100%] aspect-square brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" />
-    </a>
+
 </div>
+
 </div>
 
 <div class="messages-container bg-teal-300 text-white text-3xl bebas-neue-regular" style="letter-spacing:3px" id="about">
@@ -133,96 +154,82 @@
     </ul>
 </div>
 
-<div class="text-center ml-4 md:ml-16 mr-4 md:mr-16 mt-20 text-9xl font-semibold text-black max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">
-    Our Services
-</div>
-<hr class="mt-10">
 
-<div class="grid grid-cols-1 md:grid-cols-2 mr-2 ml-2">
-    <div class="col-span-1 max-w-xl mx-auto text-gray-600 text-left md:text-left" style="letter-spacing: 0px" >
-        <div class="mt-8 mb-6" data-aos="zoom-in">
-            <h2 class="text-3xl bebas-neue-regular text-black">👉 Quality Web Development</h2>
-            <p class="text-2xl mt-4">Transforming your ideas into innovative digital solutions with our experienced development team.</p>
+<div class="flex flex-col max-w-full w-full mt-0 mb-0 bebas-neue-regular p-5"
+     style="background-image: url('{{ asset('codingpicture.jpg') }}');
+            background-size:cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2;">
+
+    <!-- Titre principal -->
+    <h2 class="text-center ml-4 md:ml-16 mr-4 md:mr-16 mt-10 text-9xl font-semibold text-white max-md:max-w-full max-md:text-4xl max-md:text-center bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">
+        Our Services
+    </h2>
+    <hr class="mt-10 border-white/50">
+
+    <!-- Contenu -->
+    <div class="grid grid-cols-1 md:grid-cols-2 mr-2 ml-2">
+
+        <!-- Left column -->
+        <div class="col-span-1 max-w-xl mx-auto text-white text-left md:text-left" style="letter-spacing: 0px">
+
+            <div class="mt-8 mb-6" data-aos="zoom-in">
+                <h2 class="text-3xl bebas-neue-regular"><i class="fas fa-globe mr-2"></i>Custom Development</h2>
+                <p class="text-2xl mt-4">
+                    I’m Nawfel Ajari, full-stack developer and founder of <span class="text-teal-300">NA Innovations</span>.  
+                    I specialize in building <span class="text-teal-300">high-performing</span>, <span class="text-teal-300">conversion-focused</span> digital solutions — from custom websites and software to mobile applications.  
+                    Whether it’s a showcase site, e-commerce platform, interactive web app, or <span class="text-teal-300">SaaS</span>, I take your idea from concept to deployment, ensuring both quality and scalability.
+                </p>
+            </div>
+
+            <div class="mb-6" data-aos="zoom-in">
+                <h3 class="text-3xl bebas-neue-regular"><i class="fas fa-mobile-alt mr-2"></i>Mobile Applications</h3>
+                <p class="text-2xl mt-4">
+                    I design and develop <span class="text-teal-300">native</span>, <span class="text-teal-300">hybrid</span>, and <span class="text-teal-300">PWA</span> applications with seamless user experiences across all devices.  
+                    My process includes <span class="text-teal-300">planning</span>, <span class="text-teal-300">design</span>, development, testing, and ongoing maintenance to ensure long-term success.
+                </p>
+            </div>
+
         </div>
 
-        <div class="mb-6" data-aos="zoom-in">
-            <h3 class="text-3xl bebas-neue-regular text-black">💻🔧 Web Development Expertise</h3>
-            <p class="text-2xl mt-4">From corporate websites to e-commerce platforms and interactive applications, we deliver solutions built with the latest technologies.</p>
-        </div>
+        <!-- Right column -->
+        <div class="col-span-1 max-w-xl mx-auto text-white text-left md:text-left" style="letter-spacing: 0px">
 
-        <div class="mb-6" data-aos="zoom-in">
-            <h3 class="text-3xl bebas-neue-regular text-black">⚽📊 Football and API Specialization</h3>
-            <p class="text-2xl mt-4">Custom software and APIs for clubs, fan platforms, and content providers with real-time data integration and performance analytics.</p>
-        </div>
+            <div class="mt-8 mb-6" data-aos="zoom-in">
+                <h2 class="text-3xl bebas-neue-regular"><i class="fas fa-palette mr-2"></i>Design, Video & Photography</h2>
+                <p class="text-2xl mt-4">
+                    For creative needs such as <span class="text-teal-300">graphic design</span>, <span class="text-teal-300">video editing</span>, and photography,  
+                    I work with a <span class="text-teal-300">trusted network of experts</span> who deliver exceptional quality.  
+                    This way, you benefit from premium results while having me as your <span class="text-teal-300">single point of contact</span> throughout the entire project.
+                </p>
+            </div>
 
-        <div class="mb-8" data-aos="zoom-in">
-            <h3 class="text-3xl bebas-neue-regular text-black">🤝👥 Let's Collaborate</h3>
-            <p class="text-2xl mt-4">Partner with us to create an exceptional online presence that delivers immersive experiences to your users.</p>
+            <div class="mt-8 mb-6" data-aos="zoom-in">
+                <h2 class="text-3xl bebas-neue-regular">🚀 Let’s Build Something Great</h2>
+                <p class="text-2xl mt-4">
+                    Your vision, my code. Together, we can turn your ideas into powerful <span class="text-teal-300">digital products</span> that stand out.
+                </p>
+            </div>
+
         </div>
     </div>
 
-    <div class="col-span-1 max-w-xl mx-auto text-gray-600 text-left md:text-left" style="letter-spacing: 0px">
-        <div class="mt-8 mb-6" data-aos="zoom-in">
-            <h2 class="text-3xl bebas-neue-regular text-black">👉 Video Editing Services</h2>
-            <p class="text-2xl mt-4">Professional video editing for narratives, promotional content, ads, and documentaries that captivate your audience.</p>
-        </div>
-
-        <div class="mt-8 mb-6" data-aos="zoom-in">
-            <h2 class="text-3xl bebas-neue-regular text-black">💡🎨 Graphic Design Services</h2>
-            <p class="text-2xl mt-4">Creative solutions from logo design to UI/UX, helping you build a strong visual identity that stands out.</p>
-        </div>
-
-        <div class="mt-8 mb-6" data-aos="zoom-in">
-            <h2 class="text-3xl bebas-neue-regular text-black">🎬📣 Narrative and Promotional Editing</h2>
-            <p class="text-2xl mt-4">Compelling storytelling and effective promotion through expertly crafted video content tailored to your marketing goals.</p>
-        </div>
-
-        <div class="mt-8 mb-6" data-aos="zoom-in">
-            <h2 class="text-3xl bebas-neue-regular text-black">🖌️✨ Design and Creative Services</h2>
-            <p class="text-2xl mt-4">Comprehensive design solutions for logos, posters, business cards, and custom visuals that bring your ideas to life.</p>
-        </div>
-    </div>
-</div>
-
-
-
-<div class="flex flex-col md:flex-row max-w-full mt-20 mb-20 mx-4 md:mx-20 border-4 border-teal-300 bebas-neue-regular p-5" style="background-image: url('codingpicture.jpg'); background-size:cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: rgba(0, 0, 0, 0.5); z-index: 2;">
-<!-- Development -->
-<div class="w-full md:w-1/3 text-center p-5 md:pl-0 md:pr-0" data-aos="zoom-in">
-    <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">🌐 Web Development</div>
-    <div class="mt-4 text-2xl text-neutral-400">
-        Reservation Platforms | Online Markets | Online Learning Platforms | Classified Ads Websites | Crowdfunding Platforms | Professional Networks | Google ADS | SEO
-    </div>
-    <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">📱 Mobile Development</div>
-    <div class="mt-4 text-2xl text-neutral-400">
-        Native Apps | Hybrid Apps | Progressive Web Apps (PWA) | Mobile E-commerce Apps | Mobile Social Media Apps
-    </div>
-    <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">💻 Software Development</div>
-    <div class="mt-4 text-2xl text-neutral-400 mb-10">
-        Football API | Desktop Applications | Enterprise Applications | Project Management Applications | Content Management Systems (CMS) | Database Management Systems (DBMS) | Remote Desktop Applications | Enterprise Resource Planning Systems (ERP)
-    </div>
-</div>
-
-<!-- Graphic Design -->
-<div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0" data-aos="zoom-in">
-    <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">🎥 Video Editing</div>
-    <div class="mt-4 text-2xl text-neutral-400">
-        Narrative Editing | Promotional Editing | Advertising Editing | Documentary Editing | Experimental Editing
-    </div>
-    <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">🎨 Graphic Design</div>
-    <div class="mt-4 text-2xl text-neutral-400">
-        Logo Design, Posters, Business Cards, and Brochures | User Interface (UI) and User Experience (UX) Design | Infographics
-    </div>
+    <!-- Bouton centré en bas avec plus de padding et margin -->
+<div class="flex justify-center mt-12 mb-20">
+    <a href="/contact"
+       class="px-8 py-5 bg-teal-300 text-white text-xl font-semibold rounded-full border border-teal-400 transition-all duration-200 ease-in-out transform hover:scale-105 hover:text-black hover:bg-teal-400">
+        Contact Us
+    </a>
 </div>
 
-<!-- Strategy -->
-<div class="w-full md:w-1/3 text-center pl-5 pr-5 md:pl-0 md:pr-0" data-aos="zoom-in">
-    <div class="mt-8 text-3xl font-semibold text-white" style="letter-spacing: 1px">📷 Photography</div>
-    <div class="mt-4 text-2xl text-neutral-400 mb-5">
-        Portrait | Documentary Photography | Sports
-    </div>
 </div>
+
+
 </div>
+
 
 
 <section class="py-16 text-black bg-gray-100" id="projects">
@@ -238,7 +245,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20">
         @foreach ($projets as $projet)
         <div class="flex flex-col p-2 relative transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
-    <img src="{{ Storage::url($projet->image) }}" alt="Project Image" class="w-full h-60 object-cover rounded-t-3xl" data-aos="zoom-in">
+    <img src="{{ asset('storage/' . $projet->image) }}" alt="Project Image" class="w-full h-60 object-cover rounded-t-3xl" data-aos="zoom-in">
     @auth <!-- Check if the user is authenticated -->
         <form id="deleteForm{{ $projet->id }}" action="{{ route('projets.destroy', $projet->id) }}" method="POST" class="absolute top-2 right-2">
             @csrf
@@ -247,7 +254,7 @@
         </form>
     @endauth
             <div class="p-2 flex flex-row">
-                <img src="/seo-and-web.png" width="20px" class="self-center icons mr-2" alt="team icon" />
+                <img src="{{ asset('seo-and-web.png') }}" width="20px" class="self-center icons mr-2" alt="team icon" />
                 <h4 class="text-lg font-semibold">{{ $projet->nom_societe }}</h4>
             </div>
             <div class="flex flex-row items-end justify-between">
@@ -258,36 +265,34 @@
                 </div>
                 <div class="flex flex-col ">
                     <span class="text-sm text-gray-500 flex flex-row mr-5">
-                        <img src="/page.png" width="20px" class="self-center icons mr-2" alt="team icon" />
+                        <img src="{{ asset('page.png') }}" width="20px" class="self-center icons mr-2" alt="team icon" />
                         {{ $projet->type_site }}
                     </span>
                     <span class="text-sm text-gray-500 flex flex-row mt-1">
-                        <img src="/location.png" width="20px" class="self-center icons mr-2" alt="team icon" />
+                        <img src="{{ asset('location.png') }}" width="20px" class="self-center icons mr-2" alt="team icon" />
                         {{ $projet->lieu }}
                     </span>
                 </div>
             </div>
             <div class="flex flex-row items-center justify-between px-6 py-2 my-4 bg-gray-100 rounded-xl">
                 <div class="flex flex-col">
-                    <img src="/speedometer.png" class="self-center icons" alt="development time icon" />
+                    <img src="{{ asset('speedometer.png') }}" class="self-center icons" alt="development time icon" />
                     <span class="ml-2">{{ $projet->jours_developpement }} D</span>
                 </div>
                 <div class="flex flex-col">
-                    <img src="/coding.png" width="40px" class="self-center icons" alt="team icon" />
+                    <img src="{{ asset('coding.png') }}" width="40px" class="self-center icons" alt="team icon" />
                     <span class="ml-2">
                         {{ $projet->langage_programmation }}
                     </span>
                 </div>
                 <div class="flex flex-col">
-                    <img src="/star.png" width="40px" class="self-center icons" alt="team icon" />
+                    <img src="{{ asset('star.png') }}" width="40px" class="self-center icons" alt="team icon" />
                     <span>
                         {{ $projet->etoiles }}
                     </span>
                 </div>
                 <div class="flex flex-col">
-                    <img src="/users.png" class="
-
-self-center icons" alt="team icon" />
+                    <img src="{{ asset('users.png') }}" class="self-center icons" alt="team icon" />
                     <span class="ml-3"> {{ $projet->nombre_collaborateurs }}</span>
                 </div>
             </div>
@@ -309,7 +314,7 @@ self-center icons" alt="team icon" />
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20">
         @foreach ($academicProjects as $academicProjet)
         <div class="flex flex-col p-2 relative transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
-    <img src="{{ Storage::url($academicProjet->image) }}" alt="AcademicProject Image" class="w-full h-60 object-cover rounded-t-3xl" data-aos="zoom-in">
+    <img src="{{ asset('storage/' . $academicProjet->image) }}" alt="AcademicProject Image" class="w-full h-60 object-cover rounded-t-3xl" data-aos="zoom-in">
     @auth <!-- Check if the user is authenticated -->
         <form id="deleteForm{{ $academicProjet->id }}" action="{{ route('academic_projets.destroy', $academicProjet->id) }}" method="POST" class="absolute top-2 right-2">
             @csrf
@@ -319,7 +324,7 @@ self-center icons" alt="team icon" />
     @endauth
 
             <div class="p-2 flex flex-row">
-                <img src="/seo-and-web.png" width="20px" class="self-center icons mr-2" alt="team icon" />
+                <img src="{{ asset('seo-and-web.png') }}" width="20px" class="self-center icons mr-2" alt="team icon" />
                 <h4 class="text-lg font-semibold">{{ $academicProjet->nom_societe }}</h4>
             </div>
             <div class="flex flex-row items-end justify-between">
@@ -330,34 +335,34 @@ self-center icons" alt="team icon" />
                 </div>
                 <div class="flex flex-col ">
                     <span class="text-sm text-gray-500 flex flex-row mr-5">
-                        <img src="/page.png" width="20px" class="self-center icons mr-2" alt="team icon" />
+                        <img src="{{ asset('page.png') }}" width="20px" class="self-center icons mr-2" alt="team icon" />
                         {{ $academicProjet->type_site }}
                     </span>
                     <span class="text-sm text-gray-500 flex flex-row mt-1">
-                        <img src="/location.png" width="20px" class="self-center icons mr-2" alt="team icon" />
+                        <img src="{{ asset('location.png') }}" width="20px" class="self-center icons mr-2" alt="team icon" />
                         {{ $academicProjet->lieu }}
                     </span>
                 </div>
             </div>
             <div class="flex flex-row items-center justify-between px-6 py-2 my-4 bg-gray-100 rounded-xl">
                 <div class="flex flex-col">
-                    <img src="/speedometer.png" class="self-center icons" alt="development time icon" />
+                    <img src="{{ asset('speedometer.png') }}" class="self-center icons" alt="development time icon" />
                     <span class="ml-2">{{ $academicProjet->jours_developpement }} D</span>
                 </div>
                 <div class="flex flex-col">
-                    <img src="/coding.png" width="40px" class="self-center icons" alt="team icon" />
+                    <img src="{{ asset('coding.png') }}" width="40px" class="self-center icons" alt="team icon" />
                     <span class="ml-1">
                         {{ $academicProjet->langage_programmation }}
                     </span>
                 </div>
                 <div class="flex flex-col">
-                    <img src="/star.png" width="40px" class="self-center icons" alt="team icon" />
+                    <img src="{{ asset('star.png') }}" width="40px" class="self-center icons" alt="team icon" />
                     <span>
                         {{ $academicProjet->etoiles }}
                     </span>
                 </div>
                 <div class="flex flex-col">
-                    <img src="/users.png" class="self-center icons" alt="team icon" />
+                    <img src="{{ asset('users.png') }}" class="self-center icons" alt="team icon" />
                     <span class="ml-3"> {{ $academicProjet->nombre_collaborateurs }}</span>
                 </div>
             </div>
@@ -370,40 +375,7 @@ self-center icons" alt="team icon" />
 </section>
 
 
-<footer class="bg-gray-100 py-12">
-    <div class="container mx-auto flex flex-col items-center">
-        <div class="border-t border-gray-300"></div>
-        <div class="flex flex-col md:flex-row justify-between items-center mt-8 md:items-start md:text-left">
-            <div class="w-full md:w-2/3 lg:w-1/3 mb-8 md:mb-0 text-center md:text-left">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">About NA</h2>
-                <p class="text-sm text-gray-600">NA is a software engineer and fullstack developer graduated in Belgium.</p>
-                <div class="flex items-center mt-6 justify-center md:justify-start">
-                    <a href="https://www.instagram.com/natechforge/" target="_blank" rel="noopener noreferrer">
-                        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
-                    </a>
-                    <a href="https://twitter.com/AjariNawfel" target="_blank" rel="noopener noreferrer">
-                        <img loading="lazy"
-                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&"
-                            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
-                    </a>
-                    <a href="https://be.linkedin.com/in/nawfel-ajari" target="_blank" rel="noopener noreferrer">
-                        <img loading="lazy"
-                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&"
-                            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
-                    </a>
-                </div>
-            </div>
-            <div class="w-full md:w-1/3 lg:w-1/4 text-center md:text-left">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact</h2>
-                <div class="text-sm text-gray-600">
-                    <p class="mb-2">170 Nijverheidskaai, Anderlecht</p>
-                    <p class="mb-2">info@nainnovations.be</p>
-                </div>
-            </div>
-        </div>
-        <div class="border-t border-gray-300 mt-12"></div>
-    </div>
-</footer>
+@include('components.footer')
 <script src="{{ asset('/welcome.js') }}"></script>
 </body>
 

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Contact — NA</title>
-    <link rel="icon" href="{{ asset('logonai.png') }}" type="image/x-icon" />
+    <link rel="icon" href="{{ asset('NAlogo2.png') }}" type="image/x-icon" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
@@ -121,7 +121,12 @@
     <p class="mt-5">Have questions or special requirements? Feel free to reach out to us using the form below. We're here to address any concerns you may have and tailor our services to meet your unique needs. Your satisfaction is our priority, and we're committed to providing you with the best possible solutions for your project.</p>
 </div>
                 <div class="mt-14 text-3xl font-bold max-md:mt-10">Email</div>
-                <div class="mt-2"><i class="fas fa-envelope"></i> info@nainnovations.be</div>
+                <div class="mt-2 flex items-center"><i class="fas fa-envelope mr-2"></i>info@nainnovations.be</div>
+                <div class="mt-2 flex items-center"><i class="fas fa-phone mr-2"></i>+32 490 22 19 12</div>
+                <div class="mt-10 text-3xl font-bold max-md:mt-10">Company Information</div>
+                <div class="mt-2 font-bold">NA Innovations BV</div>
+                <div class="mt-2">Company Registration Number: 1025.939.504</div>
+                <div class="mt-2">VAT Number: BE1025939504</div>
                 <div class="mt-14 text-3xl font-bold max-md:mt-10 mb-5">Social Media</div>
                 <div class="flex flex-col md:flex-row gap-5">
                     <div class="flex items-center mb-2">
@@ -184,44 +189,11 @@
 
             </div>
         </div>
-    </div>
-</div>
-</div>
 
-<footer class="bg-gray-100 py-12">
-    <div class="container mx-auto flex flex-col items-center">
-        <div class="border-t border-gray-300"></div>
-        <div class="flex flex-col md:flex-row justify-between items-center mt-8 md:items-start md:text-left">
-            <div class="w-full md:w-2/3 lg:w-1/3 mb-8 md:mb-0 text-center md:text-left">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">About NA</h2>
-                <p class="text-sm text-gray-600">NA is a software engineer and fullstack developer graduated in Belgium.</p>
-                <div class="flex items-center mt-6 justify-center md:justify-start">
-                    <a href="https://www.instagram.com/natechforge/" target="_blank" rel="noopener noreferrer">
-                        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
-                    </a>
-                    <a href="https://twitter.com/AjariNawfel" target="_blank" rel="noopener noreferrer">
-                        <img loading="lazy"
-                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&"
-                            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
-                    </a>
-                    <a href="https://be.linkedin.com/in/nawfel-ajari" target="_blank" rel="noopener noreferrer">
-                        <img loading="lazy"
-                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&"
-                            class="aspect-square w-[50px] hover:bg-teal-300 hover:rounded-full cursor-pointer" />
-                    </a>
-                </div>
-            </div>
-            <div class="w-full md:w-1/3 lg:w-1/4 text-center md:text-left">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact</h2>
-                <div class="text-sm text-gray-600">
-                    <p class="mb-2">170 Nijverheidskaai, Anderlecht</p>
-                    <p class="mb-2">info@nainnovations.be</p>
-                </div>
-            </div>
-        </div>
-        <div class="border-t border-gray-300 mt-12"></div>
     </div>
-</footer>
+</div>
+</div>
+@include('components.footer')
 <script src="{{ asset('/contact.js') }}"></script>
 </body>
 
