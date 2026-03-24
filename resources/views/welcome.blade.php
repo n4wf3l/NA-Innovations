@@ -243,7 +243,7 @@
     <p class="mb-4">Each project showcases our commitment to quality, attention to detail, and ability to transform client visions into powerful online experiences.</p>
 </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20">
-        @foreach ($projets as $projet)
+        @forelse ($projets as $projet)
         <div class="flex flex-col p-2 relative transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
     <img src="{{ asset('storage/' . $projet->image) }}" alt="Project Image" class="w-full h-60 object-cover rounded-t-3xl" data-aos="zoom-in">
     @auth <!-- Check if the user is authenticated -->
@@ -300,7 +300,11 @@
                 VISIT THE WEBSITE
             </a>
         </div>
-        @endforeach
+        @empty
+        <div class="col-span-full text-center py-16">
+            <p class="text-2xl text-gray-400 bebas-neue-regular" style="letter-spacing: 2px">No published websites yet.</p>
+        </div>
+        @endforelse
     </div>
 </section>
 
@@ -312,7 +316,7 @@
     <p class="mb-4 text-white">These academic and personal initiatives showcase my technical skills and commitment to knowledge sharing in the developer community.</p>
 </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20">
-        @foreach ($academicProjects as $academicProjet)
+        @forelse ($academicProjects as $academicProjet)
         <div class="flex flex-col p-2 relative transition-all bg-white border-2 hover:border-black border-gray rounded-3xl">
     <img src="{{ asset('storage/' . $academicProjet->image) }}" alt="AcademicProject Image" class="w-full h-60 object-cover rounded-t-3xl" data-aos="zoom-in">
     @auth <!-- Check if the user is authenticated -->
@@ -370,7 +374,11 @@
                TAKE A LOOK ON GITHUB
             </a>
         </div>
-        @endforeach
+        @empty
+        <div class="col-span-full text-center py-16">
+            <p class="text-2xl text-gray-400 bebas-neue-regular" style="letter-spacing: 2px">No open source projects yet.</p>
+        </div>
+        @endforelse
     </div>
 </section>
 

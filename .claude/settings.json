@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -l app/Http/Controllers/Admin/QuoteController.php)",
+      "Bash(php -l app/Http/Controllers/Admin/InvoiceController.php)",
+      "Bash(php -l app/Http/Controllers/Admin/CommissionController.php)",
+      "Bash(php -l app/Http/Controllers/Admin/RecurringServiceController.php)",
+      "Bash(php -l routes/web.php)",
+      "Bash(ls app/Models/*.php)",
+      "Bash(ls app/Services/*.php)",
+      "Bash(ls app/Http/Middleware/Ensure*.php)",
+      "Bash(ls database/migrations/2026*.php)",
+      "Bash(ls app/Helpers/*.php)",
+      "Bash(npm install:*)",
+      "Bash(node -e \":*)"
+    ]
+  }
+}

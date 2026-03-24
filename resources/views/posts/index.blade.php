@@ -117,7 +117,7 @@
     <div class="justify-center w-full max-w-[1267px] border border-white p-6" data-aos="zoom-in">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @foreach ($posts as $post)
+                @forelse ($posts as $post)
                     <div class="bg-white overflow-hidden shadow-md rounded-lg transition-transform transform hover:scale-105 hover:bg-gray-200">
                         @if ($post->photo)
                             <img class="w-full h-64 object-cover object-center" src="{{ asset('storage/' . $post->photo) }}" alt="Post Image">
@@ -141,7 +141,11 @@
                             </form>
                         @endauth
                     </div>
-                @endforeach
+                @empty
+                    <div class="col-span-full text-center py-16">
+                        <p class="text-2xl text-gray-400 bebas-neue-regular" style="letter-spacing: 2px">No news published yet.</p>
+                    </div>
+                @endforelse
             </div>
         </div>
 
