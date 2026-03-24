@@ -3,16 +3,84 @@
 @section('title', __('Recurring Services'))
 
 @section('content')
-    <!-- Page Header -->
-    <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">{{ __('Recurring Services') }}</h1>
-        <a href="{{ route('admin.services.create') }}"
-           class="inline-flex items-center gap-2 bg-teal-300 text-gray-900 rounded-lg px-4 py-2 text-sm font-semibold hover:bg-teal-400 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            {{ __('New Service') }}
-        </a>
+@php
+    $activeServices = \App\Models\RecurringService::where('status', 'active')->count();
+    $monthlyRevenue = \App\Models\RecurringService::where('status', 'active')
+        ->selectRaw("SUM(CASE WHEN frequency = 'monthly' THEN billed_price WHEN frequency = 'yearly' THEN billed_price / 12 ELSE billed_price END) as total")
+        ->value('total') ?? 0;
+    $expiringSoon = \App\Models\RecurringService::where('status', 'active')
+        ->whereNotNull('expiry_date')
+        ->whereBetween('expiry_date', [now(), now()->addDays(30)])
+        ->count();
+    $totalMargin = \App\Models\RecurringService::where('status', 'active')->sum('margin');
+@endphp
+
+    {{-- Module Banner --}}
+    <div class="bg-gradient-to-r from-cyan-600 to-teal-500 rounded-xl p-6 mb-6 relative overflow-hidden">
+        <div class="relative z-10">
+            <p class="text-cyan-100 text-sm mb-1">{{ __('Business') }} / {{ __('Services') }}</p>
+            <h2 class="font-display text-2xl text-white tracking-wide">{{ __('Recurring Services') }}</h2>
+            <p class="text-cyan-100 text-sm mt-1">{{ __('Monitor hosting, domains, and other recurring services. Stay ahead of renewals and track your margins.') }}</p>
+        </div>
+        {{-- Background icon --}}
+        <svg class="absolute right-6 top-1/2 -translate-y-1/2 w-24 h-24 text-white/10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3"/>
+        </svg>
+        {{-- Action button --}}
+        <div class="absolute right-6 bottom-6">
+            <a href="{{ route('admin.services.create') }}" class="inline-flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur text-white text-sm font-medium rounded-lg transition">
+                + {{ __('New Service') }}
+            </a>
+        </div>
     </div>
-    <p class="text-sm text-gray-500 -mt-4 mb-6">{{ __('Monitor hosting, domains, and other recurring services. Stay ahead of renewals and track your margins.') }}</p>
+
+    {{-- KPI Cards --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-xl p-4 border border-gray-200 border-l-4 border-l-cyan-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Active Services') }}</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ $activeServices }}</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-gray-200 border-l-4 border-l-cyan-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Monthly Revenue') }}</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-1">&euro;{{ number_format($monthlyRevenue, 0, ',', '.') }}</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-gray-200 border-l-4 border-l-amber-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Expiring Soon') }}</p>
+                    <p class="text-2xl font-bold {{ $expiringSoon > 0 ? 'text-amber-600' : 'text-gray-900' }} mt-1">{{ $expiringSoon }}</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-gray-200 border-l-4 border-l-cyan-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Total Margin') }}</p>
+                    <p class="text-2xl font-bold {{ $totalMargin >= 0 ? 'text-emerald-600' : 'text-red-600' }} mt-1">&euro;{{ number_format($totalMargin, 0, ',', '.') }}</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Filters -->
     <form method="GET" action="{{ route('admin.services.index') }}" class="mb-6">
@@ -20,7 +88,7 @@
             <!-- Type Filter -->
             <select name="type"
                     onchange="this.form.submit()"
-                    class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-teal-300 focus:ring-teal-300">
+                    class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-cyan-400 focus:ring-cyan-400">
                 <option value="">{{ __('All Types') }}</option>
                 @foreach(['domain', 'hosting', 'ssl', 'email', 'saas', 'maintenance', 'support', 'other'] as $type)
                     <option value="{{ $type }}" {{ request('type') === $type ? 'selected' : '' }}>
@@ -32,7 +100,7 @@
             <!-- Status Filter -->
             <select name="status"
                     onchange="this.form.submit()"
-                    class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-teal-300 focus:ring-teal-300">
+                    class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-cyan-400 focus:ring-cyan-400">
                 <option value="">{{ __('All Statuses') }}</option>
                 @foreach(['active', 'expiring_soon', 'expired', 'cancelled', 'suspended'] as $status)
                     <option value="{{ $status }}" {{ request('status') === $status ? 'selected' : '' }}>
@@ -45,11 +113,11 @@
             <div class="flex-1">
                 <input type="text" name="search" value="{{ request('search') }}"
                        placeholder="{{ __('Search by name or provider...') }}"
-                       class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-teal-300 focus:ring-teal-300">
+                       class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-cyan-400 focus:ring-cyan-400">
             </div>
 
             <button type="submit"
-                    class="inline-flex items-center gap-2 bg-gray-900 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-gray-800 transition-colors">
+                    class="inline-flex items-center gap-2 bg-cyan-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-cyan-700 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 {{ __('Search') }}
             </button>
@@ -102,9 +170,9 @@
                                     'other' => 'bg-gray-100 text-gray-700',
                                 ];
                             @endphp
-                            <tr class="{{ $isExpiringSoon ? 'bg-amber-50/50' : ($isExpired ? 'bg-red-50/50' : '') }} hover:bg-gray-50 transition-colors">
+                            <tr class="{{ $isExpiringSoon ? 'bg-amber-50' : ($isExpired ? 'bg-red-50' : '') }} hover:bg-cyan-50/40 transition-colors border-l-4 {{ $isExpiringSoon ? 'border-l-amber-400' : ($isExpired ? 'border-l-red-400' : 'border-l-transparent hover:border-l-cyan-400') }}">
                                 <td class="px-4 py-3 font-medium text-gray-900">
-                                    <a href="{{ route('admin.services.show', $service) }}" class="text-teal-600 hover:text-teal-700">
+                                    <a href="{{ route('admin.services.show', $service) }}" class="text-cyan-600 hover:text-cyan-700">
                                         {{ $service->name }}
                                     </a>
                                 </td>
@@ -136,7 +204,7 @@
                                 <td class="px-4 py-3">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('admin.services.show', $service) }}"
-                                           class="text-gray-500 hover:text-teal-600 transition-colors" title="{{ __('View') }}">
+                                           class="text-gray-500 hover:text-cyan-600 transition-colors" title="{{ __('View') }}">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                         </a>
                                         <a href="{{ route('admin.services.edit', $service) }}"
@@ -175,12 +243,12 @@
             @endif
         </div>
     @else
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-            <svg class="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3"/></svg>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 border-t-4 border-t-cyan-400 p-12 text-center">
+            <svg class="w-12 h-12 text-cyan-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3"/></svg>
             <h3 class="text-lg font-medium text-gray-900 mb-1">{{ __('No recurring services yet') }}</h3>
             <p class="text-gray-500 mb-6">{{ __('Add your first recurring service to track domains, hosting, and more.') }}</p>
             <a href="{{ route('admin.services.create') }}"
-               class="inline-flex items-center gap-2 bg-teal-300 text-gray-900 rounded-lg px-4 py-2 text-sm font-semibold hover:bg-teal-400 transition-colors">
+               class="inline-flex items-center gap-2 bg-cyan-600 text-white rounded-lg px-4 py-2 text-sm font-semibold hover:bg-cyan-700 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 {{ __('New Service') }}
             </a>

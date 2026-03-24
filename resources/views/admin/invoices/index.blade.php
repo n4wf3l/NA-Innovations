@@ -3,16 +3,83 @@
 @section('title', __('Invoices'))
 
 @section('content')
-    <!-- Page Header -->
-    <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">{{ __('Invoices') }}</h1>
-        <a href="{{ route('admin.invoices.create') }}"
-           class="inline-flex items-center gap-2 bg-teal-300 text-gray-900 rounded-lg px-4 py-2 text-sm font-semibold hover:bg-teal-400 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            {{ __('New Invoice') }}
-        </a>
+@php
+    $totalInvoices = \App\Models\Invoice::count();
+    $paidAmount = \App\Models\Invoice::where('status', 'paid')->sum('total');
+    $outstandingAmount = \App\Models\Invoice::whereNotIn('status', ['paid', 'cancelled'])->sum('amount_due');
+    $overdueCount = \App\Models\Invoice::where('status', '!=', 'paid')
+        ->where('status', '!=', 'cancelled')
+        ->whereNotNull('due_date')
+        ->where('due_date', '<', now())
+        ->count();
+@endphp
+
+    {{-- Module Banner --}}
+    <div class="bg-gradient-to-r from-emerald-600 to-green-500 rounded-xl p-6 mb-6 relative overflow-hidden">
+        <div class="relative z-10">
+            <p class="text-emerald-100 text-sm mb-1">{{ __('Finance') }} / {{ __('Invoices') }}</p>
+            <h2 class="font-display text-2xl text-white tracking-wide">{{ __('Invoices') }}</h2>
+            <p class="text-emerald-100 text-sm mt-1">{{ __('Manage all invoices. Track payments, send reminders, and monitor overdue amounts.') }}</p>
+        </div>
+        {{-- Background icon --}}
+        <svg class="absolute right-6 top-1/2 -translate-y-1/2 w-24 h-24 text-white/10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
+        </svg>
+        {{-- Action button --}}
+        <div class="absolute right-6 bottom-6">
+            <a href="{{ route('admin.invoices.create') }}" class="inline-flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur text-white text-sm font-medium rounded-lg transition">
+                + {{ __('New Invoice') }}
+            </a>
+        </div>
     </div>
-    <p class="text-sm text-gray-500 -mt-4 mb-6">{{ __('Manage all invoices. Track payments, send reminders, and monitor overdue amounts.') }}</p>
+
+    {{-- KPI Cards --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-xl p-4 border border-gray-200 border-l-4 border-l-emerald-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Total Invoices') }}</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ $totalInvoices }}</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-gray-200 border-l-4 border-l-emerald-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Paid Amount') }}</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-1">&euro;{{ number_format($paidAmount, 0, ',', '.') }}</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-gray-200 border-l-4 border-l-emerald-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Outstanding') }}</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-1">&euro;{{ number_format($outstandingAmount, 0, ',', '.') }}</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-gray-200 border-l-4 border-l-red-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Overdue') }}</p>
+                    <p class="text-2xl font-bold text-red-600 mt-1">{{ $overdueCount }}</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Filters -->
     <form method="GET" action="{{ route('admin.invoices.index') }}" class="mb-6">
@@ -20,7 +87,7 @@
             <!-- Status Filter -->
             <select name="status"
                     onchange="this.form.submit()"
-                    class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-teal-300 focus:ring-teal-300">
+                    class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-emerald-400 focus:ring-emerald-400">
                 <option value="">{{ __('All Statuses') }}</option>
                 @foreach(['draft', 'sent', 'viewed', 'paid', 'partially_paid', 'overdue', 'cancelled'] as $status)
                     <option value="{{ $status }}" {{ request('status') === $status ? 'selected' : '' }}>
@@ -32,7 +99,7 @@
             <!-- Type Filter -->
             <select name="type"
                     onchange="this.form.submit()"
-                    class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-teal-300 focus:ring-teal-300">
+                    class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-emerald-400 focus:ring-emerald-400">
                 <option value="">{{ __('All Types') }}</option>
                 @foreach(['standard', 'deposit', 'final', 'credit_note'] as $type)
                     <option value="{{ $type }}" {{ request('type') === $type ? 'selected' : '' }}>
@@ -47,12 +114,12 @@
                        name="search"
                        value="{{ request('search') }}"
                        placeholder="{{ __('Search by title, number, or client...') }}"
-                       class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-teal-300 focus:ring-teal-300">
+                       class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-emerald-400 focus:ring-emerald-400">
             </div>
 
             <!-- Submit -->
             <button type="submit"
-                    class="inline-flex items-center gap-2 bg-gray-900 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-gray-800 transition-colors">
+                    class="inline-flex items-center gap-2 bg-emerald-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-emerald-700 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 {{ __('Search') }}
             </button>
@@ -91,9 +158,9 @@
                                 $color = \App\Helpers\StatusHelper::invoiceStatusColor($invoice->status);
                                 $isOverdue = $invoice->due_date && $invoice->due_date->isPast() && !in_array($invoice->status, ['paid', 'cancelled', 'refunded']);
                             @endphp
-                            <tr class="{{ $isOverdue ? 'bg-red-50/50' : '' }} hover:bg-gray-50 transition-colors">
+                            <tr class="{{ $isOverdue ? 'bg-red-50' : '' }} hover:bg-emerald-50/40 transition-colors border-l-4 {{ $isOverdue ? 'border-l-red-400' : 'border-l-transparent hover:border-l-emerald-400' }}">
                                 <td class="px-4 py-3 font-medium text-gray-900">
-                                    <a href="{{ route('admin.invoices.show', $invoice) }}" class="text-teal-600 hover:text-teal-700">
+                                    <a href="{{ route('admin.invoices.show', $invoice) }}" class="text-emerald-600 hover:text-emerald-700">
                                         {{ $invoice->invoice_number }}
                                     </a>
                                 </td>
@@ -119,7 +186,7 @@
                                 <td class="px-4 py-3">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('admin.invoices.show', $invoice) }}"
-                                           class="text-gray-500 hover:text-teal-600 transition-colors"
+                                           class="text-gray-500 hover:text-emerald-600 transition-colors"
                                            title="{{ __('View') }}">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                         </a>
@@ -156,12 +223,12 @@
             @endif
         </div>
     @else
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-            <svg class="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 border-t-4 border-t-emerald-400 p-12 text-center">
+            <svg class="w-12 h-12 text-emerald-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
             <h3 class="text-lg font-medium text-gray-900 mb-1">{{ __('No invoices yet') }}</h3>
             <p class="text-gray-500 mb-6">{{ __('Create your first invoice to get started.') }}</p>
             <a href="{{ route('admin.invoices.create') }}"
-               class="inline-flex items-center gap-2 bg-teal-300 text-gray-900 rounded-lg px-4 py-2 text-sm font-semibold hover:bg-teal-400 transition-colors">
+               class="inline-flex items-center gap-2 bg-emerald-600 text-white rounded-lg px-4 py-2 text-sm font-semibold hover:bg-emerald-700 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 {{ __('New Invoice') }}
             </a>
