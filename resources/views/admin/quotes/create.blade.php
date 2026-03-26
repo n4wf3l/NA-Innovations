@@ -201,7 +201,8 @@
                                     <span x-text="formatCurrency(item.quantity * item.unit_price)"></span>
                                 </td>
                                 <td class="px-3 py-2 text-center">
-                                    <input type="checkbox" :name="'items[' + index + '][is_optional]'" x-model="item.is_optional" value="1"
+                                    <input type="hidden" :name="'items[' + index + '][is_optional]'" value="0">
+                                    <input type="checkbox" :name="'items[' + index + '][is_optional]'" x-model="item.is_optional" :value="1"
                                            class="rounded border-gray-300 text-teal-500 focus:ring-teal-300">
                                 </td>
                                 <td class="px-3 py-2">

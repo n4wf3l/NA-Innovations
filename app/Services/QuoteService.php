@@ -45,7 +45,7 @@ class QuoteService
                 'unit' => $item['unit'] ?? 'unit',
                 'unit_price' => $item['unit_price'] ?? 0,
                 'total' => $total,
-                'is_optional' => $item['is_optional'] ?? false,
+                'is_optional' => filter_var($item['is_optional'] ?? false, FILTER_VALIDATE_BOOLEAN),
                 'sort_order' => $item['sort_order'] ?? $index,
             ]);
         }
@@ -62,10 +62,10 @@ class QuoteService
 
         // Discount
         $discountAmount = 0;
-        if ($quote->discount_type === 'percentage') {
-            $discountAmount = $subtotal * ($quote->discount_value / 100);
+        if ($quote->discount_type === 'percentage' && $quote->discount_value) {
+            $discountAmount = $subtotal * (floatval($quote->discount_value) / 100);
         } else {
-            $discountAmount = $quote->discount_value;
+            $discountAmount = floatval($quote->discount_value ?? 0);
         }
 
         $afterDiscount = $subtotal - $discountAmount;

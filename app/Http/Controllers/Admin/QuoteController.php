@@ -82,7 +82,7 @@ class QuoteController extends BaseAdminController
             'items.*.quantity' => 'required|numeric|min:0.01',
             'items.*.unit_price' => 'required|numeric|min:0',
             'items.*.unit' => 'nullable|string|max:50',
-            'items.*.is_optional' => 'nullable|boolean',
+            'items.*.is_optional' => 'nullable',
         ]);
 
         $items = $validated['items'];
@@ -150,7 +150,7 @@ class QuoteController extends BaseAdminController
             'items.*.quantity' => 'required|numeric|min:0.01',
             'items.*.unit_price' => 'required|numeric|min:0',
             'items.*.unit' => 'nullable|string|max:50',
-            'items.*.is_optional' => 'nullable|boolean',
+            'items.*.is_optional' => 'nullable',
         ]);
 
         $items = $validated['items'];
