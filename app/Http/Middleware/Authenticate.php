@@ -7,11 +7,29 @@ use Illuminate\Http\Request;
 
 class Authenticate extends Middleware
 {
-    /**
-     * Get the path the user should be redirected to when they are not authenticated.
-     */
     protected function redirectTo(Request $request): ?string
     {
-        return $request->expectsJson() ? null : route('login');
+        if ($request->expectsJson()) {
+            return null;
+        }
+
+        // Force a full page redirect for Inertia requests going to a Blade page
+        if ($request->header('X-Inertia')) {
+            return null; // Will trigger 401, handled below
+        }
+
+        return route('login');
+    }
+
+    protected function unauthenticated($request, array $guards)
+    {
+        // For Inertia requests, force a full location redirect (not an Inertia visit)
+        if ($request->header('X-Inertia')) {
+            abort(409, '', [
+                'X-Inertia-Location' => route('login'),
+            ]);
+        }
+
+        parent::unauthenticated($request, $guards);
     }
 }

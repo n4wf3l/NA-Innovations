@@ -18,12 +18,12 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('/about.css') }}">
-    @vite('resources/css/app.css')
+    @vite('resources/js/public.ts')
 </head>
 
 <body>
 <a href="#" id="scrollToTop"><i class="fas fa-arrow-up"></i></a>
-    <div id="app">
+    <div id="site">
         <!-- Header avec le logo et le menu hamburger (qui remplace les nav links sur les petits écrans) -->
         <div class="flex flex-col py-12 bg-gray-900">
             <div class="flex justify-between items-center self-center mt-1 w-full max-w-[1298px] px-4 relative"> <!-- Ajoutez relative ici pour positionner les éléments absolus par rapport à celui-ci -->

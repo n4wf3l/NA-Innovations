@@ -9,6 +9,7 @@ use App\Services\NumberGenerator;
 use App\Services\PdfService;
 use App\Services\CommissionService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -48,7 +49,9 @@ class InvoiceController extends BaseAdminController
 
         $invoices = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.invoices.index', compact('invoices'));
+        return Inertia::render('Admin/Invoices/Index', [
+            'invoices' => $invoices,
+        ]);
     }
 
     /**
@@ -58,7 +61,9 @@ class InvoiceController extends BaseAdminController
     {
         $clients = User::where('role', 'client')->orderBy('name')->get();
 
-        return view('admin.invoices.create', compact('clients'));
+        return Inertia::render('Admin/Invoices/Create', [
+            'clients' => $clients,
+        ]);
     }
 
     /**
@@ -142,7 +147,9 @@ class InvoiceController extends BaseAdminController
             },
         ]);
 
-        return view('admin.invoices.show', compact('invoice'));
+        return Inertia::render('Admin/Invoices/Show', [
+            'invoice' => $invoice,
+        ]);
     }
 
     /**
@@ -153,7 +160,10 @@ class InvoiceController extends BaseAdminController
         $invoice->load('items');
         $clients = User::where('role', 'client')->orderBy('name')->get();
 
-        return view('admin.invoices.edit', compact('invoice', 'clients'));
+        return Inertia::render('Admin/Invoices/Edit', [
+            'invoice' => $invoice,
+            'clients' => $clients,
+        ]);
     }
 
     /**

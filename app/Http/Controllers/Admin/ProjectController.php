@@ -6,6 +6,7 @@ use App\Models\Lead;
 use App\Models\Projet;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ProjectController extends BaseAdminController
 {
@@ -52,7 +53,12 @@ class ProjectController extends BaseAdminController
             ->get()
             ->groupBy('status');
 
-        return view('admin.projects.index', compact('projects', 'clients', 'developers', 'kanbanProjects'));
+        return Inertia::render('Admin/Projects/Index', [
+            'projects' => $projects,
+            'clients' => $clients,
+            'developers' => $developers,
+            'kanbanProjects' => $kanbanProjects,
+        ]);
     }
 
     /**
@@ -64,7 +70,11 @@ class ProjectController extends BaseAdminController
         $developers = User::whereIn('role', ['admin', 'developer'])->orderBy('name')->get();
         $leads = Lead::whereNotNull('referral_partner_id')->orderBy('created_at', 'desc')->get();
 
-        return view('admin.projects.create', compact('clients', 'developers', 'leads'));
+        return Inertia::render('Admin/Projects/Create', [
+            'clients' => $clients,
+            'developers' => $developers,
+            'leads' => $leads,
+        ]);
     }
 
     /**
@@ -122,7 +132,9 @@ class ProjectController extends BaseAdminController
             'documents',
         ]);
 
-        return view('admin.projects.show', compact('project'));
+        return Inertia::render('Admin/Projects/Show', [
+            'project' => $project,
+        ]);
     }
 
     /**
@@ -134,7 +146,12 @@ class ProjectController extends BaseAdminController
         $developers = User::whereIn('role', ['admin', 'developer'])->orderBy('name')->get();
         $leads = Lead::whereNotNull('referral_partner_id')->orderBy('created_at', 'desc')->get();
 
-        return view('admin.projects.edit', compact('project', 'clients', 'developers', 'leads'));
+        return Inertia::render('Admin/Projects/Edit', [
+            'project' => $project,
+            'clients' => $clients,
+            'developers' => $developers,
+            'leads' => $leads,
+        ]);
     }
 
     /**

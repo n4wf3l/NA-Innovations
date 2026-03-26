@@ -17,11 +17,11 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('/show.css') }}">
-    @vite('resources/css/app.css')
+    @vite('resources/js/public.ts')
 </head>
 
 <body>
-<div id="app">
+<div id="site">
         <!-- Header avec le logo et le menu hamburger (qui remplace les nav links sur les petits écrans) -->
         <div class="flex flex-col py-12 bg-gray-900">
             <div class="flex justify-between items-center self-center mt-1 w-full max-w-[1298px] px-4 relative" data-aos="zoom-in"> <!-- Ajoutez relative ici pour positionner les éléments absolus par rapport à celui-ci -->

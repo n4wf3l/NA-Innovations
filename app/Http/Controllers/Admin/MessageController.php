@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Message;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class MessageController extends BaseAdminController
 {
@@ -14,7 +15,9 @@ class MessageController extends BaseAdminController
     {
         $messages = Message::all();
 
-        return view('admin.messages.index', compact('messages'));
+        return Inertia::render('Admin/Messages/Index', [
+            'messages' => $messages,
+        ]);
     }
 
     /**

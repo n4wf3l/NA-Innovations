@@ -58,7 +58,16 @@ Route::get('/posts/create', [PostController::class, 'create'])->name('posts.crea
 Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
 
-Route::get('/dashboard', function () { return redirect()->route('admin.dashboard'); })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', function () {
+    $user = auth()->user();
+    return match ($user->role) {
+        'admin' => redirect()->route('admin.dashboard'),
+        'developer' => redirect('/dev/dashboard'),
+        'referral_partner' => redirect('/partner/dashboard'),
+        'client' => redirect('/client/dashboard'),
+        default => redirect('/'),
+    };
+})->middleware(['auth', 'verified'])->name('dashboard');
 Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
 Route::get('/', [MessageController::class, 'welcomeMessages'])->name('welcome');
 
@@ -68,6 +77,35 @@ Route::get('/contact', [App\Http\Controllers\ContactController::class, 'index'])
 Route::post('/send-email', [ContactController::class, 'sendEmail'])->name('send-email');
 
 Route::get('locale/{locale}', [App\Http\Controllers\LocaleController::class, 'switch'])->name('locale.switch');
+
+// Financial PIN routes (accessible to all authenticated users)
+Route::middleware('auth')->group(function () {
+    Route::post('/financial-pin/verify', [App\Http\Controllers\FinancialPinController::class, 'verify'])->name('financial-pin.verify');
+    Route::post('/financial-pin/lock', [App\Http\Controllers\FinancialPinController::class, 'lock'])->name('financial-pin.lock');
+    Route::get('/financial-pin/status', [App\Http\Controllers\FinancialPinController::class, 'status'])->name('financial-pin.status');
+});
+
+// Developer portal routes
+Route::prefix('dev')->middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Dev\DashboardController::class, 'index'])->name('dev.dashboard');
+    Route::get('/projects', [App\Http\Controllers\Dev\ProjectController::class, 'index'])->name('dev.projects.index');
+    Route::get('/projects/{project}', [App\Http\Controllers\Dev\ProjectController::class, 'show'])->name('dev.projects.show');
+    Route::post('/projects/{project}/claim', [App\Http\Controllers\Dev\ProjectController::class, 'claim'])->name('dev.projects.claim');
+});
+
+// Partner portal routes
+Route::prefix('partner')->middleware(['auth', 'referral'])->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Partner\DashboardController::class, 'index'])->name('partner.dashboard');
+    Route::get('/leads', [App\Http\Controllers\Partner\LeadController::class, 'index'])->name('partner.leads.index');
+    Route::get('/leads/submit', [App\Http\Controllers\Partner\LeadController::class, 'create'])->name('partner.leads.submit');
+    Route::post('/leads/submit', [App\Http\Controllers\Partner\LeadController::class, 'store'])->name('partner.leads.store');
+    Route::get('/leads/{lead}', [App\Http\Controllers\Partner\LeadController::class, 'show'])->name('partner.leads.show');
+    Route::get('/commissions', [App\Http\Controllers\Partner\CommissionController::class, 'index'])->name('partner.commissions.index');
+    Route::get('/resources', [App\Http\Controllers\Partner\PageController::class, 'index'])->name('partner.pages.index');
+    Route::get('/resources/{slug}', [App\Http\Controllers\Partner\PageController::class, 'show'])->name('partner.pages.show');
+    Route::get('/profile', [App\Http\Controllers\Partner\ProfileController::class, 'edit'])->name('partner.profile');
+    Route::put('/profile', [App\Http\Controllers\Partner\ProfileController::class, 'update'])->name('partner.profile.update');
+});
 
 // Admin routes
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
@@ -120,6 +158,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     // Messages (Ticker)
     Route::resource('messages', App\Http\Controllers\Admin\MessageController::class)->only(['index', 'store', 'update', 'destroy'])->names('admin.messages');
+
+    // Dynamic Pages
+    Route::resource('pages', App\Http\Controllers\Admin\PageController::class)->names('admin.pages');
 });
 
 require __DIR__ . '/auth.php';

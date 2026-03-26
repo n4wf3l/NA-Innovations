@@ -7,6 +7,7 @@ use App\Models\ServiceRenewal;
 use App\Models\User;
 use App\Models\Projet;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class RecurringServiceController extends BaseAdminController
 {
@@ -43,7 +44,9 @@ class RecurringServiceController extends BaseAdminController
 
         $services = $query->orderBy('expiry_date', 'asc')->paginate(15)->withQueryString();
 
-        return view('admin.services.index', compact('services'));
+        return Inertia::render('Admin/Services/Index', [
+            'services' => $services,
+        ]);
     }
 
     /**
@@ -54,7 +57,10 @@ class RecurringServiceController extends BaseAdminController
         $clients = User::where('role', 'client')->orderBy('name')->get();
         $projects = Projet::orderBy('nom_societe')->get();
 
-        return view('admin.services.create', compact('clients', 'projects'));
+        return Inertia::render('Admin/Services/Create', [
+            'clients' => $clients,
+            'projects' => $projects,
+        ]);
     }
 
     /**
@@ -101,7 +107,9 @@ class RecurringServiceController extends BaseAdminController
     {
         $service->load('client', 'projet', 'renewals');
 
-        return view('admin.services.show', compact('service'));
+        return Inertia::render('Admin/Services/Show', [
+            'service' => $service,
+        ]);
     }
 
     /**
@@ -112,7 +120,11 @@ class RecurringServiceController extends BaseAdminController
         $clients = User::where('role', 'client')->orderBy('name')->get();
         $projects = Projet::orderBy('nom_societe')->get();
 
-        return view('admin.services.edit', compact('service', 'clients', 'projects'));
+        return Inertia::render('Admin/Services/Edit', [
+            'service' => $service,
+            'clients' => $clients,
+            'projects' => $projects,
+        ]);
     }
 
     /**

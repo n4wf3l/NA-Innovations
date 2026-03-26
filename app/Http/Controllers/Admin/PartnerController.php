@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\ReferralPartner;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -28,7 +29,9 @@ class PartnerController extends BaseAdminController
 
         $partners = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.partners.index', compact('partners'));
+        return Inertia::render('Admin/Partners/Index', [
+            'partners' => $partners,
+        ]);
     }
 
     /**
@@ -36,7 +39,7 @@ class PartnerController extends BaseAdminController
      */
     public function create()
     {
-        return view('admin.partners.create');
+        return Inertia::render('Admin/Partners/Create');
     }
 
     /**
@@ -52,6 +55,7 @@ class PartnerController extends BaseAdminController
             'bank_iban' => 'nullable|string|max:50',
             'paypal_email' => 'nullable|email|max:255',
             'notes' => 'nullable|string',
+            'financial_pin' => 'nullable|string|min:4|max:6',
         ]);
 
         // Create user with referral_partner role
@@ -61,6 +65,11 @@ class PartnerController extends BaseAdminController
             'password' => Hash::make(Str::random(16)),
             'role' => 'referral_partner',
         ]);
+
+        // Set financial PIN if provided
+        if ($request->filled('financial_pin')) {
+            $user->update(['financial_pin' => Hash::make($request->financial_pin)]);
+        }
 
         // Generate unique referral code
         do {
@@ -106,15 +115,15 @@ class PartnerController extends BaseAdminController
         $totalCommissionConfirmed = $partner->commissions()->where('status', 'confirmed')->sum('commission_amount');
         $totalCommissionPaid = $partner->commissions()->where('status', 'paid')->sum('commission_amount');
 
-        return view('admin.partners.show', compact(
-            'partner',
-            'totalLeads',
-            'wonLeads',
-            'conversionRate',
-            'totalCommissionEstimated',
-            'totalCommissionConfirmed',
-            'totalCommissionPaid'
-        ));
+        return Inertia::render('Admin/Partners/Show', [
+            'partner' => $partner,
+            'totalLeads' => $totalLeads,
+            'wonLeads' => $wonLeads,
+            'conversionRate' => $conversionRate,
+            'totalCommissionEstimated' => $totalCommissionEstimated,
+            'totalCommissionConfirmed' => $totalCommissionConfirmed,
+            'totalCommissionPaid' => $totalCommissionPaid,
+        ]);
     }
 
     /**
@@ -124,7 +133,9 @@ class PartnerController extends BaseAdminController
     {
         $partner->load('user');
 
-        return view('admin.partners.edit', compact('partner'));
+        return Inertia::render('Admin/Partners/Edit', [
+            'partner' => $partner,
+        ]);
     }
 
     /**
@@ -143,6 +154,7 @@ class PartnerController extends BaseAdminController
             'paypal_email' => 'nullable|email|max:255',
             'notes' => 'nullable|string',
             'is_active' => 'nullable|boolean',
+            'financial_pin' => 'nullable|string|min:4|max:6',
         ]);
 
         // Update user fields
@@ -150,6 +162,11 @@ class PartnerController extends BaseAdminController
             'name' => $validated['name'],
             'email' => $validated['email'],
         ]);
+
+        // Update financial PIN if provided
+        if ($request->filled('financial_pin')) {
+            $partner->user->update(['financial_pin' => Hash::make($request->financial_pin)]);
+        }
 
         // Update partner fields
         $partner->update([

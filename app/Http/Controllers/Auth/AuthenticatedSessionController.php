@@ -29,7 +29,17 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        // Redirect based on user role
+        $user = $request->user();
+        $home = match ($user->role) {
+            'admin' => '/admin/dashboard',
+            'referral_partner' => '/partner/dashboard',
+            'developer' => '/dev/dashboard',
+            'client' => '/client/dashboard',
+            default => '/',
+        };
+
+        return redirect()->intended($home);
     }
 
     /**
@@ -43,6 +53,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login');
     }
 }

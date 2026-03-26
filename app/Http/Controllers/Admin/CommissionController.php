@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Commission;
 use App\Models\ReferralPartner;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CommissionController extends BaseAdminController
 {
@@ -42,7 +43,10 @@ class CommissionController extends BaseAdminController
         $commissions = $query->latest()->paginate(15)->withQueryString();
         $partners = ReferralPartner::with('user')->get();
 
-        return view('admin.commissions.index', compact('commissions', 'partners'));
+        return Inertia::render('Admin/Commissions/Index', [
+            'commissions' => $commissions,
+            'partners' => $partners,
+        ]);
     }
 
     /**
@@ -58,7 +62,9 @@ class CommissionController extends BaseAdminController
             'invoice',
         ]);
 
-        return view('admin.commissions.show', compact('commission'));
+        return Inertia::render('Admin/Commissions/Show', [
+            'commission' => $commission,
+        ]);
     }
 
     /**

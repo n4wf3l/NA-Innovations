@@ -22,12 +22,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spinkit/2.0.1/spinkit.min.css">
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('/welcome.css') }}">
-    @vite('resources/css/app.css')
+    @vite('resources/js/public.ts')
 </head>
 
 <body>
 <a href="#" id="scrollToTop"><i class="fas fa-arrow-up"></i></a>
-    <div id="app">
+    <div id="site">
 <div class="flex flex-col py-12 bg-gray-900">
     <!-- Logo NA with icone to Logout if Connected -->
     <div class="flex justify-between items-center self-center w-full max-w-[1298px] px-4 relative" data-aos="zoom-in">

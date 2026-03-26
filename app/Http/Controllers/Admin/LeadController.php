@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Lead;
 use App\Models\ReferralPartner;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class LeadController extends BaseAdminController
 {
@@ -42,7 +43,10 @@ class LeadController extends BaseAdminController
             ->get()
             ->groupBy('status');
 
-        return view('admin.leads.index', compact('leads', 'kanbanLeads'));
+        return Inertia::render('Admin/Leads/Index', [
+            'leads' => $leads,
+            'kanbanLeads' => $kanbanLeads,
+        ]);
     }
 
     /**
@@ -52,7 +56,9 @@ class LeadController extends BaseAdminController
     {
         $partners = ReferralPartner::with('user')->where('is_active', true)->get();
 
-        return view('admin.leads.create', compact('partners'));
+        return Inertia::render('Admin/Leads/Create', [
+            'partners' => $partners,
+        ]);
     }
 
     /**
@@ -96,7 +102,9 @@ class LeadController extends BaseAdminController
             },
         ]);
 
-        return view('admin.leads.show', compact('lead'));
+        return Inertia::render('Admin/Leads/Show', [
+            'lead' => $lead,
+        ]);
     }
 
     /**
@@ -106,7 +114,10 @@ class LeadController extends BaseAdminController
     {
         $partners = ReferralPartner::with('user')->where('is_active', true)->get();
 
-        return view('admin.leads.edit', compact('lead', 'partners'));
+        return Inertia::render('Admin/Leads/Edit', [
+            'lead' => $lead,
+            'partners' => $partners,
+        ]);
     }
 
     /**

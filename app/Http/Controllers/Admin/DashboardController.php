@@ -9,6 +9,7 @@ use App\Models\Payment;
 use App\Models\Projet;
 use App\Models\RecurringService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class DashboardController extends BaseAdminController
 {
@@ -51,9 +52,15 @@ class DashboardController extends BaseAdminController
         // Commissions to pay
         $pendingCommissions = Commission::whereIn('status', ['confirmed', 'scheduled'])->sum('commission_amount');
 
-        return view('admin.dashboard', compact(
-            'revenueMonth', 'activeProjects', 'openLeads', 'pendingInvoices',
-            'recentLeads', 'overdueInvoices', 'expiringServices', 'pendingCommissions'
-        ));
+        return Inertia::render('Admin/Dashboard', [
+            'revenueMonth' => $revenueMonth,
+            'activeProjects' => $activeProjects,
+            'openLeads' => $openLeads,
+            'pendingInvoices' => $pendingInvoices,
+            'recentLeads' => $recentLeads,
+            'overdueInvoices' => $overdueInvoices,
+            'expiringServices' => $expiringServices,
+            'pendingCommissions' => $pendingCommissions,
+        ]);
     }
 }

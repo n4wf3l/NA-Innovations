@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends BaseAdminController
@@ -15,7 +16,9 @@ class PostController extends BaseAdminController
     {
         $posts = Post::orderBy('created_at', 'desc')->paginate(15);
 
-        return view('admin.posts.index', compact('posts'));
+        return Inertia::render('Admin/Posts/Index', [
+            'posts' => $posts,
+        ]);
     }
 
     /**
@@ -23,7 +26,7 @@ class PostController extends BaseAdminController
      */
     public function create()
     {
-        return view('admin.posts.create');
+        return Inertia::render('Admin/Posts/Create');
     }
 
     /**
@@ -52,7 +55,9 @@ class PostController extends BaseAdminController
      */
     public function edit(Post $post)
     {
-        return view('admin.posts.edit', compact('post'));
+        return Inertia::render('Admin/Posts/Edit', [
+            'post' => $post,
+        ]);
     }
 
     /**

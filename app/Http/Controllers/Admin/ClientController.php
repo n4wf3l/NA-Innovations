@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -28,7 +29,9 @@ class ClientController extends BaseAdminController
 
         $clients = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.clients.index', compact('clients'));
+        return Inertia::render('Admin/Clients/Index', [
+            'clients' => $clients,
+        ]);
     }
 
     /**
@@ -36,7 +39,7 @@ class ClientController extends BaseAdminController
      */
     public function create()
     {
-        return view('admin.clients.create');
+        return Inertia::render('Admin/Clients/Create');
     }
 
     /**
@@ -54,12 +57,21 @@ class ClientController extends BaseAdminController
             'city' => 'nullable|string|max:100',
             'postal_code' => 'nullable|string|max:20',
             'country' => 'nullable|string|max:100',
+            'financial_pin' => 'nullable|string|min:4|max:6',
         ]);
+
+        $financialPin = $validated['financial_pin'] ?? null;
+        unset($validated['financial_pin']);
 
         $validated['role'] = 'client';
         $validated['password'] = Hash::make(Str::random(16));
 
-        User::create($validated);
+        $user = User::create($validated);
+
+        // Set financial PIN if provided
+        if ($financialPin) {
+            $user->update(['financial_pin' => Hash::make($financialPin)]);
+        }
 
         return redirect()->route('admin.clients.index')->with('success', 'Client created successfully.');
     }
@@ -78,7 +90,9 @@ class ClientController extends BaseAdminController
             'recurringServices',
         ]);
 
-        return view('admin.clients.show', compact('client'));
+        return Inertia::render('Admin/Clients/Show', [
+            'client' => $client,
+        ]);
     }
 
     /**
@@ -88,7 +102,9 @@ class ClientController extends BaseAdminController
     {
         $client = User::where('role', 'client')->findOrFail($id);
 
-        return view('admin.clients.edit', compact('client'));
+        return Inertia::render('Admin/Clients/Edit', [
+            'client' => $client,
+        ]);
     }
 
     /**
@@ -108,7 +124,14 @@ class ClientController extends BaseAdminController
             'city' => 'nullable|string|max:100',
             'postal_code' => 'nullable|string|max:20',
             'country' => 'nullable|string|max:100',
+            'financial_pin' => 'nullable|string|min:4|max:6',
         ]);
+
+        // Update financial PIN if provided
+        if ($request->filled('financial_pin')) {
+            $client->update(['financial_pin' => Hash::make($validated['financial_pin'])]);
+        }
+        unset($validated['financial_pin']);
 
         $client->update($validated);
 

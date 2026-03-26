@@ -35,6 +35,8 @@ class User extends Authenticatable
         'is_active',
         'last_login_at',
         'role',
+        'preferences',
+        'financial_pin',
     ];
 
     /**
@@ -45,6 +47,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'financial_pin',
     ];
 
     /**
@@ -57,6 +60,7 @@ class User extends Authenticatable
         'password' => 'hashed',
         'is_active' => 'boolean',
         'last_login_at' => 'datetime',
+        'preferences' => 'array',
     ];
 
     // ──────────────────────────────────────────────

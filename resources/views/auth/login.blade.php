@@ -8,7 +8,7 @@
     <link rel="icon" href="{{ asset('NAlogo2.png') }}" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=bebas-neue:400|figtree:400,500,600,700&display=swap" rel="stylesheet" />
-    @vite('resources/css/app.css')
+    @vite('resources/js/public.ts')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
     <style>
         .font-display { font-family: 'Bebas Neue', cursive; }

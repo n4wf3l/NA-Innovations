@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\QuoteService;
 use App\Services\PdfService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 
 class QuoteController extends BaseAdminController
@@ -41,7 +42,9 @@ class QuoteController extends BaseAdminController
 
         $quotes = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.quotes.index', compact('quotes'));
+        return Inertia::render('Admin/Quotes/Index', [
+            'quotes' => $quotes,
+        ]);
     }
 
     /**
@@ -52,7 +55,10 @@ class QuoteController extends BaseAdminController
         $clients = User::where('role', 'client')->orderBy('name')->get();
         $leads = Lead::orderBy('created_at', 'desc')->get();
 
-        return view('admin.quotes.create', compact('clients', 'leads'));
+        return Inertia::render('Admin/Quotes/Create', [
+            'clients' => $clients,
+            'leads' => $leads,
+        ]);
     }
 
     /**
@@ -108,7 +114,9 @@ class QuoteController extends BaseAdminController
             },
         ]);
 
-        return view('admin.quotes.show', compact('quote'));
+        return Inertia::render('Admin/Quotes/Show', [
+            'quote' => $quote,
+        ]);
     }
 
     /**
@@ -120,7 +128,11 @@ class QuoteController extends BaseAdminController
         $clients = User::where('role', 'client')->orderBy('name')->get();
         $leads = Lead::orderBy('created_at', 'desc')->get();
 
-        return view('admin.quotes.edit', compact('quote', 'clients', 'leads'));
+        return Inertia::render('Admin/Quotes/Edit', [
+            'quote' => $quote,
+            'clients' => $clients,
+            'leads' => $leads,
+        ]);
     }
 
     /**
