@@ -129,6 +129,12 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('quotes/{quote}/duplicate', [App\Http\Controllers\Admin\QuoteController::class, 'duplicate'])->name('admin.quotes.duplicate');
     Route::post('quotes/{quote}/create-invoice', [App\Http\Controllers\Admin\QuoteController::class, 'createInvoice'])->name('admin.quotes.create-invoice');
     Route::get('quotes/{quote}/pdf', [App\Http\Controllers\Admin\QuoteController::class, 'downloadPdf'])->name('admin.quotes.pdf');
+    Route::get('quotes/{quote}/pdf/preview', [App\Http\Controllers\Admin\QuoteController::class, 'previewPdf'])->name('admin.quotes.pdf.preview');
+
+    // Signature
+    Route::get('signature', [App\Http\Controllers\Admin\SignatureController::class, 'show'])->name('admin.signature.show');
+    Route::post('signature', [App\Http\Controllers\Admin\SignatureController::class, 'store'])->name('admin.signature.store');
+    Route::delete('signature', [App\Http\Controllers\Admin\SignatureController::class, 'destroy'])->name('admin.signature.destroy');
 
     // Invoices
     Route::resource('invoices', App\Http\Controllers\Admin\InvoiceController::class)->names('admin.invoices');

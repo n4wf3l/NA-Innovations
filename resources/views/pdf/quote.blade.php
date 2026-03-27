@@ -405,6 +405,27 @@
             </div>
         @endif
 
+        {{-- Signature --}}
+        @if($quote->include_signature && $quote->signature_data)
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                <table width="100%">
+                    <tr>
+                        <td width="50%" style="vertical-align: bottom;">
+                            <div style="font-size: 10px; color: #6b7280; margin-bottom: 8px;">Authorized Signature</div>
+                            <img src="{{ $quote->signature_data }}" style="max-height: 80px; max-width: 250px;" alt="Signature">
+                            <div style="border-top: 1px solid #d1d5db; width: 250px; margin-top: 4px; padding-top: 6px;">
+                                <span style="font-size: 11px; font-weight: 600; color: #374151;">{{ $company['name'] ?? 'NA Innovations' }}</span>
+                            </div>
+                        </td>
+                        <td width="50%" style="vertical-align: bottom; text-align: right;">
+                            <div style="font-size: 10px; color: #6b7280; margin-bottom: 8px;">Date</div>
+                            <div style="font-size: 12px; font-weight: 600; color: #374151;">{{ now()->format('d/m/Y') }}</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        @endif
+
         {{-- Validity --}}
         @if($quote->valid_until)
             <div class="validity">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Quote;
 use App\Models\Lead;
 use App\Models\User;
+use App\Models\EmailTemplate;
 use App\Services\QuoteService;
 use App\Services\PdfService;
 use Illuminate\Http\Request;
@@ -67,6 +68,7 @@ class QuoteController extends BaseAdminController
         return Inertia::render('Admin/Quotes/Create', [
             'clients' => $clients,
             'leads' => $leads,
+            'savedSignature' => auth()->user()->signature,
         ]);
     }
 
@@ -98,10 +100,24 @@ class QuoteController extends BaseAdminController
             'items.*.unit_price' => 'required|numeric|min:0',
             'items.*.unit' => 'nullable|string|max:50',
             'items.*.is_optional' => 'nullable',
+            'include_signature' => 'nullable|boolean',
+            'signature_data' => 'nullable|string',
         ]);
 
         $items = $validated['items'];
         unset($validated['items']);
+
+        // Handle signature: if include_signature is true and no signature_data provided, use saved signature
+        if (!empty($validated['include_signature']) && empty($validated['signature_data'])) {
+            $validated['signature_data'] = auth()->user()->signature;
+        }
+
+        // Save signature to user account if new one was drawn
+        if (!empty($validated['signature_data']) && $validated['signature_data'] !== auth()->user()->signature) {
+            $user = auth()->user();
+            $user->signature = $validated['signature_data'];
+            $user->save();
+        }
 
         $quote = QuoteService::create($validated, $items);
 
@@ -123,8 +139,17 @@ class QuoteController extends BaseAdminController
             },
         ]);
 
+        $template = EmailTemplate::where('slug', 'quote-sent')->first();
+
+        $defaultSubject = "Your quote #{$quote->quote_number} from NA Innovations";
+        $defaultBody = "Dear {{ client_name }},\n\nPlease find attached our quote {{ quote_number }} for a total of {{ total }}.\n\nThis quote is valid until {{ valid_until }}.\n\nPlease don't hesitate to contact us if you have any questions.\n\nBest regards,\nNA Innovations";
+
         return Inertia::render('Admin/Quotes/Show', [
             'quote' => $quote,
+            'emailTemplate' => [
+                'subject' => $template->subject ?? $defaultSubject,
+                'body' => $template->body ?? $defaultBody,
+            ],
         ]);
     }
 
@@ -141,6 +166,7 @@ class QuoteController extends BaseAdminController
             'quote' => $quote,
             'clients' => $clients,
             'leads' => $leads,
+            'savedSignature' => auth()->user()->signature,
         ]);
     }
 
@@ -172,10 +198,22 @@ class QuoteController extends BaseAdminController
             'items.*.unit_price' => 'required|numeric|min:0',
             'items.*.unit' => 'nullable|string|max:50',
             'items.*.is_optional' => 'nullable',
+            'include_signature' => 'nullable|boolean',
+            'signature_data' => 'nullable|string',
         ]);
 
         $items = $validated['items'];
         unset($validated['items']);
+
+        if (!empty($validated['include_signature']) && empty($validated['signature_data'])) {
+            $validated['signature_data'] = auth()->user()->signature;
+        }
+
+        if (!empty($validated['signature_data']) && $validated['signature_data'] !== auth()->user()->signature) {
+            $user = auth()->user();
+            $user->signature = $validated['signature_data'];
+            $user->save();
+        }
 
         $quote->update($validated);
         QuoteService::syncItems($quote, $items);
@@ -197,8 +235,13 @@ class QuoteController extends BaseAdminController
     /**
      * Mark quote as sent.
      */
-    public function send(Quote $quote)
+    public function send(Request $request, Quote $quote)
     {
+        $request->validate([
+            'email_subject' => 'nullable|string|max:500',
+            'email_body' => 'nullable|string',
+        ]);
+
         $quote->update([
             'status' => 'sent',
             'sent_at' => now(),
@@ -216,6 +259,9 @@ class QuoteController extends BaseAdminController
             'old_value' => 'draft',
             'new_value' => 'sent',
         ]);
+
+        // TODO: Actually send the email with subject/body and PDF attachment
+        // Mail::to($quote->client_email)->send(new QuoteSentMail($quote, $request->email_subject, $request->email_body));
 
         return redirect()->back()->with('success', 'Quote marked as sent.');
     }
@@ -253,5 +299,21 @@ class QuoteController extends BaseAdminController
         }
 
         return Storage::disk('local')->download($quote->pdf_path, "{$quote->quote_number}.pdf");
+    }
+
+    /**
+     * Stream the quote PDF inline for preview.
+     */
+    public function previewPdf(Quote $quote)
+    {
+        if (!$quote->pdf_path || !Storage::disk('local')->exists($quote->pdf_path)) {
+            PdfService::generateQuotePdf($quote);
+            $quote->refresh();
+        }
+
+        return response(Storage::disk('local')->get($quote->pdf_path), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline',
+        ]);
     }
 }

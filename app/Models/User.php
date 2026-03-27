@@ -37,6 +37,7 @@ class User extends Authenticatable
         'role',
         'preferences',
         'financial_pin',
+        'signature',
     ];
 
     /**
@@ -48,6 +49,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'financial_pin',
+        'signature',
     ];
 
     /**
