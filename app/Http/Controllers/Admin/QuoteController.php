@@ -42,8 +42,17 @@ class QuoteController extends BaseAdminController
 
         $quotes = $query->latest()->paginate(15)->withQueryString();
 
+        $totalQuotes = Quote::count();
+        $acceptedQuotes = Quote::where('status', 'accepted')->count();
+        $pendingValue = Quote::whereIn('status', ['sent', 'viewed'])->sum('total');
+        $conversionRate = $totalQuotes > 0 ? round(($acceptedQuotes / $totalQuotes) * 100) : 0;
+
         return Inertia::render('Admin/Quotes/Index', [
             'quotes' => $quotes,
+            'totalQuotes' => $totalQuotes,
+            'acceptedQuotes' => $acceptedQuotes,
+            'pendingValue' => $pendingValue,
+            'conversionRate' => $conversionRate,
         ]);
     }
 

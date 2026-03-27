@@ -52,6 +52,13 @@ class DashboardController extends BaseAdminController
         // Commissions to pay
         $pendingCommissions = Commission::whereIn('status', ['confirmed', 'scheduled'])->sum('commission_amount');
 
+        // All active projects with partner info for box view
+        $projects = Projet::with(['client', 'developer', 'lead.referralPartner.user'])
+            ->whereIn('status', ['planning', 'in_progress', 'review', 'completed'])
+            ->latest('updated_at')
+            ->take(12)
+            ->get();
+
         return Inertia::render('Admin/Dashboard', [
             'revenueMonth' => $revenueMonth,
             'activeProjects' => $activeProjects,
@@ -61,6 +68,7 @@ class DashboardController extends BaseAdminController
             'overdueInvoices' => $overdueInvoices,
             'expiringServices' => $expiringServices,
             'pendingCommissions' => $pendingCommissions,
+            'projects' => $projects,
         ]);
     }
 }

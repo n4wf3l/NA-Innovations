@@ -4,7 +4,9 @@
       "Bash(ls -lh /c/Users/ajari/Documents/GitHub/NA-Innovations/public/*.js)",
       "Bash(ls -lh /c/Users/ajari/Documents/GitHub/NA-Innovations/public/*.png /c/Users/ajari/Documents/GitHub/NA-Innovations/public/*.jpg)",
       "Bash(node -e \":*)",
-      "Bash(node -e \"const fs=require\\(''fs''\\);const p=''C:/Users/ajari/.claude/projects/c--Users-ajari-Documents-GitHub-NA-Innovations/e4bab746-e2f2-4655-86c0-a68a5c750ccb/tool-results/toolu_01X5Dx3Za3fJeZFSvTH7aqaa.json'';const d=JSON.parse\\(fs.readFileSync\\(p,''utf-8''\\)\\);const t=d[0].text;console.log\\(t.substring\\(2000,42000\\)\\);\")"
+      "Bash(node -e \"const fs=require\\(''fs''\\);const p=''C:/Users/ajari/.claude/projects/c--Users-ajari-Documents-GitHub-NA-Innovations/e4bab746-e2f2-4655-86c0-a68a5c750ccb/tool-results/toolu_01X5Dx3Za3fJeZFSvTH7aqaa.json'';const d=JSON.parse\\(fs.readFileSync\\(p,''utf-8''\\)\\);const t=d[0].text;console.log\\(t.substring\\(2000,42000\\)\\);\")",
+      "Bash(node fix-fr-typos.js)",
+      "Bash(node fix-fr-typos.cjs)"
     ]
   }
 }

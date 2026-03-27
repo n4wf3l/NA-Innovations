@@ -1,5 +1,6 @@
 import PartnerLayout from '@/Layouts/PartnerLayout';
 import { Head, Link } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 
 interface Page {
     id: number;
@@ -13,13 +14,14 @@ interface Props {
 }
 
 export default function ResourcesIndex({ pages }: Props) {
+    const { t } = useTranslation();
     return (
-        <PartnerLayout title="Resources">
-            <Head title="Resources & Documentation" />
+        <PartnerLayout title={t("Resources")}>
+            <Head title={t("Resources & Documentation")} />
 
             {/* Header */}
             <div className="mb-8">
-                <h1 className="text-2xl font-black text-gray-900">Resources & Documentation</h1>
+                <h1 className="text-2xl font-black text-gray-900">{t("Resources & Documentation")}</h1>
                 <p className="text-gray-400 text-sm mt-1">Guides, FAQs, and everything you need to know about the partner program.</p>
             </div>
 
@@ -31,7 +33,7 @@ export default function ResourcesIndex({ pages }: Props) {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                         </svg>
                     </div>
-                    <p className="text-sm text-gray-400">No resources available yet.</p>
+                    <p className="text-sm text-gray-400">{t("No resources available yet.")}</p>
                     <p className="text-xs text-gray-300 mt-1">Check back later for guides and documentation.</p>
                 </div>
             ) : (

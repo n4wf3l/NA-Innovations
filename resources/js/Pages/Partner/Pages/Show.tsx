@@ -1,5 +1,6 @@
 import PartnerLayout from '@/Layouts/PartnerLayout';
 import { Head, Link } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 
 interface Page {
     id: number;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default function ResourceShow({ page }: Props) {
+    const { t } = useTranslation();
     return (
         <PartnerLayout title={page.title}>
             <Head title={page.title} />

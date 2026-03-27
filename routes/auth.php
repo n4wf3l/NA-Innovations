@@ -17,6 +17,9 @@ Route::middleware('guest')->group(function () {
 
     Route::post('register', [RegisteredUserController::class, 'store']);
 
+    Route::get('pending-approval', [RegisteredUserController::class, 'pendingApproval'])
+                ->name('pending-approval');
+
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
                 ->name('login');
 

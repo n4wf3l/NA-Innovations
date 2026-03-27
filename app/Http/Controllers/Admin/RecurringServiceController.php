@@ -44,8 +44,19 @@ class RecurringServiceController extends BaseAdminController
 
         $services = $query->orderBy('expiry_date', 'asc')->paginate(15)->withQueryString();
 
+        $totalServices = RecurringService::count();
+        $activeServices = RecurringService::where('status', 'active')->count();
+        $monthlyRevenue = RecurringService::where('status', 'active')->sum('billed_price');
+        $totalMargin = RecurringService::where('status', 'active')
+            ->selectRaw('SUM(billed_price - real_cost) as margin')
+            ->value('margin') ?? 0;
+
         return Inertia::render('Admin/Services/Index', [
             'services' => $services,
+            'totalServices' => $totalServices,
+            'activeServices' => $activeServices,
+            'monthlyRevenue' => $monthlyRevenue,
+            'totalMargin' => $totalMargin,
         ]);
     }
 

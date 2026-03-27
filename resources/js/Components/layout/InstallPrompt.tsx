@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function InstallPrompt() {
+    const { t } = useTranslation();
     const [show, setShow] = useState(false);
     const [isIOS, setIsIOS] = useState(false);
     const [dontShowAgain, setDontShowAgain] = useState(false);
@@ -58,8 +60,8 @@ export default function InstallPrompt() {
                         <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-rose-500/30">
                             <span className="text-white text-2xl font-black">NA</span>
                         </div>
-                        <h3 className="text-white text-lg font-bold">Install NA Innovations</h3>
-                        <p className="text-gray-400 text-xs mt-1">Add to your home screen for the best experience</p>
+                        <h3 className="text-white text-lg font-bold">{t('Install NA Innovations')}</h3>
+                        <p className="text-gray-400 text-xs mt-1">{t('Add to your home screen for the best experience')}</p>
                     </div>
                 </div>
 
@@ -75,8 +77,8 @@ export default function InstallPrompt() {
                                     </svg>
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-sm font-semibold text-gray-900">Tap the Share button</p>
-                                    <p className="text-xs text-gray-400 mt-0.5">At the bottom of Safari (square with arrow)</p>
+                                    <p className="text-sm font-semibold text-gray-900">{t('Tap the Share button')}</p>
+                                    <p className="text-xs text-gray-400 mt-0.5">{t('At the bottom of Safari (square with arrow)')}</p>
                                 </div>
                                 <span className="text-lg font-bold text-gray-300">1</span>
                             </div>
@@ -88,8 +90,8 @@ export default function InstallPrompt() {
                                     </svg>
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-sm font-semibold text-gray-900">Add to Home Screen</p>
-                                    <p className="text-xs text-gray-400 mt-0.5">Scroll down and tap "Add to Home Screen"</p>
+                                    <p className="text-sm font-semibold text-gray-900">{t('Add to Home Screen')}</p>
+                                    <p className="text-xs text-gray-400 mt-0.5">{t('Scroll down and tap "Add to Home Screen"')}</p>
                                 </div>
                                 <span className="text-lg font-bold text-gray-300">2</span>
                             </div>
@@ -101,8 +103,8 @@ export default function InstallPrompt() {
                                     </svg>
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-sm font-semibold text-gray-900">Tap Add</p>
-                                    <p className="text-xs text-gray-400 mt-0.5">The app will appear on your home screen</p>
+                                    <p className="text-sm font-semibold text-gray-900">{t('Tap Add')}</p>
+                                    <p className="text-xs text-gray-400 mt-0.5">{t('The app will appear on your home screen')}</p>
                                 </div>
                                 <span className="text-lg font-bold text-gray-300">3</span>
                             </div>
@@ -119,8 +121,8 @@ export default function InstallPrompt() {
                                     </svg>
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-sm font-semibold text-gray-900">Tap the menu</p>
-                                    <p className="text-xs text-gray-400 mt-0.5">Three dots (&#8942;) at the top right of Chrome</p>
+                                    <p className="text-sm font-semibold text-gray-900">{t('Tap the menu')}</p>
+                                    <p className="text-xs text-gray-400 mt-0.5">{t('Three dots at the top right of Chrome')}</p>
                                 </div>
                                 <span className="text-lg font-bold text-gray-300">1</span>
                             </div>
@@ -132,8 +134,8 @@ export default function InstallPrompt() {
                                     </svg>
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-sm font-semibold text-gray-900">Add to Home screen</p>
-                                    <p className="text-xs text-gray-400 mt-0.5">Select "Add to Home screen" or "Install app"</p>
+                                    <p className="text-sm font-semibold text-gray-900">{t('Add to Home screen')}</p>
+                                    <p className="text-xs text-gray-400 mt-0.5">{t('Select "Add to Home screen" or "Install app"')}</p>
                                 </div>
                                 <span className="text-lg font-bold text-gray-300">2</span>
                             </div>
@@ -145,8 +147,8 @@ export default function InstallPrompt() {
                                     </svg>
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-sm font-semibold text-gray-900">Confirm Install</p>
-                                    <p className="text-xs text-gray-400 mt-0.5">Tap "Install" and find NA on your home screen</p>
+                                    <p className="text-sm font-semibold text-gray-900">{t('Confirm Install')}</p>
+                                    <p className="text-xs text-gray-400 mt-0.5">{t('Tap "Install" and find NA on your home screen')}</p>
                                 </div>
                                 <span className="text-lg font-bold text-gray-300">3</span>
                             </div>
@@ -163,14 +165,14 @@ export default function InstallPrompt() {
                             onChange={e => setDontShowAgain(e.target.checked)}
                             className="w-4 h-4 rounded border-gray-300 text-rose-500 focus:ring-rose-400"
                         />
-                        <span className="ml-2.5 text-xs text-gray-400 group-hover:text-gray-600 transition-colors">Don't show this again</span>
+                        <span className="ml-2.5 text-xs text-gray-400 group-hover:text-gray-600 transition-colors">{t("Don't show this again")}</span>
                     </label>
 
                     <button
                         onClick={dismiss}
                         className="w-full py-4 bg-gray-900 text-white text-sm font-bold rounded-2xl active:scale-[0.98] transition-transform"
                     >
-                        Got it
+                        {t('Got it')}
                     </button>
                 </div>
             </div>

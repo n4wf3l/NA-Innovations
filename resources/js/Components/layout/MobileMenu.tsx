@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
 import { NavItem } from './Sidebar';
+import { useTranslation } from 'react-i18next';
 
 interface MobileMenuProps {
     open: boolean;
@@ -14,6 +15,7 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ open, onClose, items, cta, accentColor, currentPath, userName, userInitial }: MobileMenuProps) {
+    const { t } = useTranslation();
     if (!open) return null;
 
     const accentText = accentColor === 'rose' ? 'text-rose-400' : accentColor === 'indigo' ? 'text-indigo-400' : 'text-teal-400';
@@ -87,7 +89,7 @@ export default function MobileMenu({ open, onClose, items, cta, accentColor, cur
                                         <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
                                     </svg>
                                 )}
-                                {item.label}
+                                {t(item.label)}
                             </Link>
                         );
                     })}
@@ -96,12 +98,12 @@ export default function MobileMenu({ open, onClose, items, cta, accentColor, cur
                 {/* Bottom actions */}
                 <div className="mt-10 flex items-center space-x-6">
                     <a href="/" target="_blank" onClick={onClose} className="text-sm text-gray-500 hover:text-gray-300 transition-colors">
-                        View Site
+                        {t('View Site')}
                     </a>
                     <span className="text-gray-700">|</span>
                     <form method="POST" action="/logout" className="inline">
                         <input type="hidden" name="_token" value={typeof document !== 'undefined' ? document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content || '' : ''} />
-                        <button type="submit" className="text-sm text-gray-500 hover:text-red-400 transition-colors">Sign Out</button>
+                        <button type="submit" className="text-sm text-gray-500 hover:text-red-400 transition-colors">{t('Sign Out')}</button>
                     </form>
                 </div>
 

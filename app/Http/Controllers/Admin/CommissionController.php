@@ -43,9 +43,18 @@ class CommissionController extends BaseAdminController
         $commissions = $query->latest()->paginate(15)->withQueryString();
         $partners = ReferralPartner::with('user')->get();
 
+        $totalCommissions = Commission::count();
+        $totalPending = Commission::whereIn('status', ['estimated', 'confirmed', 'scheduled'])->sum('commission_amount');
+        $totalPaid = Commission::where('status', 'paid')->sum('commission_amount');
+        $totalAmount = Commission::sum('commission_amount');
+
         return Inertia::render('Admin/Commissions/Index', [
             'commissions' => $commissions,
             'partners' => $partners,
+            'totalCommissions' => $totalCommissions,
+            'totalPending' => $totalPending,
+            'totalPaid' => $totalPaid,
+            'totalAmount' => $totalAmount,
         ]);
     }
 

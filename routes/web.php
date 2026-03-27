@@ -28,11 +28,6 @@ Route::get('/', function () {
     return view('welcome', compact('projets', 'academicProjects'));
 });
 
-Route::group(['middleware' => 'web'], function () {
-    Route::get('/register', function () {
-        abort(403, 'Access Forbidden');
-    });
-});
 
 Route::get('/dashboard/ajouter-projet', [ProjetController::class, 'create'])->name('projets.create');
 Route::post('/projets', [ProjetController::class, 'store'])->name('projets.store');
@@ -161,6 +156,13 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     // Dynamic Pages
     Route::resource('pages', App\Http\Controllers\Admin\PageController::class)->names('admin.pages');
+
+    // Team Management
+    Route::get('team', [App\Http\Controllers\Admin\TeamController::class, 'index'])->name('admin.team');
+    Route::post('team', [App\Http\Controllers\Admin\TeamController::class, 'store'])->name('admin.team.store');
+    Route::patch('team/{user}/approve', [App\Http\Controllers\Admin\TeamController::class, 'approve'])->name('admin.team.approve');
+    Route::delete('team/{user}/reject', [App\Http\Controllers\Admin\TeamController::class, 'reject'])->name('admin.team.reject');
+    Route::patch('team/{user}/toggle', [App\Http\Controllers\Admin\TeamController::class, 'toggleActive'])->name('admin.team.toggle');
 });
 
 require __DIR__ . '/auth.php';

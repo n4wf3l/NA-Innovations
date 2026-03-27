@@ -11,6 +11,7 @@ export interface User {
     email: string;
     role: string;
     initial: string;
+    is_active?: boolean;
     phone?: string;
     company_name?: string;
     vat_number?: string;
@@ -19,6 +20,7 @@ export interface User {
     postal_code?: string;
     country?: string;
     preferences?: UserPreferences;
+    created_at?: string;
 }
 
 export interface Lead {
@@ -196,4 +198,5 @@ export interface PageProps {
     flash: { success: string | null; error: string | null };
     notifications: Notification[];
     financialUnlocked: boolean;
+    teamCounts: { partners: number; developers: number; admins: number };
 }

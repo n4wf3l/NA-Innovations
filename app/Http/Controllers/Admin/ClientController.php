@@ -29,8 +29,17 @@ class ClientController extends BaseAdminController
 
         $clients = $query->latest()->paginate(15)->withQueryString();
 
+        $totalClients = User::where('role', 'client')->count();
+        $activeClients = User::where('role', 'client')->whereHas('projects', function ($q) {
+            $q->whereIn('status', ['in_progress', 'review']);
+        })->count();
+        $totalRevenue = \App\Models\Invoice::where('status', 'paid')->sum('total');
+
         return Inertia::render('Admin/Clients/Index', [
             'clients' => $clients,
+            'totalClients' => $totalClients,
+            'activeClients' => $activeClients,
+            'totalRevenue' => $totalRevenue,
         ]);
     }
 

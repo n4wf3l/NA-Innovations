@@ -49,6 +49,21 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Block inactive users
+        $user = Auth::user();
+        if ($user && !$user->is_active) {
+            Auth::logout();
+
+            // Check if it was never approved (no last_login_at) or deactivated
+            $wasNeverApproved = is_null($user->last_login_at);
+
+            throw ValidationException::withMessages([
+                'email' => $wasNeverApproved
+                    ? __('Your account is pending approval. You will be notified when approved.')
+                    : __('Your account has been deactivated. Please contact the administrator.'),
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

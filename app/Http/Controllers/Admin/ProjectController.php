@@ -53,11 +53,20 @@ class ProjectController extends BaseAdminController
             ->get()
             ->groupBy('status');
 
+        $totalProjects = \App\Models\Projet::count();
+        $activeProjects = \App\Models\Projet::whereIn('status', ['in_progress', 'review'])->count();
+        $completedProjects = \App\Models\Projet::where('status', 'completed')->count();
+        $totalBudget = \App\Models\Projet::sum('budget');
+
         return Inertia::render('Admin/Projects/Index', [
             'projects' => $projects,
             'clients' => $clients,
             'developers' => $developers,
             'kanbanProjects' => $kanbanProjects,
+            'totalProjects' => $totalProjects,
+            'activeProjects' => $activeProjects,
+            'completedProjects' => $completedProjects,
+            'totalBudget' => $totalBudget,
         ]);
     }
 

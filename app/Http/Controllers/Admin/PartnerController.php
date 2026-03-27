@@ -29,8 +29,17 @@ class PartnerController extends BaseAdminController
 
         $partners = $query->latest()->paginate(15)->withQueryString();
 
+        $totalPartners = ReferralPartner::count();
+        $activePartners = ReferralPartner::where('is_active', true)->count();
+        $totalCommissionsPaid = \App\Models\Commission::where('status', 'paid')->sum('commission_amount');
+        $totalLeadsReferred = \App\Models\Lead::whereNotNull('referral_partner_id')->count();
+
         return Inertia::render('Admin/Partners/Index', [
             'partners' => $partners,
+            'totalPartners' => $totalPartners,
+            'activePartners' => $activePartners,
+            'totalCommissionsPaid' => $totalCommissionsPaid,
+            'totalLeadsReferred' => $totalLeadsReferred,
         ]);
     }
 

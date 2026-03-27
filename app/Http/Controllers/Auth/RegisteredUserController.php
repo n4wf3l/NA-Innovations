@@ -4,12 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -34,18 +31,28 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'in:developer,referral_partner'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
+            'role' => $request->role,
+            'is_active' => false,
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Do NOT auto-login — redirect to pending approval page
+        return redirect()->route('pending-approval');
+    }
 
-        return redirect(RouteServiceProvider::HOME);
+    /**
+     * Show the pending approval page.
+     */
+    public function pendingApproval(): View
+    {
+        return view('auth.pending-approval');
     }
 }

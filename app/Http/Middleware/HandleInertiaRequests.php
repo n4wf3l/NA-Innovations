@@ -64,6 +64,11 @@ class HandleInertiaRequests extends Middleware
                     ->take(10)
                     ->get()
                 : [],
+            'teamCounts' => [
+                'partners' => \App\Models\User::where('role', 'referral_partner')->where('is_active', true)->count(),
+                'developers' => \App\Models\User::where('role', 'developer')->where('is_active', true)->count(),
+                'admins' => \App\Models\User::where('role', 'admin')->where('is_active', true)->count(),
+            ],
             'financialUnlocked' => (function () use ($request) {
                 if (!$request->user()) return false;
                 $unlockedAt = session('financial_unlocked_at');

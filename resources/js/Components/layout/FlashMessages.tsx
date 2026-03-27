@@ -1,4 +1,5 @@
 import { usePage } from '@inertiajs/react';
+import { createPortal } from 'react-dom';
 import { PageProps } from '@/types';
 import { useState, useEffect } from 'react';
 
@@ -14,26 +15,49 @@ export default function FlashMessages() {
         }
     }, [flash?.success, flash?.error]);
 
-    if (!visible) return null;
+    if (!visible || typeof document === 'undefined') return null;
 
-    return (
-        <div className="px-4 sm:px-6 mt-4 space-y-2">
-            {flash?.success && (
-                <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-sm text-emerald-700 flex items-center justify-between animate-fade-in">
-                    <span>{flash.success}</span>
-                    <button onClick={() => setVisible(false)} className="text-emerald-400 hover:text-emerald-600">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                    </button>
+    const isError = !!flash?.error;
+    const message = flash?.success || flash?.error;
+
+    return createPortal(
+        <div className="fixed bottom-6 right-6 z-[9999] max-w-sm animate-slide-up">
+            <div className={`rounded-2xl shadow-2xl p-4 flex items-start space-x-3 ${
+                isError
+                    ? 'bg-red-600 text-white'
+                    : 'bg-emerald-600 text-white'
+            }`}>
+                {/* Icon */}
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                    isError ? 'bg-red-500' : 'bg-emerald-500'
+                }`}>
+                    {isError ? (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                        </svg>
+                    ) : (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                    )}
                 </div>
-            )}
-            {flash?.error && (
-                <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-700 flex items-center justify-between animate-fade-in">
-                    <span>{flash.error}</span>
-                    <button onClick={() => setVisible(false)} className="text-red-400 hover:text-red-600">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                    </button>
+
+                {/* Text */}
+                <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold">{message}</p>
                 </div>
-            )}
-        </div>
+
+                {/* Close */}
+                <button onClick={() => setVisible(false)} className="flex-shrink-0 text-white/60 hover:text-white transition-colors">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            {/* Auto-dismiss progress bar */}
+            <div className="mt-1 h-0.5 rounded-full overflow-hidden mx-4">
+                <div className={`h-full rounded-full ${isError ? 'bg-red-300' : 'bg-emerald-300'}`} style={{ animation: 'shrinkBar 5s linear forwards' }} />
+            </div>
+        </div>,
+        document.body
     );
 }

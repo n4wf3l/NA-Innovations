@@ -49,8 +49,19 @@ class InvoiceController extends BaseAdminController
 
         $invoices = $query->latest()->paginate(15)->withQueryString();
 
+        $totalInvoices = Invoice::count();
+        $totalBilled = Invoice::sum('total');
+        $totalPaid = Invoice::where('status', 'paid')->sum('total');
+        $totalOverdue = Invoice::where('status', 'sent')
+            ->where('due_date', '<', now())
+            ->sum('amount_due');
+
         return Inertia::render('Admin/Invoices/Index', [
             'invoices' => $invoices,
+            'totalInvoices' => $totalInvoices,
+            'totalBilled' => $totalBilled,
+            'totalPaid' => $totalPaid,
+            'totalOverdue' => $totalOverdue,
         ]);
     }
 

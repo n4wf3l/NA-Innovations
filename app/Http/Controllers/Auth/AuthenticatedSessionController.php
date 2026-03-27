@@ -29,8 +29,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Redirect based on user role
+        // Track last login
         $user = $request->user();
+        $user->update(['last_login_at' => now()]);
         $home = match ($user->role) {
             'admin' => '/admin/dashboard',
             'referral_partner' => '/partner/dashboard',

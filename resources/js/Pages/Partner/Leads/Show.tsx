@@ -4,6 +4,7 @@ import Badge from '@/Components/ui/Badge';
 import PipelineStepper from '@/Components/ui/PipelineStepper';
 import ProtectedAmount from '@/Components/ui/ProtectedAmount';
 import { formatDate } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     lead: any;
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export default function PartnerLeadShow({ lead, project, commissionRate }: Props) {
+    const { t } = useTranslation();
     const partnerShare = lead.estimated_budget
         ? (parseFloat(lead.estimated_budget) * (commissionRate / 100))
         : null;
@@ -74,7 +76,7 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
                     </h3>
                     <dl className="space-y-3 text-sm">
                         <div className="flex justify-between">
-                            <dt className="text-gray-400">Email</dt>
+                            <dt className="text-gray-400">{t("Email")}</dt>
                             <dd className="text-gray-900 font-medium">
                                 <a href={`mailto:${lead.email}`} className="text-rose-600 hover:text-rose-700">
                                     {lead.email}
@@ -83,26 +85,26 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
                         </div>
                         {lead.phone && (
                             <div className="flex justify-between">
-                                <dt className="text-gray-400">Phone</dt>
+                                <dt className="text-gray-400">{t("Phone")}</dt>
                                 <dd className="text-gray-900 font-medium">{lead.phone}</dd>
                             </div>
                         )}
                         {lead.company_name && (
                             <div className="flex justify-between">
-                                <dt className="text-gray-400">Company</dt>
+                                <dt className="text-gray-400">{t("Company")}</dt>
                                 <dd className="text-gray-900 font-medium">{lead.company_name}</dd>
                             </div>
                         )}
                         {lead.service_interest && (
                             <div className="flex justify-between">
-                                <dt className="text-gray-400">Service Interest</dt>
+                                <dt className="text-gray-400">{t("Service Interest")}</dt>
                                 <dd className="text-gray-900 font-medium">{lead.service_interest}</dd>
                             </div>
                         )}
                         {lead.estimated_budget && (
                             <>
                                 <div className="flex justify-between">
-                                    <dt className="text-gray-400">Estimated Budget</dt>
+                                    <dt className="text-gray-400">{t("Estimated Budget")}</dt>
                                     <dd className="text-gray-900 font-medium">
                                         <ProtectedAmount amount={parseFloat(lead.estimated_budget)} />
                                     </dd>
@@ -118,7 +120,7 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
                             </>
                         )}
                         <div className="flex justify-between">
-                            <dt className="text-gray-400">Submitted</dt>
+                            <dt className="text-gray-400">{t("Submitted")}</dt>
                             <dd className="text-gray-900 font-medium">{formatDate(lead.created_at)}</dd>
                         </div>
                     </dl>
@@ -132,7 +134,7 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
                         </h3>
                         <dl className="space-y-3 text-sm">
                             <div className="flex justify-between">
-                                <dt className="text-gray-400">Project Name</dt>
+                                <dt className="text-gray-400">{t("Project Name")}</dt>
                                 <dd className="text-gray-900 font-medium">{project.nom_societe || 'Untitled'}</dd>
                             </div>
                             <div className="flex justify-between items-center">
@@ -141,13 +143,13 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
                             </div>
                             {project.developer && (
                                 <div className="flex justify-between">
-                                    <dt className="text-gray-400">Developer</dt>
+                                    <dt className="text-gray-400">{t("Developer")}</dt>
                                     <dd className="text-gray-900 font-medium">{project.developer.name}</dd>
                                 </div>
                             )}
                             {project.budget && (
                                 <div className="flex justify-between">
-                                    <dt className="text-gray-400">Budget</dt>
+                                    <dt className="text-gray-400">{t("Budget")}</dt>
                                     <dd className="text-gray-900 font-medium"><ProtectedAmount amount={parseFloat(project.budget)} /></dd>
                                 </div>
                             )}

@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next';
+
 interface PipelineStepperProps {
     status: string;
 }
 
-const stages = [
+const stageKeys = [
     { key: 'submitted', label: 'Submitted' },
     { key: 'contacted', label: 'Contacted' },
     { key: 'brief', label: 'Brief' },
@@ -43,6 +45,8 @@ function isWon(status: string): boolean {
 }
 
 export default function PipelineStepper({ status }: PipelineStepperProps) {
+    const { t } = useTranslation();
+    const stages = stageKeys.map(s => ({ ...s, label: t(s.label) }));
     const currentStage = getStageIndex(status);
     const lost = isLost(status);
     const won = isWon(status);
@@ -57,7 +61,7 @@ export default function PipelineStepper({ status }: PipelineStepperProps) {
                     const isLast = index === stages.length - 1;
                     let circleClass = '';
                     let lineClass = '';
-                    let labelClass = 'text-gray-400';
+                    let labelClass = 'text-gray-400 dark:text-gray-500';
                     let dot: React.ReactNode = null;
 
                     if (lost) {
@@ -75,7 +79,7 @@ export default function PipelineStepper({ status }: PipelineStepperProps) {
                         } else if (index === lostAtStage) {
                             // the stage where it was lost
                             circleClass = 'bg-red-500 border-red-500';
-                            lineClass = 'bg-gray-200';
+                            lineClass = 'bg-gray-200 dark:bg-gray-700';
                             labelClass = 'text-red-600 font-semibold';
                             dot = (
                                 <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
@@ -84,9 +88,9 @@ export default function PipelineStepper({ status }: PipelineStepperProps) {
                             );
                         } else {
                             // future stages
-                            circleClass = 'bg-white border-gray-300';
-                            lineClass = 'bg-gray-200';
-                            dot = <span className="w-2 h-2 rounded-full bg-gray-300" />;
+                            circleClass = 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600';
+                            lineClass = 'bg-gray-200 dark:bg-gray-700';
+                            dot = <span className="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600" />;
                         }
                     } else if (won && isLast) {
                         // Won: last stage is green check
@@ -110,14 +114,14 @@ export default function PipelineStepper({ status }: PipelineStepperProps) {
                     } else if (index === currentStage) {
                         // active / current
                         circleClass = 'bg-rose-500 border-rose-500 animate-pulse';
-                        lineClass = 'bg-gray-200';
+                        lineClass = 'bg-gray-200 dark:bg-gray-700';
                         labelClass = 'text-rose-600 font-semibold';
                         dot = <span className="w-2 h-2 rounded-full bg-white" />;
                     } else {
                         // future
-                        circleClass = 'bg-white border-gray-300';
-                        lineClass = 'bg-gray-200';
-                        dot = <span className="w-2 h-2 rounded-full bg-gray-300" />;
+                        circleClass = 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600';
+                        lineClass = 'bg-gray-200 dark:bg-gray-700';
+                        dot = <span className="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600" />;
                     }
 
                     // For won lead, all previous stages are completed
@@ -142,7 +146,7 @@ export default function PipelineStepper({ status }: PipelineStepperProps) {
                                     {dot}
                                 </div>
                                 <span className={`mt-1.5 text-xs whitespace-nowrap ${labelClass}`}>
-                                    {isLast && lost ? 'Lost' : stage.label}
+                                    {isLast && lost ? t('Lost') : stage.label}
                                 </span>
                             </div>
                             {/* Connecting line */}
@@ -160,7 +164,7 @@ export default function PipelineStepper({ status }: PipelineStepperProps) {
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                     </svg>
-                    <span>This lead was marked as {status === 'not_qualified' ? 'not qualified' : 'lost'}</span>
+                    <span>{t('This lead was marked as {{status}}', { status: status === 'not_qualified' ? t('not qualified') : t('lost') })}</span>
                 </div>
             )}
         </div>

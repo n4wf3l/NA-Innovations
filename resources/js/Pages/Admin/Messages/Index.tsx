@@ -5,6 +5,7 @@ import Badge from '@/Components/ui/Badge';
 import Pagination from '@/Components/ui/Pagination';
 import EmptyState from '@/Components/ui/EmptyState';
 import { PaginatedData } from '@/types';
+import { useTranslation } from 'react-i18next';
 
 interface Message {
     id: number;
@@ -22,40 +23,41 @@ interface Props {
 }
 
 export default function MessagesIndex({ messages }: Props) {
+    const { t } = useTranslation();
     return (
-        <AdminLayout title="Messages" header="Messages">
-            <Head title="Messages" />
+        <AdminLayout title={t("Messages")} header={t("Messages")}>
+            <Head title={t("Messages")} />
 
             <ModuleBanner
-                breadcrumb="Content / Messages"
-                title="Contact Messages"
-                description="View and manage messages received from the website contact form."
+                breadcrumb={`${t("Content")} / ${t("Messages")}`}
+                title={t("Contact Messages")}
+                description={t("View and manage messages received from the website contact form.")}
                 gradient="from-teal-600 to-cyan-600"
                 icon="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
             />
 
             {/* Message List */}
             {messages.data.length === 0 ? (
-                <EmptyState title="No messages yet" description="Messages from the contact form will appear here." borderColor="border-t-teal-500" />
+                <EmptyState title={t("No messages yet")} description={t("Messages from the contact form will appear here.")} borderColor="border-t-teal-500" />
             ) : (
                 <div className="space-y-3">
                     {messages.data.map(msg => (
-                        <Link key={msg.id} href={`/admin/messages/${msg.id}`} className="block bg-white rounded-xl border border-gray-100 p-5 hover:shadow-md transition-shadow shadow-sm">
+                        <Link key={msg.id} href={`/admin/messages/${msg.id}`} className="block bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-5 hover:shadow-md transition-shadow shadow-sm">
                             <div className="flex items-start justify-between">
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-3 mb-1">
-                                        <h4 className="text-sm font-semibold text-gray-900 truncate">{msg.name}</h4>
+                                        <h4 className="text-sm font-semibold text-gray-900 dark:text-white truncate">{msg.name}</h4>
                                         <Badge status={msg.status} />
                                     </div>
-                                    {msg.subject && <p className="text-sm font-medium text-gray-700 mb-1">{msg.subject}</p>}
-                                    <p className="text-sm text-gray-500 line-clamp-2">{msg.message}</p>
+                                    {msg.subject && <p className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{msg.subject}</p>}
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{msg.message}</p>
                                     <div className="flex items-center gap-4 mt-2">
                                         <span className="text-xs text-gray-400">{msg.email}</span>
                                         {msg.phone && <span className="text-xs text-gray-400">{msg.phone}</span>}
                                         <span className="text-xs text-gray-400">{new Date(msg.created_at).toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                                     </div>
                                 </div>
-                                <svg className="w-5 h-5 text-gray-300 flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5 text-gray-300 dark:text-gray-600 flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                 </svg>
                             </div>

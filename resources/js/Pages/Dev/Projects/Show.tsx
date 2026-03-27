@@ -2,12 +2,14 @@ import DevLayout from '@/Layouts/DevLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import Badge from '@/Components/ui/Badge';
 import { formatCurrency, formatDate, formatStatus } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     project: any;
 }
 
 export default function ProjectShow({ project }: Props) {
+    const { t } = useTranslation();
     const { post, processing } = useForm({});
     const isUnassigned = !project.developer_id;
     const partnerName = project.lead?.referral_partner?.user?.name;
@@ -50,7 +52,7 @@ export default function ProjectShow({ project }: Props) {
                                 disabled={processing}
                                 className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-sm font-bold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {processing ? 'Claiming...' : 'Claim This Project'}
+                                {processing ? t('Claiming...') : t('Claim This Project')}
                             </button>
                         </form>
                     )}
@@ -63,18 +65,18 @@ export default function ProjectShow({ project }: Props) {
                     {/* Project Details */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                         <div className="px-6 py-4 border-b border-gray-50">
-                            <h3 className="font-bold text-gray-900 text-sm">Project Details</h3>
+                            <h3 className="font-bold text-gray-900 text-sm">{t("Project Details")}</h3>
                         </div>
                         <div className="p-6">
                             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <DetailItem label="Type" value={project.type_site || '-'} />
-                                <DetailItem label="Technology" value={project.langage_programmation || '-'} />
-                                <DetailItem label="Budget" value={project.budget ? formatCurrency(project.budget) : '-'} />
-                                <DetailItem label="Total Billed" value={project.total_billed ? formatCurrency(project.total_billed) : '-'} />
-                                <DetailItem label="Start Date" value={project.start_date ? formatDate(project.start_date) : '-'} />
-                                <DetailItem label="Deadline" value={project.deadline ? formatDate(project.deadline) : '-'} />
-                                <DetailItem label="Location" value={project.lieu || '-'} />
-                                <DetailItem label="Dev Days" value={project.jours_developpement ? `${project.jours_developpement} days` : '-'} />
+                                <DetailItem label={t("Type")} value={project.type_site || '-'} />
+                                <DetailItem label={t("Technology")} value={project.langage_programmation || '-'} />
+                                <DetailItem label={t("Budget")} value={project.budget ? formatCurrency(project.budget) : '-'} />
+                                <DetailItem label={t("Total Billed")} value={project.total_billed ? formatCurrency(project.total_billed) : '-'} />
+                                <DetailItem label={t("Start Date")} value={project.start_date ? formatDate(project.start_date) : '-'} />
+                                <DetailItem label={t("Deadline")} value={project.deadline ? formatDate(project.deadline) : '-'} />
+                                <DetailItem label={t("Location")} value={project.lieu || '-'} />
+                                <DetailItem label={t("Dev Days")} value={project.jours_developpement ? `${project.jours_developpement} days` : '-'} />
                             </dl>
                         </div>
                     </div>
@@ -83,7 +85,7 @@ export default function ProjectShow({ project }: Props) {
                     {project.timeline_events && project.timeline_events.length > 0 && (
                         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                             <div className="px-6 py-4 border-b border-gray-50">
-                                <h3 className="font-bold text-gray-900 text-sm">Timeline</h3>
+                                <h3 className="font-bold text-gray-900 text-sm">{t("Timeline")}</h3>
                             </div>
                             <div className="p-6">
                                 <div className="space-y-4">
@@ -111,7 +113,7 @@ export default function ProjectShow({ project }: Props) {
                     {project.quotes && project.quotes.length > 0 && (
                         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                             <div className="px-6 py-4 border-b border-gray-50">
-                                <h3 className="font-bold text-gray-900 text-sm">Quotes</h3>
+                                <h3 className="font-bold text-gray-900 text-sm">{t("Quotes")}</h3>
                             </div>
                             <div>
                                 {project.quotes.map((quote: any) => (
@@ -134,7 +136,7 @@ export default function ProjectShow({ project }: Props) {
                     {project.invoices && project.invoices.length > 0 && (
                         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                             <div className="px-6 py-4 border-b border-gray-50">
-                                <h3 className="font-bold text-gray-900 text-sm">Invoices</h3>
+                                <h3 className="font-bold text-gray-900 text-sm">{t("Invoices")}</h3>
                             </div>
                             <div>
                                 {project.invoices.map((invoice: any) => (
@@ -159,7 +161,7 @@ export default function ProjectShow({ project }: Props) {
                     {/* Client Info */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                         <div className="px-6 py-4 border-b border-gray-50">
-                            <h3 className="font-bold text-gray-900 text-sm">Client</h3>
+                            <h3 className="font-bold text-gray-900 text-sm">{t("Client")}</h3>
                         </div>
                         <div className="p-6">
                             {project.client ? (
@@ -181,7 +183,7 @@ export default function ProjectShow({ project }: Props) {
                                     )}
                                 </div>
                             ) : (
-                                <p className="text-sm text-gray-400">No client assigned</p>
+                                <p className="text-sm text-gray-400">{t("No client assigned")}</p>
                             )}
                         </div>
                     </div>
@@ -189,7 +191,7 @@ export default function ProjectShow({ project }: Props) {
                     {/* Developer Info */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                         <div className="px-6 py-4 border-b border-gray-50">
-                            <h3 className="font-bold text-gray-900 text-sm">Developer</h3>
+                            <h3 className="font-bold text-gray-900 text-sm">{t("Developer")}</h3>
                         </div>
                         <div className="p-6">
                             {project.developer ? (
@@ -204,7 +206,7 @@ export default function ProjectShow({ project }: Props) {
                                 </div>
                             ) : (
                                 <div className="text-center py-2">
-                                    <p className="text-sm text-gray-400 mb-3">No developer assigned</p>
+                                    <p className="text-sm text-gray-400 mb-3">{t("No developer assigned")}</p>
                                     <form onSubmit={handleClaim}>
                                         <button
                                             type="submit"
@@ -223,7 +225,7 @@ export default function ProjectShow({ project }: Props) {
                     {partnerName && (
                         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                             <div className="px-6 py-4 border-b border-gray-50">
-                                <h3 className="font-bold text-gray-900 text-sm">Referral</h3>
+                                <h3 className="font-bold text-gray-900 text-sm">{t("Referral")}</h3>
                             </div>
                             <div className="p-6">
                                 <div className="flex items-center space-x-3">
@@ -242,7 +244,7 @@ export default function ProjectShow({ project }: Props) {
                     {/* Status Info */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                         <div className="px-6 py-4 border-b border-gray-50">
-                            <h3 className="font-bold text-gray-900 text-sm">Status</h3>
+                            <h3 className="font-bold text-gray-900 text-sm">{t("Status")}</h3>
                         </div>
                         <div className="p-6 space-y-3">
                             <div className="flex items-center justify-between">
@@ -250,7 +252,7 @@ export default function ProjectShow({ project }: Props) {
                                 <Badge status={project.status} />
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-xs text-gray-400">Created</span>
+                                <span className="text-xs text-gray-400">{t("Created")}</span>
                                 <span className="text-xs text-gray-600">{new Date(project.created_at).toLocaleDateString()}</span>
                             </div>
                             {project.start_date && (

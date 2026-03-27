@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import PartnerLayout from '@/Layouts/PartnerLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     emailTemplate: { subject: string; body: string };
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props) {
+    const { t } = useTranslation();
     const [showModal, setShowModal] = useState(false);
     const modalRef = useRef<HTMLDivElement>(null);
 
@@ -60,14 +62,14 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
     const label = 'block text-sm font-semibold text-gray-700 mb-2';
 
     return (
-        <PartnerLayout title="Submit a Client">
-            <Head title="Submit a Client" />
+        <PartnerLayout title={t("Submit a Client")}>
+            <Head title={t("Submit a Client")} />
 
             <div className="max-w-lg mx-auto pb-8">
                 {/* Back */}
                 <Link href="/partner/dashboard" className="text-sm text-gray-400 hover:text-gray-600 mb-6 inline-flex items-center">
                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
-                    Back
+                    {t('Back')}
                 </Link>
 
                 {/* Header - big and centered */}
@@ -77,8 +79,8 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
                         </svg>
                     </div>
-                    <h2 className="text-3xl sm:text-2xl font-black text-gray-900">New Client</h2>
-                    <p className="text-gray-400 text-sm mt-2 max-w-xs mx-auto">Fill in the details. We'll prepare a professional email with a PDF summary.</p>
+                    <h2 className="text-3xl sm:text-2xl font-black text-gray-900">{t('New Client')}</h2>
+                    <p className="text-gray-400 text-sm mt-2 max-w-xs mx-auto">{t("Fill in the details. We'll prepare a professional email with a PDF summary.")}</p>
                 </div>
 
                 {/* Form */}
@@ -87,12 +89,12 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
                     {/* Name row */}
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className={label}>First Name <span className="text-rose-400">*</span></label>
+                            <label className={label}>{t('First Name')} <span className="text-rose-400">*</span></label>
                             <input type="text" value={data.first_name} onChange={e => setData('first_name', e.target.value)} className={input} placeholder="John" required />
                             {errors.first_name && <p className="mt-1.5 text-xs text-red-500">{errors.first_name}</p>}
                         </div>
                         <div>
-                            <label className={label}>Last Name <span className="text-rose-400">*</span></label>
+                            <label className={label}>{t('Last Name')} <span className="text-rose-400">*</span></label>
                             <input type="text" value={data.last_name} onChange={e => setData('last_name', e.target.value)} className={input} placeholder="Doe" required />
                             {errors.last_name && <p className="mt-1.5 text-xs text-red-500">{errors.last_name}</p>}
                         </div>
@@ -100,38 +102,38 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
 
                     {/* Email */}
                     <div>
-                        <label className={label}>Email <span className="text-rose-400">*</span></label>
+                        <label className={label}>{t('Email')} <span className="text-rose-400">*</span></label>
                         <input type="email" value={data.email} onChange={e => setData('email', e.target.value)} className={input} placeholder="john@company.com" required />
                         {errors.email && <p className="mt-1.5 text-xs text-red-500">{errors.email}</p>}
                     </div>
 
                     {/* Phone */}
                     <div>
-                        <label className={label}>Phone</label>
+                        <label className={label}>{t("Phone")}</label>
                         <input type="tel" value={data.phone} onChange={e => setData('phone', e.target.value)} className={input} placeholder="+32 470 123 456" />
                     </div>
 
                     {/* Company */}
                     <div>
-                        <label className={label}>Company</label>
+                        <label className={label}>{t("Company")}</label>
                         <input type="text" value={data.company_name} onChange={e => setData('company_name', e.target.value)} className={input} placeholder="Acme Inc." />
                     </div>
 
                     {/* Divider */}
                     <div className="relative py-2">
                         <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100" /></div>
-                        <div className="relative flex justify-center"><span className="bg-gray-50 px-4 text-xs font-bold text-gray-300 uppercase tracking-wider">Project</span></div>
+                        <div className="relative flex justify-center"><span className="bg-gray-50 px-4 text-xs font-bold text-gray-300 uppercase tracking-wider">{t('Project')}</span></div>
                     </div>
 
                     {/* Service */}
                     <div>
-                        <label className={label}>What do they need?</label>
+                        <label className={label}>{t('What do they need?')}</label>
                         <input type="text" value={data.service_interest} onChange={e => setData('service_interest', e.target.value)} className={input} placeholder="E-commerce, mobile app, website..." />
                     </div>
 
                     {/* Budget */}
                     <div>
-                        <label className={label}>Estimated Budget</label>
+                        <label className={label}>{t("Estimated Budget")}</label>
                         <div className="relative">
                             <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 font-semibold">&euro;</span>
                             <input type="number" value={data.estimated_budget} onChange={e => setData('estimated_budget', e.target.value)} className={input + ' pl-10'} placeholder="5,000" min="0" step="100" />
@@ -140,7 +142,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
 
                     {/* Notes */}
                     <div>
-                        <label className={label}>Notes <span className="text-gray-300 font-normal">(optional)</span></label>
+                        <label className={label}>{t('Notes')} <span className="text-gray-300 font-normal">({t('Optional').toLowerCase()})</span></label>
                         <textarea value={data.notes} onChange={e => setData('notes', e.target.value)} rows={3} className={input} placeholder="How do you know them, any context..." />
                     </div>
 
@@ -153,7 +155,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
                             <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                             </svg>
-                            Review & Send
+                            {t('Review & Send')}
                         </button>
                     </div>
                 </form>
@@ -174,7 +176,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
                         {/* Fixed header */}
                         <div className="flex-shrink-0 bg-white border-b border-gray-100 px-5 py-4 flex items-center justify-between safe-top">
                             <div>
-                                <h3 className="text-lg font-black text-gray-900">Review Email</h3>
+                                <h3 className="text-lg font-black text-gray-900">{t("Review Email")}</h3>
                                 <p className="text-xs text-gray-400 mt-0.5">To: {data.first_name} {data.last_name}</p>
                             </div>
                             <button onClick={() => !processing && setShowModal(false)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100 text-gray-500 active:bg-gray-200 transition-colors">
@@ -187,7 +189,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
                             <div className="p-5 space-y-5">
                                 {/* Subject */}
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Subject</label>
+                                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t("Subject")}</label>
                                     <input
                                         type="text"
                                         value={data.email_subject}
@@ -199,7 +201,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
                                 {/* Email body */}
                                 <div>
                                     <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                                        Message <span className="font-normal normal-case text-gray-300 ml-1">(editable)</span>
+                                        {t('Message')} <span className="font-normal normal-case text-gray-300 ml-1">({t('editable')})</span>
                                     </label>
                                     <textarea
                                         value={data.email_body}
@@ -212,7 +214,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
                                 {/* Preview */}
                                 <details className="group">
                                     <summary className="cursor-pointer flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3.5 active:bg-gray-100 transition-colors">
-                                        <span className="text-sm font-semibold text-gray-700">Preview with variables replaced</span>
+                                        <span className="text-sm font-semibold text-gray-700">{t('Preview with variables replaced')}</span>
                                         <svg className="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                                     </summary>
                                     <div className="mt-2 bg-gray-50 rounded-xl p-4 text-sm text-gray-600 whitespace-pre-wrap border border-gray-100 max-h-60 overflow-y-auto">
@@ -225,7 +227,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
                                     <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
                                     </svg>
-                                    <p className="text-sm text-blue-600">PDF attached automatically</p>
+                                    <p className="text-sm text-blue-600">{t("PDF attached automatically")}</p>
                                 </div>
 
                                 {/* Extra padding at bottom so content doesn't hide behind footer */}
@@ -241,7 +243,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
                                 disabled={processing}
                                 className="flex-1 py-4 text-base font-semibold text-gray-500 bg-gray-100 rounded-xl active:bg-gray-200 transition-colors"
                             >
-                                Cancel
+                                {t('Cancel')}
                             </button>
                             <button
                                 type="button"
@@ -252,12 +254,12 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
                                 {processing ? (
                                     <>
                                         <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
-                                        Sending...
+                                        {t('Sending...')}
                                     </>
                                 ) : (
                                     <>
                                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>
-                                        Send Email
+                                        {t('Send Email')}
                                     </>
                                 )}
                             </button>

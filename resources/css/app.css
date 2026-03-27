@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide browser scrollbar globally - scroll handled by main content area */
+html, body {
+    overflow: hidden;
+    height: 100%;
+}
+
+#app {
+    height: 100%;
+}
+
 @layer utilities {
     /* Page entrance */
     .animate-page-in {
@@ -91,6 +101,58 @@
     50% { box-shadow: 0 0 0 8px rgba(244, 63, 94, 0); }
 }
 
+/* Financial amount animations */
+@keyframes amountReveal {
+    0% { opacity: 0; transform: translateY(8px) scale(0.9); filter: blur(8px); }
+    50% { filter: blur(2px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes amountHide {
+    0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    100% { opacity: 0; transform: translateY(-6px) scale(0.95); filter: blur(6px); }
+}
+
+/* Toast auto-dismiss bar */
+@keyframes shrinkBar {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+/* Modern scrollbar for main content — appears on hover, ultra smooth */
+.custom-scroll {
+    scrollbar-width: none; /* Firefox: hide default */
+    -ms-overflow-style: none; /* IE: hide default */
+    scroll-behavior: smooth;
+    position: relative;
+}
+.custom-scroll::-webkit-scrollbar { width: 0; } /* Hide by default */
+
+/* Show a custom overlay scrollbar via a pseudo-approach won't work — use thin visible approach */
+.custom-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.3s ease;
+}
+.custom-scroll:hover {
+    scrollbar-color: rgba(0,0,0,0.15) transparent;
+}
+.custom-scroll::-webkit-scrollbar { width: 5px; background: transparent; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; margin: 8px 0; }
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+.custom-scroll:hover::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); }
+.custom-scroll:hover::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
+.custom-scroll::-webkit-scrollbar-thumb:active { background: rgba(0,0,0,0.35); }
+
+/* Dark mode scrollbar */
+.dark .custom-scroll:hover::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+.dark .custom-scroll:hover::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+.dark .custom-scroll:hover { scrollbar-color: rgba(255,255,255,0.15) transparent; }
+
 /* Smooth scrollbar for sidebars */
 .scrollbar-thin::-webkit-scrollbar { width: 4px; }
 .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
@@ -101,9 +163,77 @@
 /* Font families */
 .font-display { font-family: 'Bebas Neue', cursive; }
 
+/* Sidebar tooltip for collapsed icons */
+.sidebar-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    position: fixed;
+    left: 70px;
+    transform: translateY(-50%);
+    background: #1e293b;
+    color: #f1f5f9;
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+    transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease;
+    z-index: 9999;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+.sidebar-tooltip::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: #1e293b;
+}
+
 /* iOS safe areas for fullscreen modals */
 .safe-top { padding-top: env(safe-area-inset-top, 0); }
 .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0); }
 
 /* iOS momentum scrolling */
 .-webkit-overflow-scrolling-touch { -webkit-overflow-scrolling: touch; }
+
+/* Global loading state for any link/button during Inertia navigation */
+[data-loading="true"] {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+[data-loading="true"]::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-top: -8px;
+    margin-left: -8px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: btnSpin 0.5s linear infinite;
+}
+
+/* For links/buttons with text: shift spinner to the left of text */
+a[data-loading="true"],
+button[data-loading="true"] {
+    color: transparent !important;
+}
+
+a[data-loading="true"]::after,
+button[data-loading="true"]::after {
+    color: inherit;
+    border-top-color: #6b7280;
+}
+
+@keyframes btnSpin {
+    to { transform: rotate(360deg); }
+}

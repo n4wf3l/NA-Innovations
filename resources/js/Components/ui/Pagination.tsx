@@ -16,13 +16,13 @@ export default function Pagination({ links }: PaginationProps) {
                             href={link.url}
                             className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                                 link.active
-                                    ? 'bg-gray-900 text-white'
-                                    : 'text-gray-600 hover:bg-gray-100'
+                                    ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
+                                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                             }`}
                             dangerouslySetInnerHTML={{ __html: link.label }}
                         />
                     ) : (
-                        <span className="px-3 py-1.5 text-sm text-gray-300" dangerouslySetInnerHTML={{ __html: link.label }} />
+                        <span className="px-3 py-1.5 text-sm text-gray-300 dark:text-gray-600" dangerouslySetInnerHTML={{ __html: link.label }} />
                     )}
                 </span>
             ))}

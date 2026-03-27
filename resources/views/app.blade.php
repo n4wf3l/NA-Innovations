@@ -12,7 +12,15 @@
     @vite('resources/js/app.tsx')
     @inertiaHead
 </head>
-<body class="font-sans antialiased">
+<script>
+    (function(){
+        var t = localStorage.getItem('na_theme');
+        if (t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    })();
+</script>
+<body class="font-sans antialiased bg-gray-50 dark:bg-gray-950 transition-colors">
     @inertia
 </body>
 </html>
