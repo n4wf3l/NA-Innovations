@@ -19,7 +19,15 @@ class InvoiceService
             'status' => $data['status'] ?? 'confirmed',
         ]);
 
+        $wasPaid = $invoice->status === 'paid';
+
         self::recalculateAmounts($invoice);
+
+        // Trigger workflow if invoice just became fully paid
+        $invoice->refresh();
+        if (!$wasPaid && $invoice->status === 'paid') {
+            WorkflowService::onInvoiceFullyPaid($invoice);
+        }
 
         return $payment;
     }
@@ -32,7 +40,7 @@ class InvoiceService
         $status = $invoice->status;
         if ($totalPaid >= $invoice->total) {
             $status = 'paid';
-        } elseif ($totalPaid > 0) {
+        } elseif ($totalPaid > 0 && !in_array($status, ['overdue'])) {
             $status = 'partially_paid';
         }
 
@@ -40,7 +48,7 @@ class InvoiceService
             'amount_paid' => round($totalPaid, 2),
             'amount_due' => round(max(0, $amountDue), 2),
             'status' => $status,
-            'paid_at' => $status === 'paid' ? now() : $invoice->paid_at,
+            'paid_at' => $status === 'paid' ? ($invoice->paid_at ?? now()) : $invoice->paid_at,
         ]);
     }
 }

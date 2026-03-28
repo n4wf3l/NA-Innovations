@@ -7,6 +7,8 @@ import { formatDate, formatStatus, formatCurrency } from '@/lib/utils';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import LocalePicker from '@/Components/ui/LocalePicker';
+import PdfPreviewCard from '@/Components/ui/PdfPreviewCard';
 
 interface Props {
     quote: Quote & {
@@ -29,21 +31,23 @@ interface Props {
         client?: User;
         timeline_events?: TimelineEvent[];
     };
-    emailTemplate: { subject: string; body: string };
+    emailTemplates: Record<string, { subject: string; body: string }>;
 }
 
-export default function QuoteShow({ quote, emailTemplate }: Props) {
+export default function QuoteShow({ quote, emailTemplates }: Props) {
     const { t } = useTranslation();
     const [invoiceTypeOpen, setInvoiceTypeOpen] = useState(false);
-    const [downloading, setDownloading] = useState(false);
     const [showSendModal, setShowSendModal] = useState(false);
+    const [emailLocale, setEmailLocale] = useState(quote.locale || 'fr');
     const [sending, setSending] = useState(false);
     const [emailSubject, setEmailSubject] = useState('');
     const [emailBody, setEmailBody] = useState('');
     const modalRef = useRef<HTMLDivElement>(null);
 
     // Initialize email fields from template with variable replacement
-    const initEmail = () => {
+    const initEmail = (locale?: string) => {
+        const loc = locale || emailLocale;
+        const tpl = emailTemplates[loc] || emailTemplates['fr'];
         const vars: Record<string, string> = {
             client_name: quote.client_name,
             quote_number: quote.quote_number,
@@ -52,8 +56,8 @@ export default function QuoteShow({ quote, emailTemplate }: Props) {
             client_email: quote.client_email,
             company_name: quote.client_company || '',
         };
-        let subject = emailTemplate.subject;
-        let body = emailTemplate.body;
+        let subject = tpl.subject;
+        let body = tpl.body;
         for (const [key, val] of Object.entries(vars)) {
             const re = new RegExp(`\\{\\{\\s*${key}\\s*\\}\\}`, 'g');
             subject = subject.replace(re, val);
@@ -61,6 +65,11 @@ export default function QuoteShow({ quote, emailTemplate }: Props) {
         }
         setEmailSubject(subject);
         setEmailBody(body);
+    };
+
+    const handleEmailLocaleChange = (loc: string) => {
+        setEmailLocale(loc);
+        initEmail(loc);
     };
 
     const openSendModal = () => {
@@ -86,25 +95,6 @@ export default function QuoteShow({ quote, emailTemplate }: Props) {
         }, { onFinish: () => { setSending(false); setShowSendModal(false); } });
     };
 
-    const handleDownloadPdf = async () => {
-        setDownloading(true);
-        try {
-            const response = await fetch(`/admin/quotes/${quote.id}/pdf`);
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${quote.quote_number}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            a.remove();
-        } catch (e) {
-            // fallback
-            window.location.href = `/admin/quotes/${quote.id}/pdf`;
-        }
-        setTimeout(() => setDownloading(false), 800);
-    };
 
     const handleDelete = () => {
         if (confirm(t('Are you sure you want to delete this quote?'))) {
@@ -138,6 +128,17 @@ export default function QuoteShow({ quote, emailTemplate }: Props) {
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>
                             {t('Send')}
                         </button>
+                    )}
+                    {['sent', 'viewed'].includes(quote.status) && (
+                        <>
+                            <button onClick={() => router.post(`/admin/quotes/${quote.id}/accept`)} className="px-4 py-2 text-sm font-medium text-white bg-emerald-500 rounded-lg hover:bg-emerald-600 flex items-center gap-1.5">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                {t('Accepted')}
+                            </button>
+                            <button onClick={() => { const r = prompt(t('Rejection reason (optional):')); if (r !== null) router.post(`/admin/quotes/${quote.id}/reject`, { reason: r }); }} className="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 border border-red-200 dark:border-red-500/30 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10">
+                                {t('rejected')}
+                            </button>
+                        </>
                     )}
                     <button onClick={handleDuplicate} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">{t('Duplicate')}</button>
                     <div className="relative">
@@ -307,61 +308,11 @@ export default function QuoteShow({ quote, emailTemplate }: Props) {
                 {/* Right Column */}
                 <div className="space-y-6">
                     {/* PDF Document Preview */}
-                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
-                        {/* Real PDF preview */}
-                        <div className="relative bg-gray-100 dark:bg-gray-900/80" style={{ height: 280 }}>
-                            <iframe
-                                src={`/admin/quotes/${quote.id}/pdf/preview#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
-                                className="w-full h-full border-0 pointer-events-none"
-                                title={`${quote.quote_number}.pdf`}
-                            />
-                            {/* Clickable overlay */}
-                            <button
-                                type="button"
-                                onClick={handleDownloadPdf}
-                                disabled={downloading}
-                                className="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/10 dark:hover:bg-white/5 transition-colors group cursor-pointer w-full"
-                            >
-                                <div className={`transition-all duration-200 transform ${downloading ? 'opacity-100 scale-100' : 'opacity-0 group-hover:opacity-100 group-hover:scale-100 scale-90'}`}>
-                                    <div className="bg-amber-500 text-white p-3 rounded-2xl shadow-xl shadow-amber-500/30 flex items-center space-x-2">
-                                        {downloading ? (
-                                            <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
-                                        ) : (
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                            </svg>
-                                        )}
-                                        <span className="text-sm font-bold">{downloading ? t("Loading...") : t("Download PDF")}</span>
-                                    </div>
-                                </div>
-                            </button>
-                        </div>
-                        {/* Filename bar */}
-                        <button
-                            type="button"
-                            onClick={handleDownloadPdf}
-                            disabled={downloading}
-                            className="group flex items-center space-x-3 px-4 py-3 border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors w-full text-left"
-                        >
-                            <svg className="w-8 h-8 text-red-500 flex-shrink-0" viewBox="0 0 32 32" fill="none">
-                                <rect x="4" y="2" width="24" height="28" rx="3" fill="currentColor" opacity="0.1" stroke="currentColor" strokeWidth="1.5"/>
-                                <path d="M20 2v7h7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                                <rect x="7" y="18" width="18" height="8" rx="1.5" fill="currentColor"/>
-                                <text x="16" y="24.5" textAnchor="middle" fill="white" fontSize="6" fontWeight="bold" fontFamily="system-ui">PDF</text>
-                            </svg>
-                            <div className="min-w-0 flex-1">
-                                <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{quote.quote_number}.pdf</p>
-                                <p className="text-xs text-gray-400 dark:text-gray-500">{downloading ? t("Loading...") : t("Download PDF")}</p>
-                            </div>
-                            {downloading ? (
-                                <svg className="animate-spin w-4 h-4 text-amber-500 flex-shrink-0" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
-                            ) : (
-                                <svg className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-amber-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                            )}
-                        </button>
-                    </div>
+                    <PdfPreviewCard
+                        previewUrl={`/admin/quotes/${quote.id}/pdf/preview`}
+                        downloadUrl={`/admin/quotes/${quote.id}/pdf`}
+                        filename={`${quote.quote_number}.pdf`}
+                    />
 
                     {/* Client Info */}
                     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
@@ -489,6 +440,9 @@ export default function QuoteShow({ quote, emailTemplate }: Props) {
                         {/* Body */}
                         <div ref={modalRef} className="flex-1 overflow-y-auto overscroll-contain">
                             <div className="p-6 space-y-5">
+                                {/* Language picker */}
+                                <LocalePicker value={emailLocale} onChange={handleEmailLocaleChange} label={t("Document & Email Language")} />
+
                                 {/* Subject */}
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t("Subject")}</label>

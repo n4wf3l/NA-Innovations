@@ -49,7 +49,7 @@ function AnimatedAmount({ amount }: { amount: number }) {
         return () => { if (frameRef.current) cancelAnimationFrame(frameRef.current); };
     }, [amount]);
 
-    return <span>{formatCurrency(display)}</span>;
+    return <span className="text-gray-900 dark:text-white">{formatCurrency(display)}</span>;
 }
 
 export default function ProtectedAmount({ amount, className = '' }: ProtectedAmountProps) {
@@ -80,7 +80,7 @@ export default function ProtectedAmount({ amount, className = '' }: ProtectedAmo
 
     if (animState === 'hide') {
         return (
-            <span className={`inline-block ${className}`} style={{
+            <span className={`inline-block text-gray-900 dark:text-white ${className}`} style={{
                 animation: 'amountHide 0.4s ease-in forwards',
             }}>
                 {formatCurrency(amount)}
@@ -89,7 +89,7 @@ export default function ProtectedAmount({ amount, className = '' }: ProtectedAmo
     }
 
     return (
-        <span className={`inline-block ${className}`} style={
+        <span className={`inline-block text-gray-900 dark:text-white ${className}`} style={
             animState === 'reveal' ? { animation: 'amountReveal 0.6s ease-out forwards' } : undefined
         }>
             <AnimatedAmount amount={amount} />

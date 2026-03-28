@@ -395,6 +395,133 @@ class RealDataSeeder extends Seeder
             ]
         );
 
+        // ─── CLIENT PORTAL DEMO DATA (TipTong) ──────────────
+
+        // Quote for TipTong
+        $quoteTiptong = Quote::updateOrCreate(
+            ['quote_number' => 'DEV-2026-001'],
+            [
+                'client_id' => $fedrik->id,
+                'projet_id' => $projTiptong->id,
+                'client_name' => 'Fedrik De Beul',
+                'client_email' => 'fedrik@tiptong.be',
+                'client_company' => 'TipTong',
+                'title' => 'TipTong - Mobile App + Web Platform',
+                'introduction' => "Dear Fedrik,\n\nFollowing our meeting, we're pleased to present our proposal for the TipTong social tipping platform, including the mobile app (iOS & Android) and the web dashboard.",
+                'scope_of_work' => "- Mobile application (React Native) for iOS and Android\n- Web dashboard for merchants and admins\n- Payment integration (Stripe)\n- Push notifications\n- User authentication and profiles\n- Analytics dashboard",
+                'exclusions' => "- App Store / Google Play developer account fees\n- Third-party API costs (Stripe fees)\n- Content creation and copywriting",
+                'terms_and_conditions' => "- 30% deposit required before project start\n- Final payment due upon delivery\n- 30-day revision period after delivery\n- Source code ownership transferred upon full payment",
+                'subtotal' => 20661.16,
+                'tax_rate' => 21,
+                'tax_amount' => 4338.84,
+                'total' => 25000,
+                'deposit_percentage' => 30,
+                'deposit_amount' => 7500,
+                'status' => 'accepted',
+                'accepted_at' => now()->subDays(46),
+                'issue_date' => now()->subDays(50),
+                'valid_until' => now()->subDays(20),
+                'sent_at' => now()->subDays(48),
+                'viewed_at' => now()->subDays(47),
+                'view_token' => Str::random(64),
+                'locale' => 'en',
+            ]
+        );
+
+        // Quote items
+        QuoteItem::updateOrCreate(
+            ['quote_id' => $quoteTiptong->id, 'description' => 'UX/UI Design - Mobile App'],
+            ['quantity' => 1, 'unit' => 'forfait', 'unit_price' => 3500, 'total' => 3500, 'sort_order' => 0]
+        );
+        QuoteItem::updateOrCreate(
+            ['quote_id' => $quoteTiptong->id, 'description' => 'Mobile App Development (React Native)'],
+            ['quantity' => 1, 'unit' => 'forfait', 'unit_price' => 12000, 'total' => 12000, 'sort_order' => 1]
+        );
+        QuoteItem::updateOrCreate(
+            ['quote_id' => $quoteTiptong->id, 'description' => 'Web Dashboard (Laravel + React)'],
+            ['quantity' => 1, 'unit' => 'forfait', 'unit_price' => 5161.16, 'total' => 5161.16, 'sort_order' => 2]
+        );
+
+        // Deposit invoice for TipTong
+        $invoiceTiptongDeposit = Invoice::updateOrCreate(
+            ['invoice_number' => 'FAC-2026-001'],
+            [
+                'quote_id' => $quoteTiptong->id,
+                'client_id' => $fedrik->id,
+                'projet_id' => $projTiptong->id,
+                'client_name' => 'Fedrik De Beul',
+                'client_email' => 'fedrik@tiptong.be',
+                'client_company' => 'TipTong',
+                'title' => 'Deposit Invoice - TipTong',
+                'type' => 'deposit',
+                'subtotal' => 6198.35,
+                'tax_rate' => 21,
+                'tax_amount' => 1301.65,
+                'total' => 7500,
+                'amount_paid' => 7500,
+                'amount_due' => 0,
+                'status' => 'paid',
+                'issue_date' => now()->subDays(45),
+                'due_date' => now()->subDays(15),
+                'paid_at' => now()->subDays(43),
+                'view_token' => Str::random(64),
+                'locale' => 'en',
+            ]
+        );
+
+        // Deposit invoice item
+        InvoiceItem::updateOrCreate(
+            ['invoice_id' => $invoiceTiptongDeposit->id, 'description' => 'Deposit (30%) - TipTong Mobile App + Web Platform'],
+            ['quantity' => 1, 'unit' => 'forfait', 'unit_price' => 6198.35, 'total' => 6198.35, 'sort_order' => 0]
+        );
+
+        // Deposit payment
+        Payment::updateOrCreate(
+            ['invoice_id' => $invoiceTiptongDeposit->id, 'reference' => 'TIPTONG-DEP-001'],
+            [
+                'client_id' => $fedrik->id,
+                'amount' => 7500,
+                'currency' => 'EUR',
+                'method' => 'bank_transfer',
+                'payment_date' => now()->subDays(43),
+                'status' => 'confirmed',
+            ]
+        );
+
+        // Timeline events for TipTong project
+        $projTiptong->timelineEvents()->updateOrCreate(
+            ['title' => 'Quote accepted', 'event_type' => 'status_change'],
+            ['user_id' => $nawfel->id, 'description' => 'Quote DEV-2026-001 accepted by client', 'old_value' => 'sent', 'new_value' => 'accepted', 'created_at' => now()->subDays(46)]
+        );
+        $projTiptong->timelineEvents()->updateOrCreate(
+            ['title' => 'Project created', 'event_type' => 'status_change'],
+            ['user_id' => $nawfel->id, 'description' => 'Project initialized from accepted quote', 'old_value' => null, 'new_value' => 'planning', 'created_at' => now()->subDays(46)]
+        );
+        $projTiptong->timelineEvents()->updateOrCreate(
+            ['title' => 'Deposit paid', 'event_type' => 'payment'],
+            ['user_id' => $nawfel->id, 'description' => 'Deposit of €7,500.00 received via bank transfer', 'created_at' => now()->subDays(43)]
+        );
+        $projTiptong->timelineEvents()->updateOrCreate(
+            ['title' => 'Project started', 'event_type' => 'status_change'],
+            ['user_id' => $nawfel->id, 'description' => 'Development phase has begun', 'old_value' => 'planning', 'new_value' => 'in_progress', 'created_at' => now()->subDays(42)]
+        );
+        $projTiptong->timelineEvents()->updateOrCreate(
+            ['title' => 'UX/UI Design completed', 'event_type' => 'update'],
+            ['user_id' => $nawfel->id, 'description' => 'Mobile app wireframes and high-fidelity designs approved. Moving to development phase.', 'created_at' => now()->subDays(30)]
+        );
+        $projTiptong->timelineEvents()->updateOrCreate(
+            ['title' => 'Mobile app - authentication module', 'event_type' => 'update'],
+            ['user_id' => $nawfel->id, 'description' => 'User registration, login, and profile management completed. Push notification integration in progress.', 'created_at' => now()->subDays(15)]
+        );
+        $projTiptong->timelineEvents()->updateOrCreate(
+            ['title' => 'Client comment', 'event_type' => 'comment'],
+            ['user_id' => $fedrik->id, 'description' => 'Looking great so far! Can we also add a dark mode option to the app?', 'created_at' => now()->subDays(12)]
+        );
+        $projTiptong->timelineEvents()->updateOrCreate(
+            ['title' => 'Stripe integration', 'event_type' => 'update'],
+            ['user_id' => $nawfel->id, 'description' => 'Payment processing via Stripe Connect is now functional. Merchants can receive tips directly.', 'created_at' => now()->subDays(5)]
+        );
+
         // ─── SETTINGS ─────────────────────────────────────────
         Setting::set('quote.next_number', '10');
         Setting::set('invoice.next_number', '10');

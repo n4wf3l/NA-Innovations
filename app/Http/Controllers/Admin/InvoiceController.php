@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Invoice;
 use App\Models\User;
+use App\Models\EmailTemplate;
 use App\Services\InvoiceService;
 use App\Services\NumberGenerator;
 use App\Services\PdfService;
@@ -101,10 +102,15 @@ class InvoiceController extends BaseAdminController
             'items.*.quantity' => 'required|numeric|min:0.01',
             'items.*.unit_price' => 'required|numeric|min:0',
             'items.*.unit' => 'nullable|string|max:50',
+            'locale' => 'nullable|string|in:fr,en,nl',
         ]);
 
         $items = $validated['items'];
         unset($validated['items']);
+
+        if (empty($validated['locale'])) {
+            $validated['locale'] = 'fr';
+        }
 
         // Calculate totals
         $subtotal = 0;
@@ -160,6 +166,20 @@ class InvoiceController extends BaseAdminController
 
         return Inertia::render('Admin/Invoices/Show', [
             'invoice' => $invoice,
+            'emailTemplates' => [
+                'fr' => [
+                    'subject' => __('pdf.invoice_email_subject', ['number' => $invoice->invoice_number], 'fr'),
+                    'body' => __('pdf.invoice_email_body', ['name' => '{{ client_name }}', 'number' => $invoice->invoice_number, 'total' => '{{ total }}', 'due_date' => '{{ due_date }}'], 'fr'),
+                ],
+                'en' => [
+                    'subject' => __('pdf.invoice_email_subject', ['number' => $invoice->invoice_number], 'en'),
+                    'body' => __('pdf.invoice_email_body', ['name' => '{{ client_name }}', 'number' => $invoice->invoice_number, 'total' => '{{ total }}', 'due_date' => '{{ due_date }}'], 'en'),
+                ],
+                'nl' => [
+                    'subject' => __('pdf.invoice_email_subject', ['number' => $invoice->invoice_number], 'nl'),
+                    'body' => __('pdf.invoice_email_body', ['name' => '{{ client_name }}', 'number' => $invoice->invoice_number, 'total' => '{{ total }}', 'due_date' => '{{ due_date }}'], 'nl'),
+                ],
+            ],
         ]);
     }
 
@@ -260,8 +280,13 @@ class InvoiceController extends BaseAdminController
     /**
      * Mark invoice as sent.
      */
-    public function send(Invoice $invoice)
+    public function send(Request $request, Invoice $invoice)
     {
+        $request->validate([
+            'email_subject' => 'nullable|string|max:500',
+            'email_body' => 'nullable|string',
+        ]);
+
         $invoice->update([
             'status' => 'sent',
             'sent_at' => now(),
@@ -315,5 +340,21 @@ class InvoiceController extends BaseAdminController
         }
 
         return Storage::disk('local')->download($invoice->pdf_path, "{$invoice->invoice_number}.pdf");
+    }
+
+    /**
+     * Stream the invoice PDF inline for preview.
+     */
+    public function previewPdf(Invoice $invoice)
+    {
+        if (!$invoice->pdf_path || !Storage::disk('local')->exists($invoice->pdf_path)) {
+            PdfService::generateInvoicePdf($invoice);
+            $invoice->refresh();
+        }
+
+        return response(Storage::disk('local')->get($invoice->pdf_path), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline',
+        ]);
     }
 }

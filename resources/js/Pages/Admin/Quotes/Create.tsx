@@ -6,6 +6,7 @@ import { formatCurrency } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import SearchableSelect from '@/Components/ui/SearchableSelect';
 import SignaturePad from '@/Components/ui/SignaturePad';
+import LocalePicker from '@/Components/ui/LocalePicker';
 
 interface Props {
     clients: User[];
@@ -30,7 +31,7 @@ export default function QuoteCreate({ clients, leads, savedSignature }: Props) {
     const [form, setForm] = useState({
         title: '', client_id: '', client_name: '', client_email: '', client_company: '',
         client_address: '', client_vat: '', lead_id: '', introduction: '', scope_of_work: '',
-        exclusions: '', tax_rate: 21, deposit_percentage: 30, valid_until: '', terms_and_conditions: '', notes: '',
+        exclusions: '', tax_rate: 21, deposit_percentage: 30, valid_until: '', terms_and_conditions: '', notes: '', locale: 'fr',
     });
 
     const [items, setItems] = useState<LineItem[]>([
@@ -69,6 +70,7 @@ export default function QuoteCreate({ clients, leads, savedSignature }: Props) {
         router.post('/admin/quotes', {
             ...form,
             items,
+            locale: form.locale,
             include_signature: includeSignature,
             signature_data: includeSignature ? signatureData : null,
         } as any, { onFinish: () => setSubmitting(false) });
@@ -301,6 +303,9 @@ export default function QuoteCreate({ clients, leads, savedSignature }: Props) {
                                     <div>
                                         <label className={label}>{t("Valid Until")}</label>
                                         <input type="date" value={form.valid_until} onChange={e => set('valid_until', e.target.value)} className={input} />
+                                    </div>
+                                    <div>
+                                        <LocalePicker value={form.locale} onChange={val => set('locale', val)} label={t("Document & Email Language")} />
                                     </div>
                                     <div>
                                         <label className={label}>{t("Terms & Conditions")}</label>

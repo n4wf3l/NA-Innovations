@@ -14,7 +14,8 @@
       "Bash(npm install:*)",
       "Bash(node -e \":*)",
       "Bash(sed -i 's/px-3 py-2\\\\.5 text-sm font-medium/px-3 py-2 text-sm font-medium/g' resources/views/layouts/admin.blade.php)",
-      "Bash(sed -i 's/<div class=\"\"pt-4\"\">/<div class=\"\"pt-2.5\"\">/g' resources/views/layouts/admin.blade.php)"
+      "Bash(sed -i 's/<div class=\"\"pt-4\"\">/<div class=\"\"pt-2.5\"\">/g' resources/views/layouts/admin.blade.php)",
+      "Read(//c/Users/ajari/Documents/GitHub/**)"
     ]
   }
 }

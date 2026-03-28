@@ -14,11 +14,16 @@ class PdfService
         $quote->load('items');
         $company = self::getCompanyInfo();
 
+        $previousLocale = app()->getLocale();
+        app()->setLocale($quote->locale ?? 'fr');
+
         $pdf = Pdf::loadView('pdf.quote', compact('quote', 'company'));
         $pdf->setPaper('a4');
 
         $path = "quotes/{$quote->quote_number}.pdf";
         Storage::disk('local')->put($path, $pdf->output());
+
+        app()->setLocale($previousLocale);
 
         $quote->update(['pdf_path' => $path]);
 
@@ -30,11 +35,16 @@ class PdfService
         $invoice->load('items');
         $company = self::getCompanyInfo();
 
+        $previousLocale = app()->getLocale();
+        app()->setLocale($invoice->locale ?? 'fr');
+
         $pdf = Pdf::loadView('pdf.invoice', compact('invoice', 'company'));
         $pdf->setPaper('a4');
 
         $path = "invoices/{$invoice->invoice_number}.pdf";
         Storage::disk('local')->put($path, $pdf->output());
+
+        app()->setLocale($previousLocale);
 
         $invoice->update(['pdf_path' => $path]);
 

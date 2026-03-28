@@ -51,6 +51,7 @@ class Quote extends Model
         'rejected_at',
         'rejection_reason',
         'pdf_path',
+        'locale',
         'include_signature',
         'signature_data',
     ];

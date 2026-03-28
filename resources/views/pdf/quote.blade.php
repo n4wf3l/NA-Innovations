@@ -280,11 +280,11 @@
                         </div>
                     </td>
                     <td style="width: 45%;">
-                        <div class="quote-title">QUOTE</div>
+                        <div class="quote-title">{{ __('pdf.quote') }}</div>
                         <div class="quote-meta">
-                            <strong>Quote #:</strong> {{ $quote->quote_number }}<br>
-                            <strong>Issue Date:</strong> {{ $quote->issue_date ? $quote->issue_date->format('d/m/Y') : '-' }}<br>
-                            <strong>Valid Until:</strong> {{ $quote->valid_until ? $quote->valid_until->format('d/m/Y') : '-' }}
+                            <strong>{{ __('pdf.quote_number') }}</strong> {{ $quote->quote_number }}<br>
+                            <strong>{{ __('pdf.issue_date') }}</strong> {{ $quote->issue_date ? $quote->issue_date->format('d/m/Y') : '-' }}<br>
+                            <strong>{{ __('pdf.valid_until') }}</strong> {{ $quote->valid_until ? $quote->valid_until->format('d/m/Y') : '-' }}
                         </div>
                     </td>
                 </tr>
@@ -295,12 +295,12 @@
 
         {{-- Client Info --}}
         <div class="client-block">
-            <div class="client-block-label">Billed To</div>
+            <div class="client-block-label">{{ __('pdf.billed_to') }}</div>
             <div class="client-name">{{ $quote->client_name }}</div>
             <div class="client-info">
                 @if($quote->client_company){{ $quote->client_company }}<br>@endif
                 @if($quote->client_address){{ $quote->client_address }}<br>@endif
-                @if($quote->client_vat)VAT: {{ $quote->client_vat }}<br>@endif
+                @if($quote->client_vat){{ __('pdf.vat') }}: {{ $quote->client_vat }}<br>@endif
                 @if($quote->client_email){{ $quote->client_email }}@endif
             </div>
         </div>
@@ -321,11 +321,11 @@
                 <thead>
                     <tr>
                         <th style="width: 30px;">#</th>
-                        <th>Description</th>
-                        <th class="text-center" style="width: 50px;">Qty</th>
-                        <th class="text-center" style="width: 50px;">Unit</th>
-                        <th class="text-right" style="width: 85px;">Unit Price</th>
-                        <th class="text-right" style="width: 85px;">Total</th>
+                        <th>{{ __('pdf.description') }}</th>
+                        <th class="text-center" style="width: 50px;">{{ __('pdf.qty') }}</th>
+                        <th class="text-center" style="width: 50px;">{{ __('pdf.unit') }}</th>
+                        <th class="text-right" style="width: 85px;">{{ __('pdf.unit_price') }}</th>
+                        <th class="text-right" style="width: 85px;">{{ __('pdf.total') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -335,7 +335,7 @@
                             <td>
                                 {{ $item->description }}
                                 @if($item->is_optional)
-                                    <span class="optional-tag">(optional)</span>
+                                    <span class="optional-tag">{{ __('pdf.optional') }}</span>
                                 @endif
                                 @if($item->details)
                                     <div class="item-details">{{ $item->details }}</div>
@@ -355,26 +355,26 @@
         <div class="totals-wrapper clearfix">
             <table class="totals-table">
                 <tr>
-                    <td>Subtotal</td>
+                    <td>{{ __('pdf.subtotal') }}</td>
                     <td>&euro; {{ number_format($quote->subtotal, 2, ',', '.') }}</td>
                 </tr>
                 @if($quote->discount_amount > 0)
                     <tr>
-                        <td>Discount</td>
+                        <td>{{ __('pdf.discount') }}</td>
                         <td>- &euro; {{ number_format($quote->discount_amount, 2, ',', '.') }}</td>
                     </tr>
                 @endif
                 <tr>
-                    <td>Tax ({{ rtrim(rtrim(number_format($quote->tax_rate, 2), '0'), '.') }}%)</td>
+                    <td>{{ __('pdf.tax') }} ({{ rtrim(rtrim(number_format($quote->tax_rate, 2), '0'), '.') }}%)</td>
                     <td>&euro; {{ number_format($quote->tax_amount, 2, ',', '.') }}</td>
                 </tr>
                 <tr class="total-row">
-                    <td>Total</td>
+                    <td>{{ __('pdf.total') }}</td>
                     <td>&euro; {{ number_format($quote->total, 2, ',', '.') }}</td>
                 </tr>
                 @if($quote->deposit_amount > 0)
                     <tr class="deposit-row">
-                        <td>Deposit ({{ $quote->deposit_percentage }}%)</td>
+                        <td>{{ __('pdf.deposit') }} ({{ $quote->deposit_percentage }}%)</td>
                         <td>&euro; {{ number_format($quote->deposit_amount, 2, ',', '.') }}</td>
                     </tr>
                 @endif
@@ -384,7 +384,7 @@
         {{-- Scope of Work --}}
         @if($quote->scope_of_work)
             <div class="section">
-                <div class="section-title">Scope of Work</div>
+                <div class="section-title">{{ __('pdf.scope_of_work') }}</div>
                 <div class="section-content">{{ $quote->scope_of_work }}</div>
             </div>
         @endif
@@ -392,7 +392,7 @@
         {{-- Exclusions --}}
         @if($quote->exclusions)
             <div class="section">
-                <div class="section-title">Exclusions</div>
+                <div class="section-title">{{ __('pdf.exclusions') }}</div>
                 <div class="section-content">{{ $quote->exclusions }}</div>
             </div>
         @endif
@@ -400,7 +400,7 @@
         {{-- Terms and Conditions --}}
         @if($quote->terms_and_conditions)
             <div class="section">
-                <div class="section-title">Terms and Conditions</div>
+                <div class="section-title">{{ __('pdf.terms_and_conditions') }}</div>
                 <div class="section-content">{{ $quote->terms_and_conditions }}</div>
             </div>
         @endif
@@ -411,14 +411,14 @@
                 <table width="100%">
                     <tr>
                         <td width="50%" style="vertical-align: bottom;">
-                            <div style="font-size: 10px; color: #6b7280; margin-bottom: 8px;">Authorized Signature</div>
+                            <div style="font-size: 10px; color: #6b7280; margin-bottom: 8px;">{{ __('pdf.authorized_signature') }}</div>
                             <img src="{{ $quote->signature_data }}" style="max-height: 80px; max-width: 250px;" alt="Signature">
                             <div style="border-top: 1px solid #d1d5db; width: 250px; margin-top: 4px; padding-top: 6px;">
                                 <span style="font-size: 11px; font-weight: 600; color: #374151;">{{ $company['name'] ?? 'NA Innovations' }}</span>
                             </div>
                         </td>
                         <td width="50%" style="vertical-align: bottom; text-align: right;">
-                            <div style="font-size: 10px; color: #6b7280; margin-bottom: 8px;">Date</div>
+                            <div style="font-size: 10px; color: #6b7280; margin-bottom: 8px;">{{ __('pdf.date') }}</div>
                             <div style="font-size: 12px; font-weight: 600; color: #374151;">{{ now()->format('d/m/Y') }}</div>
                         </td>
                     </tr>
@@ -429,7 +429,7 @@
         {{-- Validity --}}
         @if($quote->valid_until)
             <div class="validity">
-                This quote is valid until <strong>{{ $quote->valid_until->format('d/m/Y') }}</strong>.
+                {{ __('pdf.valid_until_text') }} <strong>{{ $quote->valid_until->format('d/m/Y') }}</strong>.
             </div>
         @endif
 
@@ -440,7 +440,7 @@
             <br>
             @if(!empty($company['email'])){{ $company['email'] }}@endif
             @if(!empty($company['phone'])) | {{ $company['phone'] }}@endif
-            @if(!empty($company['vat'])) | VAT: {{ $company['vat'] }}@endif
+            @if(!empty($company['vat'])) | {{ __('pdf.vat') }}: {{ $company['vat'] }}@endif
             @if(!empty($company['bank_iban']))
                 <br>IBAN: {{ $company['bank_iban'] }}
                 @if(!empty($company['bank_bic'])) | BIC: {{ $company['bank_bic'] }}@endif

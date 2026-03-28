@@ -315,11 +315,11 @@
                         </div>
                     </td>
                     <td style="width: 45%;">
-                        <div class="invoice-title">INVOICE</div>
+                        <div class="invoice-title">{{ __('pdf.invoice') }}</div>
                         <div class="invoice-meta">
-                            <strong>Invoice #:</strong> {{ $invoice->invoice_number }}<br>
-                            <strong>Issue Date:</strong> {{ $invoice->issue_date ? $invoice->issue_date->format('d/m/Y') : '-' }}<br>
-                            <strong>Due Date:</strong> {{ $invoice->due_date ? $invoice->due_date->format('d/m/Y') : '-' }}
+                            <strong>{{ __('pdf.invoice_number') }}</strong> {{ $invoice->invoice_number }}<br>
+                            <strong>{{ __('pdf.issue_date') }}</strong> {{ $invoice->issue_date ? $invoice->issue_date->format('d/m/Y') : '-' }}<br>
+                            <strong>{{ __('pdf.due_date') }}</strong> {{ $invoice->due_date ? $invoice->due_date->format('d/m/Y') : '-' }}
                         </div>
                         @if($invoice->type)
                             <div style="text-align: right; margin-top: 6px;">
@@ -337,12 +337,12 @@
 
         {{-- Client Info --}}
         <div class="client-block">
-            <div class="client-block-label">Billed To</div>
+            <div class="client-block-label">{{ __('pdf.billed_to') }}</div>
             <div class="client-name">{{ $invoice->client_name }}</div>
             <div class="client-info">
                 @if($invoice->client_company){{ $invoice->client_company }}<br>@endif
                 @if($invoice->client_address){{ $invoice->client_address }}<br>@endif
-                @if($invoice->client_vat)VAT: {{ $invoice->client_vat }}<br>@endif
+                @if($invoice->client_vat){{ __('pdf.vat') }}: {{ $invoice->client_vat }}<br>@endif
                 @if($invoice->client_email){{ $invoice->client_email }}@endif
             </div>
         </div>
@@ -358,11 +358,11 @@
                 <thead>
                     <tr>
                         <th style="width: 30px;">#</th>
-                        <th>Description</th>
-                        <th class="text-center" style="width: 50px;">Qty</th>
-                        <th class="text-center" style="width: 50px;">Unit</th>
-                        <th class="text-right" style="width: 85px;">Unit Price</th>
-                        <th class="text-right" style="width: 85px;">Total</th>
+                        <th>{{ __('pdf.description') }}</th>
+                        <th class="text-center" style="width: 50px;">{{ __('pdf.qty') }}</th>
+                        <th class="text-center" style="width: 50px;">{{ __('pdf.unit') }}</th>
+                        <th class="text-right" style="width: 85px;">{{ __('pdf.unit_price') }}</th>
+                        <th class="text-right" style="width: 85px;">{{ __('pdf.total') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -389,31 +389,31 @@
         <div class="totals-wrapper clearfix">
             <table class="totals-table">
                 <tr>
-                    <td>Subtotal</td>
+                    <td>{{ __('pdf.subtotal') }}</td>
                     <td>&euro; {{ number_format($invoice->subtotal, 2, ',', '.') }}</td>
                 </tr>
                 @if($invoice->discount_amount > 0)
                     <tr>
-                        <td>Discount</td>
+                        <td>{{ __('pdf.discount') }}</td>
                         <td>- &euro; {{ number_format($invoice->discount_amount, 2, ',', '.') }}</td>
                     </tr>
                 @endif
                 <tr>
-                    <td>Tax ({{ rtrim(rtrim(number_format($invoice->tax_rate, 2), '0'), '.') }}%)</td>
+                    <td>{{ __('pdf.tax') }} ({{ rtrim(rtrim(number_format($invoice->tax_rate, 2), '0'), '.') }}%)</td>
                     <td>&euro; {{ number_format($invoice->tax_amount, 2, ',', '.') }}</td>
                 </tr>
                 <tr class="total-row">
-                    <td>Total</td>
+                    <td>{{ __('pdf.total') }}</td>
                     <td>&euro; {{ number_format($invoice->total, 2, ',', '.') }}</td>
                 </tr>
                 @if($invoice->amount_paid > 0)
                     <tr class="paid-row">
-                        <td>Amount Paid</td>
+                        <td>{{ __('pdf.amount_paid') }}</td>
                         <td>- &euro; {{ number_format($invoice->amount_paid, 2, ',', '.') }}</td>
                     </tr>
                 @endif
                 <tr class="due-row">
-                    <td>Amount Due</td>
+                    <td>{{ __('pdf.amount_due') }}</td>
                     <td>&euro; {{ number_format($invoice->amount_due, 2, ',', '.') }}</td>
                 </tr>
             </table>
@@ -422,7 +422,7 @@
         {{-- Payment Instructions --}}
         @if($invoice->payment_instructions)
             <div class="section">
-                <div class="section-title">Payment Instructions</div>
+                <div class="section-title">{{ __('pdf.payment_instructions') }}</div>
                 <div class="section-content">{{ $invoice->payment_instructions }}</div>
             </div>
         @endif
@@ -430,11 +430,11 @@
         {{-- Bank Details --}}
         @if(!empty($company['bank_iban']))
             <div class="bank-details">
-                <div class="bank-details-label">Bank Details</div>
+                <div class="bank-details-label">{{ __('pdf.bank_details') }}</div>
                 <table>
                     @if(!empty($company['bank_name']))
                         <tr>
-                            <td>Bank</td>
+                            <td>{{ __('pdf.bank') }}</td>
                             <td>{{ $company['bank_name'] }}</td>
                         </tr>
                     @endif
@@ -449,7 +449,7 @@
                         </tr>
                     @endif
                     <tr>
-                        <td>Reference</td>
+                        <td>{{ __('pdf.reference') }}</td>
                         <td>{{ $invoice->invoice_number }}</td>
                     </tr>
                 </table>
@@ -459,7 +459,7 @@
         {{-- Notes --}}
         @if($invoice->notes)
             <div class="section">
-                <div class="section-title">Notes</div>
+                <div class="section-title">{{ __('pdf.notes') }}</div>
                 <div class="section-content">{{ $invoice->notes }}</div>
             </div>
         @endif

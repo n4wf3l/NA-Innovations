@@ -36,6 +36,7 @@ class Invoice extends Model
         'amount_paid',
         'amount_due',
         'currency',
+        'locale',
         'status',
         'issue_date',
         'due_date',

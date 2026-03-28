@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Lead;
 use App\Models\ReferralPartner;
+use App\Services\WorkflowService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -144,8 +145,10 @@ class LeadController extends BaseAdminController
 
         $lead->update($validated);
 
-        // Track status change
+        // Track status change + auto-set timestamps
         if ($oldStatus !== $newStatus) {
+            WorkflowService::onLeadStatusChanged($lead, $oldStatus, $newStatus);
+
             $lead->timelineEvents()->create([
                 'user_id' => auth()->id(),
                 'event_type' => 'status_change',
@@ -180,6 +183,8 @@ class LeadController extends BaseAdminController
         $lead->update(['status' => $request->status]);
 
         if ($oldStatus !== $request->status) {
+            WorkflowService::onLeadStatusChanged($lead, $oldStatus, $request->status);
+
             $lead->timelineEvents()->create([
                 'user_id' => auth()->id(),
                 'event_type' => 'status_change',

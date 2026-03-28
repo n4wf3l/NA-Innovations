@@ -102,6 +102,24 @@ Route::prefix('partner')->middleware(['auth', 'referral'])->group(function () {
     Route::put('/profile', [App\Http\Controllers\Partner\ProfileController::class, 'update'])->name('partner.profile.update');
 });
 
+// Client portal routes
+Route::prefix('client')->middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Client\DashboardController::class, 'index'])->name('client.dashboard');
+    Route::get('/projects', [App\Http\Controllers\Client\ProjectController::class, 'index'])->name('client.projects.index');
+    Route::get('/projects/{project}', [App\Http\Controllers\Client\ProjectController::class, 'show'])->name('client.projects.show');
+    Route::post('/projects/{project}/comment', [App\Http\Controllers\Client\ProjectController::class, 'addComment'])->name('client.projects.comment');
+    Route::get('/quotes', [App\Http\Controllers\Client\QuoteController::class, 'index'])->name('client.quotes.index');
+    Route::get('/quotes/{quote}', [App\Http\Controllers\Client\QuoteController::class, 'show'])->name('client.quotes.show');
+    Route::get('/quotes/{quote}/pdf', [App\Http\Controllers\Client\QuoteController::class, 'downloadPdf'])->name('client.quotes.pdf');
+    Route::get('/quotes/{quote}/pdf/preview', [App\Http\Controllers\Client\QuoteController::class, 'previewPdf'])->name('client.quotes.pdf.preview');
+    Route::post('/quotes/{quote}/accept', [App\Http\Controllers\Client\QuoteController::class, 'accept'])->name('client.quotes.accept');
+    Route::post('/quotes/{quote}/reject', [App\Http\Controllers\Client\QuoteController::class, 'reject'])->name('client.quotes.reject');
+    Route::get('/invoices', [App\Http\Controllers\Client\InvoiceController::class, 'index'])->name('client.invoices.index');
+    Route::get('/invoices/{invoice}', [App\Http\Controllers\Client\InvoiceController::class, 'show'])->name('client.invoices.show');
+    Route::get('/invoices/{invoice}/pdf', [App\Http\Controllers\Client\InvoiceController::class, 'downloadPdf'])->name('client.invoices.pdf');
+    Route::get('/invoices/{invoice}/pdf/preview', [App\Http\Controllers\Client\InvoiceController::class, 'previewPdf'])->name('client.invoices.pdf.preview');
+});
+
 // Admin routes
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
@@ -126,10 +144,17 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     // Quotes
     Route::resource('quotes', App\Http\Controllers\Admin\QuoteController::class)->names('admin.quotes');
     Route::post('quotes/{quote}/send', [App\Http\Controllers\Admin\QuoteController::class, 'send'])->name('admin.quotes.send');
+    Route::post('quotes/{quote}/accept', [App\Http\Controllers\Admin\QuoteController::class, 'accept'])->name('admin.quotes.accept');
+    Route::post('quotes/{quote}/reject', [App\Http\Controllers\Admin\QuoteController::class, 'reject'])->name('admin.quotes.reject');
     Route::post('quotes/{quote}/duplicate', [App\Http\Controllers\Admin\QuoteController::class, 'duplicate'])->name('admin.quotes.duplicate');
     Route::post('quotes/{quote}/create-invoice', [App\Http\Controllers\Admin\QuoteController::class, 'createInvoice'])->name('admin.quotes.create-invoice');
     Route::get('quotes/{quote}/pdf', [App\Http\Controllers\Admin\QuoteController::class, 'downloadPdf'])->name('admin.quotes.pdf');
     Route::get('quotes/{quote}/pdf/preview', [App\Http\Controllers\Admin\QuoteController::class, 'previewPdf'])->name('admin.quotes.pdf.preview');
+
+    // Email Templates
+    Route::get('settings/email-templates', [App\Http\Controllers\Admin\EmailTemplateController::class, 'index'])->name('admin.email-templates.index');
+    Route::put('settings/email-templates/{emailTemplate}', [App\Http\Controllers\Admin\EmailTemplateController::class, 'update'])->name('admin.email-templates.update');
+    Route::patch('settings/email-templates/{emailTemplate}/toggle', [App\Http\Controllers\Admin\EmailTemplateController::class, 'toggleActive'])->name('admin.email-templates.toggle');
 
     // Signature
     Route::get('signature', [App\Http\Controllers\Admin\SignatureController::class, 'show'])->name('admin.signature.show');
@@ -141,6 +166,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('invoices/{invoice}/send', [App\Http\Controllers\Admin\InvoiceController::class, 'send'])->name('admin.invoices.send');
     Route::post('invoices/{invoice}/record-payment', [App\Http\Controllers\Admin\InvoiceController::class, 'recordPayment'])->name('admin.invoices.record-payment');
     Route::get('invoices/{invoice}/pdf', [App\Http\Controllers\Admin\InvoiceController::class, 'downloadPdf'])->name('admin.invoices.pdf');
+    Route::get('invoices/{invoice}/pdf/preview', [App\Http\Controllers\Admin\InvoiceController::class, 'previewPdf'])->name('admin.invoices.pdf.preview');
 
     // Commissions
     Route::get('commissions', [App\Http\Controllers\Admin\CommissionController::class, 'index'])->name('admin.commissions.index');

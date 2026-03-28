@@ -7,6 +7,7 @@ use App\Models\Lead;
 use App\Models\User;
 use App\Models\EmailTemplate;
 use App\Services\QuoteService;
+use App\Services\WorkflowService;
 use App\Services\PdfService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -102,17 +103,20 @@ class QuoteController extends BaseAdminController
             'items.*.is_optional' => 'nullable',
             'include_signature' => 'nullable|boolean',
             'signature_data' => 'nullable|string',
+            'locale' => 'nullable|string|in:fr,en,nl',
         ]);
 
         $items = $validated['items'];
         unset($validated['items']);
 
-        // Handle signature: if include_signature is true and no signature_data provided, use saved signature
+        if (empty($validated['locale'])) {
+            $validated['locale'] = 'fr';
+        }
+
+        // Handle signature
         if (!empty($validated['include_signature']) && empty($validated['signature_data'])) {
             $validated['signature_data'] = auth()->user()->signature;
         }
-
-        // Save signature to user account if new one was drawn
         if (!empty($validated['signature_data']) && $validated['signature_data'] !== auth()->user()->signature) {
             $user = auth()->user();
             $user->signature = $validated['signature_data'];
@@ -139,16 +143,23 @@ class QuoteController extends BaseAdminController
             },
         ]);
 
-        $template = EmailTemplate::where('slug', 'quote-sent')->first();
-
-        $defaultSubject = "Your quote #{$quote->quote_number} from NA Innovations";
-        $defaultBody = "Dear {{ client_name }},\n\nPlease find attached our quote {{ quote_number }} for a total of {{ total }}.\n\nThis quote is valid until {{ valid_until }}.\n\nPlease don't hesitate to contact us if you have any questions.\n\nBest regards,\nNA Innovations";
+        $locale = $quote->locale ?? 'fr';
 
         return Inertia::render('Admin/Quotes/Show', [
             'quote' => $quote,
-            'emailTemplate' => [
-                'subject' => $template->subject ?? $defaultSubject,
-                'body' => $template->body ?? $defaultBody,
+            'emailTemplates' => [
+                'fr' => [
+                    'subject' => __('pdf.quote_email_subject', ['number' => $quote->quote_number], 'fr'),
+                    'body' => __('pdf.quote_email_body', ['name' => '{{ client_name }}', 'number' => $quote->quote_number, 'total' => '{{ total }}', 'valid_until' => '{{ valid_until }}'], 'fr'),
+                ],
+                'en' => [
+                    'subject' => __('pdf.quote_email_subject', ['number' => $quote->quote_number], 'en'),
+                    'body' => __('pdf.quote_email_body', ['name' => '{{ client_name }}', 'number' => $quote->quote_number, 'total' => '{{ total }}', 'valid_until' => '{{ valid_until }}'], 'en'),
+                ],
+                'nl' => [
+                    'subject' => __('pdf.quote_email_subject', ['number' => $quote->quote_number], 'nl'),
+                    'body' => __('pdf.quote_email_body', ['name' => '{{ client_name }}', 'number' => $quote->quote_number, 'total' => '{{ total }}', 'valid_until' => '{{ valid_until }}'], 'nl'),
+                ],
             ],
         ]);
     }
@@ -200,6 +211,7 @@ class QuoteController extends BaseAdminController
             'items.*.is_optional' => 'nullable',
             'include_signature' => 'nullable|boolean',
             'signature_data' => 'nullable|string',
+            'locale' => 'nullable|string|in:fr,en,nl',
         ]);
 
         $items = $validated['items'];
@@ -264,6 +276,39 @@ class QuoteController extends BaseAdminController
         // Mail::to($quote->client_email)->send(new QuoteSentMail($quote, $request->email_subject, $request->email_body));
 
         return redirect()->back()->with('success', 'Quote marked as sent.');
+    }
+
+    /**
+     * Mark quote as accepted — triggers full workflow.
+     */
+    public function accept(Quote $quote)
+    {
+        $actions = WorkflowService::onQuoteAccepted($quote);
+
+        $message = 'Quote accepted.';
+        if (in_array('deposit_invoice_created', $actions)) {
+            $message .= ' Deposit invoice created.';
+        }
+        if (in_array('project_created', $actions)) {
+            $message .= ' Project initialized.';
+        }
+        if (in_array('client_linked', $actions)) {
+            $message .= ' Client linked.';
+        }
+
+        return redirect()->back()->with('success', $message);
+    }
+
+    /**
+     * Mark quote as rejected.
+     */
+    public function reject(Request $request, Quote $quote)
+    {
+        $request->validate(['reason' => 'nullable|string|max:1000']);
+
+        WorkflowService::onQuoteRejected($quote, $request->input('reason'));
+
+        return redirect()->back()->with('success', 'Quote rejected.');
     }
 
     /**

@@ -108,6 +108,11 @@ class User extends Authenticatable
         return $this->hasMany(Projet::class, 'developer_id');
     }
 
+    public function clientProjects()
+    {
+        return $this->hasMany(Projet::class, 'client_id');
+    }
+
     public function leads()
     {
         return $this->hasMany(Lead::class, 'converted_client_id');
