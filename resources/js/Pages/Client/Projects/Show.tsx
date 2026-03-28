@@ -4,6 +4,7 @@ import Badge from '@/Components/ui/Badge';
 import { formatDate, formatCurrency, formatStatus } from '@/lib/utils';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import CommitList from '@/Components/ui/CommitList';
 
 interface Props {
     project: any;
@@ -154,6 +155,11 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                 {/* ── TIMELINE ── */}
                 {tab === 'timeline' && (
                     <div className="space-y-6">
+                        {/* GitHub Commits (only if admin enabled it) */}
+                        {project.show_commits_to_client && project.github_repo && (
+                            <CommitList projectId={project.id} />
+                        )}
+
                         {/* Comment form */}
                         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
                             <form onSubmit={handleComment} className="flex items-start gap-3">
@@ -327,23 +333,43 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                             </div>
                         )}
 
-                        {/* Recurring services (only show if project is completed) */}
-                        {services.length > 0 && project.status === 'completed' && (
+                        {/* Recurring services */}
+                        {services.length > 0 && (
                             <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
                                 <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700">
                                     <h3 className="font-bold text-gray-900 dark:text-white">{t('Recurring Services')}</h3>
                                 </div>
                                 <div className="divide-y divide-gray-50 dark:divide-gray-700">
                                     {services.map((s: any) => (
-                                        <div key={s.id} className="px-6 py-4 flex items-center justify-between">
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-900 dark:text-white">{s.name}</p>
-                                                <p className="text-xs text-gray-400 dark:text-gray-500">{formatStatus(s.type)} · {formatStatus(s.frequency)}</p>
+                                        <div key={s.id} className={`px-6 py-4 flex items-center justify-between ${s.status === 'expiring_soon' ? 'bg-amber-50/50 dark:bg-amber-500/5' : ''}`}>
+                                            <div className="flex items-center gap-3">
+                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                                                    s.status === 'expired' ? 'bg-red-50 dark:bg-red-500/10' :
+                                                    s.status === 'expiring_soon' ? 'bg-amber-50 dark:bg-amber-500/10' :
+                                                    'bg-teal-50 dark:bg-teal-500/10'
+                                                }`}>
+                                                    <svg className={`w-5 h-5 ${
+                                                        s.status === 'expired' ? 'text-red-500' :
+                                                        s.status === 'expiring_soon' ? 'text-amber-500' :
+                                                        'text-teal-500'
+                                                    }`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d={
+                                                            s.type === 'hosting' ? 'M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z' :
+                                                            s.type === 'domain' ? 'M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418' :
+                                                            s.type === 'ssl' ? 'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z' :
+                                                            'M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3'
+                                                        } />
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{s.name}</p>
+                                                    <p className="text-xs text-gray-400 dark:text-gray-500">
+                                                        {s.provider} · {s.expiry_date ? `${t('Expiry')}: ${formatDate(s.expiry_date)}` : formatStatus(s.frequency)}
+                                                        {s.auto_renew && <span className="ml-1 text-teal-500">({t('Auto Renew')})</span>}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div className="text-right">
-                                                <p className="text-sm font-semibold text-gray-900 dark:text-white">{formatCurrency(s.billed_price)}/{t(s.frequency === 'monthly' ? 'Month' : 'Year')}</p>
-                                                <Badge status={s.status} />
-                                            </div>
+                                            <Badge status={s.status} />
                                         </div>
                                     ))}
                                 </div>

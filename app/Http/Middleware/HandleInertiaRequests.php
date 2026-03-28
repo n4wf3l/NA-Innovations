@@ -45,9 +45,10 @@ class HandleInertiaRequests extends Middleware
                     'role' => $request->user()->role,
                     'phone' => $request->user()->phone,
                     'initial' => strtoupper(substr($request->user()->name, 0, 1)),
+                    'github_username' => $request->user()->github_username,
                     'preferences' => $request->user()->preferences ?? [
                         'email_notifications' => true,
-                        'name_display' => 'full', // 'full' | 'abbreviated'
+                        'name_display' => 'full',
                         'currency' => 'EUR',
                         'privacy_full_name' => true,
                     ],

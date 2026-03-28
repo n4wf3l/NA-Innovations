@@ -20,6 +20,9 @@ class Projet extends Model
         'etoiles',
         'nombre_collaborateurs',
         'lien',
+        'github_repo',
+        'github_linked_by',
+        'show_commits_to_client',
         'image',
         'client_id',
         'status',
@@ -44,6 +47,7 @@ class Projet extends Model
         'total_billed' => 'decimal:2',
         'start_date' => 'date',
         'end_date' => 'date',
+        'show_commits_to_client' => 'boolean',
         'deadline' => 'date',
         'is_portfolio' => 'boolean',
     ];
@@ -55,6 +59,11 @@ class Projet extends Model
     public function client()
     {
         return $this->belongsTo(User::class, 'client_id');
+    }
+
+    public function githubLinkedBy()
+    {
+        return $this->belongsTo(User::class, 'github_linked_by');
     }
 
     public function developer()

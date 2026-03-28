@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\ActivityLog;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,9 +30,18 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Track last login
+        // Track login
         $user = $request->user();
         $user->update(['last_login_at' => now()]);
+
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'action' => 'login',
+            'properties' => ['role' => $user->role],
+            'ip_address' => $request->ip(),
+            'user_agent' => substr($request->userAgent() ?? '', 0, 500),
+        ]);
+
         $home = match ($user->role) {
             'admin' => '/admin/dashboard',
             'referral_partner' => '/partner/dashboard',
@@ -48,6 +58,15 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        if ($request->user()) {
+            ActivityLog::create([
+                'user_id' => $request->user()->id,
+                'action' => 'logout',
+                'ip_address' => $request->ip(),
+                'user_agent' => substr($request->userAgent() ?? '', 0, 500),
+            ]);
+        }
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

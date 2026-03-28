@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\User;
 use App\Models\EmailTemplate;
 use App\Services\InvoiceService;
+use App\Services\NotificationService;
 use App\Services\NumberGenerator;
 use App\Services\PdfService;
 use App\Services\CommissionService;
@@ -164,22 +165,18 @@ class InvoiceController extends BaseAdminController
             },
         ]);
 
+        $emailTemplates = [];
+        foreach (['fr', 'en', 'nl'] as $loc) {
+            $tpl = EmailTemplate::where('slug', 'invoice-sent')->where('locale', $loc)->first();
+            $emailTemplates[$loc] = $tpl
+                ? ['subject' => $tpl->subject, 'body' => strip_tags($tpl->body)]
+                : ['subject' => __('pdf.invoice_email_subject', ['number' => $invoice->invoice_number], $loc),
+                   'body' => __('pdf.invoice_email_body', ['name' => '{{ client_name }}', 'number' => $invoice->invoice_number, 'total' => '{{ total }}', 'due_date' => '{{ due_date }}'], $loc)];
+        }
+
         return Inertia::render('Admin/Invoices/Show', [
             'invoice' => $invoice,
-            'emailTemplates' => [
-                'fr' => [
-                    'subject' => __('pdf.invoice_email_subject', ['number' => $invoice->invoice_number], 'fr'),
-                    'body' => __('pdf.invoice_email_body', ['name' => '{{ client_name }}', 'number' => $invoice->invoice_number, 'total' => '{{ total }}', 'due_date' => '{{ due_date }}'], 'fr'),
-                ],
-                'en' => [
-                    'subject' => __('pdf.invoice_email_subject', ['number' => $invoice->invoice_number], 'en'),
-                    'body' => __('pdf.invoice_email_body', ['name' => '{{ client_name }}', 'number' => $invoice->invoice_number, 'total' => '{{ total }}', 'due_date' => '{{ due_date }}'], 'en'),
-                ],
-                'nl' => [
-                    'subject' => __('pdf.invoice_email_subject', ['number' => $invoice->invoice_number], 'nl'),
-                    'body' => __('pdf.invoice_email_body', ['name' => '{{ client_name }}', 'number' => $invoice->invoice_number, 'total' => '{{ total }}', 'due_date' => '{{ due_date }}'], 'nl'),
-                ],
-            ],
+            'emailTemplates' => $emailTemplates,
         ]);
     }
 
@@ -304,6 +301,25 @@ class InvoiceController extends BaseAdminController
             'old_value' => 'draft',
             'new_value' => 'sent',
         ]);
+
+        // Send email to client with PDF
+        if ($invoice->client_id) {
+            $client = User::find($invoice->client_id);
+            if ($client) {
+                NotificationService::send(
+                    $client,
+                    'invoice-sent',
+                    [
+                        'client_name' => $invoice->client_name,
+                        'invoice_number' => $invoice->invoice_number,
+                        'total' => number_format($invoice->total, 2, ',', '.') . ' EUR',
+                        'due_date' => $invoice->due_date ? $invoice->due_date->format('d/m/Y') : '--',
+                    ],
+                    $invoice->pdf_path,
+                    transactional: true,
+                );
+            }
+        }
 
         return redirect()->back()->with('success', 'Invoice marked as sent.');
     }

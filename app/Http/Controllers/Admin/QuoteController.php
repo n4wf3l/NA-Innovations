@@ -6,6 +6,7 @@ use App\Models\Quote;
 use App\Models\Lead;
 use App\Models\User;
 use App\Models\EmailTemplate;
+use App\Services\NotificationService;
 use App\Services\QuoteService;
 use App\Services\WorkflowService;
 use App\Services\PdfService;
@@ -143,24 +144,18 @@ class QuoteController extends BaseAdminController
             },
         ]);
 
-        $locale = $quote->locale ?? 'fr';
+        $emailTemplates = [];
+        foreach (['fr', 'en', 'nl'] as $loc) {
+            $tpl = EmailTemplate::where('slug', 'quote-sent')->where('locale', $loc)->first();
+            $emailTemplates[$loc] = $tpl
+                ? ['subject' => $tpl->subject, 'body' => strip_tags($tpl->body)]
+                : ['subject' => __('pdf.quote_email_subject', ['number' => $quote->quote_number], $loc),
+                   'body' => __('pdf.quote_email_body', ['name' => '{{ client_name }}', 'number' => $quote->quote_number, 'total' => '{{ total }}', 'valid_until' => '{{ valid_until }}'], $loc)];
+        }
 
         return Inertia::render('Admin/Quotes/Show', [
             'quote' => $quote,
-            'emailTemplates' => [
-                'fr' => [
-                    'subject' => __('pdf.quote_email_subject', ['number' => $quote->quote_number], 'fr'),
-                    'body' => __('pdf.quote_email_body', ['name' => '{{ client_name }}', 'number' => $quote->quote_number, 'total' => '{{ total }}', 'valid_until' => '{{ valid_until }}'], 'fr'),
-                ],
-                'en' => [
-                    'subject' => __('pdf.quote_email_subject', ['number' => $quote->quote_number], 'en'),
-                    'body' => __('pdf.quote_email_body', ['name' => '{{ client_name }}', 'number' => $quote->quote_number, 'total' => '{{ total }}', 'valid_until' => '{{ valid_until }}'], 'en'),
-                ],
-                'nl' => [
-                    'subject' => __('pdf.quote_email_subject', ['number' => $quote->quote_number], 'nl'),
-                    'body' => __('pdf.quote_email_body', ['name' => '{{ client_name }}', 'number' => $quote->quote_number, 'total' => '{{ total }}', 'valid_until' => '{{ valid_until }}'], 'nl'),
-                ],
-            ],
+            'emailTemplates' => $emailTemplates,
         ]);
     }
 
@@ -272,8 +267,24 @@ class QuoteController extends BaseAdminController
             'new_value' => 'sent',
         ]);
 
-        // TODO: Actually send the email with subject/body and PDF attachment
-        // Mail::to($quote->client_email)->send(new QuoteSentMail($quote, $request->email_subject, $request->email_body));
+        // Send email to client with PDF attachment
+        if ($quote->client_id) {
+            $client = User::find($quote->client_id);
+            if ($client) {
+                NotificationService::send(
+                    $client,
+                    'quote-sent',
+                    [
+                        'client_name' => $quote->client_name,
+                        'quote_number' => $quote->quote_number,
+                        'total' => number_format($quote->total, 2, ',', '.') . ' EUR',
+                        'valid_until' => $quote->valid_until ? $quote->valid_until->format('d/m/Y') : '--',
+                    ],
+                    $quote->pdf_path,
+                    transactional: true,
+                );
+            }
+        }
 
         return redirect()->back()->with('success', 'Quote marked as sent.');
     }

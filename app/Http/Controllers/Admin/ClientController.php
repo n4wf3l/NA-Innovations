@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class ClientController extends BaseAdminController
 {
@@ -73,7 +75,9 @@ class ClientController extends BaseAdminController
         unset($validated['financial_pin']);
 
         $validated['role'] = 'client';
-        $validated['password'] = Hash::make(Str::random(16));
+        $validated['password'] = Hash::make(Str::random(32));
+        $validated['is_active'] = true;
+        $validated['approved_at'] = now();
 
         $user = User::create($validated);
 
@@ -82,7 +86,21 @@ class ClientController extends BaseAdminController
             $user->update(['financial_pin' => Hash::make($financialPin)]);
         }
 
-        return redirect()->route('admin.clients.index')->with('success', 'Client created successfully.');
+        // Send welcome email
+        NotificationService::send($user, 'client-welcome', [
+            'client_name' => $user->name,
+            'email' => $user->email,
+            'portal_url' => url('/login'),
+        ], transactional: true);
+
+        // Send password reset link so client can set their own password
+        try {
+            Password::sendResetLink(['email' => $user->email]);
+        } catch (\Exception $e) {
+            // Don't fail if mail not configured
+        }
+
+        return redirect()->route('admin.clients.index')->with('success', 'Client created. A welcome email with password setup link has been sent.');
     }
 
     /**

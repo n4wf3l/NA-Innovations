@@ -102,6 +102,16 @@ Route::prefix('partner')->middleware(['auth', 'referral'])->group(function () {
     Route::put('/profile', [App\Http\Controllers\Partner\ProfileController::class, 'update'])->name('partner.profile.update');
 });
 
+// GitHub OAuth
+Route::middleware('auth')->group(function () {
+    Route::get('/auth/github/redirect', [App\Http\Controllers\Auth\GitHubController::class, 'redirect'])->name('github.redirect');
+    Route::get('/auth/github/callback', [App\Http\Controllers\Auth\GitHubController::class, 'callback'])->name('github.callback');
+    Route::post('/auth/github/disconnect', [App\Http\Controllers\Auth\GitHubController::class, 'disconnect'])->name('github.disconnect');
+});
+
+// API endpoints (session auth)
+Route::get('/api/projects/{project}/commits', App\Http\Controllers\Api\ProjectCommitsController::class)->middleware('auth')->name('api.projects.commits');
+
 // Client portal routes
 Route::prefix('client')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Client\DashboardController::class, 'index'])->name('client.dashboard');
@@ -139,6 +149,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     Route::patch('leads/{lead}/status', [App\Http\Controllers\Admin\LeadController::class, 'updateStatus'])->name('admin.leads.update-status');
     Route::patch('projects/{project}/status', [App\Http\Controllers\Admin\ProjectController::class, 'updateStatus'])->name('admin.projects.update-status');
+    Route::patch('projects/{project}/github', [App\Http\Controllers\Admin\ProjectController::class, 'updateGithub'])->name('admin.projects.update-github');
     Route::resource('partners', App\Http\Controllers\Admin\PartnerController::class)->names('admin.partners');
 
     // Quotes
@@ -150,6 +161,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('quotes/{quote}/create-invoice', [App\Http\Controllers\Admin\QuoteController::class, 'createInvoice'])->name('admin.quotes.create-invoice');
     Route::get('quotes/{quote}/pdf', [App\Http\Controllers\Admin\QuoteController::class, 'downloadPdf'])->name('admin.quotes.pdf');
     Route::get('quotes/{quote}/pdf/preview', [App\Http\Controllers\Admin\QuoteController::class, 'previewPdf'])->name('admin.quotes.pdf.preview');
+
+    // Audit Log
+    Route::get('audit-log', [App\Http\Controllers\Admin\AuditLogController::class, 'index'])->name('admin.audit-log');
 
     // Email Templates
     Route::get('settings/email-templates', [App\Http\Controllers\Admin\EmailTemplateController::class, 'index'])->name('admin.email-templates.index');

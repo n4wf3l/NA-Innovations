@@ -56,18 +56,13 @@ class CommissionService
         ]);
 
         // Notify the partner
-        try {
-            if ($partner->user) {
-                NotificationLog::create([
-                    'user_id' => $partner->user->id,
-                    'type' => 'commission_earned',
-                    'title' => 'Commission earned',
-                    'message' => "You earned a commission of €" . number_format($commissionAmount, 2) . " from payment on {$invoice->invoice_number}",
-                    'is_read' => false,
-                ]);
-            }
-        } catch (\Exception $e) {
-            // Don't fail the payment if notification fails
+        if ($partner->user) {
+            NotificationService::send($partner->user, 'commission-earned', [
+                'partner_name' => $partner->user->name,
+                'client_name' => $invoice->client_name,
+                'commission_amount' => number_format($commissionAmount, 2, ',', '.'),
+                'invoice_number' => $invoice->invoice_number,
+            ], actionUrl: '/partner/commissions');
         }
 
         return $commission;

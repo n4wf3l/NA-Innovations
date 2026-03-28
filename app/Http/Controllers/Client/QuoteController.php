@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Models\Quote;
+use App\Services\NotificationService;
 use App\Services\WorkflowService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -49,9 +50,13 @@ class QuoteController extends Controller
 
         $quote->load('items');
 
-        // Mark as viewed
+        // Mark as viewed + notify admin
         if (!$quote->viewed_at && in_array($quote->status, ['sent'])) {
             $quote->update(['status' => 'viewed', 'viewed_at' => now()]);
+            NotificationService::sendToAdmins('quote-viewed-admin', [
+                'client_name' => $quote->client_name,
+                'quote_number' => $quote->quote_number,
+            ], actionUrl: "/admin/quotes/{$quote->id}");
         }
 
         return Inertia::render('Client/Quotes/Show', [

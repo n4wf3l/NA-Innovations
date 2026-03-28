@@ -8,6 +8,9 @@ import EmptyState from '@/Components/ui/EmptyState';
 import DataTable from '@/Components/ui/DataTable';
 import { ReferralPartner, PaginatedData } from '@/types';
 import { formatCurrency } from '@/lib/utils';
+import ProtectedAmount, { protectedValue } from '@/Components/ui/ProtectedAmount';
+import { usePage } from '@inertiajs/react';
+import { PageProps } from '@/types';
 import { useTranslation } from 'react-i18next';
 
 interface PartnerWithStats extends ReferralPartner {
@@ -25,6 +28,7 @@ interface Props {
 
 export default function PartnersIndex({ partners, totalPartners, activePartners, totalCommissionsPaid, totalLeadsReferred }: Props) {
     const { t } = useTranslation();
+    const { financialUnlocked } = usePage<PageProps>().props;
     const columns = [
         {
             header: t('Name'),
@@ -41,7 +45,7 @@ export default function PartnersIndex({ partners, totalPartners, activePartners,
         },
         { header: t('Commission Rate'), className: 'text-right', accessor: (partner: PartnerWithStats) => <span className="text-gray-700 dark:text-gray-200">{partner.default_commission_rate}%</span> },
         { header: t('Leads'), className: 'text-right', accessor: (partner: PartnerWithStats) => <span className="text-gray-700 dark:text-gray-200">{partner.leads_count ?? 0}</span> },
-        { header: t('Total Commission'), className: 'text-right', accessor: (partner: PartnerWithStats) => <span className="font-medium text-gray-900 dark:text-white">{formatCurrency(partner.total_commission ?? 0)}</span> },
+        { header: t('Total Commission'), className: 'text-right', accessor: (partner: PartnerWithStats) => <ProtectedAmount amount={partner.total_commission ?? 0} className="font-medium" /> },
         { header: t('Status'), accessor: (partner: PartnerWithStats) => <Badge status={partner.is_active ? 'active' : 'suspended'} /> },
         {
             header: t('Actions'),
@@ -73,7 +77,7 @@ export default function PartnersIndex({ partners, totalPartners, activePartners,
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <StatCard label={t("Total Partners")} value={totalPartners} borderColor="border-l-pink-500" />
                 <StatCard label={t("Active")} value={activePartners} borderColor="border-l-emerald-500" />
-                <StatCard label={t("Commissions Paid")} value={formatCurrency(totalCommissionsPaid)} borderColor="border-l-orange-500" />
+                <StatCard label={t("Commissions Paid")} value={protectedValue(totalCommissionsPaid, financialUnlocked)} borderColor="border-l-orange-500" />
                 <StatCard label={t("Leads Referred")} value={totalLeadsReferred} borderColor="border-l-violet-500" />
             </div>
 

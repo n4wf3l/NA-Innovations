@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import RichTextEditor from '@/Components/ui/RichTextEditor';
+import LocalePicker from '@/Components/ui/LocalePicker';
 
 interface EmailTemplate {
     id: number;
     name: string;
     slug: string;
+    locale: string;
     subject: string;
     body: string;
     available_variables: string[];
@@ -59,11 +61,15 @@ export default function EmailTemplates({ templates }: Props) {
         });
     };
 
+    const [filterLocale, setFilterLocale] = useState('fr');
+
     const handleToggle = (tpl: EmailTemplate) => {
         router.patch(`/admin/settings/email-templates/${tpl.id}/toggle`, {}, { preserveScroll: true });
     };
 
-    const grouped = templates.reduce<Record<string, EmailTemplate[]>>((acc, tpl) => {
+    const filtered = templates.filter(tpl => tpl.locale === filterLocale);
+
+    const grouped = filtered.reduce<Record<string, EmailTemplate[]>>((acc, tpl) => {
         const cat = tpl.category || 'general';
         if (!acc[cat]) acc[cat] = [];
         acc[cat].push(tpl);
@@ -90,6 +96,12 @@ export default function EmailTemplates({ templates }: Props) {
                     <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">{t('Email Templates')}</h1>
                     <p className="text-violet-200 text-sm">{t('Customize the emails sent to clients, partners and your team.')}</p>
                 </div>
+            </div>
+
+            {/* Language filter */}
+            <div className="flex items-center justify-between mb-6">
+                <LocalePicker value={filterLocale} onChange={setFilterLocale} label={t('Language')} />
+                <p className="text-sm text-gray-400 dark:text-gray-500">{filtered.length} {t('results')}</p>
             </div>
 
             {/* Template cards by category */}
@@ -122,7 +134,7 @@ export default function EmailTemplates({ templates }: Props) {
                                         <div className="flex items-start justify-between mb-3">
                                             <div className="min-w-0 flex-1">
                                                 <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate">{tpl.name}</h3>
-                                                <p className="text-xs text-gray-400 dark:text-gray-500 font-mono mt-0.5">{tpl.slug}</p>
+                                                <p className="text-xs text-gray-400 dark:text-gray-500 font-mono mt-0.5">{tpl.slug} <span className="text-[10px] font-bold uppercase ml-1 px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">{tpl.locale}</span></p>
                                             </div>
                                             {/* Active toggle */}
                                             <label className="relative inline-flex items-center cursor-pointer flex-shrink-0 ml-3">
@@ -143,7 +155,7 @@ export default function EmailTemplates({ templates }: Props) {
                                         </div>
 
                                         {/* Variables */}
-                                        {tpl.available_variables && tpl.available_variables.length > 0 && (
+                                        {Array.isArray(tpl.available_variables) && tpl.available_variables.length > 0 && (
                                             <div className="flex flex-wrap gap-1 mb-4">
                                                 {tpl.available_variables.map(v => (
                                                     <span key={v} className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400">{`{{ ${v} }}`}</span>
@@ -225,7 +237,7 @@ export default function EmailTemplates({ templates }: Props) {
                             </div>
 
                             {/* Available variables */}
-                            {editing.available_variables && editing.available_variables.length > 0 && (
+                            {Array.isArray(editing.available_variables) && editing.available_variables.length > 0 && (
                                 <div>
                                     <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('Available Variables')}</p>
                                     <div className="flex flex-wrap gap-1.5">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -43,6 +44,19 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
+
+        // Confirm to user that registration is pending
+        NotificationService::send($user, 'registration-confirmation', [
+            'user_name' => $user->name,
+            'user_email' => $user->email,
+        ], transactional: true);
+
+        // Notify admins of new registration
+        NotificationService::sendToAdmins('registration-pending-admin', [
+            'user_name' => $user->name,
+            'user_email' => $user->email,
+            'role' => $user->role,
+        ], actionUrl: '/admin/team');
 
         // Do NOT auto-login — redirect to pending approval page
         return redirect()->route('pending-approval');

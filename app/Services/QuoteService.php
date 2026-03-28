@@ -137,12 +137,21 @@ class QuoteService
             $invoiceData['total'] = $quote->deposit_amount;
             $invoiceData['amount_due'] = $quote->deposit_amount;
         } else {
+            // Final invoice: deduct any deposit already invoiced
+            $depositAlreadyInvoiced = Invoice::where('quote_id', $quote->id)
+                ->where('type', 'deposit')
+                ->whereNotIn('status', ['cancelled'])
+                ->sum('total');
+
+            $finalTotal = $quote->total - $depositAlreadyInvoiced;
+            $finalSubtotal = $finalTotal / (1 + $quote->tax_rate / 100);
+            $finalTax = $finalTotal - $finalSubtotal;
+
             $invoiceData['title'] = "Final Invoice - {$quote->title}";
-            $invoiceData['subtotal'] = $quote->subtotal - $quote->discount_amount;
-            $invoiceData['discount_amount'] = $quote->discount_amount;
-            $invoiceData['tax_amount'] = $quote->tax_amount;
-            $invoiceData['total'] = $quote->total;
-            $invoiceData['amount_due'] = $quote->total;
+            $invoiceData['subtotal'] = round($finalSubtotal, 2);
+            $invoiceData['tax_amount'] = round($finalTax, 2);
+            $invoiceData['total'] = round($finalTotal, 2);
+            $invoiceData['amount_due'] = round($finalTotal, 2);
         }
 
         $invoice = Invoice::create($invoiceData);
@@ -158,6 +167,7 @@ class QuoteService
                 'sort_order' => 0,
             ]);
         } else {
+            // Add each quote line item
             foreach ($quote->items->where('is_optional', false) as $index => $item) {
                 $invoice->items()->create([
                     'description' => $item->description,
@@ -167,6 +177,24 @@ class QuoteService
                     'unit_price' => $item->unit_price,
                     'total' => $item->total,
                     'sort_order' => $index,
+                ]);
+            }
+
+            // Add a negative line for the deposit already paid
+            $depositAlreadyInvoiced = Invoice::where('quote_id', $quote->id)
+                ->where('type', 'deposit')
+                ->whereNotIn('status', ['cancelled'])
+                ->sum('total');
+
+            if ($depositAlreadyInvoiced > 0) {
+                $depositSubtotal = $depositAlreadyInvoiced / (1 + $quote->tax_rate / 100);
+                $invoice->items()->create([
+                    'description' => "Less: Deposit already invoiced ({$quote->deposit_percentage}%)",
+                    'quantity' => 1,
+                    'unit' => 'forfait',
+                    'unit_price' => -round($depositSubtotal, 2),
+                    'total' => -round($depositSubtotal, 2),
+                    'sort_order' => 999,
                 ]);
             }
         }

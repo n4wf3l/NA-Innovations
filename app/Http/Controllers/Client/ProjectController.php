@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Client;
 use App\Models\Projet;
 use App\Models\Quote;
 use App\Models\Invoice;
+use App\Models\User;
 use App\Models\RecurringService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -112,6 +114,26 @@ class ProjectController extends Controller
             'title' => 'Client comment',
             'description' => $request->input('content'),
         ]);
+
+        // Notify admins
+        $clientName = Auth::user()->name;
+        NotificationService::sendToAdmins('client-comment', [
+            'client_name' => $clientName,
+            'project_name' => $project->nom_societe,
+            'comment' => $request->input('content'),
+        ], actionUrl: "/admin/projects/{$project->id}");
+
+        // Notify assigned developer
+        if ($project->developer_id) {
+            $dev = User::find($project->developer_id);
+            if ($dev) {
+                NotificationService::send($dev, 'client-comment', [
+                    'client_name' => $clientName,
+                    'project_name' => $project->nom_societe,
+                    'comment' => $request->input('content'),
+                ], actionUrl: "/dev/projects/{$project->id}");
+            }
+        }
 
         return redirect()->back()->with('success', 'Comment added.');
     }

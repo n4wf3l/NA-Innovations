@@ -12,6 +12,7 @@ class EmailTemplate extends Model
     protected $fillable = [
         'name',
         'slug',
+        'locale',
         'subject',
         'body',
         'available_variables',

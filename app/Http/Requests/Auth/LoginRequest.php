@@ -54,8 +54,8 @@ class LoginRequest extends FormRequest
         if ($user && !$user->is_active) {
             Auth::logout();
 
-            // Check if it was never approved (no last_login_at) or deactivated
-            $wasNeverApproved = is_null($user->last_login_at);
+            // Check if it was never approved or deactivated after approval
+            $wasNeverApproved = is_null($user->approved_at);
 
             throw ValidationException::withMessages([
                 'email' => $wasNeverApproved

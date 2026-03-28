@@ -2,6 +2,7 @@ import DevLayout from '@/Layouts/DevLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import Badge from '@/Components/ui/Badge';
 import { formatCurrency, formatDate, formatStatus } from '@/lib/utils';
+import CommitList from '@/Components/ui/CommitList';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -80,6 +81,9 @@ export default function ProjectShow({ project }: Props) {
                             </dl>
                         </div>
                     </div>
+
+                    {/* GitHub Commits */}
+                    {project.github_repo && <CommitList projectId={project.id} />}
 
                     {/* Timeline */}
                     {project.timeline_events && project.timeline_events.length > 0 && (

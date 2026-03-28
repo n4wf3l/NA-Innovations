@@ -61,7 +61,6 @@ export default function TeamIndex({ partners, developers, admins, pending }: Pro
     const form = useForm({
         name: '',
         email: '',
-        password: '',
         role: 'developer' as string,
     });
 
@@ -69,7 +68,7 @@ export default function TeamIndex({ partners, developers, admins, pending }: Pro
         setModalRole(role);
         form.setData('role', role);
         form.reset();
-        form.setData({ name: '', email: '', password: '', role });
+        form.setData({ name: '', email: '', role });
         setShowModal(true);
     };
 
@@ -356,19 +355,10 @@ export default function TeamIndex({ partners, developers, admins, pending }: Pro
                                 {form.errors.email && <p className="mt-1 text-xs text-red-500">{form.errors.email}</p>}
                             </div>
 
-                            {/* Password */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{t('Password')}</label>
-                                <input
-                                    type="password"
-                                    value={form.data.password}
-                                    onChange={e => form.setData('password', e.target.value)}
-                                    placeholder={t('Min. 6 characters')}
-                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-                                    required
-                                    minLength={6}
-                                />
-                                {form.errors.password && <p className="mt-1 text-xs text-red-500">{form.errors.password}</p>}
+                            {/* Info: password will be set by the user */}
+                            <div className="bg-blue-50 dark:bg-blue-500/10 rounded-xl px-4 py-3 flex items-start gap-2">
+                                <svg className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
+                                <p className="text-xs text-blue-700 dark:text-blue-300">{t('The user will receive an email to set their own password.')}</p>
                             </div>
 
                             {/* Role (pre-selected but changeable) */}

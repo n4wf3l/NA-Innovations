@@ -8,11 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
-
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -34,10 +32,13 @@ class User extends Authenticatable
         'locale',
         'is_active',
         'last_login_at',
+        'approved_at',
         'role',
         'preferences',
         'financial_pin',
         'signature',
+        'github_token',
+        'github_username',
     ];
 
     /**
@@ -50,6 +51,7 @@ class User extends Authenticatable
         'remember_token',
         'financial_pin',
         'signature',
+        'github_token',
     ];
 
     /**
@@ -62,7 +64,9 @@ class User extends Authenticatable
         'password' => 'hashed',
         'is_active' => 'boolean',
         'last_login_at' => 'datetime',
+        'approved_at' => 'datetime',
         'preferences' => 'array',
+        'github_token' => 'encrypted',
     ];
 
     // ──────────────────────────────────────────────

@@ -22,7 +22,6 @@ class MigrationSeeder extends Seeder
         $admin = User::where('email', 'info@nawfelajari.be')->first();
         if ($admin) {
             $admin->update(['role' => 'admin']);
-            $admin->assignRole('admin');
         }
 
         // Mark existing projets as portfolio items

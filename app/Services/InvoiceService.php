@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Models\Invoice;
 use App\Models\Payment;
+use App\Models\User;
 
 class InvoiceService
 {
@@ -23,8 +24,28 @@ class InvoiceService
 
         self::recalculateAmounts($invoice);
 
-        // Trigger workflow if invoice just became fully paid
         $invoice->refresh();
+
+        // Send payment confirmation to client
+        if ($invoice->client_id) {
+            $client = User::find($invoice->client_id);
+            if ($client) {
+                NotificationService::send(
+                    $client,
+                    'payment-confirmation',
+                    [
+                        'client_name' => $invoice->client_name,
+                        'invoice_number' => $invoice->invoice_number,
+                        'amount' => number_format($payment->amount, 2, ',', '.'),
+                        'payment_date' => $payment->payment_date ? date('d/m/Y', strtotime($payment->payment_date)) : now()->format('d/m/Y'),
+                        'remaining' => number_format($invoice->amount_due, 2, ',', '.'),
+                    ],
+                    transactional: true,
+                );
+            }
+        }
+
+        // Trigger workflow if invoice just became fully paid
         if (!$wasPaid && $invoice->status === 'paid') {
             WorkflowService::onInvoiceFullyPaid($invoice);
         }

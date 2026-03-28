@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Lead;
 use App\Models\Projet;
 use App\Models\User;
+use App\Services\WorkflowService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -105,7 +106,14 @@ class ProjectController extends BaseAdminController
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'deadline' => 'nullable|date',
             'budget' => 'nullable|numeric|min:0',
+            'github_repo' => 'nullable|string|max:255',
+            'show_commits_to_client' => 'nullable|boolean',
         ]);
+
+        // Auto-set github_linked_by when repo is provided
+        if (!empty($validated['github_repo'])) {
+            $validated['github_linked_by'] = auth()->id();
+        }
 
         $projet = Projet::create($validated);
 
@@ -182,7 +190,17 @@ class ProjectController extends BaseAdminController
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'deadline' => 'nullable|date',
             'budget' => 'nullable|numeric|min:0',
+            'github_repo' => 'nullable|string|max:255',
+            'show_commits_to_client' => 'nullable|boolean',
         ]);
+
+        // Auto-set github_linked_by when repo changes
+        if (!empty($validated['github_repo']) && $validated['github_repo'] !== $project->github_repo) {
+            $validated['github_linked_by'] = auth()->id();
+        }
+        if (empty($validated['github_repo'])) {
+            $validated['github_linked_by'] = null;
+        }
 
         $oldStatus = $project->status;
         $newStatus = $validated['status'];
@@ -199,6 +217,15 @@ class ProjectController extends BaseAdminController
                 'old_value' => $oldStatus,
                 'new_value' => $newStatus,
             ]);
+
+            // Trigger workflow on completion
+            if ($newStatus === 'completed') {
+                $actions = WorkflowService::onProjectCompleted($project);
+                if (in_array('final_invoice_suggested', $actions)) {
+                    return redirect()->route('admin.projects.show', $project)
+                        ->with('success', 'Project completed. A final invoice should be created for the remaining balance.');
+                }
+            }
         }
 
         return redirect()->route('admin.projects.show', $project)->with('success', 'Project updated successfully.');
@@ -222,19 +249,48 @@ class ProjectController extends BaseAdminController
         $request->validate(['status' => 'required|in:planning,in_progress,review,completed,on_hold,cancelled']);
 
         $oldStatus = $project->status;
-        $project->update(['status' => $request->status]);
+        $newStatus = $request->status;
+        $project->update(['status' => $newStatus]);
 
-        if ($oldStatus !== $request->status) {
+        if ($oldStatus !== $newStatus) {
             $project->timelineEvents()->create([
                 'user_id' => auth()->id(),
                 'event_type' => 'status_change',
                 'title' => 'Status changed',
-                'description' => "Status changed from {$oldStatus} to {$request->status}",
+                'description' => "Status changed from {$oldStatus} to {$newStatus}",
                 'old_value' => $oldStatus,
-                'new_value' => $request->status,
+                'new_value' => $newStatus,
             ]);
+
+            if ($newStatus === 'completed') {
+                WorkflowService::onProjectCompleted($project);
+            }
         }
 
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Update GitHub repo settings inline from the Show page.
+     */
+    public function updateGithub(Request $request, Projet $project)
+    {
+        $validated = $request->validate([
+            'github_repo' => 'nullable|string|max:255',
+            'show_commits_to_client' => 'nullable|boolean',
+        ]);
+
+        if (!empty($validated['github_repo']) && $validated['github_repo'] !== $project->github_repo) {
+            $validated['github_linked_by'] = auth()->id();
+        }
+        if (empty($validated['github_repo'])) {
+            $validated['github_repo'] = null;
+            $validated['github_linked_by'] = null;
+            $validated['show_commits_to_client'] = false;
+        }
+
+        $project->update($validated);
+
+        return redirect()->back()->with('success', 'GitHub settings updated.');
     }
 }
