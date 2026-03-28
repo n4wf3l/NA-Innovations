@@ -2,14 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Hide browser scrollbar globally - scroll handled by main content area */
-html, body {
+/* Dashboard layouts handle their own scroll — lock body only when a layout is active */
+html.dashboard-layout, html.dashboard-layout body {
     overflow: hidden;
     height: 100%;
 }
 
-#app {
+html.dashboard-layout #app {
     height: 100%;
+}
+
+/* Public pages: normal scroll with smooth behavior */
+html {
+    scroll-behavior: smooth;
 }
 
 @layer utilities {

@@ -1,7 +1,7 @@
 import DevLayout from '@/Layouts/DevLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import Badge from '@/Components/ui/Badge';
-import { formatCurrency, formatDate, formatStatus } from '@/lib/utils';
+import { formatCurrency, formatDate, formatStatus, formatProjectType } from '@/lib/utils';
 import CommitList from '@/Components/ui/CommitList';
 import { useTranslation } from 'react-i18next';
 
@@ -70,7 +70,7 @@ export default function ProjectShow({ project }: Props) {
                         </div>
                         <div className="p-6">
                             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <DetailItem label={t("Type")} value={project.type_site || '-'} />
+                                <DetailItem label={t("Type")} value={formatProjectType(project.type_site)} />
                                 <DetailItem label={t("Technology")} value={project.langage_programmation || '-'} />
                                 <DetailItem label={t("Budget")} value={project.budget ? formatCurrency(project.budget) : '-'} />
                                 <DetailItem label={t("Total Billed")} value={project.total_billed ? formatCurrency(project.total_billed) : '-'} />

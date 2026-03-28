@@ -7,6 +7,7 @@ use App\Models\Lead;
 use App\Models\Projet;
 use App\Models\Payment;
 use App\Models\NotificationLog;
+use App\Services\NotificationService;
 
 class CommissionService
 {
@@ -30,6 +31,8 @@ class CommissionService
             ->whereHas('invoice', fn($q) => $q->whereHas('payments', fn($pq) => $pq->where('id', $payment->id)))
             ->exists();
 
+        if ($exists) return null;
+
         $lead = self::findReferralLead($invoice);
 
         if (!$lead || !$lead->referral_partner_id) return null;
@@ -38,10 +41,23 @@ class CommissionService
         if (!$partner || !$partner->is_active) return null;
 
         $commissionRate = $partner->default_commission_rate;
+        // Use project type rate if available, fallback to partner default
+        if ($invoice->projet_id) {
+            $project = \App\Models\Projet::find($invoice->projet_id);
+            if ($project && $project->type_site) {
+                $typeRate = \App\Enums\ProjectType::getCommissionRate($project->type_site);
+                if ($typeRate > 0) {
+                    $commissionRate = $typeRate;
+                }
+            }
+        }
         // Calculate on HT amount (before tax)
-        $taxRate = $invoice->tax_rate ?: 21;
+        $taxRate = $invoice->tax_rate ?? 21;
         $baseAmount = $payment->amount / (1 + ($taxRate / 100));
         $commissionAmount = $baseAmount * ($commissionRate / 100);
+
+        // Skip if commission amount would be 0
+        if (round($commissionAmount, 2) == 0) return null;
 
         $commission = Commission::create([
             'referral_partner_id' => $partner->id,

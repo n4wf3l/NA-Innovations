@@ -11,7 +11,7 @@ import DataTable from '@/Components/ui/DataTable';
 import ProtectedAmount, { protectedValue } from '@/Components/ui/ProtectedAmount';
 import KanbanBoard, { KanbanColumn } from '@/Components/ui/KanbanBoard';
 import { Project, PaginatedData, PageProps } from '@/types';
-import { formatDate, cn } from '@/lib/utils';
+import { formatDate, cn, formatProjectType } from '@/lib/utils';
 
 interface Props {
     projects: PaginatedData<Project>;
@@ -53,7 +53,7 @@ export default function ProjectsIndex({ projects, kanbanProjects: initialKanban,
                 </Link>
             ),
         },
-        { header: t('Type'), accessor: (project: Project) => <span className="text-gray-500 capitalize">{project.type_site?.replace(/_/g, ' ') || '--'}</span> },
+        { header: t('Type'), accessor: (project: Project) => <span className="text-gray-500">{formatProjectType(project.type_site)}</span> },
         { header: t('Client'), accessor: (project: Project) => <span className="text-gray-500">{project.client?.name || '--'}</span> },
         { header: t('Status'), accessor: (project: Project) => <Badge status={project.status} /> },
         { header: t('Deadline'), accessor: (project: Project) => <span className="text-gray-500">{project.deadline ? formatDate(project.deadline) : '--'}</span> },

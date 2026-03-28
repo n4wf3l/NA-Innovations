@@ -81,6 +81,10 @@ class CommissionController extends BaseAdminController
      */
     public function confirm(Commission $commission)
     {
+        if (in_array($commission->status, ['confirmed', 'scheduled', 'paid'])) {
+            return redirect()->back()->with('error', "Cannot confirm a commission with status '{$commission->status}'.");
+        }
+
         $commission->update(['status' => 'confirmed']);
 
         return redirect()->back()->with('success', 'Commission confirmed.');
@@ -108,6 +112,12 @@ class CommissionController extends BaseAdminController
      */
     public function pay(Request $request, Commission $commission)
     {
+        if (!in_array($commission->status, ['scheduled', 'confirmed'])) {
+            return redirect()->back()->with('error', $commission->status === 'paid'
+                ? 'This commission has already been paid.'
+                : "Cannot pay a commission with status '{$commission->status}'.");
+        }
+
         $validated = $request->validate([
             'paid_date' => 'nullable|date',
             'payment_reference' => 'nullable|string|max:255',
@@ -127,6 +137,10 @@ class CommissionController extends BaseAdminController
      */
     public function destroy(Commission $commission)
     {
+        if ($commission->status === 'paid') {
+            return redirect()->back()->with('error', 'Cannot cancel a commission that has already been paid.');
+        }
+
         $commission->update(['status' => 'cancelled']);
         $commission->delete();
 

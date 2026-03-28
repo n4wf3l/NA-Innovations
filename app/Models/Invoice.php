@@ -46,6 +46,7 @@ class Invoice extends Model
         'paid_at',
         'pdf_path',
         'payment_instructions',
+        'is_external',
     ];
 
     /**
@@ -66,6 +67,7 @@ class Invoice extends Model
         'sent_at' => 'datetime',
         'viewed_at' => 'datetime',
         'paid_at' => 'datetime',
+        'is_external' => 'boolean',
     ];
 
     public function quote()

@@ -8,7 +8,9 @@ use App\Services\NotificationService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
@@ -28,6 +30,23 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Verify Turnstile
+        $secret = config('services.turnstile.secret_key');
+        if ($secret) {
+            $token = $request->input('cf-turnstile-response');
+            if (!$token) {
+                throw ValidationException::withMessages(['captcha' => 'Please complete the security verification.']);
+            }
+            $response = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+                'secret' => $secret,
+                'response' => $token,
+                'remoteip' => $request->ip(),
+            ]);
+            if (!$response->json('success')) {
+                throw ValidationException::withMessages(['captcha' => 'Security verification failed. Please try again.']);
+            }
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],

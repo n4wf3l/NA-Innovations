@@ -89,15 +89,31 @@ export default function Dashboard({ revenueMonth, activeProjects, openLeads, pen
 
                                 {/* Project info */}
                                 <div className="p-4">
-                                    <h4 className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-teal-700 transition-colors truncate">
-                                        {project.nom_societe || 'Untitled Project'}
-                                    </h4>
-
-                                    {project.client && (
-                                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 truncate">
-                                            {project.client.company_name || project.client.name}
-                                        </p>
-                                    )}
+                                    <div className="flex items-center gap-3">
+                                        {project.image ? (
+                                            <img
+                                                src={project.image.startsWith('http') ? project.image : `/storage/${project.image}`}
+                                                alt={project.nom_societe}
+                                                className="w-9 h-9 rounded-lg object-contain bg-white/10 flex-shrink-0"
+                                            />
+                                        ) : (
+                                            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center flex-shrink-0">
+                                                <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400">
+                                                    {(project.nom_societe || '?').substring(0, 2).toUpperCase()}
+                                                </span>
+                                            </div>
+                                        )}
+                                        <div className="min-w-0">
+                                            <h4 className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-teal-700 transition-colors truncate">
+                                                {project.nom_societe || 'Untitled Project'}
+                                            </h4>
+                                            {project.client && (
+                                                <p className="text-xs text-gray-400 dark:text-gray-500 truncate">
+                                                    {project.client.company_name || project.client.name}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
 
                                     {/* Budget */}
                                     <div className="mt-3">

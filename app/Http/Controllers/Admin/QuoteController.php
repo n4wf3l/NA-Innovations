@@ -130,6 +130,57 @@ class QuoteController extends BaseAdminController
     }
 
     /**
+     * Store an externally uploaded quote document.
+     */
+    public function storeExternal(Request $request)
+    {
+        $validated = $request->validate([
+            'file' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:20480',
+            'title' => 'required|string|max:255',
+            'client_name' => 'required|string|max:255',
+            'client_email' => 'required|email|max:255',
+            'client_company' => 'nullable|string|max:255',
+            'client_id' => 'nullable|exists:users,id',
+            'total' => 'required|numeric|min:0',
+            'issue_date' => 'nullable|date',
+            'valid_until' => 'nullable|date',
+            'notes' => 'nullable|string',
+            'is_signed' => 'nullable|boolean',
+        ]);
+
+        $quoteNumber = \App\Services\NumberGenerator::generateQuoteNumber();
+        $file = $request->file('file');
+        $pdfPath = $file->store('quotes', 'local');
+
+        $total = (float) $validated['total'];
+
+        $quote = Quote::create([
+            'quote_number' => $quoteNumber,
+            'title' => $validated['title'],
+            'client_name' => $validated['client_name'],
+            'client_email' => $validated['client_email'],
+            'client_company' => $validated['client_company'] ?? null,
+            'client_id' => $validated['client_id'] ?? null,
+            'total' => $total,
+            'subtotal' => round($total / 1.21, 2),
+            'tax_rate' => 21,
+            'tax_amount' => round($total - ($total / 1.21), 2),
+            'deposit_percentage' => 0,
+            'deposit_amount' => 0,
+            'discount_amount' => 0,
+            'issue_date' => $validated['issue_date'] ?? now()->toDateString(),
+            'valid_until' => $validated['valid_until'] ?? now()->addDays(30)->toDateString(),
+            'notes' => $validated['notes'] ?? null,
+            'status' => $request->boolean('is_signed') ? 'accepted' : 'draft',
+            'pdf_path' => $pdfPath,
+            'view_token' => \Illuminate\Support\Str::random(64),
+            'is_external' => true,
+        ]);
+
+        return redirect()->route('admin.quotes.show', $quote)->with('success', 'Document externe téléversé avec succès.');
+    }
+
+    /**
      * Display the specified quote.
      */
     public function show(Quote $quote)
@@ -181,6 +232,10 @@ class QuoteController extends BaseAdminController
      */
     public function update(Request $request, Quote $quote)
     {
+        if ($quote->status !== 'draft') {
+            return redirect()->back()->with('error', 'Cannot edit a quote that has already been sent.');
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'client_name' => 'required|string|max:255',
@@ -244,6 +299,10 @@ class QuoteController extends BaseAdminController
      */
     public function send(Request $request, Quote $quote)
     {
+        if ($quote->client_id && !$quote->client) {
+            return redirect()->back()->with('error', 'Cannot send quote: the associated client no longer exists.');
+        }
+
         $request->validate([
             'email_subject' => 'nullable|string|max:500',
             'email_body' => 'nullable|string',
@@ -294,6 +353,10 @@ class QuoteController extends BaseAdminController
      */
     public function accept(Quote $quote)
     {
+        if ($quote->status === 'accepted') {
+            return redirect()->back()->with('error', 'This quote has already been accepted.');
+        }
+
         $actions = WorkflowService::onQuoteAccepted($quote);
 
         $message = 'Quote accepted.';
@@ -337,6 +400,10 @@ class QuoteController extends BaseAdminController
      */
     public function createInvoice(Request $request, Quote $quote)
     {
+        if (!in_array($quote->status, ['accepted', 'won'])) {
+            return redirect()->back()->with('error', 'Cannot convert to invoice: quote status must be accepted or won.');
+        }
+
         $type = $request->input('type', 'deposit');
 
         $invoice = QuoteService::convertToInvoice($quote, $type);

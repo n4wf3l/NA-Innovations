@@ -54,7 +54,7 @@ class InvoiceController extends BaseAdminController
         $totalInvoices = Invoice::count();
         $totalBilled = Invoice::sum('total');
         $totalPaid = Invoice::where('status', 'paid')->sum('total');
-        $totalOverdue = Invoice::where('status', 'sent')
+        $totalOverdue = Invoice::whereIn('status', ['sent', 'viewed', 'partially_paid', 'overdue'])
             ->where('due_date', '<', now())
             ->sum('amount_due');
 
@@ -151,6 +151,56 @@ class InvoiceController extends BaseAdminController
     }
 
     /**
+     * Store an externally uploaded invoice document.
+     */
+    public function storeExternal(Request $request)
+    {
+        $validated = $request->validate([
+            'file' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:20480',
+            'title' => 'required|string|max:255',
+            'client_name' => 'required|string|max:255',
+            'client_email' => 'required|email|max:255',
+            'client_company' => 'nullable|string|max:255',
+            'client_id' => 'nullable|exists:users,id',
+            'total' => 'required|numeric|min:0',
+            'issue_date' => 'nullable|date',
+            'due_date' => 'nullable|date',
+            'notes' => 'nullable|string',
+            'is_signed' => 'nullable|boolean',
+        ]);
+
+        $invoiceNumber = NumberGenerator::generateInvoiceNumber();
+        $file = $request->file('file');
+        $pdfPath = $file->store('invoices', 'local');
+
+        $total = (float) $validated['total'];
+
+        $invoice = Invoice::create([
+            'invoice_number' => $invoiceNumber,
+            'title' => $validated['title'],
+            'client_name' => $validated['client_name'],
+            'client_email' => $validated['client_email'],
+            'client_company' => $validated['client_company'] ?? null,
+            'client_id' => $validated['client_id'] ?? null,
+            'total' => $total,
+            'subtotal' => round($total / 1.21, 2),
+            'tax_rate' => 21,
+            'tax_amount' => round($total - ($total / 1.21), 2),
+            'amount_due' => $total,
+            'amount_paid' => 0,
+            'issue_date' => $validated['issue_date'] ?? now()->toDateString(),
+            'due_date' => $validated['due_date'] ?? now()->addDays(30)->toDateString(),
+            'notes' => $validated['notes'] ?? null,
+            'status' => $request->boolean('is_signed') ? 'sent' : 'draft',
+            'pdf_path' => $pdfPath,
+            'view_token' => Str::random(64),
+            'is_external' => true,
+        ]);
+
+        return redirect()->route('admin.invoices.show', $invoice)->with('success', 'Document externe téléversé avec succès.');
+    }
+
+    /**
      * Display the specified invoice.
      */
     public function show(Invoice $invoice)
@@ -199,6 +249,10 @@ class InvoiceController extends BaseAdminController
      */
     public function update(Request $request, Invoice $invoice)
     {
+        if ($invoice->status !== 'draft') {
+            return redirect()->back()->with('error', 'Cannot edit an invoice that has already been sent or paid.');
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'client_name' => 'required|string|max:255',
@@ -284,6 +338,13 @@ class InvoiceController extends BaseAdminController
             'email_body' => 'nullable|string',
         ]);
 
+        // Check that the client user exists (not soft-deleted)
+        if ($invoice->client_id && !User::find($invoice->client_id)) {
+            return redirect()->back()->with('error', 'The client associated with this invoice no longer exists.');
+        }
+
+        $oldStatus = $invoice->status;
+
         $invoice->update([
             'status' => 'sent',
             'sent_at' => now(),
@@ -298,7 +359,7 @@ class InvoiceController extends BaseAdminController
             'event_type' => 'status_change',
             'title' => 'Invoice sent',
             'description' => "Invoice {$invoice->invoice_number} was sent to {$invoice->client_email}",
-            'old_value' => 'draft',
+            'old_value' => $oldStatus,
             'new_value' => 'sent',
         ]);
 
@@ -336,6 +397,10 @@ class InvoiceController extends BaseAdminController
             'payment_date' => 'nullable|date',
             'notes' => 'nullable|string',
         ]);
+
+        if ($validated['amount'] > $invoice->amount_due) {
+            return redirect()->back()->with('error', 'Payment amount cannot exceed the amount due.');
+        }
 
         $payment = InvoiceService::recordPayment($invoice, $validated);
 

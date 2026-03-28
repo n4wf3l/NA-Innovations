@@ -50,7 +50,7 @@ class AuthenticatedSessionController extends Controller
             default => '/',
         };
 
-        return redirect()->intended($home);
+        return redirect()->intended($home)->with('success', "Bienvenue, {$user->name} !");
     }
 
     /**

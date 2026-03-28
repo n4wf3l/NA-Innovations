@@ -110,6 +110,10 @@ class QuoteService
 
     public static function convertToInvoice(Quote $quote, string $type = 'deposit'): Invoice
     {
+        if ($type === 'deposit' && $quote->deposit_amount <= 0) {
+            throw new \InvalidArgumentException('Cannot create deposit invoice: deposit amount is 0.');
+        }
+
         $invoiceData = [
             'invoice_number' => NumberGenerator::generateInvoiceNumber(),
             'quote_id' => $quote->id,
@@ -147,7 +151,9 @@ class QuoteService
             $finalSubtotal = $finalTotal / (1 + $quote->tax_rate / 100);
             $finalTax = $finalTotal - $finalSubtotal;
 
-            $invoiceData['title'] = "Final Invoice - {$quote->title}";
+            $invoiceData['title'] = $depositAlreadyInvoiced > 0
+                ? "Final Invoice - {$quote->title}"
+                : "Invoice - {$quote->title}";
             $invoiceData['subtotal'] = round($finalSubtotal, 2);
             $invoiceData['tax_amount'] = round($finalTax, 2);
             $invoiceData['total'] = round($finalTotal, 2);

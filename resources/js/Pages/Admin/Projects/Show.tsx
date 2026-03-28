@@ -1,12 +1,16 @@
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Head, Link, router, usePage } from '@inertiajs/react';
-import Badge from '@/Components/ui/Badge';
-import ProtectedAmount from '@/Components/ui/ProtectedAmount';
+import { Head, Link, router, usePage, useForm } from '@inertiajs/react';
 import { Project, User, Lead, Quote, Invoice, RecurringService, TimelineEvent, PageProps } from '@/types';
-import { formatDate, formatStatus } from '@/lib/utils';
+import { formatDate } from '@/lib/utils';
 import CommitList from '@/Components/ui/CommitList';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
+
+import ProjectHeader from './ShowSections/ProjectHeader';
+import ProjectTimeline from './ShowSections/ProjectTimeline';
+import ProjectRelatedDocs from './ShowSections/ProjectRelatedDocs';
+import EmailModalSection from './ShowSections/EmailModal';
 
 interface ProjectNote {
     id: number;
@@ -22,6 +26,25 @@ interface ProjectDocument {
     created_at: string;
 }
 
+interface Attachment {
+    id: number;
+    name: string;
+    original_filename: string;
+    file_path: string;
+    mime_type: string;
+    file_size: number;
+    category: string;
+    description?: string;
+    is_client_visible: boolean;
+    created_at: string;
+    uploader?: { id: number; name: string };
+}
+
+interface SentEmailItem {
+    id: number; subject: string; recipient_email: string; body: string;
+    status: string; sent_at: string; sender?: { name: string };
+}
+
 interface Props {
     project: Project & {
         client?: User;
@@ -32,12 +55,16 @@ interface Props {
         recurring_services?: RecurringService[];
         timeline_events?: TimelineEvent[];
         notes?: ProjectNote[];
-        documents?: ProjectDocument[];
+        documents?: Attachment[];
     };
+    emailTemplate?: { subject: string; body: string; variables?: string[] } | null;
+    sentEmails?: SentEmailItem[];
 }
 
-export default function ProjectShow({ project }: Props) {
+export default function ProjectShow({ project, emailTemplate, sentEmails = [] }: Props) {
     const { t } = useTranslation();
+    const [showEmailModal, setShowEmailModal] = useState(false);
+    const [showUploadModal, setShowUploadModal] = useState(false);
     const handleDelete = () => {
         if (confirm('Are you sure you want to delete this project?')) {
             router.delete(`/admin/projects/${project.id}`);
@@ -49,6 +76,7 @@ export default function ProjectShow({ project }: Props) {
     const services = project.recurring_services || [];
     const timelineEvents = project.timeline_events || [];
     const notes = project.notes || [];
+    const attachments: Attachment[] = project.documents || [];
 
     return (
         <AdminLayout title={project.nom_societe || t('Project')} header={t('Project Details')}>
@@ -58,171 +86,39 @@ export default function ProjectShow({ project }: Props) {
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <Link href="/admin/projects" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">&larr; {t("Back to Projects")}</Link>
                 <div className="flex items-center gap-2">
-                    <Link href={`/admin/projects/${project.id}/edit`} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">{t('Edit')}</Link>
-                    <button onClick={handleDelete} className="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50">{t('Delete')}</button>
+                    {project.client && (
+                        <button onClick={() => setShowEmailModal(true)} className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 flex items-center gap-1.5">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                            {t('Email client')}
+                        </button>
+                    )}
+                    <Link href={`/admin/projects/${project.id}/documents`} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-1.5">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                        {t('Documents')}
+                    </Link>
+                    <Link href={`/admin/projects/${project.id}/budget`} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-1.5">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
+                        {t('Budget')}
+                    </Link>
+                    <Link href={`/admin/projects/${project.id}/edit`} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">{t('Edit')}</Link>
+                    <button onClick={handleDelete} className="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 border border-red-200 dark:border-red-500/30 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10">{t('Delete')}</button>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Left Column */}
                 <div className="lg:col-span-2 space-y-6">
-                    {/* Project Header */}
-                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
-                        <div className="bg-gradient-to-r from-violet-500 to-purple-500 px-6 py-5">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <h2 className="text-white text-xl font-bold">{project.nom_societe}</h2>
-                                    {project.type_societe && <p className="text-white/80 text-sm mt-1">{project.type_societe}</p>}
-                                </div>
-                                <Badge status={project.status} className="text-sm" />
-                            </div>
-                        </div>
-                        <div className="px-6 py-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                            {project.type_site && (
-                                <div>
-                                    <span className="text-gray-500 dark:text-gray-400 block">{t("Site Type")}</span>
-                                    <span className="font-medium text-gray-900 dark:text-white">{formatStatus(project.type_site)}</span>
-                                </div>
-                            )}
-                            {project.lieu && (
-                                <div>
-                                    <span className="text-gray-500 dark:text-gray-400 block">{t("Location")}</span>
-                                    <span className="font-medium text-gray-900 dark:text-white">{project.lieu}</span>
-                                </div>
-                            )}
-                            {project.start_date && (
-                                <div>
-                                    <span className="text-gray-500 dark:text-gray-400 block">{t("Start Date")}</span>
-                                    <span className="font-medium text-gray-900 dark:text-white">{formatDate(project.start_date)}</span>
-                                </div>
-                            )}
-                            {project.deadline && (
-                                <div>
-                                    <span className="text-gray-500 dark:text-gray-400 block">{t("Deadline")}</span>
-                                    <span className="font-medium text-gray-900 dark:text-white">{formatDate(project.deadline)}</span>
-                                </div>
-                            )}
-                            {project.end_date && (
-                                <div>
-                                    <span className="text-gray-500 dark:text-gray-400 block">{t("End Date")}</span>
-                                    <span className="font-medium text-gray-900 dark:text-white">{formatDate(project.end_date)}</span>
-                                </div>
-                            )}
-                            {project.budget != null && (
-                                <div>
-                                    <span className="text-gray-500 dark:text-gray-400 block">{t("Budget")}</span>
-                                    <span className="font-medium text-gray-900"><ProtectedAmount amount={project.budget} /></span>
-                                </div>
-                            )}
-                            {project.total_billed != null && (
-                                <div>
-                                    <span className="text-gray-500 dark:text-gray-400 block">{t("Total Billed")}</span>
-                                    <span className="font-medium text-gray-900"><ProtectedAmount amount={project.total_billed} /></span>
-                                </div>
-                            )}
-                            <div>
-                                <span className="text-gray-500 dark:text-gray-400 block">{t("Created")}</span>
-                                <span className="font-medium text-gray-900 dark:text-white">{formatDate(project.created_at)}</span>
-                            </div>
-                        </div>
-                    </div>
+                    <ProjectHeader project={project} />
 
-                    {/* Description */}
-                    {project.description && (
-                        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm">
-                            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-3">{t("Description")}</h3>
-                            <p className="text-sm text-gray-600 whitespace-pre-wrap">{project.description}</p>
-                        </div>
-                    )}
+                    <ProjectRelatedDocs quotes={quotes} invoices={invoices} services={services} />
 
-                    {/* Related Quotes */}
-                    {quotes.length > 0 && (
-                        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
-                            <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700">
-                                <h3 className="font-semibold text-gray-900 dark:text-white">{t("Quotes")}</h3>
-                            </div>
-                            <div className="divide-y divide-gray-50 dark:divide-gray-700">
-                                {quotes.map(quote => (
-                                    <Link key={quote.id} href={`/admin/quotes/${quote.id}`} className="flex items-center justify-between px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                        <div>
-                                            <span className="font-medium text-gray-900 dark:text-white">{quote.quote_number}</span>
-                                            <span className="ml-2 text-sm text-gray-500">{quote.title}</span>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <Badge status={quote.status} />
-                                            <ProtectedAmount amount={quote.total} className="font-medium text-sm" />
-                                        </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Related Invoices */}
-                    {invoices.length > 0 && (
-                        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
-                            <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700">
-                                <h3 className="font-semibold text-gray-900 dark:text-white">{t("Invoices")}</h3>
-                            </div>
-                            <div className="divide-y divide-gray-50 dark:divide-gray-700">
-                                {invoices.map(inv => (
-                                    <Link key={inv.id} href={`/admin/invoices/${inv.id}`} className="flex items-center justify-between px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                        <div>
-                                            <span className="font-medium text-gray-900 dark:text-white">{inv.invoice_number}</span>
-                                            <span className="ml-2 text-sm text-gray-500">{inv.title}</span>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <Badge status={inv.status} />
-                                            <ProtectedAmount amount={inv.total} className="font-medium text-sm" />
-                                        </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Related Services */}
-                    {services.length > 0 && (
-                        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
-                            <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700">
-                                <h3 className="font-semibold text-gray-900 dark:text-white">{t("Recurring Services")}</h3>
-                            </div>
-                            <div className="divide-y divide-gray-50 dark:divide-gray-700">
-                                {services.map(svc => (
-                                    <Link key={svc.id} href={`/admin/services/${svc.id}`} className="flex items-center justify-between px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                        <div>
-                                            <span className="font-medium text-gray-900 dark:text-white">{svc.name}</span>
-                                            {svc.provider && <span className="ml-2 text-sm text-gray-500">({svc.provider})</span>}
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <Badge status={svc.status} />
-                                            <span className="text-sm text-gray-500">{formatDate(svc.expiry_date)}</span>
-                                        </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Notes */}
-                    {notes.length > 0 && (
-                        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
-                            <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700">
-                                <h3 className="font-semibold text-gray-900 dark:text-white">{t("Notes")}</h3>
-                            </div>
-                            <div className="divide-y divide-gray-50 dark:divide-gray-700">
-                                {notes.map(note => (
-                                    <div key={note.id} className="px-6 py-4">
-                                        <p className="text-sm text-gray-600 whitespace-pre-wrap">{note.content}</p>
-                                        <div className="flex items-center gap-2 mt-2 text-xs text-gray-400">
-                                            {note.user && <span>{note.user.name}</span>}
-                                            <span>{formatDate(note.created_at)}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                    {/* External Documents */}
+                    <ExternalDocumentsSection
+                        projectId={project.id}
+                        attachments={attachments}
+                        showUploadModal={showUploadModal}
+                        setShowUploadModal={setShowUploadModal}
+                    />
                 </div>
 
                 {/* Right Column */}
@@ -235,7 +131,7 @@ export default function ProjectShow({ project }: Props) {
                         <div className="p-5 space-y-4">
                             {project.client && (
                                 <div>
-                                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Client</span>
+                                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t('Client')}</span>
                                     <div className="flex items-center gap-2 mt-1">
                                         <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center">
                                             <span className="text-violet-600 text-xs font-semibold">{project.client.initial}</span>
@@ -249,7 +145,7 @@ export default function ProjectShow({ project }: Props) {
                             )}
                             {project.developer && (
                                 <div>
-                                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Developer</span>
+                                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t('Developer')}</span>
                                     <div className="flex items-center gap-2 mt-1">
                                         <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center">
                                             <span className="text-teal-600 text-xs font-semibold">{project.developer.initial}</span>
@@ -263,7 +159,7 @@ export default function ProjectShow({ project }: Props) {
                             )}
                             {project.lead && (
                                 <div>
-                                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Referral Lead</span>
+                                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t('Referral Lead')}</span>
                                     <Link href={`/admin/leads/${project.lead.id}`} className="flex items-center gap-2 mt-1 hover:bg-gray-50 -mx-2 px-2 py-1 rounded-lg transition-colors">
                                         <div>
                                             <p className="text-sm font-medium text-gray-900 dark:text-white">{project.lead.first_name} {project.lead.last_name}</p>
@@ -283,42 +179,17 @@ export default function ProjectShow({ project }: Props) {
                     {/* GitHub */}
                     <GitHubCard project={project} />
 
-                    {/* Timeline */}
-                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
-                        <div className="px-5 py-4 border-b border-gray-50 dark:border-gray-700">
-                            <h3 className="font-semibold text-gray-900 dark:text-white">{t("Timeline")}</h3>
-                        </div>
-                        <div className="p-5">
-                            {timelineEvents.length === 0 ? (
-                                <p className="text-center text-sm text-gray-400 dark:text-gray-500 py-4">{t("No activity yet.")}</p>
-                            ) : (
-                                <div className="relative">
-                                    <div className="absolute left-4 top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-700" />
-                                    <div className="space-y-5">
-                                        {timelineEvents.map(event => (
-                                            <div key={event.id} className="relative flex items-start ml-4 pl-6">
-                                                <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-white dark:bg-gray-800 border-2 border-violet-400" />
-                                                <div className="flex-1">
-                                                    <div className="flex items-center justify-between">
-                                                        <p className="text-sm font-medium text-gray-900 dark:text-white">{event.title}</p>
-                                                        <span className="text-xs text-gray-400 dark:text-gray-500">{formatDate(event.created_at)}</span>
-                                                    </div>
-                                                    {event.description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{event.description}</p>}
-                                                    {event.old_value && event.new_value && (
-                                                        <div className="flex items-center gap-2 mt-1">
-                                                            <Badge status={event.old_value} />
-                                                            <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-                                                            <Badge status={event.new_value} />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    {/* Emails section */}
+                    <EmailModalSection
+                        project={project}
+                        emailTemplate={emailTemplate}
+                        sentEmails={sentEmails}
+                        showModal={showEmailModal}
+                        setShowModal={setShowEmailModal}
+                    />
+
+                    {/* Timeline & Notes */}
+                    <ProjectTimeline timelineEvents={timelineEvents} notes={notes} />
                 </div>
             </div>
         </AdminLayout>
@@ -367,7 +238,6 @@ function GitHubCard({ project }: { project: any }) {
 
             <div className="p-5">
                 {!githubConnected ? (
-                    /* GitHub not connected */
                     <div className="text-center py-2">
                         <p className="text-sm text-gray-400 dark:text-gray-500 mb-3">{t('Connect your GitHub account in your profile to link a repository.')}</p>
                         <a href="/auth/github/redirect" className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">
@@ -376,7 +246,6 @@ function GitHubCard({ project }: { project: any }) {
                         </a>
                     </div>
                 ) : !project.github_repo || editing ? (
-                    /* Link a repo form */
                     <div className="space-y-3">
                         <p className="text-xs text-gray-400 dark:text-gray-500">{t('Connected as')} <span className="font-semibold text-gray-700 dark:text-gray-300">@{auth.user?.github_username}</span></p>
                         <div>
@@ -406,7 +275,6 @@ function GitHubCard({ project }: { project: any }) {
                         </div>
                     </div>
                 ) : (
-                    /* Repo linked — show info + commits */
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <a href={`https://github.com/${project.github_repo}`} target="_blank" rel="noopener noreferrer" className="text-sm font-mono text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1.5">
@@ -421,8 +289,242 @@ function GitHubCard({ project }: { project: any }) {
                 )}
             </div>
 
-            {/* Commits list below the card */}
             {project.github_repo && !editing && <CommitList projectId={project.id} />}
+        </div>
+    );
+}
+
+const categoryLabels: Record<string, string> = {
+    quote: 'Devis externe',
+    invoice: 'Facture externe',
+    contract: 'Contrat',
+    brief: 'Brief / Cahier des charges',
+    specification: 'Spécification',
+    other: 'Autre',
+};
+
+const categoryColors: Record<string, string> = {
+    quote: 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300',
+    invoice: 'bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-300',
+    contract: 'bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300',
+    brief: 'bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300',
+    specification: 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300',
+    other: 'bg-gray-100 dark:bg-gray-600/30 text-gray-700 dark:text-gray-300',
+};
+
+function getFileIcon(mimeType: string): { color: string; bg: string } {
+    if (mimeType === 'application/pdf') return { color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-500/10' };
+    if (mimeType.startsWith('image/')) return { color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10' };
+    if (mimeType.includes('word') || mimeType.includes('document')) return { color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10' };
+    return { color: 'text-gray-500', bg: 'bg-gray-50 dark:bg-gray-500/10' };
+}
+
+function formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function ExternalDocumentsSection({ projectId, attachments, showUploadModal, setShowUploadModal }: {
+    projectId: number;
+    attachments: Attachment[];
+    showUploadModal: boolean;
+    setShowUploadModal: (v: boolean) => void;
+}) {
+    const { t } = useTranslation();
+
+    const handleToggleVisibility = (docId: number) => {
+        router.patch(`/admin/projects/${projectId}/attachments/${docId}/toggle`, {}, { preserveScroll: true });
+    };
+
+    const handleDeleteAttachment = (docId: number) => {
+        if (confirm(t('Are you sure you want to delete this document?'))) {
+            router.delete(`/admin/projects/${projectId}/attachments/${docId}`, { preserveScroll: true });
+        }
+    };
+
+    return (
+        <>
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
+                <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-gray-900 dark:text-white">{t('External Documents')}</h3>
+                        {attachments.length > 0 && (
+                            <span className="text-xs bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 px-2 py-0.5 rounded-full">{attachments.length}</span>
+                        )}
+                    </div>
+                    <button
+                        onClick={() => setShowUploadModal(true)}
+                        className="px-3 py-1.5 text-xs font-semibold text-white bg-violet-500 rounded-lg hover:bg-violet-600 transition-colors flex items-center gap-1.5"
+                    >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                        {t('Upload')}
+                    </button>
+                </div>
+
+                {attachments.length === 0 ? (
+                    <div className="px-6 py-8 text-center">
+                        <svg className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                        <p className="text-sm text-gray-400 dark:text-gray-500">{t('No external documents yet.')}</p>
+                    </div>
+                ) : (
+                    <div className="divide-y divide-gray-50 dark:divide-gray-700">
+                        {attachments.map(doc => {
+                            const icon = getFileIcon(doc.mime_type);
+                            return (
+                                <div key={doc.id} className="px-6 py-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                                        <div className={`w-9 h-9 rounded-lg ${icon.bg} flex items-center justify-center flex-shrink-0`}>
+                                            <svg className={`w-4.5 h-4.5 ${icon.color}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{doc.name}</p>
+                                            <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                                                <span className="text-[10px] text-gray-400 dark:text-gray-500">{doc.original_filename}</span>
+                                                <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${categoryColors[doc.category] || categoryColors.other}`}>
+                                                    {categoryLabels[doc.category] || doc.category}
+                                                </span>
+                                                <span className="text-[10px] text-gray-400 dark:text-gray-500">{formatFileSize(doc.file_size)}</span>
+                                                <span className="text-[10px] text-gray-400 dark:text-gray-500">{formatDate(doc.created_at)}</span>
+                                                {doc.uploader && <span className="text-[10px] text-gray-400 dark:text-gray-500">{doc.uploader.name}</span>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 ml-3 flex-shrink-0">
+                                        <a
+                                            href={`/admin/projects/${projectId}/attachments/${doc.id}/download`}
+                                            className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                            title={t('Download')}
+                                        >
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                                        </a>
+                                        <button
+                                            onClick={() => handleToggleVisibility(doc.id)}
+                                            className={`p-1.5 transition-colors ${doc.is_client_visible ? 'text-green-500 hover:text-green-600' : 'text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400'}`}
+                                            title={doc.is_client_visible ? t('Visible to client — click to hide') : t('Hidden from client — click to show')}
+                                        >
+                                            {doc.is_client_visible ? (
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                            ) : (
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
+                                            )}
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteAttachment(doc.id)}
+                                            className="p-1.5 text-gray-300 dark:text-gray-600 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                                            title={t('Delete')}
+                                        >
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
+
+            {showUploadModal && createPortal(
+                <UploadAttachmentModal projectId={projectId} onClose={() => setShowUploadModal(false)} />,
+                document.body
+            )}
+        </>
+    );
+}
+
+function UploadAttachmentModal({ projectId, onClose }: { projectId: number; onClose: () => void }) {
+    const { t } = useTranslation();
+    const form = useForm<{
+        file: File | null;
+        name: string;
+        category: string;
+        description: string;
+        is_client_visible: boolean;
+    }>({
+        file: null,
+        name: '',
+        category: 'other',
+        description: '',
+        is_client_visible: false,
+    });
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null;
+        form.setData('file', file);
+        if (file && !form.data.name) {
+            form.setData('name', file.name.replace(/\.[^/.]+$/, ''));
+        }
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        form.post(`/admin/projects/${projectId}/attachments`, {
+            onSuccess: () => onClose(),
+            preserveScroll: true,
+            forceFormData: true,
+        });
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+            <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                <div className="bg-gradient-to-r from-violet-500 to-purple-500 px-6 py-4 rounded-t-2xl flex items-center justify-between">
+                    <h2 className="text-lg font-bold text-white">{t('Upload Document')}</h2>
+                    <button onClick={onClose} className="text-white/80 hover:text-white">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+
+                <form onSubmit={handleSubmit} className="p-6 space-y-5">
+                    <div>
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">{t('File')} *</label>
+                        <input type="file" onChange={handleFileChange} className="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-violet-50 dark:file:bg-violet-500/10 file:text-violet-700 dark:file:text-violet-300 hover:file:bg-violet-100 dark:hover:file:bg-violet-500/20 cursor-pointer" accept="*/*" />
+                        {form.errors.file && <p className="text-xs text-red-500 mt-1">{form.errors.file}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">{t('Document Name')} *</label>
+                        <input type="text" value={form.data.name} onChange={e => form.setData('name', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500 focus:border-transparent" placeholder={t('e.g. Contrat signé')} required />
+                        {form.errors.name && <p className="text-xs text-red-500 mt-1">{form.errors.name}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">{t('Category')} *</label>
+                        <select value={form.data.category} onChange={e => form.setData('category', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500 focus:border-transparent">
+                            <option value="quote">{t('Devis externe')}</option>
+                            <option value="invoice">{t('Facture externe')}</option>
+                            <option value="contract">{t('Contrat')}</option>
+                            <option value="brief">{t('Brief / Cahier des charges')}</option>
+                            <option value="specification">{t('Spécification')}</option>
+                            <option value="other">{t('Autre')}</option>
+                        </select>
+                        {form.errors.category && <p className="text-xs text-red-500 mt-1">{form.errors.category}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">{t('Description')}</label>
+                        <textarea value={form.data.description} onChange={e => form.setData('description', e.target.value)} rows={3} className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500 focus:border-transparent resize-none" placeholder={t('Description optionnelle...')} />
+                        {form.errors.description && <p className="text-xs text-red-500 mt-1">{form.errors.description}</p>}
+                    </div>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                        <div className="relative">
+                            <input type="checkbox" checked={form.data.is_client_visible} onChange={e => form.setData('is_client_visible', e.target.checked)} className="sr-only peer" />
+                            <div className="w-10 h-5 bg-gray-200 dark:bg-gray-700 peer-focus:ring-2 peer-focus:ring-violet-400 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-violet-500" />
+                        </div>
+                        <span className="text-sm text-gray-700 dark:text-gray-300">{t('Visible to client')}</span>
+                    </label>
+                    <div className="flex items-center justify-end gap-3 pt-2 border-t border-gray-100 dark:border-gray-700">
+                        <button type="button" onClick={onClose} className="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600">{t('Cancel')}</button>
+                        <button type="submit" disabled={form.processing || !form.data.file}
+                            className="px-5 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-violet-500 to-purple-500 rounded-lg hover:from-violet-600 hover:to-purple-600 disabled:opacity-50 flex items-center gap-2">
+                            {form.processing ? (
+                                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                            ) : (
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+                            )}
+                            {t('Upload')}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }

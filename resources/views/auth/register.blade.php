@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=bebas-neue:400|figtree:400,500,600,700&display=swap" rel="stylesheet" />
     @vite('resources/js/public.ts')
+    @if(config('services.turnstile.site_key'))
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    @endif
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
@@ -274,6 +277,14 @@
                                 {{-- Role validation hint --}}
                                 <p x-show="!selectedRole" class="text-xs text-slate-500 mt-2">{{ __('Please select a role to continue') }}</p>
                             </div>
+
+                            {{-- Cloudflare Turnstile --}}
+                            @if(config('services.turnstile.site_key'))
+                                <div class="cf-turnstile flex justify-center" data-sitekey="{{ config('services.turnstile.site_key') }}" data-theme="dark"></div>
+                                @error('captcha')
+                                    <p class="text-sm text-red-400 text-center">{{ $message }}</p>
+                                @enderror
+                            @endif
 
                             {{-- Submit --}}
                             <button type="submit" :disabled="submitting || !selectedRole" class="btn-submit w-full py-3.5 px-4 rounded-xl text-white font-semibold text-sm tracking-wide flex items-center justify-center space-x-2">

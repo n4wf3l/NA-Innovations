@@ -5,6 +5,7 @@ namespace App\Http\Requests\Auth;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -40,6 +41,7 @@ class LoginRequest extends FormRequest
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
+        $this->verifyTurnstile();
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
@@ -96,5 +98,33 @@ class LoginRequest extends FormRequest
     public function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
+    }
+
+    /**
+     * Verify Cloudflare Turnstile token.
+     */
+    protected function verifyTurnstile(): void
+    {
+        $secret = config('services.turnstile.secret_key');
+        if (!$secret) return; // Skip if not configured
+
+        $token = $this->input('cf-turnstile-response');
+        if (!$token) {
+            throw ValidationException::withMessages([
+                'captcha' => 'Please complete the security verification.',
+            ]);
+        }
+
+        $response = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+            'secret' => $secret,
+            'response' => $token,
+            'remoteip' => $this->ip(),
+        ]);
+
+        if (!$response->json('success')) {
+            throw ValidationException::withMessages([
+                'captcha' => 'Security verification failed. Please try again.',
+            ]);
+        }
     }
 }

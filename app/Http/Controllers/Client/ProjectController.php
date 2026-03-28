@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Models\Document;
 use App\Models\Projet;
+use App\Models\ProjectDocument;
 use App\Models\Quote;
 use App\Models\Invoice;
 use App\Models\User;
@@ -11,6 +13,7 @@ use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ProjectController extends Controller
@@ -80,12 +83,28 @@ class ProjectController extends Controller
             ->latest()
             ->get();
 
+        // Documents légaux (exclure les brouillons)
+        $projectDocuments = $project->projectDocuments()
+            ->where('status', '!=', 'draft')
+            ->with(['template', 'adminSigner'])
+            ->latest()
+            ->get();
+
+        // External documents (attachments) visible to client
+        $attachments = $project->documents()
+            ->where('is_client_visible', true)
+            ->with('uploader')
+            ->latest()
+            ->get();
+
         return Inertia::render('Client/Projects/Show', [
             'project' => $project,
             'quotes' => $quotes,
             'invoices' => $invoices,
             'services' => $services,
             'notes' => $notes,
+            'projectDocuments' => $projectDocuments,
+            'attachments' => $attachments,
         ]);
     }
 
@@ -136,5 +155,31 @@ class ProjectController extends Controller
         }
 
         return redirect()->back()->with('success', 'Comment added.');
+    }
+
+    /**
+     * Download an external attachment visible to the client.
+     */
+    public function downloadAttachment(Projet $project, Document $document)
+    {
+        $user = auth()->user();
+
+        if ($project->client_id !== $user->id) {
+            abort(403);
+        }
+
+        if (!$document->is_client_visible) {
+            abort(403);
+        }
+
+        if ($document->documentable_id !== $project->id || $document->documentable_type !== Projet::class) {
+            abort(403);
+        }
+
+        if (!Storage::disk('local')->exists($document->file_path)) {
+            abort(404);
+        }
+
+        return Storage::disk('local')->download($document->file_path, $document->original_filename);
     }
 }

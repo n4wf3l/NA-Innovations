@@ -2,7 +2,7 @@ import ClientLayout from '@/Layouts/ClientLayout';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import Badge from '@/Components/ui/Badge';
-import { formatDate, formatCurrency } from '@/lib/utils';
+import { formatDate, formatCurrency, formatProjectType } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -60,7 +60,7 @@ export default function ClientDashboard({ projects, quotes, invoices, stats }: P
                                 <Link key={p.id} href={`/client/projects/${p.id}`} className="flex items-center justify-between px-6 py-3.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                     <div className="min-w-0">
                                         <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{p.nom_societe}</p>
-                                        <p className="text-xs text-gray-400">{p.type_site || '--'}</p>
+                                        <p className="text-xs text-gray-400">{formatProjectType(p.type_site)}</p>
                                     </div>
                                     <Badge status={p.status} />
                                 </Link>

@@ -51,6 +51,7 @@ export const STATUS_COLORS: Record<string, string> = {
     won: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
     lost: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
     draft: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+    published: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
     sent: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
     viewed: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300',
     accepted: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
@@ -74,3 +75,22 @@ export const STATUS_COLORS: Record<string, string> = {
     suspended: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
     inactive: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
 };
+
+export const PROJECT_TYPES: Record<string, string> = {
+    static_site: 'Site statique / Landing page',
+    showcase_site: 'Site vitrine',
+    blog_portfolio: 'Blog / Portfolio',
+    ecommerce: 'E-commerce',
+    custom_cms: 'Site sur mesure avec CMS',
+    platform_saas: 'Plateforme web / SaaS',
+    mobile_app: 'Application mobile',
+    desktop_app: 'Application desktop',
+    api_backend: 'API / Backend',
+    maintenance: 'Maintenance / Support mensuel',
+    redesign: 'Refonte / Migration',
+};
+
+export function formatProjectType(type: string | null | undefined): string {
+    if (!type) return '--';
+    return PROJECT_TYPES[type] || type;
+}

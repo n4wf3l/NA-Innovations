@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Models\ProjectDocument;
 use App\Models\Quote;
 use App\Models\Invoice;
 use App\Models\Setting;
@@ -47,6 +48,33 @@ class PdfService
         app()->setLocale($previousLocale);
 
         $invoice->update(['pdf_path' => $path]);
+
+        return $path;
+    }
+
+    public static function generateDocumentPdf(ProjectDocument $document): string
+    {
+        $document->load(['project.client', 'template', 'adminSigner', 'clientSigner']);
+        $company = self::getCompanyInfo();
+
+        $previousLocale = app()->getLocale();
+        app()->setLocale($document->locale ?? 'fr');
+
+        $pdf = Pdf::loadView('pdf.document', compact('document', 'company'));
+        $pdf->setPaper('a4');
+
+        $pdfContent = $pdf->output();
+        $pdfHash = hash('sha256', $pdfContent);
+
+        $path = "documents/doc-{$document->id}-" . now()->timestamp . ".pdf";
+        Storage::disk('local')->put($path, $pdfContent);
+
+        app()->setLocale($previousLocale);
+
+        $document->update([
+            'pdf_path' => $path,
+            'pdf_hash' => $pdfHash,
+        ]);
 
         return $path;
     }

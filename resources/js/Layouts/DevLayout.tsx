@@ -26,6 +26,11 @@ export default function DevLayout({ children, title }: PropsWithChildren<DevLayo
     const [hovered, setHovered] = useState(false);
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
 
+    useEffect(() => {
+        document.documentElement.classList.add('dashboard-layout');
+        return () => { document.documentElement.classList.remove('dashboard-layout'); };
+    }, []);
+
     const toggleCollapse = () => { const n = !collapsed; setCollapsed(n); localStorage.setItem('dev_sidebar_collapsed', String(n)); };
     const isExpanded = !collapsed || hovered;
     const sw = isExpanded ? 'w-72' : 'w-16';

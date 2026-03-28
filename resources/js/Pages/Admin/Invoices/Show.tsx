@@ -180,6 +180,12 @@ export default function InvoiceShow({ invoice, emailTemplates }: Props) {
                                     <p className="text-white/80 text-sm mt-1">{invoice.title}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
+                                    {(invoice as any).is_external && (
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-white/20 text-white">
+                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+                                            {t('External document')}
+                                        </span>
+                                    )}
                                     <Badge status={invoice.type || 'standard'} />
                                     <Badge status={invoice.status} />
                                 </div>

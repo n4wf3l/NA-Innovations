@@ -8,6 +8,11 @@ export default function InstallPrompt() {
     const [dontShowAgain, setDontShowAgain] = useState(false);
 
     useEffect(() => {
+        // Only show on dashboard pages (after login), not on public landing
+        const path = window.location.pathname;
+        const isDashboard = path.startsWith('/admin') || path.startsWith('/client') || path.startsWith('/partner') || path.startsWith('/dev');
+        if (!isDashboard) return;
+
         // Only show on mobile
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         if (!isMobile) return;

@@ -72,6 +72,7 @@ class LeadController extends Controller
                 'body' => "Dear {{ client_name }},\n\nWe would love to learn more about your project needs.\n\nBest regards,\nNA Innovations",
             ],
             'partnerName' => $partner->user->name,
+            'projectTypes' => \App\Enums\ProjectType::allWithRates(),
         ]);
     }
 
@@ -86,7 +87,7 @@ class LeadController extends Controller
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
             'company_name' => 'nullable|string|max:255',
-            'service_interest' => 'nullable|string|max:255',
+            'service_interest' => 'nullable|string|in:' . implode(',', array_keys(\App\Enums\ProjectType::TYPES)),
             'estimated_budget' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
             'email_subject' => 'required|string|max:255',
@@ -162,15 +163,38 @@ class LeadController extends Controller
             'new_value' => 'brief_pending',
         ]);
 
-        // ── EMAIL SENDING DISABLED FOR NOW ──
-        // When ready, uncomment this block:
-        // Mail::raw($emailBody, function ($message) use ($validated, $pdf) {
-        //     $message->to($validated['email'])
-        //         ->subject($validated['email_subject'])
-        //         ->attachData($pdf->output(), 'project-details.pdf', ['mime' => 'application/pdf']);
-        // });
+        // Send outreach email to the prospect with PDF attachment
+        try {
+            \Illuminate\Support\Facades\Mail::to($validated['email'])->send(
+                new \App\Mail\TemplateMail($validated['email_subject'], $emailBody, $pdfPath)
+            );
+
+            $lead->timelineEvents()->create([
+                'user_id' => auth()->id(),
+                'event_type' => 'email_sent',
+                'title' => 'Outreach email sent',
+                'description' => "Email sent to {$validated['email']} with PDF attachment.",
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Partner lead email failed: {$e->getMessage()}");
+
+            $lead->timelineEvents()->create([
+                'user_id' => auth()->id(),
+                'event_type' => 'email_failed',
+                'title' => 'Outreach email failed',
+                'description' => "Failed to send email to {$validated['email']}: {$e->getMessage()}",
+            ]);
+        }
+
+        // Notify admin that a new lead was submitted
+        \App\Services\NotificationService::sendToAdmins('new-lead-admin', [
+            'partner_name' => $partner->user->name,
+            'lead_name' => "{$validated['first_name']} {$validated['last_name']}",
+            'lead_email' => $validated['email'],
+            'service' => $validated['service_interest'] ?? 'Non specified',
+        ], actionUrl: "/admin/leads/{$lead->id}");
 
         return redirect()->route('partner.leads.index')
-            ->with('success', "Lead created for {$validated['first_name']} {$validated['last_name']}. Status: Brief Pending (email sending disabled — saved to DB).");
+            ->with('success', "Lead created for {$validated['first_name']} {$validated['last_name']}. The outreach email has been sent.");
     }
 }

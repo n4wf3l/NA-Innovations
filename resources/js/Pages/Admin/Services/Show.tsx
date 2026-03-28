@@ -60,11 +60,11 @@ export default function ServiceShow({ service }: Props) {
 
             {/* Top Bar */}
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <Link href="/admin/services" className="text-sm text-gray-500 hover:text-gray-700">&larr; {t("Back to Services")}</Link>
+                <Link href="/admin/services" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">&larr; {t("Back to Services")}</Link>
                 <div className="flex items-center gap-2">
                     <button onClick={handleRenew} className="px-4 py-2 text-sm font-medium text-white bg-emerald-500 rounded-lg hover:bg-emerald-600">{t('Renew')}</button>
-                    <Link href={`/admin/services/${service.id}/edit`} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">{t('Edit')}</Link>
-                    <button onClick={handleDelete} className="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50">{t('Delete')}</button>
+                    <Link href={`/admin/services/${service.id}/edit`} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">{t('Edit')}</Link>
+                    <button onClick={handleDelete} className="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 border border-red-200 dark:border-red-500/30 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10">{t('Delete')}</button>
                 </div>
             </div>
 
@@ -72,7 +72,7 @@ export default function ServiceShow({ service }: Props) {
                 {/* Left Column */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Service Header */}
-                    <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
                         <div className="bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-5">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -89,16 +89,16 @@ export default function ServiceShow({ service }: Props) {
                             {service.purchase_date && (
                                 <div>
                                     <span className="text-gray-500 block">{t("Purchase Date")}</span>
-                                    <span className="font-medium text-gray-900">{formatDate(service.purchase_date)}</span>
+                                    <span className="font-medium text-gray-900 dark:text-white">{formatDate(service.purchase_date)}</span>
                                 </div>
                             )}
                             <div>
                                 <span className="text-gray-500 block">{t("Expiry Date")}</span>
-                                <span className="font-medium text-gray-900">{formatDate(service.expiry_date)}</span>
+                                <span className="font-medium text-gray-900 dark:text-white">{formatDate(service.expiry_date)}</span>
                             </div>
                             <div>
                                 <span className="text-gray-500 block">{t("Frequency")}</span>
-                                <span className="font-medium text-gray-900">{formatStatus(service.frequency)}</span>
+                                <span className="font-medium text-gray-900 dark:text-white">{formatStatus(service.frequency)}</span>
                             </div>
                             <div>
                                 <span className="text-gray-500 block">{t("Auto Renew")}</span>
@@ -109,19 +109,19 @@ export default function ServiceShow({ service }: Props) {
                             {service.payment_mode && (
                                 <div>
                                     <span className="text-gray-500 block">{t("Payment Mode")}</span>
-                                    <span className="font-medium text-gray-900">{formatStatus(service.payment_mode)}</span>
+                                    <span className="font-medium text-gray-900 dark:text-white">{formatStatus(service.payment_mode)}</span>
                                 </div>
                             )}
                             {service.provider_account && (
                                 <div>
                                     <span className="text-gray-500 block">{t("Provider Account")}</span>
-                                    <span className="font-medium text-gray-900">{service.provider_account}</span>
+                                    <span className="font-medium text-gray-900 dark:text-white">{service.provider_account}</span>
                                 </div>
                             )}
                             {service.provider_reference && (
                                 <div>
                                     <span className="text-gray-500 block">{t("Provider Ref.")}</span>
-                                    <span className="font-medium text-gray-900">{service.provider_reference}</span>
+                                    <span className="font-medium text-gray-900 dark:text-white">{service.provider_reference}</span>
                                 </div>
                             )}
                             {service.login_url && (
@@ -134,60 +134,60 @@ export default function ServiceShow({ service }: Props) {
                     </div>
 
                     {/* Pricing / Margin Card */}
-                    <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                        <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">{t("Pricing & Margin")}</h3>
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm">
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">{t("Pricing & Margin")}</h3>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="bg-gray-50 rounded-xl p-4 text-center">
-                                <span className="text-xs text-gray-500 block mb-1">Real Cost</span>
-                                <span className="text-lg font-bold text-gray-900"><ProtectedAmount amount={service.real_cost} /></span>
+                            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 text-center">
+                                <span className="text-xs text-gray-500 block mb-1">{t("Real Cost")}</span>
+                                <span className="text-lg font-bold text-gray-900 dark:text-white"><ProtectedAmount amount={service.real_cost} /></span>
                             </div>
-                            <div className="bg-gray-50 rounded-xl p-4 text-center">
-                                <span className="text-xs text-gray-500 block mb-1">Billed Price</span>
-                                <span className="text-lg font-bold text-gray-900"><ProtectedAmount amount={service.billed_price} /></span>
+                            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 text-center">
+                                <span className="text-xs text-gray-500 block mb-1">{t("Billed Price")}</span>
+                                <span className="text-lg font-bold text-gray-900 dark:text-white"><ProtectedAmount amount={service.billed_price} /></span>
                             </div>
                             <div className={`rounded-xl p-4 text-center ${margin >= 0 ? 'bg-emerald-50' : 'bg-red-50'}`}>
-                                <span className="text-xs text-gray-500 block mb-1">Margin</span>
+                                <span className="text-xs text-gray-500 block mb-1">{t("Margin")}</span>
                                 <span className={`text-lg font-bold ${margin >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                                     <ProtectedAmount amount={margin} />
                                 </span>
                             </div>
-                            <div className="bg-gray-50 rounded-xl p-4 text-center">
-                                <span className="text-xs text-gray-500 block mb-1">Margin %</span>
-                                <span className="text-lg font-bold text-gray-900">{marginPercent}%</span>
+                            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 text-center">
+                                <span className="text-xs text-gray-500 block mb-1">{t("Margin")} %</span>
+                                <span className="text-lg font-bold text-gray-900 dark:text-white">{marginPercent}%</span>
                             </div>
                         </div>
                     </div>
 
                     {/* Description */}
                     {service.description && (
-                        <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-3">{t("Description")}</h3>
-                            <p className="text-sm text-gray-600 whitespace-pre-wrap">{service.description}</p>
+                        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm">
+                            <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-3">{t("Description")}</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{service.description}</p>
                         </div>
                     )}
 
                     {/* Renewal History */}
                     {renewals.length > 0 && (
-                        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
-                            <div className="px-6 py-4 border-b border-gray-50">
-                                <h3 className="font-semibold text-gray-900">{t("Renewal History")}</h3>
+                        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
+                            <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700 dark:border-gray-700">
+                                <h3 className="font-semibold text-gray-900 dark:text-white">{t("Renewal History")}</h3>
                             </div>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">
                                     <thead>
-                                        <tr className="bg-gray-50 border-b border-gray-100">
-                                            <th className="text-left px-6 py-3 font-medium text-gray-500">Renewal Date</th>
-                                            <th className="text-left px-6 py-3 font-medium text-gray-500">New Expiry</th>
-                                            <th className="text-right px-6 py-3 font-medium text-gray-500">Cost</th>
-                                            <th className="text-right px-6 py-3 font-medium text-gray-500">Billed</th>
-                                            <th className="text-left px-6 py-3 font-medium text-gray-500">Status</th>
+                                        <tr className="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700">
+                                            <th className="text-left px-6 py-3 font-medium text-gray-500">{t("Renewal Date")}</th>
+                                            <th className="text-left px-6 py-3 font-medium text-gray-500">{t("New Expiry")}</th>
+                                            <th className="text-right px-6 py-3 font-medium text-gray-500">{t("Cost")}</th>
+                                            <th className="text-right px-6 py-3 font-medium text-gray-500">{t("Billed")}</th>
+                                            <th className="text-left px-6 py-3 font-medium text-gray-500">{t("Status")}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {renewals.map(renewal => (
-                                            <tr key={renewal.id} className="border-b border-gray-50">
-                                                <td className="px-6 py-3 text-gray-700">{formatDate(renewal.renewal_date)}</td>
-                                                <td className="px-6 py-3 text-gray-700">{formatDate(renewal.new_expiry_date)}</td>
+                                            <tr key={renewal.id} className="border-b border-gray-50 dark:border-gray-700">
+                                                <td className="px-6 py-3 text-gray-700 dark:text-gray-300">{formatDate(renewal.renewal_date)}</td>
+                                                <td className="px-6 py-3 text-gray-700 dark:text-gray-300">{formatDate(renewal.new_expiry_date)}</td>
                                                 <td className="px-6 py-3 text-right"><ProtectedAmount amount={renewal.cost} /></td>
                                                 <td className="px-6 py-3 text-right"><ProtectedAmount amount={renewal.billed_amount} /></td>
                                                 <td className="px-6 py-3"><Badge status={renewal.status} /></td>
@@ -204,14 +204,14 @@ export default function ServiceShow({ service }: Props) {
                 <div className="space-y-6">
                     {/* Client */}
                     {service.client && (
-                        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
+                        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
                             <div className="bg-gradient-to-r from-cyan-500 to-teal-500 px-5 py-4">
                                 <h3 className="text-white font-semibold">{t("Client")}</h3>
                             </div>
                             <div className="p-5 space-y-3 text-sm">
                                 <div className="flex items-center justify-between">
                                     <span className="text-gray-500">{t("Name")}</span>
-                                    <span className="font-medium text-gray-900">{service.client.name}</span>
+                                    <span className="font-medium text-gray-900 dark:text-white">{service.client.name}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <span className="text-gray-500">{t("Email")}</span>
@@ -220,10 +220,10 @@ export default function ServiceShow({ service }: Props) {
                                 {service.client.company_name && (
                                     <div className="flex items-center justify-between">
                                         <span className="text-gray-500">{t("Company")}</span>
-                                        <span className="text-gray-700">{service.client.company_name}</span>
+                                        <span className="text-gray-700 dark:text-gray-300">{service.client.company_name}</span>
                                     </div>
                                 )}
-                                <div className="pt-2 border-t border-gray-100">
+                                <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
                                     <Link href={`/admin/clients/${service.client.id}/edit`} className="text-sm text-teal-600 hover:text-teal-700">{t("View Client")}</Link>
                                 </div>
                             </div>
@@ -232,8 +232,8 @@ export default function ServiceShow({ service }: Props) {
 
                     {/* Project */}
                     {service.projet && (
-                        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-                            <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-3">{t("Linked Project")}</h4>
+                        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-5 shadow-sm">
+                            <h4 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-3">{t("Linked Project")}</h4>
                             <Link href={`/admin/projects/${service.projet.id}`} className="text-sm text-teal-600 hover:text-teal-700 font-medium">{service.projet.nom_societe}</Link>
                         </div>
                     )}
@@ -248,9 +248,9 @@ export default function ServiceShow({ service }: Props) {
 
                     {/* Notes */}
                     {service.notes && (
-                        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-                            <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-3">{t("Notes")}</h4>
-                            <p className="text-sm text-gray-600 whitespace-pre-wrap">{service.notes}</p>
+                        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-5 shadow-sm">
+                            <h4 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-3">{t("Notes")}</h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{service.notes}</p>
                         </div>
                     )}
                 </div>

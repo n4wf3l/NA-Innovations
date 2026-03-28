@@ -6,7 +6,7 @@ import Badge from '@/Components/ui/Badge';
 import Pagination from '@/Components/ui/Pagination';
 import ProtectedAmount from '@/Components/ui/ProtectedAmount';
 import { PaginatedData, Lead } from '@/types';
-import { formatDate } from '@/lib/utils';
+import { formatDate, formatProjectType } from '@/lib/utils';
 
 interface Props {
     leads: PaginatedData<Lead>;
@@ -92,7 +92,7 @@ export default function PartnerLeadsIndex({ leads, commissionRate }: Props) {
 
                                     {/* Service */}
                                     {lead.service_interest && (
-                                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-1">{lead.service_interest}</p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-1">{formatProjectType(lead.service_interest)}</p>
                                     )}
 
                                     {/* Bottom: commission + date */}
@@ -148,7 +148,7 @@ export default function PartnerLeadsIndex({ leads, commissionRate }: Props) {
                                                     </Link>
                                                 </td>
                                                 <td className="px-5 py-3.5 text-gray-500">{lead.company_name || '—'}</td>
-                                                <td className="px-5 py-3.5 text-gray-500">{lead.service_interest || '—'}</td>
+                                                <td className="px-5 py-3.5 text-gray-500">{formatProjectType(lead.service_interest)}</td>
                                                 <td className="px-5 py-3.5"><Badge status={lead.status} /></td>
                                                 <td className="px-5 py-3.5 text-right">
                                                     {myShare(lead.estimated_budget) ? (

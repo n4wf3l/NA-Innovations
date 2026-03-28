@@ -2,14 +2,16 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import PartnerLayout from '@/Layouts/PartnerLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { formatProjectType } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
     emailTemplate: { subject: string; body: string };
     partnerName: string;
+    projectTypes: { value: string; label: string; commission_rate: number }[];
 }
 
-export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props) {
+export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectTypes }: Props) {
     const { t } = useTranslation();
     const [showModal, setShowModal] = useState(false);
     const modalRef = useRef<HTMLDivElement>(null);
@@ -33,7 +35,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
             .replace(/\{\{\s*client_email\s*\}\}/g, data.email || '[Client Email]')
             .replace(/\{\{\s*partner_name\s*\}\}/g, partnerName)
             .replace(/\{\{\s*company_name\s*\}\}/g, data.company_name || '[Company]')
-            .replace(/\{\{\s*service_interest\s*\}\}/g, data.service_interest || '[Service]')
+            .replace(/\{\{\s*service_interest\s*\}\}/g, formatProjectType(data.service_interest) !== '--' ? formatProjectType(data.service_interest) : '[Service]')
             .replace(/\{\{\s*estimated_budget\s*\}\}/g, data.estimated_budget || '[Budget]');
     };
 
@@ -128,7 +130,20 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName }: Props)
                     {/* Service */}
                     <div>
                         <label className={label}>{t('What do they need?')}</label>
-                        <input type="text" value={data.service_interest} onChange={e => setData('service_interest', e.target.value)} className={input} placeholder="E-commerce, mobile app, website..." />
+                        <select value={data.service_interest} onChange={e => setData('service_interest', e.target.value)} className={input}>
+                            <option value="">{t('Sélectionner le type')}</option>
+                            {projectTypes.map((pt: any) => (
+                                <option key={pt.value} value={pt.value}>{pt.label}</option>
+                            ))}
+                        </select>
+                        {data.service_interest && projectTypes && (
+                            <div className="mt-2 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl px-4 py-3 flex items-center gap-3">
+                                <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                                    {projectTypes.find((p: any) => p.value === data.service_interest)?.commission_rate}%
+                                </span>
+                                <span className="text-sm text-emerald-700 dark:text-emerald-300">{t('de commission sur ce type de projet')}</span>
+                            </div>
+                        )}
                     </div>
 
                     {/* Budget */}

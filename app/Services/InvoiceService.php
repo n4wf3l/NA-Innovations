@@ -4,14 +4,19 @@ namespace App\Services;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\User;
+use App\Services\NotificationService;
+use App\Services\WorkflowService;
 
 class InvoiceService
 {
     public static function recordPayment(Invoice $invoice, array $data): Payment
     {
+        // Cap payment amount to amount_due so we never overpay
+        $amount = min($data['amount'], $invoice->amount_due);
+
         $payment = $invoice->payments()->create([
             'client_id' => $invoice->client_id,
-            'amount' => $data['amount'],
+            'amount' => $amount,
             'currency' => $data['currency'] ?? $invoice->currency,
             'method' => $data['method'] ?? 'bank_transfer',
             'reference' => $data['reference'] ?? null,

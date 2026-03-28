@@ -2,7 +2,7 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link } from '@inertiajs/react';
 import Badge from '@/Components/ui/Badge';
 import ProtectedAmount from '@/Components/ui/ProtectedAmount';
-import { formatDate } from '@/lib/utils';
+import { formatDate, formatProjectType } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -74,7 +74,7 @@ export default function ClientShow({ client }: Props) {
                                     <Link key={p.id} href={`/admin/projects/${p.id}`} className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                         <div>
                                             <p className="text-sm font-medium text-gray-900 dark:text-white">{p.nom_societe}</p>
-                                            <p className="text-xs text-gray-400 dark:text-gray-500">{p.type_site} {p.start_date ? `· ${formatDate(p.start_date)}` : ''}</p>
+                                            <p className="text-xs text-gray-400 dark:text-gray-500">{formatProjectType(p.type_site)} {p.start_date ? `· ${formatDate(p.start_date)}` : ''}</p>
                                         </div>
                                         <div className="flex items-center gap-3">
                                             {p.budget && <ProtectedAmount amount={p.budget} className="text-sm" />}

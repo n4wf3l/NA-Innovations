@@ -31,6 +31,12 @@ class WorkflowService
      */
     public static function onQuoteAccepted(Quote $quote): array
     {
+        // Guard: prevent double processing if quote is already accepted
+        if ($quote->status === 'accepted') {
+            Log::warning("onQuoteAccepted called on already accepted quote {$quote->quote_number} (ID: {$quote->id}). Skipping.");
+            return [];
+        }
+
         $actions = [];
 
         DB::transaction(function () use ($quote, &$actions) {
@@ -482,15 +488,20 @@ class WorkflowService
             if ($existing) return $existing;
         }
 
-        // Try to find by email
-        $existing = User::where('email', $quote->client_email)
-            ->where('role', 'client')
-            ->first();
+        // Try to find by email (any role)
+        if (!$quote->client_email) return null;
 
-        if ($existing) return $existing;
+        $existing = User::where('email', $quote->client_email)->first();
+
+        if ($existing) {
+            if ($existing->role !== 'client') {
+                Log::warning("ensureClient: email {$quote->client_email} already belongs to a non-client user (role: {$existing->role}, ID: {$existing->id}). Skipping client creation.");
+                return null;
+            }
+            return $existing;
+        }
 
         // Create new client from quote data
-        if (!$quote->client_email) return null;
 
         $client = User::create([
             'name' => $quote->client_name,

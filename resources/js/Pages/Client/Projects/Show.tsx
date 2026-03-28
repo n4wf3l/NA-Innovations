@@ -1,7 +1,7 @@
 import ClientLayout from '@/Layouts/ClientLayout';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import Badge from '@/Components/ui/Badge';
-import { formatDate, formatCurrency, formatStatus } from '@/lib/utils';
+import { formatDate, formatCurrency, formatStatus, formatProjectType } from '@/lib/utils';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CommitList from '@/Components/ui/CommitList';
@@ -12,6 +12,8 @@ interface Props {
     invoices: any[];
     services: any[];
     notes: any[];
+    projectDocuments: any[];
+    attachments: any[];
 }
 
 const statusSteps = [
@@ -28,7 +30,7 @@ const statusLabels: Record<string, string> = {
     completed: 'Completed',
 };
 
-export default function ClientProjectShow({ project, quotes, invoices, services, notes }: Props) {
+export default function ClientProjectShow({ project, quotes, invoices, services, notes, projectDocuments, attachments = [] }: Props) {
     const { t } = useTranslation();
     const [tab, setTab] = useState<'timeline' | 'documents' | 'finances'>('timeline');
     const currentIdx = statusSteps.findIndex(s => s.key === project.status);
@@ -57,36 +59,46 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                     <div className="flex items-start justify-between">
                         <div>
                             <h1 className="text-2xl font-black text-white">{project.nom_societe}</h1>
-                            <p className="text-teal-200 text-sm mt-1">{project.type_site || project.description?.substring(0, 100)}</p>
+                            <p className="text-teal-200 text-sm mt-1">{formatProjectType(project.type_site) !== '--' ? formatProjectType(project.type_site) : project.description?.substring(0, 100)}</p>
                         </div>
                         <Badge status={project.status} className="text-sm" />
                     </div>
                 </div>
 
                 {/* Status stepper */}
-                <div className="px-6 py-5">
+                <div className="px-6 py-6">
+                    {/* Circles + connectors */}
                     <div className="flex items-center">
                         {statusSteps.map((step, i) => (
-                            <div key={step.key} className="flex items-center flex-1">
-                                <div className="flex flex-col items-center flex-1">
-                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                                        i < currentIdx ? 'bg-teal-500 text-white' :
-                                        i === currentIdx ? 'bg-teal-500 text-white ring-4 ring-teal-500/20' :
-                                        'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
-                                    }`}>
-                                        {i < currentIdx ? (
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                                        ) : (
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={step.icon} /></svg>
-                                        )}
-                                    </div>
-                                    <span className={`text-[11px] mt-2 font-semibold ${
-                                        i <= currentIdx ? 'text-teal-600 dark:text-teal-400' : 'text-gray-400 dark:text-gray-500'
-                                    }`}>{t(statusLabels[step.key])}</span>
+                            <div key={step.key} className="flex items-center flex-1 last:flex-none">
+                                {/* Circle */}
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
+                                    i < currentIdx ? 'bg-teal-500 text-white' :
+                                    i === currentIdx ? 'bg-teal-500 text-white ring-4 ring-teal-500/20' :
+                                    'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
+                                }`}>
+                                    {i < currentIdx ? (
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                    ) : (
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={step.icon} /></svg>
+                                    )}
                                 </div>
+                                {/* Connector line */}
                                 {i < statusSteps.length - 1 && (
-                                    <div className={`h-0.5 w-full mx-1 rounded ${i < currentIdx ? 'bg-teal-500' : 'bg-gray-200 dark:bg-gray-700'}`} />
+                                    <div className={`h-0.5 flex-1 mx-2 rounded ${i < currentIdx ? 'bg-teal-500' : 'bg-gray-200 dark:bg-gray-700'}`} />
                                 )}
+                            </div>
+                        ))}
+                    </div>
+                    {/* Labels below */}
+                    <div className="flex mt-2">
+                        {statusSteps.map((step, i) => (
+                            <div key={step.key} className={`flex-1 ${i === statusSteps.length - 1 ? 'flex-none' : ''}`}>
+                                <span className={`text-[11px] font-semibold ${
+                                    i <= currentIdx ? 'text-teal-600 dark:text-teal-400' : 'text-gray-400 dark:text-gray-500'
+                                } ${i === 0 ? '' : i === statusSteps.length - 1 ? 'ml-[-12px]' : 'ml-[-8px]'}`}>
+                                    {t(statusLabels[step.key])}
+                                </span>
                             </div>
                         ))}
                     </div>
@@ -97,11 +109,9 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                     <KPI label={t('Status')} value={t(statusLabels[project.status] || project.status)} />
                     {project.deadline && <KPI label={t('Deadline')} value={formatDate(project.deadline)} />}
                     {project.developer && <KPI label={t('Developer')} value={project.developer.name} />}
-                    {totalDue > 0 ? (
+                    {totalDue > 0 && (
                         <KPI label={t('Amount Due')} value={formatCurrency(totalDue)} accent="red" />
-                    ) : project.budget ? (
-                        <KPI label={t('Budget')} value={formatCurrency(project.budget)} />
-                    ) : null}
+                    )}
                 </div>
             </div>
 
@@ -238,34 +248,170 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
 
                 {/* ── DOCUMENTS ── */}
                 {tab === 'documents' && (
-                    <div className="space-y-4">
-                        {quotes.length === 0 ? (
-                            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm px-6 py-12 text-center">
-                                <p className="text-sm text-gray-400 dark:text-gray-500">{t('No quotes yet.')}</p>
+                    <div className="space-y-6">
+                        {/* Documents légaux */}
+                        {projectDocuments && projectDocuments.length > 0 && (
+                            <div>
+                                <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                    <svg className="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>
+                                    {t('Documents légaux')}
+                                </h3>
+                                <div className="space-y-3">
+                                    {projectDocuments.map((doc: any) => {
+                                        const category = doc.template?.category;
+                                        const iconBg = category === 'legal'
+                                            ? 'bg-teal-50 dark:bg-teal-500/10'
+                                            : category === 'delivery'
+                                            ? 'bg-green-50 dark:bg-green-500/10'
+                                            : 'bg-blue-50 dark:bg-blue-500/10';
+                                        const iconColor = category === 'legal'
+                                            ? 'text-teal-500'
+                                            : category === 'delivery'
+                                            ? 'text-green-500'
+                                            : 'text-blue-500';
+                                        const iconPath = category === 'legal'
+                                            ? 'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z'
+                                            : category === 'delivery'
+                                            ? 'M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+                                            : 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z';
+
+                                        return (
+                                            <Link
+                                                key={doc.id}
+                                                href={`/client/documents/${doc.id}`}
+                                                className="block bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden hover:shadow-md hover:border-teal-300 dark:hover:border-teal-500/50 transition-all group"
+                                            >
+                                                <div className="flex items-center justify-between p-5">
+                                                    <div className="flex items-center gap-4 min-w-0">
+                                                        <div className={`w-12 h-12 rounded-xl ${iconBg} flex items-center justify-center flex-shrink-0`}>
+                                                            <svg className={`w-6 h-6 ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d={iconPath} />
+                                                            </svg>
+                                                        </div>
+                                                        <div className="min-w-0">
+                                                            <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{doc.title}</p>
+                                                            <p className="text-xs text-gray-400 dark:text-gray-500">{formatDate(doc.created_at)}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <Badge status={doc.status} />
+                                                        {['pending_client', 'viewed'].includes(doc.status) && (
+                                                            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2 py-1 rounded-full uppercase">{t('Action Required')}</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
                             </div>
-                        ) : (
-                            quotes.map((q: any) => (
-                                <Link key={q.id} href={`/client/quotes/${q.id}`}
-                                    className="block bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden hover:shadow-md hover:border-teal-300 dark:hover:border-teal-500/50 transition-all group">
-                                    <div className="flex items-center justify-between p-5">
-                                        <div className="flex items-center gap-4 min-w-0">
-                                            <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                                                <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
-                                            </div>
-                                            <div className="min-w-0">
-                                                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{q.quote_number} — {q.title}</p>
-                                                <p className="text-xs text-gray-400 dark:text-gray-500">{formatDate(q.issue_date)} · {formatCurrency(q.total)}</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <Badge status={q.status} />
-                                            {['sent', 'viewed'].includes(q.status) && (
-                                                <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2 py-1 rounded-full uppercase">{t('Action Required')}</span>
-                                            )}
-                                        </div>
+                        )}
+
+                        {/* Devis */}
+                        <div>
+                            {projectDocuments && projectDocuments.length > 0 && (
+                                <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                    <svg className="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                                    {t('Quotes')}
+                                </h3>
+                            )}
+                            <div className="space-y-3">
+                                {quotes.length === 0 ? (
+                                    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm px-6 py-12 text-center">
+                                        <p className="text-sm text-gray-400 dark:text-gray-500">{t('No quotes yet.')}</p>
                                     </div>
-                                </Link>
-                            ))
+                                ) : (
+                                    quotes.map((q: any) => (
+                                        <Link key={q.id} href={`/client/quotes/${q.id}`}
+                                            className="block bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden hover:shadow-md hover:border-teal-300 dark:hover:border-teal-500/50 transition-all group">
+                                            <div className="flex items-center justify-between p-5">
+                                                <div className="flex items-center gap-4 min-w-0">
+                                                    <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                                                        <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{q.quote_number} — {q.title}</p>
+                                                        <p className="text-xs text-gray-400 dark:text-gray-500">{formatDate(q.issue_date)} · {formatCurrency(q.total)}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <Badge status={q.status} />
+                                                    {['sent', 'viewed'].includes(q.status) && (
+                                                        <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2 py-1 rounded-full uppercase">{t('Action Required')}</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+
+                        {/* External Documents (attachments) */}
+                        {attachments.length > 0 && (
+                            <div>
+                                <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                    <svg className="w-4 h-4 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" /></svg>
+                                    {t('External Documents')}
+                                </h3>
+                                <div className="space-y-3">
+                                    {attachments.map((doc: any) => {
+                                        const isPdf = doc.mime_type === 'application/pdf';
+                                        const isImage = doc.mime_type?.startsWith('image/');
+                                        const iconBg = isPdf ? 'bg-red-50 dark:bg-red-500/10' : isImage ? 'bg-blue-50 dark:bg-blue-500/10' : 'bg-violet-50 dark:bg-violet-500/10';
+                                        const iconColor = isPdf ? 'text-red-500' : isImage ? 'text-blue-500' : 'text-violet-500';
+                                        const catLabels: Record<string, string> = {
+                                            quote: 'Devis externe',
+                                            invoice: 'Facture externe',
+                                            contract: 'Contrat',
+                                            brief: 'Brief / Cahier des charges',
+                                            specification: 'Spécification',
+                                            other: 'Autre',
+                                        };
+                                        const catColors: Record<string, string> = {
+                                            quote: 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300',
+                                            invoice: 'bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-300',
+                                            contract: 'bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300',
+                                            brief: 'bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300',
+                                            specification: 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300',
+                                            other: 'bg-gray-100 dark:bg-gray-600/30 text-gray-700 dark:text-gray-300',
+                                        };
+                                        const fmtSize = (bytes: number) => {
+                                            if (bytes < 1024) return `${bytes} B`;
+                                            if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+                                            return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+                                        };
+
+                                        return (
+                                            <div key={doc.id} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+                                                <div className="flex items-center justify-between p-5">
+                                                    <div className="flex items-center gap-4 min-w-0">
+                                                        <div className={`w-12 h-12 rounded-xl ${iconBg} flex items-center justify-center flex-shrink-0`}>
+                                                            <svg className={`w-6 h-6 ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                                                        </div>
+                                                        <div className="min-w-0">
+                                                            <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{doc.name}</p>
+                                                            <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                                                                <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${catColors[doc.category] || catColors.other}`}>
+                                                                    {t(catLabels[doc.category] || doc.category)}
+                                                                </span>
+                                                                <span className="text-xs text-gray-400 dark:text-gray-500">{fmtSize(doc.file_size)}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <a
+                                                        href={`/client/projects/${project.id}/attachments/${doc.id}/download`}
+                                                        className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-500/10 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-500/20 transition-colors"
+                                                    >
+                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                                                        {t('Download')}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
                         )}
                     </div>
                 )}

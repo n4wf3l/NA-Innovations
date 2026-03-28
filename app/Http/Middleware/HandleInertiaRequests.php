@@ -45,6 +45,8 @@ class HandleInertiaRequests extends Middleware
                     'role' => $request->user()->role,
                     'phone' => $request->user()->phone,
                     'initial' => strtoupper(substr($request->user()->name, 0, 1)),
+                    'avatar' => $request->user()->avatar ? asset('storage/' . $request->user()->avatar) : null,
+                    'company_name' => $request->user()->company_name,
                     'github_username' => $request->user()->github_username,
                     'preferences' => $request->user()->preferences ?? [
                         'email_notifications' => true,
@@ -76,6 +78,14 @@ class HandleInertiaRequests extends Middleware
                 if (!$unlockedAt) return false;
                 return (now()->timestamp - $unlockedAt) <= 900;
             })(),
+            'socialLinks' => \App\Models\Setting::where('group', 'social')->get()
+                ->filter(fn($s) => !empty($s->value))
+                ->mapWithKeys(fn($s) => [str_replace('social.', '', $s->key) => $s->value]),
+            'branding' => [
+                'logo_path' => \App\Models\Setting::get('branding.logo_path', ''),
+                'company_name' => \App\Models\Setting::get('branding.company_name', 'NA Innovations'),
+                'tagline' => \App\Models\Setting::get('branding.tagline', ''),
+            ],
         ];
     }
 }

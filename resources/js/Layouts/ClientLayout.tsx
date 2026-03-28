@@ -18,6 +18,8 @@ const clientNavItems: NavItem[] = [
     { type: 'link', label: 'Projects', href: '/client/projects', match: '/client/projects', icon: 'M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0' },
     { type: 'link', label: 'Documents', href: '/client/quotes', match: '/client/quotes', icon: 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z' },
     { type: 'link', label: 'Invoices', href: '/client/invoices', match: '/client/invoices', icon: 'M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z' },
+    { type: 'section', label: 'Settings' },
+    { type: 'link', label: 'Profile', href: '/client/profile', match: '/client/profile', icon: 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z' },
 ];
 
 export default function ClientLayout({ children, title }: PropsWithChildren<ClientLayoutProps>) {
@@ -27,6 +29,11 @@ export default function ClientLayout({ children, title }: PropsWithChildren<Clie
     const [collapsed, setCollapsed] = useState(() => typeof window !== 'undefined' && localStorage.getItem('client_sidebar_collapsed') === 'true');
     const [hovered, setHovered] = useState(false);
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+
+    useEffect(() => {
+        document.documentElement.classList.add('dashboard-layout');
+        return () => { document.documentElement.classList.remove('dashboard-layout'); };
+    }, []);
 
     const toggleCollapse = () => { const n = !collapsed; setCollapsed(n); localStorage.setItem('client_sidebar_collapsed', String(n)); };
     const isExpanded = !collapsed || hovered;
@@ -39,11 +46,21 @@ export default function ClientLayout({ children, title }: PropsWithChildren<Clie
 
     const sidebarLogo = (
         <div className="flex items-center space-x-3 mb-1">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
-                <span className="text-white text-lg font-black">NA</span>
-            </div>
+            {auth.user?.avatar ? (
+                <img
+                    src={auth.user.avatar}
+                    alt={auth.user?.company_name || auth.user?.name}
+                    className="w-10 h-10 rounded-xl object-contain bg-white/10 shadow-lg"
+                />
+            ) : (
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                    <span className="text-white text-lg font-black">
+                        {(auth.user?.company_name || auth.user?.name || 'NA').substring(0, 2).toUpperCase()}
+                    </span>
+                </div>
+            )}
             <div>
-                <p className="text-white text-sm font-bold tracking-wide">{t('Client Portal')}</p>
+                <p className="text-white text-sm font-bold tracking-wide">{auth.user?.company_name || t('Client Portal')}</p>
                 <p className="text-gray-500 text-xs">{auth.user?.name}</p>
             </div>
         </div>

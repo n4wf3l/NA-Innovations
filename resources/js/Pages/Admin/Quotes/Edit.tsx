@@ -1,5 +1,5 @@
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Head, Link, useForm, router } from '@inertiajs/react';
+import { Head, Link, useForm, router, usePage } from '@inertiajs/react';
 import { User, Lead, Quote, QuoteItem } from '@/types';
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -37,6 +37,8 @@ function toDateInput(val: string | null | undefined): string {
 
 export default function QuoteEdit({ quote, clients, leads }: Props) {
     const { t } = useTranslation();
+    const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
     const initialItems: LineItem[] = (quote.items && quote.items.length > 0)
         ? quote.items.map(item => ({
             description: item.description,
@@ -69,6 +71,21 @@ export default function QuoteEdit({ quote, clients, leads }: Props) {
         items: initialItems,
     });
 
+    // FieldError inline component
+    const FieldError = ({ name }: { name: string }) => {
+        const pageErrors = (usePage().props as any).errors as Record<string, string> || {};
+        const error = validationErrors[name] || pageErrors[name];
+        if (!error) return null;
+        return <p className="text-xs text-red-500 mt-1.5 flex items-center gap-1">
+            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+            {error}
+        </p>;
+    };
+
+    const pageErrors = (usePage().props as any).errors as Record<string, string> || {};
+    const hasFieldError = (name: string) => !!(validationErrors[name] || pageErrors[name]);
+    const errorRing = (name: string) => hasFieldError(name) ? 'ring-2 ring-red-400 border-red-300' : '';
+
     const handleClientSelect = (clientId: string) => {
         setData('client_id', clientId);
         if (clientId) {
@@ -83,8 +100,23 @@ export default function QuoteEdit({ quote, clients, leads }: Props) {
                     client_address: [client.address, client.city, client.postal_code, client.country].filter(Boolean).join(', '),
                     client_vat: client.vat_number || '',
                 }));
+                setValidationErrors(prev => {
+                    const next = { ...prev };
+                    delete next['client_name'];
+                    delete next['client_email'];
+                    return next;
+                });
             }
         }
+    };
+
+    const setField = (key: string, val: any) => {
+        setData(key as any, val);
+        setValidationErrors(prev => {
+            const next = { ...prev };
+            delete next[key];
+            return next;
+        });
     };
 
     const addItem = () => {
@@ -101,6 +133,11 @@ export default function QuoteEdit({ quote, clients, leads }: Props) {
         const updated = [...items];
         updated[index] = { ...updated[index], [field]: value };
         setItems(updated);
+        setValidationErrors(prev => {
+            const next = { ...prev };
+            delete next[`items.${index}.${field}`];
+            return next;
+        });
     };
 
     const subtotal = useMemo(() => {
@@ -111,6 +148,63 @@ export default function QuoteEdit({ quote, clients, leads }: Props) {
     const total = useMemo(() => subtotal + taxAmount, [subtotal, taxAmount]);
     const depositAmount = useMemo(() => total * (data.deposit_percentage / 100), [total, data.deposit_percentage]);
 
+    // Validation
+    const validate = (): boolean => {
+        const errs: Record<string, string> = {};
+
+        if (!data.client_name.trim()) errs.client_name = t('Ce champ est requis');
+        if (!data.client_email.trim()) {
+            errs.client_email = t('Ce champ est requis');
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.client_email)) {
+            errs.client_email = t('Adresse e-mail invalide');
+        }
+        if (!data.title.trim()) errs.title = t('Ce champ est requis');
+
+        items.forEach((item, i) => {
+            if (!item.description.trim()) errs[`items.${i}.description`] = t('La description est requise');
+            if (item.quantity <= 0) errs[`items.${i}.quantity`] = t('La quantité doit être supérieure à 0');
+            if (item.unit_price < 0) errs[`items.${i}.unit_price`] = t('Le prix ne peut pas être négatif');
+        });
+
+        setValidationErrors(errs);
+        return Object.keys(errs).length === 0;
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!validate()) return;
+
+        // Confirmation if total is 0
+        if (total === 0) {
+            if (!window.confirm(t('Le total du devis est de 0 €. Voulez-vous continuer ?'))) {
+                return;
+            }
+        }
+
+        router.put(`/admin/quotes/${quote.id}`, { ...data, items } as any, {
+            onError: (serverErrors) => {
+                // Map server errors so FieldError picks them up
+                const mapped: Record<string, string> = {};
+                Object.entries(serverErrors).forEach(([key, msg]) => {
+                    mapped[key] = msg;
+                });
+                setValidationErrors(prev => ({ ...prev, ...mapped }));
+            },
+        });
+    };
+
+    const ErrorBanner = () => {
+        const allErrors = { ...validationErrors, ...pageErrors };
+        return Object.keys(allErrors).length > 0 ? (
+            <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-xl p-4 flex items-start gap-3">
+                <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                <div>
+                    <p className="text-sm font-bold text-red-800 dark:text-red-300">{t('Veuillez corriger les erreurs ci-dessous')}</p>
+                </div>
+            </div>
+        ) : null;
+    };
+
     return (
         <AdminLayout title={t("Edit Quote")} header={t("Edit Quote")}>
             <Head title={t("Edit Quote")} />
@@ -119,7 +213,9 @@ export default function QuoteEdit({ quote, clients, leads }: Props) {
                 <Link href={`/admin/quotes/${quote.id}`} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">&larr; {t("Back to Quote")}</Link>
             </div>
 
-            <form onSubmit={(e) => { e.preventDefault(); router.put(`/admin/quotes/${quote.id}`, { ...data, items } as any); }} className="space-y-6 max-w-5xl">
+            <form onSubmit={handleSubmit} className="space-y-6 max-w-5xl">
+                <ErrorBanner />
+
                 {/* Client Selection */}
                 <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm">
                     <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">{t("Client Information")}</h3>
@@ -133,32 +229,32 @@ export default function QuoteEdit({ quote, clients, leads }: Props) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Link to Lead")}</label>
-                            <select value={data.lead_id} onChange={e => setData('lead_id', e.target.value)} className={inputClass}>
+                            <select value={data.lead_id} onChange={e => setField('lead_id', e.target.value)} className={inputClass}>
                                 <option value="">{t("None")}</option>
                                 {leads.map(l => <option key={l.id} value={l.id}>{l.first_name} {l.last_name} {l.company_name ? `(${l.company_name})` : ''}</option>)}
                             </select>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Client Name")} *</label>
-                            <input type="text" value={data.client_name} onChange={e => setData('client_name', e.target.value)} className={inputClass} required />
-                            {errors.client_name && <p className="mt-1 text-sm text-red-600">{errors.client_name}</p>}
+                            <input type="text" value={data.client_name} onChange={e => setField('client_name', e.target.value)} className={`${inputClass} ${errorRing('client_name')}`} />
+                            <FieldError name="client_name" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Client Email")} *</label>
-                            <input type="email" value={data.client_email} onChange={e => setData('client_email', e.target.value)} className={inputClass} required />
-                            {errors.client_email && <p className="mt-1 text-sm text-red-600">{errors.client_email}</p>}
+                            <input type="email" value={data.client_email} onChange={e => setField('client_email', e.target.value)} className={`${inputClass} ${errorRing('client_email')}`} />
+                            <FieldError name="client_email" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Company")}</label>
-                            <input type="text" value={data.client_company} onChange={e => setData('client_company', e.target.value)} className={inputClass} />
+                            <input type="text" value={data.client_company} onChange={e => setField('client_company', e.target.value)} className={inputClass} />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("VAT Number")}</label>
-                            <input type="text" value={data.client_vat} onChange={e => setData('client_vat', e.target.value)} className={inputClass} />
+                            <input type="text" value={data.client_vat} onChange={e => setField('client_vat', e.target.value)} className={inputClass} />
                         </div>
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Address")}</label>
-                            <input type="text" value={data.client_address} onChange={e => setData('client_address', e.target.value)} className={inputClass} />
+                            <input type="text" value={data.client_address} onChange={e => setField('client_address', e.target.value)} className={inputClass} />
                         </div>
                     </div>
                 </div>
@@ -169,20 +265,20 @@ export default function QuoteEdit({ quote, clients, leads }: Props) {
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Title")} *</label>
-                            <input type="text" value={data.title} onChange={e => setData('title', e.target.value)} className={inputClass} required />
-                            {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
+                            <input type="text" value={data.title} onChange={e => setField('title', e.target.value)} className={`${inputClass} ${errorRing('title')}`} />
+                            <FieldError name="title" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Introduction")}</label>
-                            <textarea value={data.introduction} onChange={e => setData('introduction', e.target.value)} rows={3} className={inputClass} />
+                            <textarea value={data.introduction} onChange={e => setField('introduction', e.target.value)} rows={3} className={inputClass} />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Scope of Work")}</label>
-                            <textarea value={data.scope_of_work} onChange={e => setData('scope_of_work', e.target.value)} rows={4} className={inputClass} />
+                            <textarea value={data.scope_of_work} onChange={e => setField('scope_of_work', e.target.value)} rows={4} className={inputClass} />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Exclusions")}</label>
-                            <textarea value={data.exclusions} onChange={e => setData('exclusions', e.target.value)} rows={2} className={inputClass} />
+                            <textarea value={data.exclusions} onChange={e => setField('exclusions', e.target.value)} rows={2} className={inputClass} />
                         </div>
                     </div>
                 </div>
@@ -196,7 +292,6 @@ export default function QuoteEdit({ quote, clients, leads }: Props) {
                             {t("Add Item")}
                         </button>
                     </div>
-                    {errors.items && <p className="mb-3 text-sm text-red-600">{errors.items}</p>}
 
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
@@ -215,10 +310,12 @@ export default function QuoteEdit({ quote, clients, leads }: Props) {
                                 {items.map((item, index) => (
                                     <tr key={index} className="border-b border-gray-50 dark:border-gray-700">
                                         <td className="py-2 px-2">
-                                            <input type="text" value={item.description} onChange={e => updateItem(index, 'description', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400" required />
+                                            <input type="text" value={item.description} onChange={e => updateItem(index, 'description', e.target.value)} className={`w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400 ${errorRing(`items.${index}.description`)}`} />
+                                            <FieldError name={`items.${index}.description`} />
                                         </td>
                                         <td className="py-2 px-2">
-                                            <input type="number" value={item.quantity} onChange={e => updateItem(index, 'quantity', parseFloat(e.target.value) || 0)} className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400" min="0.01" step="0.01" required />
+                                            <input type="number" value={item.quantity} onChange={e => updateItem(index, 'quantity', parseFloat(e.target.value) || 0)} className={`w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400 ${errorRing(`items.${index}.quantity`)}`} min="0.01" step="0.01" />
+                                            <FieldError name={`items.${index}.quantity`} />
                                         </td>
                                         <td className="py-2 px-2">
                                             <select value={item.unit} onChange={e => updateItem(index, 'unit', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400">
@@ -231,7 +328,8 @@ export default function QuoteEdit({ quote, clients, leads }: Props) {
                                             </select>
                                         </td>
                                         <td className="py-2 px-2">
-                                            <input type="number" value={item.unit_price} onChange={e => updateItem(index, 'unit_price', parseFloat(e.target.value) || 0)} className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400" min="0" step="0.01" required />
+                                            <input type="number" value={item.unit_price} onChange={e => updateItem(index, 'unit_price', parseFloat(e.target.value) || 0)} className={`w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400 ${errorRing(`items.${index}.unit_price`)}`} min="0" step="0.01" />
+                                            <FieldError name={`items.${index}.unit_price`} />
                                         </td>
                                         <td className="py-2 px-2 text-right font-medium text-gray-900 dark:text-white">
                                             {(item.quantity * item.unit_price).toFixed(2)}
@@ -261,16 +359,16 @@ export default function QuoteEdit({ quote, clients, leads }: Props) {
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Tax Rate (%)")}</label>
-                                    <input type="number" value={data.tax_rate} onChange={e => setData('tax_rate', parseFloat(e.target.value) || 0)} className={inputClass} min="0" max="100" step="0.01" />
+                                    <input type="number" value={data.tax_rate} onChange={e => setField('tax_rate', parseFloat(e.target.value) || 0)} className={inputClass} min="0" max="100" step="0.01" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Deposit (%)")}</label>
-                                    <input type="number" value={data.deposit_percentage} onChange={e => setData('deposit_percentage', parseInt(e.target.value) || 0)} className={inputClass} min="0" max="100" />
+                                    <input type="number" value={data.deposit_percentage} onChange={e => setField('deposit_percentage', parseInt(e.target.value) || 0)} className={inputClass} min="0" max="100" />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Valid Until")}</label>
-                                <input type="date" value={data.valid_until} onChange={e => setData('valid_until', e.target.value)} className={inputClass} />
+                                <input type="date" value={data.valid_until} onChange={e => setField('valid_until', e.target.value)} className={inputClass} />
                             </div>
                         </div>
                     </div>
@@ -304,11 +402,11 @@ export default function QuoteEdit({ quote, clients, leads }: Props) {
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Terms and Conditions")}</label>
-                            <textarea value={data.terms_and_conditions} onChange={e => setData('terms_and_conditions', e.target.value)} rows={4} className={inputClass} />
+                            <textarea value={data.terms_and_conditions} onChange={e => setField('terms_and_conditions', e.target.value)} rows={4} className={inputClass} />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Internal Notes")}</label>
-                            <textarea value={data.notes} onChange={e => setData('notes', e.target.value)} rows={2} className={inputClass} />
+                            <textarea value={data.notes} onChange={e => setField('notes', e.target.value)} rows={2} className={inputClass} />
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,8 @@
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, useForm, usePage, router } from '@inertiajs/react';
 import { User, Lead, Project, PageProps } from '@/types';
 import { formatStatus } from '@/lib/utils';
+import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
     clients: User[];
     developers: User[];
     leads: Lead[];
+    projectTypes: { value: string; label: string; commission_rate: number }[];
 }
 
 const inputClass = 'w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400';
@@ -17,17 +19,20 @@ const cardClass = 'bg-white dark:bg-gray-800 rounded-xl border border-gray-100 d
 const headingClass = 'text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4';
 
 const statuses = ['planning', 'in_progress', 'review', 'completed', 'on_hold', 'cancelled'];
-const siteTypes = ['vitrine', 'e-commerce', 'blog', 'portfolio', 'saas', 'web_app', 'mobile_app', 'other'];
-
 function toDateInput(val: string | null | undefined): string {
     if (!val) return '';
     return val.substring(0, 10);
 }
 
-export default function ProjectEdit({ project, clients, developers, leads }: Props) {
+export default function ProjectEdit({ project, clients, developers, leads, projectTypes }: Props) {
     const { t } = useTranslation();
     const { auth } = usePage<PageProps>().props;
-    const { data, setData, put, processing, errors } = useForm({
+    const [logoPreview, setLogoPreview] = useState<string | null>(
+        project.image ? (project.image.startsWith('http') ? project.image : `/storage/${project.image}`) : null
+    );
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const { data, setData, post, processing, errors } = useForm<Record<string, any>>({
+        _method: 'PUT',
         nom_societe: project.nom_societe || '',
         type_societe: project.type_societe || '',
         type_site: project.type_site || '',
@@ -43,12 +48,24 @@ export default function ProjectEdit({ project, clients, developers, leads }: Pro
         budget: project.budget ? String(project.budget) : '',
         github_repo: project.github_repo || '',
         show_commits_to_client: project.show_commits_to_client || false,
+        image: null as File | null,
     });
+
+    const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) { setData('image', file); setLogoPreview(URL.createObjectURL(file)); }
+    };
+    const removeLogo = () => { setData('image', null); setLogoPreview(null); if (fileInputRef.current) fileInputRef.current.value = ''; };
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(`/admin/projects/${project.id}`);
+        post(`/admin/projects/${project.id}`, {
+            forceFormData: true,
+            preserveScroll: true,
+            onError: (errs) => console.error('Validation errors:', JSON.stringify(errs, null, 2)),
+        });
     };
+    const submitting = processing;
 
     return (
         <AdminLayout title={t("Edit Project")} header={t("Edit Project")}>
@@ -59,6 +76,37 @@ export default function ProjectEdit({ project, clients, developers, leads }: Pro
             </div>
 
             <form onSubmit={submit} className="space-y-6">
+                {/* Project Logo */}
+                <div className={cardClass}>
+                    <h3 className={headingClass}>{t("Project Logo")}</h3>
+                    <div className="flex items-center gap-6">
+                        <div className="relative group">
+                            {logoPreview ? (
+                                <img src={logoPreview} alt="Logo" className="w-20 h-20 rounded-xl object-contain bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600" />
+                            ) : (
+                                <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 border-2 border-dashed border-gray-300 dark:border-gray-500 flex items-center justify-center">
+                                    <span className="text-xl font-bold text-gray-400 dark:text-gray-500">
+                                        {(data.nom_societe || '?').substring(0, 2).toUpperCase()}
+                                    </span>
+                                </div>
+                            )}
+                            {logoPreview && (
+                                <button type="button" onClick={removeLogo} className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" title={t('Remove')}>
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
+                            )}
+                        </div>
+                        <div>
+                            <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/svg+xml,image/webp" onChange={handleLogoChange} className="hidden" id="project-logo-upload" />
+                            <label htmlFor="project-logo-upload" className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-colors">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+                                {logoPreview ? t('Changer le logo') : t('Ajouter un logo')}
+                            </label>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">{t('JPG, PNG, SVG ou WebP. Max 2 Mo.')}</p>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Project Info */}
                 <div className={cardClass}>
                     <h3 className={headingClass}>{t("Project Information")}</h3>
@@ -75,8 +123,10 @@ export default function ProjectEdit({ project, clients, developers, leads }: Pro
                         <div>
                             <label className={labelClass}>{t("Site Type")}</label>
                             <select value={data.type_site} onChange={e => setData('type_site', e.target.value)} className={inputClass}>
-                                <option value="">{t("Select type")}</option>
-                                {siteTypes.map(st => <option key={st} value={st}>{formatStatus(st)}</option>)}
+                                <option value="">{t('Sélectionner le type')}</option>
+                                {projectTypes.map((pt: any) => (
+                                    <option key={pt.value} value={pt.value}>{pt.label}</option>
+                                ))}
                             </select>
                         </div>
                         <div>
@@ -182,8 +232,8 @@ export default function ProjectEdit({ project, clients, developers, leads }: Pro
                 {/* Actions */}
                 <div className="flex items-center justify-end gap-3">
                     <Link href={`/admin/projects/${project.id}`} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">{t('Cancel')}</Link>
-                    <button type="submit" disabled={processing} className="px-6 py-2 text-sm font-semibold bg-teal-300 text-gray-900 rounded-lg hover:bg-teal-400 disabled:opacity-50 transition-colors flex items-center gap-2">
-                        {processing && <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>}
+                    <button type="submit" disabled={submitting} className="px-6 py-2 text-sm font-semibold bg-teal-300 text-gray-900 rounded-lg hover:bg-teal-400 disabled:opacity-50 transition-colors flex items-center gap-2">
+                        {submitting && <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>}
                         {t('Update Project')}
                     </button>
                 </div>

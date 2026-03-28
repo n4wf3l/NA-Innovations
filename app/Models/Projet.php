@@ -61,6 +61,16 @@ class Projet extends Model
         return $this->belongsTo(User::class, 'client_id');
     }
 
+    public function budgetLines()
+    {
+        return $this->hasMany(ProjectBudgetLine::class, 'project_id');
+    }
+
+    public function sentEmails()
+    {
+        return $this->morphMany(SentEmail::class, 'emailable');
+    }
+
     public function githubLinkedBy()
     {
         return $this->belongsTo(User::class, 'github_linked_by');
@@ -131,5 +141,10 @@ class Projet extends Model
     public function documents()
     {
         return $this->morphMany(Document::class, 'documentable');
+    }
+
+    public function projectDocuments()
+    {
+        return $this->hasMany(ProjectDocument::class, 'project_id');
     }
 }

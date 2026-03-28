@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=bebas-neue:400|figtree:400,500,600,700&display=swap" rel="stylesheet" />
     @vite('resources/js/public.ts')
+    @if(config('services.turnstile.site_key'))
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    @endif
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
@@ -40,6 +43,15 @@
             box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.1), 0 0 20px rgba(94, 234, 212, 0.05);
         }
         .input-field::placeholder { color: #475569; }
+        /* Fix Chrome/Edge autocomplete forcing white background */
+        .input-field:-webkit-autofill,
+        .input-field:-webkit-autofill:hover,
+        .input-field:-webkit-autofill:focus {
+            -webkit-text-fill-color: #ffffff;
+            -webkit-box-shadow: 0 0 0 1000px rgba(15, 23, 42, 0.9) inset;
+            border-color: rgba(71, 85, 105, 0.4);
+            transition: background-color 5000s ease-in-out 0s;
+        }
         .btn-submit {
             background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
             transition: all 0.25s ease;
@@ -194,6 +206,14 @@
                                 <input id="remember_me" type="checkbox" name="remember" class="w-4 h-4 rounded border-slate-600 bg-slate-700/50 text-teal-300 focus:ring-teal-300/20 focus:ring-offset-0" />
                                 <span class="ml-2.5 text-sm text-slate-400 group-hover:text-slate-300 transition-colors">{{ __('Remember me') }}</span>
                             </label>
+
+                            {{-- Cloudflare Turnstile --}}
+                            @if(config('services.turnstile.site_key'))
+                                <div class="cf-turnstile flex justify-center" data-sitekey="{{ config('services.turnstile.site_key') }}" data-theme="dark" data-callback="onTurnstileSuccess"></div>
+                                @error('captcha')
+                                    <p class="text-sm text-red-400 text-center">{{ $message }}</p>
+                                @enderror
+                            @endif
 
                             {{-- Submit --}}
                             <button type="submit" :disabled="submitting" class="btn-submit w-full py-3.5 px-4 rounded-xl text-white font-semibold text-sm tracking-wide flex items-center justify-center space-x-2">

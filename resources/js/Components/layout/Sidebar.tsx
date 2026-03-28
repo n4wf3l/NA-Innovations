@@ -23,23 +23,33 @@ interface SidebarProps {
     currentPath: string;
     collapsed: boolean;
     hovered: boolean;
+    tooltipSide?: 'right' | 'left';
 }
 
-function Tooltip({ text, anchor }: { text: string; anchor: DOMRect | null }) {
+function Tooltip({ text, anchor, side = 'right' }: { text: string; anchor: DOMRect | null; side?: 'right' | 'left' }) {
     if (!anchor) return null;
+    const isLeft = side === 'left';
     return createPortal(
         <div
             className="fixed z-[99999] pointer-events-none"
             style={{
                 top: anchor.top + anchor.height / 2,
-                left: anchor.right + 12,
-                transform: 'translateY(-50%)',
+                ...(isLeft
+                    ? { right: window.innerWidth - anchor.left + 12, transform: 'translateY(-50%)' }
+                    : { left: anchor.right + 12, transform: 'translateY(-50%)' }
+                ),
             }}
         >
-            <div className="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xl whitespace-nowrap animate-fade-in flex items-center">
-                <svg className="w-2 h-2 text-slate-800 absolute -left-[5px] top-1/2 -translate-y-1/2" viewBox="0 0 6 10" fill="currentColor">
-                    <path d="M6 0L0 5l6 5z" />
-                </svg>
+            <div className="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xl whitespace-nowrap animate-fade-in flex items-center relative">
+                {isLeft ? (
+                    <svg className="w-2 h-2 text-slate-800 absolute -right-[5px] top-1/2 -translate-y-1/2" viewBox="0 0 6 10" fill="currentColor">
+                        <path d="M0 0l6 5-6 5z" />
+                    </svg>
+                ) : (
+                    <svg className="w-2 h-2 text-slate-800 absolute -left-[5px] top-1/2 -translate-y-1/2" viewBox="0 0 6 10" fill="currentColor">
+                        <path d="M6 0L0 5l6 5z" />
+                    </svg>
+                )}
                 {text}
             </div>
         </div>,
@@ -47,7 +57,7 @@ function Tooltip({ text, anchor }: { text: string; anchor: DOMRect | null }) {
     );
 }
 
-export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedFooter, cta, accentColor, currentPath, collapsed, hovered }: SidebarProps) {
+export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedFooter, cta, accentColor, currentPath, collapsed, hovered, tooltipSide = 'right' }: SidebarProps) {
     const { t } = useTranslation();
     const isSmall = collapsed && !hovered;
     const [tooltip, setTooltip] = useState<{ text: string; rect: DOMRect } | null>(null);
@@ -135,7 +145,7 @@ export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedF
             {isSmall ? (collapsedFooter || null) : (footer && <div className="flex-shrink-0">{footer}</div>)}
 
             {/* Tooltip portal */}
-            {isSmall && tooltip && <Tooltip text={tooltip.text} anchor={tooltip.rect} />}
+            {isSmall && tooltip && <Tooltip text={tooltip.text} anchor={tooltip.rect} side={tooltipSide} />}
         </div>
     );
 }

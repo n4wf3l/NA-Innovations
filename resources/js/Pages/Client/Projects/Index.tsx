@@ -1,7 +1,7 @@
 import ClientLayout from '@/Layouts/ClientLayout';
 import { Head, Link } from '@inertiajs/react';
 import Badge from '@/Components/ui/Badge';
-import { formatDate } from '@/lib/utils';
+import { formatDate, formatProjectType } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import PipelineStepper from '@/Components/ui/PipelineStepper';
 
@@ -39,7 +39,7 @@ export default function ClientProjectsIndex({ projects }: Props) {
                                 <div className="flex items-start justify-between mb-4">
                                     <div>
                                         <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">{project.nom_societe}</h3>
-                                        <p className="text-sm text-gray-400 dark:text-gray-500 mt-0.5">{project.type_site || project.description?.substring(0, 80) || '--'}</p>
+                                        <p className="text-sm text-gray-400 dark:text-gray-500 mt-0.5">{formatProjectType(project.type_site) !== '--' ? formatProjectType(project.type_site) : project.description?.substring(0, 80) || '--'}</p>
                                     </div>
                                     <Badge status={project.status} />
                                 </div>

@@ -19,6 +19,7 @@ export interface User {
     city?: string;
     postal_code?: string;
     country?: string;
+    avatar?: string | null;
     preferences?: UserPreferences;
     created_at?: string;
 }
@@ -89,6 +90,8 @@ export interface Quote {
     deposit_amount: number;
     issue_date: string;
     valid_until?: string;
+    locale?: string;
+    is_external?: boolean;
     created_at: string;
     items?: QuoteItem[];
     client?: User;
@@ -121,6 +124,8 @@ export interface Invoice {
     amount_due: number;
     issue_date: string;
     due_date: string;
+    locale?: string;
+    is_external?: boolean;
     created_at: string;
     client?: User;
     quote?: Quote;

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Commission;
+use App\Models\ProjectBudgetLine;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Lead;
@@ -522,9 +523,113 @@ class RealDataSeeder extends Seeder
             ['user_id' => $nawfel->id, 'description' => 'Payment processing via Stripe Connect is now functional. Merchants can receive tips directly.', 'created_at' => now()->subDays(5)]
         );
 
+        // ─── RTA POKER + BUDGET LINES ────────────────────────
+        $rtaPoker = Projet::firstOrCreate(
+            ['nom_societe' => 'RTA Poker'],
+            [
+                'type_site' => 'Application Web',
+                'type_societe' => 'Gaming',
+                'status' => 'in_progress',
+                'budget' => 4500,
+                'description' => 'Application de poker en ligne avec revenue share mensuel.',
+                'start_date' => now()->subDays(30),
+                'deadline' => now()->addDays(35),
+                'developer_id' => $nawfel->id,
+            ]
+        );
+
+        ProjectBudgetLine::firstOrCreate(
+            ['project_id' => $rtaPoker->id, 'label' => 'Revenue share mensuel'],
+            ['type' => 'income', 'amount' => 3000.00, 'frequency' => 'monthly', 'trigger' => 'from_date', 'start_date' => now()->addDays(35), 'is_confirmed' => false, 'notes' => "Promis par le client si l'app sort en mai 2026"]
+        );
+        ProjectBudgetLine::firstOrCreate(
+            ['project_id' => $rtaPoker->id, 'label' => 'Paiement developpement'],
+            ['type' => 'income', 'amount' => 4500.00, 'frequency' => 'one_time', 'trigger' => 'immediate', 'is_confirmed' => true, 'notes' => 'Paiement unique pour le developpement']
+        );
+        ProjectBudgetLine::firstOrCreate(
+            ['project_id' => $rtaPoker->id, 'label' => 'Serveur & hebergement'],
+            ['type' => 'expense', 'amount' => 49.00, 'frequency' => 'monthly', 'trigger' => 'from_date', 'start_date' => now()->subDays(25), 'is_confirmed' => true]
+        );
+        ProjectBudgetLine::firstOrCreate(
+            ['project_id' => $rtaPoker->id, 'label' => 'Nom de domaine'],
+            ['type' => 'expense', 'amount' => 15.00, 'frequency' => 'annual', 'trigger' => 'from_date', 'start_date' => now()->subDays(25), 'is_confirmed' => true]
+        );
+        ProjectBudgetLine::firstOrCreate(
+            ['project_id' => $rtaPoker->id, 'label' => 'API Stripe (frais)'],
+            ['type' => 'expense', 'amount' => 120.00, 'frequency' => 'monthly', 'trigger' => 'from_date', 'start_date' => now()->addDays(35), 'is_confirmed' => false, 'notes' => 'Estimation frais de transaction Stripe']
+        );
+
+        // ─── BUDGET LINES: Academie Congo ─────────────────────
+        ProjectBudgetLine::firstOrCreate(
+            ['project_id' => $projAcademie->id, 'label' => 'Maintenance mensuelle'],
+            ['type' => 'income', 'amount' => 100.00, 'frequency' => 'monthly', 'trigger' => 'from_date', 'start_date' => '2026-05-01', 'is_confirmed' => true, 'notes' => 'Contrat maintenance mensuel']
+        );
+
+        // ─── BUDGET LINES: EasyWed ──────────────────────────
+        $projEasywed = Projet::firstOrCreate(
+            ['nom_societe' => 'EasyWed'],
+            ['type_site' => 'Application Web', 'type_societe' => 'Wedding', 'status' => 'completed', 'budget' => 2600, 'description' => 'Plateforme de gestion de mariage', 'start_date' => now()->subDays(60), 'end_date' => now()->subDays(10), 'developer_id' => $nawfel->id]
+        );
+        ProjectBudgetLine::firstOrCreate(
+            ['project_id' => $projEasywed->id, 'label' => 'Abonnement mensuel client'],
+            ['type' => 'income', 'amount' => 150.00, 'frequency' => 'monthly', 'trigger' => 'from_date', 'start_date' => '2026-05-01', 'is_confirmed' => true, 'notes' => 'Revenu recurrent post-livraison']
+        );
+        ProjectBudgetLine::firstOrCreate(
+            ['project_id' => $projEasywed->id, 'label' => 'Developpement initial'],
+            ['type' => 'income', 'amount' => 2600.00, 'frequency' => 'one_time', 'trigger' => 'immediate', 'is_confirmed' => true]
+        );
+
+        // ─── BUDGET LINES: TipTong ──────────────────────────
+        ProjectBudgetLine::firstOrCreate(
+            ['project_id' => $projTiptong->id, 'label' => 'Revenue share mensuel'],
+            ['type' => 'income', 'amount' => 2000.00, 'frequency' => 'monthly', 'trigger' => 'from_date', 'start_date' => '2026-06-01', 'is_confirmed' => false, 'notes' => 'Revenue share apres lancement']
+        );
+
+        // ─── SOCIAL MEDIA LINKS ─────────────────────────────────
+        $socialLinks = [
+            ['group' => 'social', 'key' => 'social.instagram', 'value' => 'https://www.instagram.com/na.innovations/', 'type' => 'string', 'description' => 'Instagram URL'],
+            ['group' => 'social', 'key' => 'social.twitter', 'value' => 'https://twitter.com/AjariNawfel', 'type' => 'string', 'description' => 'X (Twitter) URL'],
+            ['group' => 'social', 'key' => 'social.linkedin', 'value' => 'https://be.linkedin.com/in/nawfel-ajari', 'type' => 'string', 'description' => 'LinkedIn URL'],
+            ['group' => 'social', 'key' => 'social.github', 'value' => 'https://github.com/n4wf3l', 'type' => 'string', 'description' => 'GitHub URL'],
+            ['group' => 'social', 'key' => 'social.facebook', 'value' => '', 'type' => 'string', 'description' => 'Facebook URL'],
+            ['group' => 'social', 'key' => 'social.youtube', 'value' => '', 'type' => 'string', 'description' => 'YouTube URL'],
+            ['group' => 'social', 'key' => 'social.tiktok', 'value' => '', 'type' => 'string', 'description' => 'TikTok URL'],
+        ];
+        foreach ($socialLinks as $s) {
+            Setting::firstOrCreate(['key' => $s['key']], $s);
+        }
+
+        // Company branding
+        $branding = [
+            ['group' => 'branding', 'key' => 'branding.logo_path', 'value' => '', 'type' => 'string', 'description' => 'Logo de l\'entreprise (chemin du fichier)'],
+            ['group' => 'branding', 'key' => 'branding.company_name', 'value' => 'NA Innovations', 'type' => 'string', 'description' => 'Nom de l\'entreprise'],
+            ['group' => 'branding', 'key' => 'branding.tagline', 'value' => 'Innovative solutions designed for you.', 'type' => 'string', 'description' => 'Slogan'],
+        ];
+        foreach ($branding as $s) {
+            Setting::firstOrCreate(['key' => $s['key']], $s);
+        }
+
         // ─── SETTINGS ─────────────────────────────────────────
         Setting::set('quote.next_number', '10');
         Setting::set('invoice.next_number', '10');
+
+        // Commission rates by project type
+        $commissionRates = [
+            ['group' => 'commission', 'key' => 'commission.rate.static_site', 'value' => '20', 'type' => 'integer', 'description' => 'Site statique / Landing page'],
+            ['group' => 'commission', 'key' => 'commission.rate.showcase_site', 'value' => '20', 'type' => 'integer', 'description' => 'Site vitrine'],
+            ['group' => 'commission', 'key' => 'commission.rate.blog_portfolio', 'value' => '18', 'type' => 'integer', 'description' => 'Blog / Portfolio'],
+            ['group' => 'commission', 'key' => 'commission.rate.ecommerce', 'value' => '12', 'type' => 'integer', 'description' => 'E-commerce'],
+            ['group' => 'commission', 'key' => 'commission.rate.custom_cms', 'value' => '12', 'type' => 'integer', 'description' => 'Site sur mesure avec CMS'],
+            ['group' => 'commission', 'key' => 'commission.rate.platform_saas', 'value' => '8', 'type' => 'integer', 'description' => 'Plateforme web / SaaS'],
+            ['group' => 'commission', 'key' => 'commission.rate.mobile_app', 'value' => '6', 'type' => 'integer', 'description' => 'Application mobile'],
+            ['group' => 'commission', 'key' => 'commission.rate.desktop_app', 'value' => '6', 'type' => 'integer', 'description' => 'Application desktop'],
+            ['group' => 'commission', 'key' => 'commission.rate.api_backend', 'value' => '8', 'type' => 'integer', 'description' => 'API / Backend'],
+            ['group' => 'commission', 'key' => 'commission.rate.maintenance', 'value' => '10', 'type' => 'integer', 'description' => 'Maintenance / Support mensuel'],
+            ['group' => 'commission', 'key' => 'commission.rate.redesign', 'value' => '10', 'type' => 'integer', 'description' => 'Refonte / Migration'],
+        ];
+        foreach ($commissionRates as $s) {
+            Setting::firstOrCreate(['key' => $s['key']], $s);
+        }
 
         echo "Real data seeded successfully.\n";
     }

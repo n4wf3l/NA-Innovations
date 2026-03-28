@@ -166,7 +166,15 @@ export default function QuoteShow({ quote, emailTemplates }: Props) {
                                     <h2 className="text-white text-xl font-bold">{quote.quote_number}</h2>
                                     <p className="text-white/80 text-sm mt-1">{quote.title}</p>
                                 </div>
-                                <Badge status={quote.status} className="text-sm" />
+                                <div className="flex items-center gap-2">
+                                    {(quote as any).is_external && (
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-white/20 text-white">
+                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+                                            {t('External document')}
+                                        </span>
+                                    )}
+                                    <Badge status={quote.status} className="text-sm" />
+                                </div>
                             </div>
                         </div>
                         <div className="px-6 py-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm border-b border-gray-50 dark:border-gray-700">

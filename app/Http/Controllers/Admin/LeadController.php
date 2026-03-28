@@ -59,6 +59,7 @@ class LeadController extends BaseAdminController
 
         return Inertia::render('Admin/Leads/Create', [
             'partners' => $partners,
+            'projectTypes' => \App\Enums\ProjectType::allWithRates(),
         ]);
     }
 
@@ -76,7 +77,7 @@ class LeadController extends BaseAdminController
             'status' => 'required|in:new,contacted,brief_pending,brief_completed,call_scheduled,qualified,not_qualified,quote_draft,quote_sent,won,lost',
             'source' => 'required|in:referral,organic,website_contact,social_media,word_of_mouth,advertising,other',
             'referral_partner_id' => 'nullable|exists:referral_partners,id',
-            'service_interest' => 'nullable|string|max:255',
+            'service_interest' => 'nullable|string|in:' . implode(',', array_keys(\App\Enums\ProjectType::TYPES)),
             'estimated_budget' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
@@ -118,6 +119,7 @@ class LeadController extends BaseAdminController
         return Inertia::render('Admin/Leads/Edit', [
             'lead' => $lead,
             'partners' => $partners,
+            'projectTypes' => \App\Enums\ProjectType::allWithRates(),
         ]);
     }
 
@@ -135,7 +137,7 @@ class LeadController extends BaseAdminController
             'status' => 'required|in:new,contacted,brief_pending,brief_completed,call_scheduled,qualified,not_qualified,quote_draft,quote_sent,won,lost',
             'source' => 'required|in:referral,organic,website_contact,social_media,word_of_mouth,advertising,other',
             'referral_partner_id' => 'nullable|exists:referral_partners,id',
-            'service_interest' => 'nullable|string|max:255',
+            'service_interest' => 'nullable|string|in:' . implode(',', array_keys(\App\Enums\ProjectType::TYPES)),
             'estimated_budget' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
         ]);

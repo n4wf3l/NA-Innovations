@@ -2,6 +2,7 @@ import DevLayout from '@/Layouts/DevLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import Badge from '@/Components/ui/Badge';
 import ProtectedAmount from '@/Components/ui/ProtectedAmount';
+import { formatProjectType } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -129,7 +130,7 @@ export default function DevDashboard({ myProjects, pendingProjects, stats }: Pro
                                     <tr key={project.id} className="border-b border-gray-50 dark:border-gray-700 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors">
                                         <td className="px-6 py-4">
                                             <p className="text-sm font-medium text-gray-900 dark:text-white">{project.nom_societe || 'Untitled'}</p>
-                                            <p className="text-xs text-gray-400">{project.type_site || project.langage_programmation || '-'}</p>
+                                            <p className="text-xs text-gray-400">{formatProjectType(project.type_site) !== '--' ? formatProjectType(project.type_site) : project.langage_programmation || '-'}</p>
                                         </td>
                                         <td className="px-6 py-4 hidden sm:table-cell">
                                             <p className="text-sm text-gray-600 dark:text-gray-400">{project.client?.name || '-'}</p>
@@ -188,7 +189,7 @@ function PendingProjectCard({ project }: { project: any }) {
                 {project.type_site && (
                     <div className="flex items-center text-xs text-gray-500">
                         <svg className="w-3.5 h-3.5 mr-1.5 text-gray-300 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" /></svg>
-                        {project.type_site}
+                        {formatProjectType(project.type_site)}
                     </div>
                 )}
                 {partnerName && (

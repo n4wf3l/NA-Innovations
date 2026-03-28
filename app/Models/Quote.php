@@ -54,6 +54,7 @@ class Quote extends Model
         'locale',
         'include_signature',
         'signature_data',
+        'is_external',
     ];
 
     /**
@@ -76,6 +77,7 @@ class Quote extends Model
         'viewed_at' => 'datetime',
         'accepted_at' => 'datetime',
         'rejected_at' => 'datetime',
+        'is_external' => 'boolean',
     ];
 
     public function lead()

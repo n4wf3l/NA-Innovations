@@ -7,6 +7,7 @@ use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -69,10 +70,17 @@ class ClientController extends BaseAdminController
             'postal_code' => 'nullable|string|max:20',
             'country' => 'nullable|string|max:100',
             'financial_pin' => 'nullable|string|min:4|max:6',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
         ]);
 
         $financialPin = $validated['financial_pin'] ?? null;
         unset($validated['financial_pin']);
+
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            $validated['avatar'] = $request->file('logo')->store('logos', 'public');
+        }
+        unset($validated['logo']);
 
         $validated['role'] = 'client';
         $validated['password'] = Hash::make(Str::random(32));
@@ -152,6 +160,7 @@ class ClientController extends BaseAdminController
             'postal_code' => 'nullable|string|max:20',
             'country' => 'nullable|string|max:100',
             'financial_pin' => 'nullable|string|min:4|max:6',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
         ]);
 
         // Update financial PIN if provided
@@ -159,6 +168,16 @@ class ClientController extends BaseAdminController
             $client->update(['financial_pin' => Hash::make($validated['financial_pin'])]);
         }
         unset($validated['financial_pin']);
+
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            // Delete old logo
+            if ($client->avatar) {
+                Storage::disk('public')->delete($client->avatar);
+            }
+            $validated['avatar'] = $request->file('logo')->store('logos', 'public');
+        }
+        unset($validated['logo']);
 
         $client->update($validated);
 

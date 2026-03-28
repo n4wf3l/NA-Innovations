@@ -28,9 +28,9 @@
 <body>
 <a href="#" id="scrollToTop"><i class="fas fa-arrow-up"></i></a>
     <div id="site">
-<div class="flex flex-col py-12 bg-gray-900">
+<div class="flex flex-col bg-gray-900 relative overflow-hidden" style="min-height: 100vh;">
     <!-- Logo NA with icone to Logout if Connected -->
-    <div class="flex justify-between items-center self-center w-full max-w-[1298px] px-4 relative" data-aos="zoom-in">
+    <div class="flex justify-between items-center self-center w-full max-w-[1298px] px-4 py-5 relative" data-aos="zoom-in">
                 <div class="text-3xl font-bold text-white">NA
                     @auth 
                     <span id="logoutMenuBtn" class="ml-2 text-teal-300 cursor-pointer">
@@ -91,10 +91,24 @@
             </div>
 
             
-       <div class="flex gap-5 justify-between items-center self-center mt-44 w-full max-w-[1012px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full border border-white p-4 relative" data-aos="zoom-in">
+       <!-- Hero centered container -->
+       <div class="flex-1 flex flex-col items-center justify-center relative px-4">
+       <!-- Animated background words -->
+       <div class="hero-bg-words" aria-hidden="true">
+           <span class="hero-word hero-word-1">DEVELOPMENT</span>
+           <span class="hero-word hero-word-2">WEB</span>
+           <span class="hero-word hero-word-3">MOBILE</span>
+           <span class="hero-word hero-word-4">SOFTWARE</span>
+           <span class="hero-word hero-word-5">SAAS</span>
+           <span class="hero-word hero-word-6">INNOVATION</span>
+           <span class="hero-word hero-word-7">DIGITAL</span>
+           <span class="hero-word hero-word-8">CODE</span>
+       </div>
+
+       <div class="flex gap-5 justify-between items-center w-full max-w-[1100px] max-md:flex-wrap max-md:max-w-full border border-white/20 p-6 md:p-10 relative z-10" data-aos="zoom-in">
     <div class="flex flex-col flex-1 px-5 max-md:max-w-full mx-1">
         <div class="text-sm md:text-base lg:text-xl font-medium text-neutral-400 max-md:max-w-full bebas-neue-regular hover:text-teal-300 transition-colors duration-700" style="letter-spacing: 2px">
-            Web Development, Mobile, and Software | Video Editing and Graphic Design | Photography
+            Web Development, Mobile &amp; Software Solutions
         </div>
         <div class="mt-11 text-8xl font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl hover:text-teal-300 transition-colors duration-700">
             Innovative solutions
@@ -102,25 +116,30 @@
             designed for you.
         </div>
         <div class="mt-11 text-xs lg:text-sm font-bold text-white max-md:mt-10 max-md:max-w-full max-md:text-4xl flex items-center">
-    
             <p class="mt-10 ml-3 text-sm lg:text-base bebas-neue-regular hover:text-teal-300 transition-colors duration-700" style="letter-spacing: 1px">From idea to application</p>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="mt-12 ml-3">
+            <a href="{{ route('contact') }}"
+               class="inline-flex items-center gap-3 px-10 py-5 bg-teal-400 text-gray-900 text-xl font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_40px_rgba(94,234,212,0.3)] bebas-neue-regular"
+               style="letter-spacing: 3px">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                REQUEST A QUOTE
+            </a>
         </div>
     </div>
 
-    <button id="background-toggle-button" class="toggle-button z-10">
-        <span id="toggle-icon" class="toggle-icon">🌙</span>
-    </button>
-
 <div class="flex flex-col items-center justify-center w-full gap-8">
-    <div class="relative hover-trigger" style=" height: auto;"> <!-- Force largeur -->
+    <div class="relative hover-trigger" style=" height: auto;">
         <div class="relative">
-            <img src="{{ asset('bitmoji.png') }}" 
-                 alt="Bitmoji" 
+            <img src="{{ asset('bitmoji.png') }}"
+                 alt="Bitmoji"
                  class="w-full h-auto max-md:hidden transition-all duration-500 ease-in-out hover:opacity-0"
-                 style="width: 15rem; position: absolute; top: 0; left: 0;" 
+                 style="width: 15rem; position: absolute; top: 0; left: 0;"
                  id="bitmoji-image">
-            <img src="{{ asset('bitmoji2.png') }}" 
-                 alt="Bitmoji Hover" 
+            <img src="{{ asset('bitmoji2.png') }}"
+                 alt="Bitmoji Hover"
                  class="w-full h-auto max-md:hidden transition-all duration-500 ease-in-out"
                  id="bitmoji-image-hover"
                  style="width: 16rem;">
@@ -128,21 +147,22 @@
     </div>
 
     <!-- Social media -->
-    <div class="flex gap-8 items-center justify-center" data-aos="zoom-in">
-        <a href="https://www.instagram.com/na.innovations/" class="w-24 h-24 hover:bg-teal-300 hover:rounded-full cursor-pointer ">    
-            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/949187d7ee1e2afd8a023c671f59d74c39c29d054926767f17b217fed5475910?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-full brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"/>
+    <div class="flex gap-6 items-center justify-center" data-aos="zoom-in">
+        <a href="https://www.instagram.com/na.innovations/" class="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 text-white hover:bg-teal-300 hover:border-teal-300 hover:text-gray-900 transition-all duration-300">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
         </a>
-        <a href="https://twitter.com/AjariNawfel" class="w-24 h-24 hover:bg-teal-300 hover:rounded-full cursor-pointer">   
-            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/a7d60a3960400d8a490b85c9fa9558bb8a2473d9b8b90dc4a3c6c99c2b361f7f?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-full brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" />
+        <a href="https://twitter.com/AjariNawfel" class="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 text-white hover:bg-teal-300 hover:border-teal-300 hover:text-gray-900 transition-all duration-300">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
         </a>
-        <a href="https://be.linkedin.com/in/nawfel-ajari" class="w-24 h-24 hover:bg-teal-300 hover:rounded-full cursor-pointer">   
-            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/20b91319aa8c73e3d645eb4aeefedc7f337acd87cc2bcea1a90ca77d18e63440?apiKey=d3784f4c52b7403885832573b3287702&" class="w-full h-full brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" />
+        <a href="https://be.linkedin.com/in/nawfel-ajari" class="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 text-white hover:bg-teal-300 hover:border-teal-300 hover:text-gray-900 transition-all duration-300">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
         </a>
     </div>
 </div>
 
 
 </div>
+       </div><!-- end hero centered container -->
 
 </div>
 
@@ -179,17 +199,21 @@
             <div class="mt-8 mb-6" data-aos="zoom-in">
                 <h2 class="text-3xl bebas-neue-regular"><i class="fas fa-globe mr-2"></i>Custom Development</h2>
                 <p class="text-2xl mt-4">
-                    I’m Nawfel Ajari, full-stack developer and founder of <span class="text-teal-300">NA Innovations</span>.  
-                    I specialize in building <span class="text-teal-300">high-performing</span>, <span class="text-teal-300">conversion-focused</span> digital solutions — from custom websites and software to mobile applications.  
-                    Whether it’s a showcase site, e-commerce platform, interactive web app, or <span class="text-teal-300">SaaS</span>, I take your idea from concept to deployment, ensuring both quality and scalability.
+                    At <span class="text-teal-300">NA Innovations</span>, we specialize in building
+                    <span class="text-teal-300">high-performing</span>, <span class="text-teal-300">conversion-focused</span> digital solutions
+                    — from custom websites and software to mobile applications.
+                    Whether it’s a showcase site, e-commerce platform, interactive web app, or <span class="text-teal-300">SaaS</span>,
+                    we take your idea from concept to deployment, ensuring both quality and scalability.
                 </p>
             </div>
 
             <div class="mb-6" data-aos="zoom-in">
                 <h3 class="text-3xl bebas-neue-regular"><i class="fas fa-mobile-alt mr-2"></i>Mobile Applications</h3>
                 <p class="text-2xl mt-4">
-                    I design and develop <span class="text-teal-300">native</span>, <span class="text-teal-300">hybrid</span>, and <span class="text-teal-300">PWA</span> applications with seamless user experiences across all devices.  
-                    My process includes <span class="text-teal-300">planning</span>, <span class="text-teal-300">design</span>, development, testing, and ongoing maintenance to ensure long-term success.
+                    We design and develop <span class="text-teal-300">native</span>, <span class="text-teal-300">hybrid</span>,
+                    and <span class="text-teal-300">PWA</span> applications with seamless user experiences across all devices.
+                    Our process includes <span class="text-teal-300">planning</span>, <span class="text-teal-300">design</span>,
+                    development, testing, and ongoing maintenance to ensure long-term success.
                 </p>
             </div>
 
@@ -199,18 +223,19 @@
         <div class="col-span-1 max-w-xl mx-auto text-white text-left md:text-left" style="letter-spacing: 0px">
 
             <div class="mt-8 mb-6" data-aos="zoom-in">
-                <h2 class="text-3xl bebas-neue-regular"><i class="fas fa-palette mr-2"></i>Design, Video & Photography</h2>
+                <h2 class="text-3xl bebas-neue-regular"><i class="fas fa-server mr-2"></i>SaaS & Platforms</h2>
                 <p class="text-2xl mt-4">
-                    For creative needs such as <span class="text-teal-300">graphic design</span>, <span class="text-teal-300">video editing</span>, and photography,  
-                    I work with a <span class="text-teal-300">trusted network of experts</span> who deliver exceptional quality.  
-                    This way, you benefit from premium results while having me as your <span class="text-teal-300">single point of contact</span> throughout the entire project.
+                    We build <span class="text-teal-300">complete SaaS platforms</span>, internal tools, and custom dashboards
+                    tailored to your business logic.
+                    From <span class="text-teal-300">user management</span> to <span class="text-teal-300">payment integration</span>
+                    and real-time data — we handle the full stack so you can focus on growing your business.
                 </p>
             </div>
 
             <div class="mt-8 mb-6" data-aos="zoom-in">
-                <h2 class="text-3xl bebas-neue-regular">🚀 Let’s Build Something Great</h2>
+                <h2 class="text-3xl bebas-neue-regular"><i class="fas fa-rocket mr-2"></i> Let’s Build Something Great</h2>
                 <p class="text-2xl mt-4">
-                    Your vision, my code. Together, we can turn your ideas into powerful <span class="text-teal-300">digital products</span> that stand out.
+                    Your vision, our expertise. Together, we turn ideas into powerful <span class="text-teal-300">digital products</span> that stand out.
                 </p>
             </div>
 
@@ -237,7 +262,7 @@
     Our Projects
 </div>
 <hr class="mt-8">
-<h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">💼 Published Websites</h1>
+<h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular" style="letter-spacing: 2px" data-aos="zoom-in">Published Websites</h1>
 <div class="container mx-auto text-lg text-center max-md:max-w-full mt-8 p-4" data-aos="zoom-in">
     <p class="mb-4">Explore our portfolio of custom websites designed with precision and creativity for businesses across various industries.</p>
     <p class="mb-4">Each project showcases our commitment to quality, attention to detail, and ability to transform client visions into powerful online experiences.</p>
@@ -310,10 +335,10 @@
 
 
 <section class="py-16 text-black bg-gray-900">
-<h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular text-white" style="letter-spacing: 2px" data-aos="zoom-in">🌱 Open Source Projects</h1>
+<h1 class="text-2xl font-semibold text-center mt-12 p-2 bebas-neue-regular text-white" style="letter-spacing: 2px" data-aos="zoom-in">Open Source Projects</h1>
 <div class="container mx-auto text-lg text-center max-md:max-w-full mt-8 p-4" data-aos="zoom-in">
-    <p class="mb-4 text-white">Discover my collection of open source projects created using various programming languages and innovative solutions.</p>
-    <p class="mb-4 text-white">These academic and personal initiatives showcase my technical skills and commitment to knowledge sharing in the developer community.</p>
+    <p class="mb-4 text-white">Discover our collection of open source projects built with various programming languages and innovative solutions.</p>
+    <p class="mb-4 text-white">These initiatives showcase our technical expertise and commitment to knowledge sharing in the developer community.</p>
 </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 lg:px-20">
         @forelse ($academicProjects as $academicProjet)
@@ -382,6 +407,71 @@
     </div>
 </section>
 
+
+<!-- Latest News -->
+@if($latestPosts->count() > 0)
+<section class="py-20 bg-gray-100">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="text-center mb-16" data-aos="zoom-in">
+            <h2 class="text-7xl md:text-9xl font-semibold text-black bebas-neue-regular" style="letter-spacing: 2px">Latest News</h2>
+            <hr class="mt-6 border-black/20 max-w-md mx-auto">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            @foreach($latestPosts as $post)
+            <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1" data-aos="zoom-in">
+                @if($post->photo)
+                <div class="overflow-hidden h-52">
+                    <img src="{{ asset('storage/' . $post->photo) }}" alt="{{ $post->title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                </div>
+                @else
+                <div class="h-52 bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center">
+                    <svg class="w-16 h-16 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z" /></svg>
+                </div>
+                @endif
+
+                <div class="p-6">
+                    <p class="text-xs font-bold text-teal-500 uppercase tracking-widest mb-2">{{ $post->subject ?? 'News' }}</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-teal-600 transition-colors">{{ $post->title }}</h3>
+                    <p class="text-sm text-gray-500 line-clamp-3 mb-4">{{ Str::limit(strip_tags($post->description), 120) }}</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-400">{{ $post->created_at->diffForHumans() }}</span>
+                        <a href="{{ route('posts.show', $post) }}" class="text-sm font-bold text-teal-500 hover:text-teal-600 flex items-center gap-1 transition-colors">
+                            Read more
+                            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        <div class="text-center mt-12" data-aos="zoom-in">
+            <a href="{{ route('posts.index') }}" class="inline-flex items-center gap-2 px-8 py-4 border-2 border-black text-black font-bold rounded-full hover:bg-teal-300 hover:border-teal-300 hover:text-white transition-all duration-300 bebas-neue-regular" style="letter-spacing: 2px">
+                VIEW ALL NEWS
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+            </a>
+        </div>
+    </div>
+</section>
+@endif
+
+<!-- CTA Banner before footer -->
+<section class="py-20 bg-gray-900 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-[0.02]" aria-hidden="true">
+        <span class="absolute text-[20vw] font-bold text-white bebas-neue-regular top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">GET STARTED</span>
+    </div>
+    <div class="max-w-3xl mx-auto text-center px-4 relative z-10">
+        <h2 class="text-5xl md:text-7xl font-bold text-white bebas-neue-regular mb-6" style="letter-spacing: 2px">Ready to start your project?</h2>
+        <p class="text-lg text-gray-400 mb-10">Tell us about your idea and we'll get back to you within 24 hours with a tailored proposal.</p>
+        <a href="{{ route('contact') }}"
+           class="inline-flex items-center gap-3 px-12 py-6 bg-teal-400 text-gray-900 text-2xl font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_60px_rgba(94,234,212,0.4)] bebas-neue-regular"
+           style="letter-spacing: 3px">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+            REQUEST A QUOTE
+        </a>
+    </div>
+</section>
 
 @include('components.footer')
 <script src="{{ asset('/welcome.js') }}"></script>

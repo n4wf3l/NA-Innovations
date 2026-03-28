@@ -3,7 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import Badge from '@/Components/ui/Badge';
 import PipelineStepper from '@/Components/ui/PipelineStepper';
 import ProtectedAmount from '@/Components/ui/ProtectedAmount';
-import { formatDate } from '@/lib/utils';
+import { formatDate, formatProjectType } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -98,7 +98,7 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
                         {lead.service_interest && (
                             <div className="flex justify-between">
                                 <dt className="text-gray-400">{t("Service Interest")}</dt>
-                                <dd className="text-gray-900 font-medium">{lead.service_interest}</dd>
+                                <dd className="text-gray-900 font-medium">{formatProjectType(lead.service_interest)}</dd>
                             </div>
                         )}
                         {lead.estimated_budget && (
