@@ -1711,6 +1711,30 @@ class RealDataSeeder extends Seeder
             ['user_id' => $nawfel->id, 'description' => 'Site livré et mis en production.', 'created_at' => '2025-10-15']
         );
 
+        // =====================================================================
+        // CHATBOT AI
+        // =====================================================================
+
+        Setting::set('chatbot.knowledge_text', 'NA Innovations is a Belgian web and mobile development agency based in Brussels (170 Nijverheidskaai, Anderlecht). We specialize in custom websites, mobile applications, SaaS platforms, and e-commerce solutions.
+
+Our services include:
+- Custom website development (showcase, e-commerce, blog)
+- Mobile app development (iOS, Android, cross-platform)
+- SaaS platform development
+- Website maintenance and hosting
+
+Our products:
+- Cabs: Taxi fleet management SaaS (250 EUR/month)
+- ClubManager: Football/futsal club management platform (149 EUR/month)
+- RestoConnect: Restaurant online ordering platform (89 EUR/month)
+
+Pricing: Use our free price simulator at /contact to get an instant estimate. Prices start from 500 EUR for a simple landing page up to 8000+ EUR for complex SaaS platforms.
+
+Contact: info@nainnovations.be
+Website: nainnovations.be');
+
+        Setting::set('chatbot.enabled', 'true');
+
         echo "Données réelles insérées avec succès.\n";
     }
 }

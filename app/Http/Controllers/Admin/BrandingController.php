@@ -85,4 +85,5 @@ class BrandingController extends BaseAdminController
 
         return redirect()->back()->with('success', 'Logo supprimé.');
     }
+
 }

@@ -8,6 +8,7 @@ import PortfolioSection from '@/Components/landing/PortfolioSection';
 import TestimonialsSection from '@/Components/landing/TestimonialsSection';
 import FooterSection from '@/Components/landing/FooterSection';
 import WhatsAppButton from '@/Components/landing/WhatsAppButton';
+import { ChatModal } from '@/Components/landing/ChatWidget';
 import SectionNav from '@/Components/landing/SectionNav';
 
 interface PortfolioProject {
@@ -275,18 +276,129 @@ function SplashScreen({ branding, onComplete }: { branding: { logo_path: string;
     );
 }
 
+function TypewriterText() {
+    const { t } = useTranslation();
+    const phrases = [
+        t('Ne cherchez plus, demandez directement ici'),
+        t('Combien coûte un site web ?'),
+        t('Quelles technologies utilisez-vous ?'),
+        t('Pouvez-vous créer une application mobile ?'),
+    ];
+    const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
+    const [displayText, setDisplayText] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [isPaused, setIsPaused] = useState(false);
+
+    useEffect(() => {
+        const phrase = phrases[currentPhraseIndex];
+
+        if (isPaused) {
+            const pauseTimer = setTimeout(() => {
+                setIsPaused(false);
+                setIsDeleting(true);
+            }, 2000);
+            return () => clearTimeout(pauseTimer);
+        }
+
+        if (isDeleting) {
+            if (displayText.length === 0) {
+                setIsDeleting(false);
+                setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length);
+                return;
+            }
+            const timer = setTimeout(() => {
+                setDisplayText(displayText.slice(0, -1));
+            }, 25);
+            return () => clearTimeout(timer);
+        }
+
+        if (displayText.length === phrase.length) {
+            setIsPaused(true);
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            setDisplayText(phrase.slice(0, displayText.length + 1));
+        }, 50);
+        return () => clearTimeout(timer);
+    }, [displayText, isDeleting, isPaused, currentPhraseIndex]);
+
+    return (
+        <h2 className="text-2xl md:text-4xl font-bold text-white min-h-[3rem] md:min-h-[3.5rem]">
+            {displayText}
+            <span className="inline-block w-[3px] h-[1em] bg-teal-400 ml-1 align-middle" style={{ animation: 'blink 1s step-end infinite' }} />
+        </h2>
+    );
+}
+
+function AIAssistantSection({ onOpenChat }: { onOpenChat: () => void }) {
+    const { t } = useTranslation();
+    return (
+        <section className="py-16 bg-gray-900 relative overflow-hidden">
+            <style>{`
+                @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+                @keyframes aiGlow { 0%, 100% { opacity: 0.03; } 50% { opacity: 0.06; } }
+            `}</style>
+            {/* Decorative background elements */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-0 left-1/4 w-64 h-64 bg-teal-500/5 rounded-full blur-3xl" style={{ animation: 'aiGlow 4s ease-in-out infinite' }} />
+                <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl" style={{ animation: 'aiGlow 4s ease-in-out infinite 2s' }} />
+            </div>
+
+            <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-teal-400/10 border border-teal-400/20 rounded-full mb-6">
+                    <svg className="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                    </svg>
+                    <span className="text-teal-400 text-xs font-medium uppercase tracking-wider">{t('Assistant IA')}</span>
+                </div>
+
+                {/* Typing animation text */}
+                <TypewriterText />
+
+                {/* Fake input that opens modal */}
+                <div
+                    onClick={onOpenChat}
+                    className="mt-8 max-w-2xl mx-auto cursor-pointer group"
+                >
+                    <div className="flex items-center bg-white/5 border border-white/10 rounded-2xl px-6 py-4 hover:border-teal-400/50 hover:bg-white/10 transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(94,234,212,0.08)]">
+                        <svg className="w-5 h-5 text-teal-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                        </svg>
+                        <span className="text-gray-500 text-left flex-1 text-sm md:text-base">{t('Posez une question sur nos services...')}</span>
+                        <span className="text-xs text-gray-600 bg-white/5 px-2 py-1 rounded-lg font-medium">AI</span>
+                    </div>
+                </div>
+
+                <p className="mt-4 text-xs text-gray-600">{t('3 questions gratuites par jour')}</p>
+            </div>
+        </section>
+    );
+}
+
 export default function Welcome({ portfolio, messages, latestPosts, socialLinks = {}, branding = { logo_path: '', company_name: 'NA Innovations', tagline: '' }, services = [], landingSections = {}, testimonials = [], faqs = [], publicStats, seo, videoUrl }: Props) {
     const { auth, locale } = usePage<{ auth: { user: { id: number } | null }; locale: string }>().props;
     const { t } = useTranslation();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
     const [showScrollTop, setShowScrollTop] = useState(false);
+    const [chatOpen, setChatOpen] = useState(false);
+    const [chatAvailable, setChatAvailable] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => setShowScrollTop(window.scrollY > 600);
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // Check chatbot availability
+    useEffect(() => {
+        fetch('/api/chatbot/status')
+            .then(r => r.json())
+            .then(data => setChatAvailable(data.available))
+            .catch(() => setChatAvailable(false));
+    }, []);
+
     const portfolioSection = useInView();
     const statsSection = useInView();
     const testimonialsSection = useInView();
@@ -406,6 +518,9 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
 
             {/* Stats Section */}
             {publicStats && <StatsSection publicStats={publicStats} sectionRef={statsSection.ref as any} isVisible={statsSection.isVisible} />}
+
+            {/* AI Assistant Section */}
+            {chatAvailable && <AIAssistantSection onOpenChat={() => setChatOpen(true)} />}
 
             {/* Client logos band */}
             {(() => {
@@ -620,10 +735,10 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                 )}
             </a>
 
-            {/* Scroll to top — bottom right */}
+            {/* Scroll to top — bottom right, above WhatsApp */}
             <button
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className={`fixed bottom-20 right-6 z-50 w-11 h-11 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-teal-300 hover:border-teal-300/30 hover:bg-gray-900 transition-all duration-500 group ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+                className={`fixed bottom-[136px] right-6 z-50 w-11 h-11 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-teal-300 hover:border-teal-300/30 hover:bg-gray-900 transition-all duration-500 group ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
                 title={t('Back to top')}
             >
                 <svg className="w-5 h-5 transition-transform duration-300 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" /></svg>
@@ -637,8 +752,11 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                 { id: 'section-testimonials', label: 'Testimonials' },
             ]} />
 
-            {/* WhatsApp floating button — bottom right */}
+            {/* WhatsApp floating button */}
             <WhatsAppButton phoneNumber={socialLinks.whatsapp || ''} />
+
+            {/* AI Chat Modal */}
+            <ChatModal isOpen={chatOpen} onClose={() => setChatOpen(false)} />
         </>
     );
 }

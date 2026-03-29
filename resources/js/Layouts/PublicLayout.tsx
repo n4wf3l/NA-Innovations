@@ -2,6 +2,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { useState, useEffect, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import WhatsAppButton from '@/Components/landing/WhatsAppButton';
+import ChatWidget from '@/Components/landing/ChatWidget';
 import { useTheme } from '@/lib/useTheme';
 
 interface PublicLayoutProps {
@@ -448,17 +449,20 @@ export default function PublicLayout({ children, title, description, ogImage, js
                 </button>
             </div>
 
-            {/* Scroll to top — bottom right */}
+            {/* Scroll to top — bottom right, above WhatsApp */}
             <button
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className={`fixed bottom-20 right-6 z-50 w-11 h-11 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-teal-300 hover:border-teal-300/30 hover:bg-gray-900 transition-all duration-500 group ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+                className={`fixed bottom-[136px] right-6 z-50 w-11 h-11 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-teal-300 hover:border-teal-300/30 hover:bg-gray-900 transition-all duration-500 group ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
                 title={t('Back to top')}
             >
                 <svg className="w-5 h-5 transition-transform duration-300 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" /></svg>
             </button>
 
-            {/* WhatsApp floating button — bottom right */}
+            {/* WhatsApp floating button — above chatbot */}
             <WhatsAppButton phoneNumber={socialLinks.whatsapp || ''} />
+
+            {/* AI Chatbot widget — bottom right */}
+            <ChatWidget />
         </>
     );
 }

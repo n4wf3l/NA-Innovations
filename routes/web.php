@@ -238,6 +238,15 @@ Route::get('/admin/contact-attachments/{filename}', [ContactController::class, '
 
 Route::get('locale/{locale}', [App\Http\Controllers\LocaleController::class, 'switch'])->name('locale.switch');
 
+// Chatbot API (public, no auth)
+Route::post('/api/chatbot', [App\Http\Controllers\ChatbotController::class, 'chat'])->name('chatbot');
+Route::get('/api/chatbot/status', function () {
+    $enabled = \App\Models\Setting::get('chatbot.enabled', 'false') === 'true';
+    $apiOk = \App\Models\Setting::get('chatbot.api_available', 'true') === 'true';
+    $hasKnowledge = !empty(\App\Models\Setting::get('chatbot.knowledge_text', ''));
+    return response()->json(['available' => $enabled && $apiOk && $hasKnowledge]);
+})->name('chatbot.status');
+
 // Financial PIN routes (accessible to all authenticated users)
 Route::middleware('auth')->group(function () {
     Route::post('/financial-pin/verify', [App\Http\Controllers\FinancialPinController::class, 'verify'])->name('financial-pin.verify');
@@ -505,6 +514,12 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::put('settings/branding/info', [App\Http\Controllers\Admin\BrandingController::class, 'updateBranding'])->name('admin.branding.info');
     Route::post('settings/branding/logo', [App\Http\Controllers\Admin\BrandingController::class, 'uploadLogo'])->name('admin.branding.logo');
     Route::delete('settings/branding/logo', [App\Http\Controllers\Admin\BrandingController::class, 'deleteLogo'])->name('admin.branding.logo.delete');
+
+    // Chatbot AI (separate settings page)
+    Route::get('settings/chatbot', [App\Http\Controllers\Admin\ChatbotController::class, 'index'])->name('admin.chatbot.index');
+    Route::put('settings/chatbot', [App\Http\Controllers\Admin\ChatbotController::class, 'update'])->name('admin.chatbot.update');
+    Route::post('settings/chatbot/pdf', [App\Http\Controllers\Admin\ChatbotController::class, 'uploadPdf'])->name('admin.chatbot.pdf');
+    Route::get('settings/chatbot/test-api', [App\Http\Controllers\Admin\ChatbotController::class, 'testApi'])->name('admin.chatbot.test');
 
     // Landing Sections
     Route::get('settings/landing-sections', [App\Http\Controllers\Admin\LandingSectionController::class, 'index'])->name('admin.landing-sections.index');
