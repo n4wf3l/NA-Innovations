@@ -10,7 +10,7 @@ class EnsureUserIsClient
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || !$request->user()->isClient()) {
+        if (!$request->user() || !in_array($request->user()->role, ['client', 'admin'])) {
             abort(403, 'Unauthorized.');
         }
 

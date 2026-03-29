@@ -5,6 +5,8 @@ import ProtectedAmount from '@/Components/ui/ProtectedAmount';
 import { RecurringService, User, Project } from '@/types';
 import { formatDate, formatStatus } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import NotesSection from '@/Components/ui/NotesSection';
+import { useConfirm } from '@/hooks/useConfirm';
 
 interface ServiceRenewal {
     id: number;
@@ -38,31 +40,107 @@ interface Props {
 
 export default function ServiceShow({ service }: Props) {
     const { t } = useTranslation();
-    const handleDelete = () => {
-        if (confirm('Are you sure you want to delete this service?')) {
-            router.delete(`/admin/services/${service.id}`);
-        }
+    const { confirm, ConfirmDialog } = useConfirm();
+    const handleDelete = async () => {
+        const ok = await confirm({
+            title: t('Delete'),
+            message: t('Are you sure you want to delete this service?'),
+            confirmText: t('Delete'),
+            variant: 'danger',
+        });
+        if (!ok) return;
+        router.delete(`/admin/services/${service.id}`);
     };
 
-    const handleRenew = () => {
-        if (confirm('Renew this service? This will update the expiry date.')) {
-            router.post(`/admin/services/${service.id}/renew`);
-        }
+    const handleRenew = async () => {
+        const ok = await confirm({
+            title: t('Renouveler'),
+            message: t('Renouveler ce service ? La date d\'expiration sera mise à jour.'),
+            confirmText: t('Renouveler'),
+            variant: 'info',
+        });
+        if (!ok) return;
+        router.post(`/admin/services/${service.id}/renew`);
+    };
+
+    const handleSuspend = async () => {
+        const ok = await confirm({
+            title: t('Suspendre'),
+            message: t('Suspendre ce service ? Le projet associé sera mis en pause.'),
+            confirmText: t('Suspendre'),
+            variant: 'warning',
+        });
+        if (!ok) return;
+        router.patch(`/admin/services/${service.id}/status`, { status: 'suspended' }, { preserveScroll: true });
+    };
+
+    const handleReactivate = async () => {
+        const ok = await confirm({
+            title: t('Réactiver'),
+            message: t('Réactiver ce service ? Le projet associé sera remis en cours.'),
+            confirmText: t('Réactiver'),
+            variant: 'info',
+        });
+        if (!ok) return;
+        router.patch(`/admin/services/${service.id}/status`, { status: 'active' }, { preserveScroll: true });
     };
 
     const renewals = service.renewals || [];
     const margin = service.billed_price - service.real_cost;
     const marginPercent = service.real_cost > 0 ? ((margin / service.real_cost) * 100).toFixed(1) : '--';
+    const isExpired = service.status === 'expired';
+    const isSuspended = service.status === 'suspended';
+    const isInactive = isExpired || isSuspended;
 
     return (
         <AdminLayout title={service.name} header={t('Service Details')}>
             <Head title={service.name} />
 
+            {/* Expired/Suspended Alert Banner */}
+            {isInactive && (
+                <div className={`rounded-2xl border p-5 mb-6 ${
+                    isSuspended
+                        ? 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/30'
+                        : 'bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30'
+                }`}>
+                    <div className="flex items-start gap-3">
+                        <svg className={`w-6 h-6 flex-shrink-0 mt-0.5 ${isSuspended ? 'text-red-500' : 'text-amber-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                        </svg>
+                        <div className="flex-1">
+                            <p className={`font-bold ${isSuspended ? 'text-red-700 dark:text-red-400' : 'text-amber-700 dark:text-amber-400'}`}>
+                                {isSuspended ? t('Service suspendu') : t('Service expiré')}
+                            </p>
+                            <p className={`text-sm mt-1 ${isSuspended ? 'text-red-600/80 dark:text-red-300/80' : 'text-amber-600/80 dark:text-amber-300/80'}`}>
+                                {isSuspended
+                                    ? t('Ce service est suspendu. Le client n\'a pas renouvelé. Le projet associé a été mis en pause.')
+                                    : t('Ce service a expiré. Le client a été notifié. Sans renouvellement, il sera suspendu automatiquement après 14 jours.')}
+                            </p>
+                            <div className="flex items-center gap-3 mt-3">
+                                <button onClick={handleRenew} className="px-4 py-2 text-sm font-bold text-white bg-emerald-500 rounded-xl hover:bg-emerald-600 transition-colors">
+                                    {t('Renouveler maintenant')}
+                                </button>
+                                {isExpired && (
+                                    <button onClick={handleSuspend} className="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 border border-red-200 dark:border-red-500/30 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">
+                                        {t('Suspendre maintenant')}
+                                    </button>
+                                )}
+                                {isSuspended && (
+                                    <button onClick={handleReactivate} className="px-4 py-2 text-sm font-medium text-emerald-600 dark:text-emerald-400 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-500/30 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition-colors">
+                                        {t('Réactiver le service')}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Top Bar */}
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <Link href="/admin/services" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">&larr; {t("Back to Services")}</Link>
                 <div className="flex items-center gap-2">
-                    <button onClick={handleRenew} className="px-4 py-2 text-sm font-medium text-white bg-emerald-500 rounded-lg hover:bg-emerald-600">{t('Renew')}</button>
+                    {!isInactive && <button onClick={handleRenew} className="px-4 py-2 text-sm font-medium text-white bg-emerald-500 rounded-lg hover:bg-emerald-600">{t('Renew')}</button>}
                     <Link href={`/admin/services/${service.id}/edit`} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">{t('Edit')}</Link>
                     <button onClick={handleDelete} className="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 border border-red-200 dark:border-red-500/30 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10">{t('Delete')}</button>
                 </div>
@@ -253,8 +331,11 @@ export default function ServiceShow({ service }: Props) {
                             <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{service.notes}</p>
                         </div>
                     )}
+
+                    <NotesSection notes={service.notes || []} notableType="service" notableId={service.id} />
                 </div>
             </div>
+            <ConfirmDialog />
         </AdminLayout>
     );
 }

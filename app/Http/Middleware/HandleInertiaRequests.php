@@ -67,11 +67,13 @@ class HandleInertiaRequests extends Middleware
                     ->take(10)
                     ->get()
                 : [],
-            'teamCounts' => [
-                'partners' => \App\Models\User::where('role', 'referral_partner')->where('is_active', true)->count(),
-                'developers' => \App\Models\User::where('role', 'developer')->where('is_active', true)->count(),
-                'admins' => \App\Models\User::where('role', 'admin')->where('is_active', true)->count(),
-            ],
+            'teamCounts' => \Illuminate\Support\Facades\Cache::remember('team_counts', 600, function () {
+                return [
+                    'partners' => \App\Models\User::where('role', 'referral_partner')->where('is_active', true)->count(),
+                    'developers' => \App\Models\User::where('role', 'developer')->where('is_active', true)->count(),
+                    'admins' => \App\Models\User::where('role', 'admin')->where('is_active', true)->count(),
+                ];
+            }),
             'financialUnlocked' => (function () use ($request) {
                 if (!$request->user()) return false;
                 $unlockedAt = session('financial_unlocked_at');
@@ -86,6 +88,7 @@ class HandleInertiaRequests extends Middleware
                 'company_name' => \App\Models\Setting::get('branding.company_name', 'NA Innovations'),
                 'tagline' => \App\Models\Setting::get('branding.tagline', ''),
             ],
+            'appUrl' => config('app.url', 'https://nainnovations.be'),
         ];
     }
 }

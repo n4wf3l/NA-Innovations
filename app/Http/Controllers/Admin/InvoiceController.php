@@ -68,6 +68,38 @@ class InvoiceController extends BaseAdminController
     }
 
     /**
+     * Bulk update status for multiple invoices.
+     */
+    public function bulkUpdateStatus(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:invoices,id',
+            'status' => 'required|in:draft,sent,paid,cancelled',
+        ]);
+
+        Invoice::whereIn('id', $request->ids)->update(['status' => $request->status]);
+
+        return redirect()->back()->with('success', count($request->ids) . ' facture(s) mise(s) à jour.');
+    }
+
+    /**
+     * Bulk delete multiple invoices (only drafts).
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:invoices,id',
+        ]);
+
+        // Only delete drafts
+        Invoice::whereIn('id', $request->ids)->where('status', 'draft')->delete();
+
+        return redirect()->back()->with('success', 'Factures brouillon supprimées.');
+    }
+
+    /**
      * Show the form for creating a new invoice.
      */
     public function create(Request $request)
@@ -315,6 +347,35 @@ class InvoiceController extends BaseAdminController
     }
 
     /**
+     * Duplicate an existing invoice.
+     */
+    public function duplicate(Invoice $invoice)
+    {
+        $invoice->load('items');
+
+        $newInvoice = $invoice->replicate([
+            'invoice_number', 'status', 'view_token', 'sent_at', 'viewed_at',
+            'paid_at', 'pdf_path', 'amount_paid',
+        ]);
+        $newInvoice->invoice_number = NumberGenerator::generateInvoiceNumber();
+        $newInvoice->view_token = Str::random(64);
+        $newInvoice->status = 'draft';
+        $newInvoice->issue_date = now()->toDateString();
+        $newInvoice->due_date = now()->addDays(30)->toDateString();
+        $newInvoice->amount_paid = 0;
+        $newInvoice->amount_due = $invoice->total;
+        $newInvoice->save();
+
+        foreach ($invoice->items as $item) {
+            $newItem = $item->replicate();
+            $newItem->invoice_id = $newInvoice->id;
+            $newItem->save();
+        }
+
+        return redirect()->route('admin.invoices.edit', $newInvoice)->with('success', 'Facture dupliquée avec succès.');
+    }
+
+    /**
      * Soft delete the specified invoice (only if draft).
      */
     public function destroy(Invoice $invoice)
@@ -380,6 +441,17 @@ class InvoiceController extends BaseAdminController
                     transactional: true,
                 );
             }
+        }
+
+        // Send actual email with PDF attachment
+        try {
+            $emailSubject = $request->input('email_subject', "Facture {$invoice->invoice_number}");
+            $emailBody = $request->input('email_body', "Veuillez trouver ci-joint votre facture.");
+
+            \Illuminate\Support\Facades\Mail::to($invoice->client_email)
+                ->send(new \App\Mail\TemplateMail($emailSubject, $emailBody, $invoice->pdf_path));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning("Failed to send invoice email: {$e->getMessage()}");
         }
 
         return redirect()->back()->with('success', 'Invoice marked as sent.');

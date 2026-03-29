@@ -2,6 +2,7 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import OriginalLanguageBadge from '@/Components/ui/OriginalLanguageBadge';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 interface Post {
     id: number;
@@ -49,14 +50,22 @@ function timeAgo(dateString: string): string {
 
 export default function BlogShow({ post, relatedPosts }: Props) {
     const { t } = useTranslation();
+    useScrollReveal();
     const metaTitle = post.meta_title || post.title;
     const metaDescription = post.meta_description || post.excerpt || post.description || '';
+    const articleJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: post.title,
+        description: metaDescription,
+        author: post.author ? { '@type': 'Person', name: post.author.name } : undefined,
+        datePublished: post.published_at || post.created_at,
+        image: post.image_url || undefined,
+        publisher: { '@type': 'Organization', name: 'NA Innovations' },
+    };
 
     return (
-        <PublicLayout title={metaTitle}>
-            <Head>
-                <meta name="description" content={metaDescription} />
-            </Head>
+        <PublicLayout title={metaTitle} description={metaDescription} ogImage={post.image_url || undefined} jsonLd={articleJsonLd}>
 
             <style>{`
                 .bebas { font-family: 'Bebas Neue', sans-serif; }
@@ -145,16 +154,42 @@ export default function BlogShow({ post, relatedPosts }: Props) {
                     border-radius: 0.75rem;
                     margin: 1.5rem 0;
                 }
+
+                /* Dark mode */
+                .dark .article-content h2 {
+                    color: #f9fafb;
+                    border-color: #374151;
+                }
+                .dark .article-content h3 {
+                    color: #e5e7eb;
+                }
+                .dark .article-content p {
+                    color: #9ca3af;
+                }
+                .dark .article-content li {
+                    color: #9ca3af;
+                }
+                .dark .article-content strong {
+                    color: #f9fafb;
+                }
+                .dark .article-content blockquote {
+                    background: #1f2937;
+                    color: #d1d5db;
+                }
+                .dark .article-content code {
+                    background: #374151;
+                    color: #d1d5db;
+                }
             `}</style>
 
             {/* Hero with cover image */}
             <section className="relative">
                 {post.image_url ? (
                     <div className="relative h-[400px] md:h-[500px]">
-                        <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" />
+                        <img src={post.image_url} alt={post.title} loading="lazy" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent" />
                         <div className="absolute bottom-0 left-0 right-0 p-8 md:p-16">
-                            <div className="max-w-3xl mx-auto">
+                            <div className="max-w-3xl mx-auto hero-fade">
                                 <div className="flex items-center gap-3 mb-4">
                                     {post.category && (
                                         <span className="inline-flex items-center rounded-full bg-teal-500 px-3 py-1 text-xs font-bold text-white uppercase tracking-wider">
@@ -186,7 +221,7 @@ export default function BlogShow({ post, relatedPosts }: Props) {
                     </div>
                 ) : (
                     <div className="bg-gray-900 py-20">
-                        <div className="max-w-3xl mx-auto px-4 text-center">
+                        <div className="max-w-3xl mx-auto px-4 text-center hero-fade">
                             <div className="flex items-center justify-center gap-3 mb-6">
                                 {post.category && (
                                     <span className="inline-flex items-center rounded-full bg-teal-500 px-3 py-1 text-xs font-bold text-white uppercase tracking-wider">
@@ -219,11 +254,11 @@ export default function BlogShow({ post, relatedPosts }: Props) {
             </section>
 
             {/* Article body */}
-            <section className="py-12 md:py-16 bg-white">
-                <div className="max-w-3xl mx-auto px-4">
+            <section className="py-12 md:py-16 bg-white dark:bg-gray-900">
+                <div className="max-w-3xl mx-auto px-4 reveal">
                     {/* Excerpt */}
                     {post.excerpt && (
-                        <p className="text-xl text-gray-600 leading-relaxed mb-10 pb-10 border-b border-gray-200 font-light">
+                        <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-10 pb-10 border-b border-gray-200 dark:border-gray-700 font-light">
                             {post.excerpt}
                         </p>
                     )}
@@ -236,17 +271,17 @@ export default function BlogShow({ post, relatedPosts }: Props) {
                             dangerouslySetInnerHTML={{ __html: post.content }}
                         />
                     ) : post.description ? (
-                        <div className="text-gray-600 leading-relaxed whitespace-pre-wrap text-lg">
+                        <div className="text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-wrap text-lg">
                             {post.description}
                         </div>
                     ) : null}
 
                     {/* Tags */}
                     {post.tags && post.tags.length > 0 && (
-                        <div className="mt-12 pt-8 border-t border-gray-200">
+                        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 reveal">
                             <div className="flex flex-wrap gap-2">
                                 {post.tags.map((tag, i) => (
-                                    <span key={i} className="inline-flex items-center rounded-full bg-gray-100 px-4 py-1.5 text-sm font-medium text-gray-600 hover:bg-teal-50 hover:text-teal-600 transition-colors">
+                                    <span key={i} className="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 px-4 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-teal-50 dark:hover:bg-teal-500/10 hover:text-teal-600 transition-colors">
                                         #{tag}
                                     </span>
                                 ))}
@@ -255,7 +290,7 @@ export default function BlogShow({ post, relatedPosts }: Props) {
                     )}
 
                     {/* Back to blog */}
-                    <div className="mt-12 pt-8 border-t border-gray-200">
+                    <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
                         <Link
                             href="/posts"
                             className="inline-flex items-center gap-2 text-sm font-bold text-teal-500 hover:text-teal-600 transition-colors"
@@ -271,18 +306,18 @@ export default function BlogShow({ post, relatedPosts }: Props) {
 
             {/* Related posts */}
             {relatedPosts.length > 0 && (
-                <section className="py-16 bg-gray-100">
+                <section className="py-16 bg-gray-100 dark:bg-gray-800">
                     <div className="max-w-6xl mx-auto px-4">
-                        <h2 className="text-4xl md:text-5xl font-semibold text-black bebas text-center mb-12" style={{ letterSpacing: '2px' }}>
+                        <h2 className="text-4xl md:text-5xl font-semibold text-black dark:text-white bebas text-center mb-12" style={{ letterSpacing: '2px' }}>
                             {t('Related Articles')}
                         </h2>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 reveal-stagger">
                             {relatedPosts.map((related) => (
                                 <Link
                                     key={related.id}
                                     href={`/posts/${related.slug}`}
-                                    className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1"
+                                    className="group bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1"
                                 >
                                     <div className="overflow-hidden h-48">
                                         {related.image_url ? (
@@ -303,10 +338,10 @@ export default function BlogShow({ post, relatedPosts }: Props) {
                                         {related.category && (
                                             <span className="text-xs font-bold text-teal-500 uppercase tracking-widest mb-2 block">{related.category}</span>
                                         )}
-                                        <h3 className="text-lg font-bold text-gray-900 line-clamp-2 group-hover:text-teal-600 transition-colors mb-2">
+                                        <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2 group-hover:text-teal-600 transition-colors mb-2">
                                             {related.title}
                                         </h3>
-                                        <div className="flex items-center justify-between text-xs text-gray-400">
+                                        <div className="flex items-center justify-between text-xs text-gray-400 dark:text-gray-500">
                                             <span>{timeAgo(related.published_at || related.created_at)}</span>
                                             {related.reading_time && <span>{related.reading_time} min</span>}
                                         </div>

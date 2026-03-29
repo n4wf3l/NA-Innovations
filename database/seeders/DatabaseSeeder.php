@@ -16,7 +16,10 @@ class DatabaseSeeder extends Seeder
             PageSeeder::class,
             LandingSectionSeeder::class,
             FaqSeeder::class,
+            PublicServiceSeeder::class,
+            RealDataSeeder::class,
             PostSeeder::class,
+            PortfolioSeeder::class,
         ]);
     }
 }

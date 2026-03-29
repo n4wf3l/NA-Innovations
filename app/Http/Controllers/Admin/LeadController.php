@@ -100,7 +100,7 @@ class LeadController extends BaseAdminController
                 $query->latest();
             },
             'notes' => function ($query) {
-                $query->latest();
+                $query->with('user')->latest();
             },
         ]);
 
@@ -172,6 +172,37 @@ class LeadController extends BaseAdminController
         $lead->delete();
 
         return redirect()->route('admin.leads.index')->with('success', 'Lead deleted successfully.');
+    }
+
+    /**
+     * Bulk update status for multiple leads.
+     */
+    public function bulkUpdateStatus(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:leads,id',
+            'status' => 'required|in:new,contacted,brief_pending,brief_completed,call_scheduled,qualified,not_qualified,quote_draft,quote_sent,won,lost',
+        ]);
+
+        Lead::whereIn('id', $request->ids)->update(['status' => $request->status]);
+
+        return redirect()->back()->with('success', count($request->ids) . ' lead(s) mis à jour.');
+    }
+
+    /**
+     * Bulk delete multiple leads.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:leads,id',
+        ]);
+
+        Lead::whereIn('id', $request->ids)->delete();
+
+        return redirect()->back()->with('success', count($request->ids) . ' lead(s) supprimé(s).');
     }
 
     /**

@@ -127,6 +127,19 @@ class ProjectController extends BaseAdminController
             'description' => 'Project "' . $projet->nom_societe . '" was created.',
         ]);
 
+        // Notify developer if assigned at creation
+        if (!empty($validated['developer_id'])) {
+            $dev = \App\Models\User::find($validated['developer_id']);
+            if ($dev) {
+                \App\Services\NotificationService::send($dev, 'project-assigned-dev', [
+                    'dev_name' => $dev->name,
+                    'project_name' => $projet->nom_societe,
+                    'client_name' => $projet->client?->name ?? $projet->nom_societe,
+                    'deadline' => $projet->deadline ? $projet->deadline->format('d/m/Y') : 'Non définie',
+                ], transactional: true, actionUrl: "/dev/projects/{$projet->id}");
+            }
+        }
+
         return redirect()->route('admin.projects.index')->with('success', 'Project created successfully.');
     }
 
@@ -142,6 +155,7 @@ class ProjectController extends BaseAdminController
             'quotes',
             'invoices',
             'recurringServices',
+            'payouts.user',
             'timelineEvents' => function ($query) {
                 $query->latest();
             },
@@ -199,7 +213,12 @@ class ProjectController extends BaseAdminController
             'description' => "Subject: {$validated['subject']}",
         ]);
 
-        // Send the email
+        // Send the email (check project-update template is active)
+        $updateTemplate = \App\Models\EmailTemplate::where('slug', 'project-update')->where('is_active', true)->first();
+        if (!$updateTemplate) {
+            $sentEmail->update(['status' => 'failed', 'error_message' => 'Email template "project-update" is disabled.']);
+            return redirect()->back()->with('error', 'Email template is disabled. Enable it in Settings to send emails.');
+        }
         try {
             \Illuminate\Support\Facades\Mail::to($validated['recipient_email'])->send(
                 new \App\Mail\TemplateMail($validated['subject'], $validated['body'])
@@ -280,9 +299,30 @@ class ProjectController extends BaseAdminController
         }
 
         $oldStatus = $project->status;
+        $oldDevId = $project->developer_id;
         $newStatus = $validated['status'];
 
         $project->update($validated);
+
+        // Notify developer when assigned
+        if (($validated['developer_id'] ?? null) && $validated['developer_id'] != $oldDevId) {
+            $dev = \App\Models\User::find($validated['developer_id']);
+            if ($dev) {
+                \App\Services\NotificationService::send($dev, 'project-assigned-dev', [
+                    'dev_name' => $dev->name,
+                    'project_name' => $project->nom_societe,
+                    'client_name' => $project->client?->name ?? $project->nom_societe,
+                    'deadline' => $project->deadline ? $project->deadline->format('d/m/Y') : 'Non définie',
+                ], transactional: true, actionUrl: "/dev/projects/{$project->id}");
+
+                $project->timelineEvents()->create([
+                    'user_id' => auth()->id(),
+                    'event_type' => 'developer_assigned',
+                    'title' => 'Developer assigned',
+                    'description' => "{$dev->name} has been assigned to this project.",
+                ]);
+            }
+        }
 
         // Track status change
         if ($oldStatus !== $newStatus) {
@@ -369,5 +409,55 @@ class ProjectController extends BaseAdminController
         $project->update($validated);
 
         return redirect()->back()->with('success', 'GitHub settings updated.');
+    }
+
+    // ─── PAYOUTS ─────────────────────────────────────────────
+
+    public function storePayout(Request $request, Projet $project)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'role' => 'required|in:developer,admin,subcontractor,freelancer',
+            'amount' => 'required|numeric|min:0.01',
+            'status' => 'required|in:pending,paid',
+            'paid_date' => 'nullable|date',
+            'payment_method' => 'nullable|string|max:50',
+            'payment_reference' => 'nullable|string|max:255',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        $validated['project_id'] = $project->id;
+        if ($validated['status'] === 'paid' && !$validated['paid_date']) {
+            $validated['paid_date'] = now()->toDateString();
+        }
+
+        \App\Models\ProjectPayout::create($validated);
+
+        return redirect()->back()->with('success', 'Paiement ajouté.');
+    }
+
+    public function updatePayout(Request $request, \App\Models\ProjectPayout $payout)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,paid',
+            'paid_date' => 'nullable|date',
+            'payment_method' => 'nullable|string|max:50',
+            'payment_reference' => 'nullable|string|max:255',
+        ]);
+
+        if ($validated['status'] === 'paid' && !$validated['paid_date']) {
+            $validated['paid_date'] = now()->toDateString();
+        }
+
+        $payout->update($validated);
+
+        return redirect()->back()->with('success', 'Paiement mis à jour.');
+    }
+
+    public function destroyPayout(\App\Models\ProjectPayout $payout)
+    {
+        $payout->delete();
+
+        return redirect()->back()->with('success', 'Paiement supprimé.');
     }
 }

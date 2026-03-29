@@ -5,6 +5,7 @@ import { useState, useMemo, useRef } from 'react';
 import { formatCurrency } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import SearchableSelect from '@/Components/ui/SearchableSelect';
+import { useConfirm } from '@/hooks/useConfirm';
 
 import Step1ClientDetails from './CreateSteps/Step1ClientDetails';
 import Step2LineItems from './CreateSteps/Step2LineItems';
@@ -23,6 +24,7 @@ interface LineItem {
 
 export default function InvoiceCreate({ clients }: Props) {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
     const [mode, setMode] = useState<'platform' | 'external'>('platform');
     const [step, setStep] = useState(1);
     const [submitting, setSubmitting] = useState(false);
@@ -188,7 +190,7 @@ export default function InvoiceCreate({ clients }: Props) {
         setStep(target);
     };
 
-    const submit = (e: React.FormEvent) => {
+    const submit = async (e: React.FormEvent) => {
         e.preventDefault();
         const step1Errors: Record<string, string> = {};
         if (!form.client_name.trim()) step1Errors.client_name = t('Ce champ est requis');
@@ -215,7 +217,13 @@ export default function InvoiceCreate({ clients }: Props) {
         if (Object.keys(step2Errors).length > 0) { setValidationErrors(step2Errors); setStep(2); return; }
 
         if (total === 0) {
-            if (!window.confirm(t('Le total de la facture est de 0 €. Voulez-vous continuer ?'))) return;
+            const ok = await confirm({
+                title: t('Total à 0 €'),
+                message: t('Le total de la facture est de 0 €. Voulez-vous continuer ?'),
+                confirmText: t('Continuer'),
+                variant: 'warning',
+            });
+            if (!ok) return;
         }
 
         setSubmitting(true);
@@ -381,6 +389,7 @@ export default function InvoiceCreate({ clients }: Props) {
                 )}
             </form>
             </>)}
+            <ConfirmDialog />
         </AdminLayout>
     );
 }

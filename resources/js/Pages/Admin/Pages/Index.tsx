@@ -4,6 +4,7 @@ import ModuleBanner from '@/Components/ui/ModuleBanner';
 import DataTable from '@/Components/ui/DataTable';
 import EmptyState from '@/Components/ui/EmptyState';
 import { useTranslation } from 'react-i18next';
+import { useConfirm } from '@/hooks/useConfirm';
 
 interface Page {
     id: number;
@@ -27,10 +28,16 @@ const audienceColors: Record<string, string> = {
 
 export default function PagesIndex({ pages }: Props) {
     const { t } = useTranslation();
-    function deletePage(page: Page) {
-        if (confirm(`Delete "${page.title}"? This cannot be undone.`)) {
-            router.delete(`/admin/pages/${page.id}`);
-        }
+    const { confirm, ConfirmDialog } = useConfirm();
+    async function deletePage(page: Page) {
+        const ok = await confirm({
+            title: t('Delete'),
+            message: `${t('Delete')} "${page.title}"? ${t('This cannot be undone.')}`,
+            confirmText: t('Delete'),
+            variant: 'danger',
+        });
+        if (!ok) return;
+        router.delete(`/admin/pages/${page.id}`);
     }
 
     function togglePublished(page: Page) {
@@ -114,6 +121,7 @@ export default function PagesIndex({ pages }: Props) {
                     keyExtractor={page => page.id}
                 />
             )}
+            <ConfirmDialog />
         </AdminLayout>
     );
 }

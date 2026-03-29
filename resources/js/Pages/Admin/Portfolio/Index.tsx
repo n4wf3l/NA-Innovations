@@ -61,7 +61,7 @@ export default function PortfolioIndex({ projects, availableProjects, publishedC
                                 {/* Image */}
                                 <div className="relative aspect-video bg-gray-100 dark:bg-gray-700 overflow-hidden">
                                     {firstImage ? (
-                                        <img src={`/storage/${firstImage.image_path}`} alt={project.nom_societe} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        <img src={`/storage/${firstImage.image_path}`} alt={project.nom_societe} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                     ) : project.image ? (
                                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600">
                                             <img src={project.image.startsWith('http') ? project.image : `/storage/${project.image}`} alt={project.nom_societe} className="max-h-16 max-w-32 object-contain opacity-40" />

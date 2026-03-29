@@ -3,6 +3,8 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import OriginalLanguageBadge from '@/Components/ui/OriginalLanguageBadge';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
+import SectionNav from '@/Components/landing/SectionNav';
 
 interface PortfolioProject {
     id: number;
@@ -46,6 +48,7 @@ function useInView(options?: IntersectionObserverInit) {
 
 export default function Projects({ portfolio }: Props) {
     const { t } = useTranslation();
+    useScrollReveal();
     const [activeFilter, setActiveFilter] = useState<string>('All');
     const [filteredProjects, setFilteredProjects] = useState<PortfolioProject[]>(portfolio);
     const [isTransitioning, setIsTransitioning] = useState(false);
@@ -67,7 +70,7 @@ export default function Projects({ portfolio }: Props) {
     }, [activeFilter, portfolio]);
 
     return (
-        <PublicLayout title="Our Work">
+        <PublicLayout title="Our Work" description="Discover our portfolio of projects crafted with precision, creativity, and cutting-edge technology.">
             <style>{`
                 .bebas { font-family: 'Bebas Neue', sans-serif; }
 
@@ -107,7 +110,7 @@ export default function Projects({ portfolio }: Props) {
             </section>
 
             {/* Filter Bar + Grid */}
-            <section className="bg-gray-100 py-16 md:py-24" ref={gridSection.ref}>
+            <section id="section-projects" className="bg-gray-100 dark:bg-gray-800 py-16 md:py-24 scroll-mt-20" ref={gridSection.ref}>
                 <div className="max-w-7xl mx-auto px-4">
                     {/* Category Filter Pills */}
                     {categories.length > 1 && (
@@ -119,7 +122,7 @@ export default function Projects({ portfolio }: Props) {
                                     className={`px-6 py-2.5 rounded-full font-bold bebas text-lg transition-all duration-300 ${
                                         activeFilter === category
                                             ? 'bg-teal-400 text-gray-900 shadow-lg shadow-teal-400/20'
-                                            : 'bg-white text-gray-600 border border-gray-200 hover:border-teal-400 hover:text-teal-500'
+                                            : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-teal-400 hover:text-teal-500'
                                     }`}
                                     style={{ letterSpacing: '1px' }}
                                 >
@@ -135,11 +138,11 @@ export default function Projects({ portfolio }: Props) {
                     >
                         {filteredProjects.length === 0 ? (
                             <div className="text-center py-24">
-                                <svg className="w-20 h-20 text-gray-300 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
+                                <svg className="w-20 h-20 text-gray-300 dark:text-gray-600 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                                 </svg>
-                                <p className="text-3xl text-gray-400 bebas" style={{ letterSpacing: '2px' }}>{t('No projects found')}</p>
-                                <p className="text-gray-400 mt-2">Try selecting a different category.</p>
+                                <p className="text-3xl text-gray-400 dark:text-gray-500 bebas" style={{ letterSpacing: '2px' }}>{t('No projects found')}</p>
+                                <p className="text-gray-400 dark:text-gray-500 mt-2">Try selecting a different category.</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-auto">
@@ -159,7 +162,7 @@ export default function Projects({ portfolio }: Props) {
                                         >
                                             {/* Background image */}
                                             {project.images.length > 0 ? (
-                                                <img src={`/storage/${project.images[0].image_path}`} alt="" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                                <img src={`/storage/${project.images[0].image_path}`} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                             ) : (
                                                 <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black" />
                                             )}
@@ -172,7 +175,7 @@ export default function Projects({ portfolio }: Props) {
                                                 const logo = project.client_logo || project.projet?.image;
                                                 return logo ? (
                                                     <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 group-hover:scale-110 z-[1]" style={{ paddingBottom: '60px' }}>
-                                                        <img src={`/storage/${logo}`} alt={project.client_name} className={`object-contain drop-shadow-2xl ${isTall ? 'max-w-[220px] max-h-[160px]' : 'max-w-[150px] max-h-[110px]'}`} />
+                                                        <img src={`/storage/${logo}`} alt={project.client_name} loading="lazy" className={`object-contain drop-shadow-2xl ${isTall ? 'max-w-[220px] max-h-[160px]' : 'max-w-[150px] max-h-[110px]'}`} />
                                                     </div>
                                                 ) : null;
                                             })()}
@@ -231,7 +234,7 @@ export default function Projects({ portfolio }: Props) {
             </section>
 
             {/* CTA Section */}
-            <section className="py-20 bg-gray-900 relative overflow-hidden">
+            <section id="section-cta" className="py-20 bg-gray-900 relative overflow-hidden scroll-mt-20">
                 <div className="absolute inset-0 opacity-[0.02] flex items-center justify-center" aria-hidden="true">
                     <span className="text-[20vw] font-bold text-white bebas whitespace-nowrap">LET'S BUILD</span>
                 </div>
@@ -254,6 +257,11 @@ export default function Projects({ portfolio }: Props) {
                     </Link>
                 </div>
             </section>
+
+            <SectionNav sections={[
+                { id: 'section-projects', label: 'Projects' },
+                { id: 'section-cta', label: 'Get Started' },
+            ]} />
         </PublicLayout>
     );
 }

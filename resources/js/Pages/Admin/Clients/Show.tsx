@@ -4,6 +4,7 @@ import Badge from '@/Components/ui/Badge';
 import ProtectedAmount from '@/Components/ui/ProtectedAmount';
 import { formatDate, formatProjectType } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import NotesSection from '@/Components/ui/NotesSection';
 
 interface Props {
     client: any;
@@ -171,6 +172,8 @@ export default function ClientShow({ client }: Props) {
                             </div>
                         </div>
                     )}
+
+                    <NotesSection notes={client.notes || []} notableType="client" notableId={client.id} />
                 </div>
             </div>
         </AdminLayout>

@@ -4,6 +4,7 @@ import { User, Lead, Project, PageProps } from '@/types';
 import { formatStatus } from '@/lib/utils';
 import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 
 interface Props {
     project: Project;
@@ -122,12 +123,12 @@ export default function ProjectEdit({ project, clients, developers, leads, proje
                         </div>
                         <div>
                             <label className={labelClass}>{t("Site Type")}</label>
-                            <select value={data.type_site} onChange={e => setData('type_site', e.target.value)} className={inputClass}>
-                                <option value="">{t('Sélectionner le type')}</option>
-                                {projectTypes.map((pt: any) => (
-                                    <option key={pt.value} value={pt.value}>{pt.label}</option>
-                                ))}
-                            </select>
+                            <SearchableSelect
+                                value={data.type_site}
+                                onChange={(val) => setData('type_site', val)}
+                                placeholder={t('Sélectionner le type')}
+                                options={projectTypes.map((pt: any) => ({ value: pt.value, label: pt.label }))}
+                            />
                         </div>
                         <div>
                             <label className={labelClass}>{t("Location")}</label>
@@ -135,9 +136,11 @@ export default function ProjectEdit({ project, clients, developers, leads, proje
                         </div>
                         <div>
                             <label className={labelClass}>{t("Status")} *</label>
-                            <select value={data.status} onChange={e => setData('status', e.target.value)} className={inputClass}>
-                                {statuses.map(s => <option key={s} value={s}>{formatStatus(s)}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.status}
+                                onChange={(val) => setData('status', val)}
+                                options={statuses.map(s => ({ value: s, label: formatStatus(s) }))}
+                            />
                         </div>
                         <div className="md:col-span-2">
                             <label className={labelClass}>{t("Description")}</label>
@@ -152,24 +155,30 @@ export default function ProjectEdit({ project, clients, developers, leads, proje
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label className={labelClass}>{t("Client")}</label>
-                            <select value={data.client_id} onChange={e => setData('client_id', e.target.value)} className={inputClass}>
-                                <option value="">{t("None")}</option>
-                                {clients.map(c => <option key={c.id} value={c.id}>{c.name} {c.company_name ? `(${c.company_name})` : ''}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.client_id}
+                                onChange={(val) => setData('client_id', val)}
+                                placeholder={t("None")}
+                                options={clients.map(c => ({ value: String(c.id), label: `${c.name}${c.company_name ? ` (${c.company_name})` : ''}` }))}
+                            />
                         </div>
                         <div>
                             <label className={labelClass}>{t("Developer")}</label>
-                            <select value={data.developer_id} onChange={e => setData('developer_id', e.target.value)} className={inputClass}>
-                                <option value="">{t("Unassigned")}</option>
-                                {developers.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.developer_id}
+                                onChange={(val) => setData('developer_id', val)}
+                                placeholder={t("Unassigned")}
+                                options={developers.map(d => ({ value: String(d.id), label: d.name }))}
+                            />
                         </div>
                         <div>
                             <label className={labelClass}>{t("Lead (Referral)")}</label>
-                            <select value={data.lead_id} onChange={e => setData('lead_id', e.target.value)} className={inputClass}>
-                                <option value="">{t("None")}</option>
-                                {leads.map(l => <option key={l.id} value={l.id}>{l.first_name} {l.last_name}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.lead_id}
+                                onChange={(val) => setData('lead_id', val)}
+                                placeholder={t("None")}
+                                options={leads.map(l => ({ value: String(l.id), label: `${l.first_name} ${l.last_name}` }))}
+                            />
                         </div>
                     </div>
                 </div>

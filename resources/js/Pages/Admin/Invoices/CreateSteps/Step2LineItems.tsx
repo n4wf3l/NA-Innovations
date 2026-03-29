@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { formatCurrency } from '@/lib/utils';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 
 export interface LineItem {
     description: string;
@@ -62,15 +63,18 @@ export default function Step2LineItems({
                                 </div>
                                 <div className="col-span-4 sm:col-span-2">
                                     <label className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase">{t("Unit")}</label>
-                                    <select value={item.unit} onChange={e => updateItem(i, 'unit', e.target.value)}
-                                        className="w-full bg-gray-50 dark:bg-gray-700/50 border-0 rounded-lg px-3 py-2.5 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-400">
-                                        <option value="unit">{t("Unit")}</option>
-                                        <option value="hour">{t("Hour")}</option>
-                                        <option value="day">{t("Day")}</option>
-                                        <option value="month">{t("Month")}</option>
-                                        <option value="piece">{t("Piece")}</option>
-                                        <option value="lot">{t("Lot")}</option>
-                                    </select>
+                                    <SearchableSelect
+                                        value={item.unit}
+                                        onChange={(val) => updateItem(i, 'unit', val)}
+                                        options={[
+                                            { value: 'unit', label: t("Unit") },
+                                            { value: 'hour', label: t("Hour") },
+                                            { value: 'day', label: t("Day") },
+                                            { value: 'month', label: t("Month") },
+                                            { value: 'piece', label: t("Piece") },
+                                            { value: 'lot', label: t("Lot") },
+                                        ]}
+                                    />
                                 </div>
                                 <div className="col-span-5 sm:col-span-2">
                                     <label className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase">{t("Price")}</label>

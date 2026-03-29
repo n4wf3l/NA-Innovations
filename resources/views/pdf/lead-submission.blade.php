@@ -55,7 +55,7 @@
     @endif
 
     <div class="footer">
-        NA Innovations — info@nawfelajari.be — nawfelajari.be
+        {{ config('mail.from.name', 'NA Innovations') }} — {{ config('mail.from.address') }} — {{ str_replace(['https://', 'http://'], '', config('app.url')) }}
     </div>
 </body>
 </html>

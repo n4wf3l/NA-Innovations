@@ -2,6 +2,8 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, useForm, router } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { useState, KeyboardEvent } from 'react';
+import { useConfirm } from '@/hooks/useConfirm';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 
 interface Props {
     project: any;
@@ -74,6 +76,7 @@ function computeDurationDays(startDate: string | null, endDate: string | null): 
 
 export default function PortfolioEdit({ project, portfolio }: Props) {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
 
     const autoDuration = computeDurationDays(project.start_date, project.end_date);
 
@@ -125,12 +128,17 @@ export default function PortfolioEdit({ project, portfolio }: Props) {
         e.target.value = '';
     };
 
-    const handleDeleteImage = (imageId: number) => {
-        if (confirm(t('Êtes-vous sûr de vouloir supprimer cette image ?'))) {
-            router.delete(`/admin/portfolio/images/${imageId}`, {
-                preserveScroll: true,
-            });
-        }
+    const handleDeleteImage = async (imageId: number) => {
+        const ok = await confirm({
+            title: t('Supprimer'),
+            message: t('Êtes-vous sûr de vouloir supprimer cette image ?'),
+            confirmText: t('Supprimer'),
+            variant: 'danger',
+        });
+        if (!ok) return;
+        router.delete(`/admin/portfolio/images/${imageId}`, {
+            preserveScroll: true,
+        });
     };
 
     const firstImage = images[0];
@@ -179,12 +187,12 @@ export default function PortfolioEdit({ project, portfolio }: Props) {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label className={labelClass}>{t('Catégorie')}</label>
-                                        <select value={data.category} onChange={e => setData('category', e.target.value)} className={inputClass}>
-                                            <option value="">{t('Sélectionner...')}</option>
-                                            {categories.map(cat => (
-                                                <option key={cat} value={cat}>{cat}</option>
-                                            ))}
-                                        </select>
+                                        <SearchableSelect
+                                            value={data.category}
+                                            onChange={(val) => setData('category', val)}
+                                            placeholder={t('Sélectionner...')}
+                                            options={categories.map(cat => ({ value: cat, label: cat }))}
+                                        />
                                         {errors.category && <p className="mt-1 text-sm text-red-600">{errors.category}</p>}
                                     </div>
                                     <div>
@@ -506,7 +514,7 @@ export default function PortfolioEdit({ project, portfolio }: Props) {
                                         </div>
                                         <button
                                             type="button"
-                                            onClick={() => { if (confirm(t('Supprimer le logo ?'))) router.delete(`/admin/portfolio/${project.id}/logo`, { preserveScroll: true }); }}
+                                            onClick={async () => { const ok = await confirm({ title: t('Supprimer'), message: t('Supprimer le logo ?'), confirmText: t('Supprimer'), variant: 'danger' }); if (ok) router.delete(`/admin/portfolio/${project.id}/logo`, { preserveScroll: true }); }}
                                             className="w-full py-2 text-xs font-medium text-red-500 bg-red-50 dark:bg-red-500/10 rounded-lg hover:bg-red-100 dark:hover:bg-red-500/20 transition"
                                         >
                                             {t('Supprimer le logo')}
@@ -575,6 +583,7 @@ export default function PortfolioEdit({ project, portfolio }: Props) {
                     </div>
                 </div>
             </form>
+            <ConfirmDialog />
         </AdminLayout>
     );
 }

@@ -97,6 +97,14 @@ class ProjectController extends Controller
             ->latest()
             ->get();
 
+        // Technical documentation visible to client
+        $techDocs = $project->projectDocs()
+            ->where('is_client_visible', true)
+            ->with('author')
+            ->orderBy('sort_order')
+            ->orderBy('title')
+            ->get();
+
         return Inertia::render('Client/Projects/Show', [
             'project' => $project,
             'quotes' => $quotes,
@@ -105,6 +113,7 @@ class ProjectController extends Controller
             'notes' => $notes,
             'projectDocuments' => $projectDocuments,
             'attachments' => $attachments,
+            'techDocs' => $techDocs,
         ]);
     }
 
@@ -150,11 +159,33 @@ class ProjectController extends Controller
                     'client_name' => $clientName,
                     'project_name' => $project->nom_societe,
                     'comment' => $request->input('content'),
-                ], actionUrl: "/dev/projects/{$project->id}");
+                ], transactional: true, actionUrl: "/dev/projects/{$project->id}");
             }
         }
 
         return redirect()->back()->with('success', 'Comment added.');
+    }
+
+    /**
+     * View technical documentation visible to the client.
+     */
+    public function docs(Projet $project)
+    {
+        if ($project->client_id != Auth::id()) {
+            abort(403);
+        }
+
+        $docs = $project->projectDocs()
+            ->where('is_client_visible', true)
+            ->with('author')
+            ->orderBy('sort_order')
+            ->orderBy('title')
+            ->get();
+
+        return Inertia::render('Client/Projects/Docs', [
+            'project' => $project,
+            'docs' => $docs,
+        ]);
     }
 
     /**

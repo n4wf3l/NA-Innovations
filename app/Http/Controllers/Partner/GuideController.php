@@ -23,4 +23,9 @@ class GuideController extends Controller
             'projectTypes' => ProjectType::allWithRates(),
         ]);
     }
+
+    public function prospecting()
+    {
+        return Inertia::render('Partner/Prospecting');
+    }
 }

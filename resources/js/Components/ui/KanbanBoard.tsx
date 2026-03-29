@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import {
     DndContext,
-    DragOverlay,
     closestCorners,
     PointerSensor,
     useSensor,
@@ -47,33 +46,29 @@ function DroppableColumn({ id, label, color, count, children }: {
     );
 }
 
-function DraggableCard({ id, children, onDragStateChange }: {
-    id: string | number; children: React.ReactNode; onDragStateChange: (dragging: boolean) => void;
+function DraggableCard({ id, children }: {
+    id: string | number; children: (isDragging: boolean) => React.ReactNode;
 }) {
     const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: String(id) });
 
-    const style = {
-        transform: CSS.Translate.toString(transform),
-        opacity: isDragging ? 0.3 : 1,
-        zIndex: isDragging ? 50 : 'auto' as any,
-    };
-
-    // Block all clicks inside the card during and right after drag
     const wasDragging = useRef(false);
 
     if (isDragging && !wasDragging.current) {
         wasDragging.current = true;
-        onDragStateChange(true);
     }
 
     const handleClickCapture = (e: React.MouseEvent) => {
-        // If we just finished dragging, block this click
         if (wasDragging.current) {
             e.preventDefault();
             e.stopPropagation();
-            // Reset after a tick
             setTimeout(() => { wasDragging.current = false; }, 0);
         }
+    };
+
+    const style: React.CSSProperties = {
+        transform: CSS.Translate.toString(transform),
+        zIndex: isDragging ? 999 : 'auto',
+        position: isDragging ? 'relative' : undefined,
     };
 
     return (
@@ -83,14 +78,13 @@ function DraggableCard({ id, children, onDragStateChange }: {
             {...listeners}
             {...attributes}
             onClickCapture={handleClickCapture}
-            className={`cursor-grab active:cursor-grabbing transition-opacity ${isDragging ? 'ring-2 ring-blue-300 rounded-xl' : ''}`}
+            className={`touch-none ${isDragging ? 'cursor-grabbing rotate-1 scale-[1.03] shadow-2xl rounded-xl opacity-90' : 'cursor-grab'}`}
         >
-            {children}
+            {children(isDragging)}
         </div>
     );
 }
 
-// Toast component
 function SuccessToast({ message, onDone }: { message: string; onDone: () => void }) {
     return createPortal(
         <div className="fixed bottom-6 right-6 z-[9999] animate-slide-up">
@@ -109,7 +103,6 @@ function SuccessToast({ message, onDone }: { message: string; onDone: () => void
 }
 
 export default function KanbanBoard<T>({ columns, items, keyExtractor, renderCard, onMove }: KanbanBoardProps<T>) {
-    const [activeItem, setActiveItem] = useState<T | null>(null);
     const [toast, setToast] = useState<string | null>(null);
     const isDraggingGlobal = useRef(false);
     const { t } = useTranslation();
@@ -127,19 +120,13 @@ export default function KanbanBoard<T>({ columns, items, keyExtractor, renderCar
 
     const getColumnLabel = (key: string) => columns.find(c => c.key === key)?.label || key;
 
-    const handleDragStart = (event: DragStartEvent) => {
+    const handleDragStart = (_event: DragStartEvent) => {
         isDraggingGlobal.current = true;
-        for (const colItems of Object.values(items)) {
-            const found = colItems.find(item => String(keyExtractor(item)) === String(event.active.id));
-            if (found) { setActiveItem(found); break; }
-        }
     };
 
     const handleDragEnd = useCallback((event: DragEndEvent) => {
         const { active, over } = event;
-        setActiveItem(null);
 
-        // Keep blocking clicks briefly after drag ends
         setTimeout(() => { isDraggingGlobal.current = false; }, 200);
 
         if (!over) return;
@@ -179,22 +166,13 @@ export default function KanbanBoard<T>({ columns, items, keyExtractor, renderCar
                                 <DraggableCard
                                     key={keyExtractor(item)}
                                     id={keyExtractor(item)}
-                                    onDragStateChange={() => {}}
                                 >
-                                    {renderCard(item, false)}
+                                    {(isDragging) => renderCard(item, isDragging)}
                                 </DraggableCard>
                             ))}
                         </DroppableColumn>
                     ))}
                 </div>
-
-                <DragOverlay dropAnimation={null}>
-                    {activeItem && (
-                        <div className="rotate-2 scale-105 shadow-2xl rounded-xl">
-                            {renderCard(activeItem, true)}
-                        </div>
-                    )}
-                </DragOverlay>
             </DndContext>
 
             {toast && <SuccessToast message={toast} onDone={() => setToast(null)} />}

@@ -123,6 +123,7 @@ class ClientController extends BaseAdminController
             'quotes',
             'invoices',
             'recurringServices',
+            'notes.user',
         ]);
 
         return Inertia::render('Admin/Clients/Show', [

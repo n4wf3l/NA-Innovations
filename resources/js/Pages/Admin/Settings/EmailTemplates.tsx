@@ -41,7 +41,8 @@ const EMAIL_FLOWS = [
         { trigger: 'Contact form submitted', recipient: 'Guest', template: 'contact-confirmation', type: 'transactional' },
         { trigger: 'Quote request submitted', recipient: 'Guest', template: 'quote-request-confirmation', type: 'transactional' },
         { trigger: 'Price simulator submitted', recipient: 'Guest', template: 'simulator-confirmation', type: 'transactional' },
-        { trigger: 'Contact form received', recipient: 'Admin', template: 'ContactFormMail (direct)', type: 'transactional' },
+        { trigger: 'Contact form received', recipient: 'Admin', template: 'contact-form-admin', type: 'transactional' },
+        { trigger: 'Lead outreach by partner', recipient: 'Prospect', template: 'partner-lead-outreach', type: 'transactional' },
         { trigger: 'Lead submitted by partner', recipient: 'Prospect', template: 'lead-confirmation', type: 'transactional' },
     ]},
     { section: 'Clients', rows: [

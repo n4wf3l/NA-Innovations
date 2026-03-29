@@ -31,22 +31,22 @@ export default function PortfolioSection({ portfolio, featuredProjects, regularP
     const { t } = useTranslation();
 
     return (
-        <section className="py-20 bg-gray-100" ref={sectionRef}>
+        <section id="section-portfolio" className="py-20 bg-gray-100 dark:bg-gray-800 scroll-mt-20" ref={sectionRef}>
             <div className="max-w-7xl mx-auto px-4">
                 <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'fade-in-up' : 'opacity-0'}`}>
-                    <h2 className="text-7xl md:text-9xl font-semibold text-black bebas" style={{ letterSpacing: '2px' }}>{t('Our Work')}</h2>
-                    <hr className="mt-6 border-black/20 max-w-md mx-auto" />
+                    <h2 className="text-7xl md:text-9xl font-semibold text-black dark:text-white bebas" style={{ letterSpacing: '2px' }}>{t('Our Work')}</h2>
+                    <hr className="mt-6 border-black/20 dark:border-white/20 max-w-md mx-auto" />
                     <OriginalLanguageBadge className="mt-4 justify-center" />
                 </div>
 
                 {portfolio.length === 0 ? (
                     <div className="text-center py-24">
-                        <div className="inline-block p-8 rounded-2xl bg-white/60 border border-gray-200">
+                        <div className="inline-block p-8 rounded-2xl bg-white/60 dark:bg-gray-700/30 border border-gray-200 dark:border-gray-700">
                             <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a2.25 2.25 0 002.25-2.25V5.25a2.25 2.25 0 00-2.25-2.25H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
                             </svg>
-                            <p className="text-2xl text-gray-400 bebas" style={{ letterSpacing: '2px' }}>Portfolio coming soon</p>
-                            <p className="text-gray-400 mt-2 text-sm">We are preparing something special.</p>
+                            <p className="text-2xl text-gray-400 bebas" style={{ letterSpacing: '2px' }}>{t('Portfolio coming soon')}</p>
+                            <p className="text-gray-400 mt-2 text-sm">{t('We are preparing something special.')}</p>
                         </div>
                     </div>
                 ) : (
@@ -56,7 +56,7 @@ export default function PortfolioSection({ portfolio, featuredProjects, regularP
                                 className={`group block relative overflow-hidden rounded-2xl ${isVisible ? 'portfolio-card-animate' : 'opacity-0'}`}
                                 style={{ animationDelay: `${index * 200}ms`, minHeight: '480px' }}>
                                 {project.images.length > 0 ? (
-                                    <img src={`/storage/${project.images[0].image_path}`} alt="" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                    <img src={`/storage/${project.images[0].image_path}`} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                 ) : (
                                     <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black" />
                                 )}
@@ -65,7 +65,7 @@ export default function PortfolioSection({ portfolio, featuredProjects, regularP
                                     const logo = project.client_logo || project.projet?.image;
                                     return logo ? (
                                         <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 group-hover:scale-110 z-[1]" style={{ paddingBottom: '80px' }}>
-                                            <img src={`/storage/${logo}`} alt={project.client_name} className="max-w-[280px] max-h-[200px] object-contain drop-shadow-2xl" />
+                                            <img src={`/storage/${logo}`} alt={project.client_name} loading="lazy" className="max-w-[280px] max-h-[200px] object-contain drop-shadow-2xl" />
                                         </div>
                                     ) : null;
                                 })()}
@@ -98,7 +98,7 @@ export default function PortfolioSection({ portfolio, featuredProjects, regularP
                                         className={`group block relative overflow-hidden rounded-2xl ${isVisible ? 'portfolio-card-animate' : 'opacity-0'}`}
                                         style={{ animationDelay: `${(featuredProjects.length + index) * 150 + 200}ms`, minHeight: '360px' }}>
                                         {project.images.length > 0 ? (
-                                            <img src={`/storage/${project.images[0].image_path}`} alt="" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                            <img src={`/storage/${project.images[0].image_path}`} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                         ) : (
                                             <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black" />
                                         )}
@@ -107,7 +107,7 @@ export default function PortfolioSection({ portfolio, featuredProjects, regularP
                                             const logo = project.client_logo || project.projet?.image;
                                             return logo ? (
                                                 <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 group-hover:scale-110 z-[1]" style={{ paddingBottom: '60px' }}>
-                                                    <img src={`/storage/${logo}`} alt={project.client_name} className="max-w-[150px] max-h-[110px] object-contain drop-shadow-2xl" />
+                                                    <img src={`/storage/${logo}`} alt={project.client_name} loading="lazy" className="max-w-[150px] max-h-[110px] object-contain drop-shadow-2xl" />
                                                 </div>
                                             ) : null;
                                         })()}
@@ -141,7 +141,7 @@ export default function PortfolioSection({ portfolio, featuredProjects, regularP
 
                 {portfolio.length > 0 && (
                     <div className="text-center mt-16">
-                        <Link href="/projects" className="inline-flex items-center gap-2 px-8 py-4 border-2 border-black text-black font-bold rounded-full hover:bg-teal-300 hover:border-teal-300 hover:text-white transition-all duration-300 bebas" style={{ letterSpacing: '2px' }}>
+                        <Link href="/projects" className="inline-flex items-center gap-2 px-8 py-4 border-2 border-black dark:border-white text-black dark:text-white font-bold rounded-full hover:bg-teal-300 hover:border-teal-300 hover:text-white transition-all duration-300 bebas" style={{ letterSpacing: '2px' }}>
                             {t('View All Projects').toUpperCase()}
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                         </Link>

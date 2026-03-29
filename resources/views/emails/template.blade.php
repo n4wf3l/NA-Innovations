@@ -36,10 +36,10 @@
             </div>
             <div class="footer">
                 <p>
-                    NA Innovations &mdash; 170 Nijverheidskaai, Anderlecht<br>
-                    <a href="mailto:info@nawfelajari.be">info@nawfelajari.be</a>
+                    {{ config('mail.from.name', 'NA Innovations') }} &mdash; 170 Nijverheidskaai, Anderlecht<br>
+                    <a href="mailto:{{ config('mail.from.address') }}">{{ config('mail.from.address') }}</a>
                     &nbsp;&middot;&nbsp;
-                    <a href="https://nawfelajari.be">nawfelajari.be</a>
+                    <a href="{{ config('app.url') }}">{{ str_replace(['https://', 'http://'], '', config('app.url')) }}</a>
                 </p>
             </div>
         </div>

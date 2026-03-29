@@ -1,5 +1,8 @@
 import { Link } from '@inertiajs/react';
 import PublicLayout from '@/Layouts/PublicLayout';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { useTranslation } from 'react-i18next';
+import SectionNav from '@/Components/landing/SectionNav';
 
 interface ServiceData {
     id: number;
@@ -52,8 +55,11 @@ function getIcon(iconName: string): JSX.Element {
 }
 
 export default function Services({ services }: Props) {
+    const { t } = useTranslation();
+    useScrollReveal();
+
     return (
-        <PublicLayout title="Services">
+        <PublicLayout title="Services" description="Web development, mobile apps, SaaS platforms — end-to-end digital solutions tailored to your business needs.">
             {/* Hero Section */}
             <section className="bg-gray-900 relative overflow-hidden py-32">
                 <div aria-hidden="true">
@@ -65,32 +71,32 @@ export default function Services({ services }: Props) {
                     <span className="hero-word hero-word-6">CODE</span>
                 </div>
                 <div className="max-w-4xl mx-auto text-center px-4 relative z-10">
-                    <h1 className="text-7xl md:text-9xl font-bold text-white bebas" style={{ letterSpacing: '3px' }}>
-                        Our Services
+                    <h1 className="text-7xl md:text-9xl font-bold text-white bebas hero-fade" style={{ letterSpacing: '3px' }}>
+                        {t('Our Services')}
                     </h1>
-                    <p className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto">
-                        We deliver end-to-end digital solutions tailored to your business needs. From concept to deployment, we build products that perform.
+                    <p className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto hero-fade hero-fade-delay-1">
+                        {t('We deliver end-to-end digital solutions tailored to your business needs.')}
                     </p>
                 </div>
             </section>
 
             {/* Services Grid */}
-            <section className="py-20 bg-white">
+            <section id="section-services-grid" className="py-20 bg-white dark:bg-gray-900 scroll-mt-20">
                 <div className="max-w-6xl mx-auto px-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 reveal-stagger">
                         {services.map((service, index) => (
                             <div
                                 key={service.id}
-                                className="group relative bg-white rounded-2xl border border-gray-200 p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-teal-400/10 hover:-translate-y-2 hover:border-teal-300 fade-in-up"
+                                className="group relative bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-teal-400/10 hover:-translate-y-2 hover:border-teal-300 fade-in-up"
                                 style={{ animationDelay: `${index * 150}ms` }}
                             >
-                                <div className="w-16 h-16 rounded-2xl bg-teal-50 flex items-center justify-center text-teal-500 mb-6 transition-all duration-300 group-hover:bg-teal-400 group-hover:text-white group-hover:scale-110">
+                                <div className="w-16 h-16 rounded-2xl bg-teal-50 dark:bg-teal-500/10 flex items-center justify-center text-teal-500 mb-6 transition-all duration-300 group-hover:bg-teal-400 group-hover:text-white group-hover:scale-110">
                                     {getIcon(service.icon)}
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-4 bebas" style={{ letterSpacing: '1px' }}>
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 bebas" style={{ letterSpacing: '1px' }}>
                                     {service.title}
                                 </h3>
-                                <p className="text-gray-600 leading-relaxed">
+                                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                                     {service.description}
                                 </p>
                             </div>
@@ -99,31 +105,31 @@ export default function Services({ services }: Props) {
 
                     {services.length === 0 && (
                         <div className="text-center py-20">
-                            <p className="text-2xl text-gray-400 bebas" style={{ letterSpacing: '2px' }}>No services available at the moment.</p>
+                            <p className="text-2xl text-gray-400 dark:text-gray-500 bebas" style={{ letterSpacing: '2px' }}>{t('No services available at the moment.')}</p>
                         </div>
                     )}
                 </div>
             </section>
 
             {/* Why Choose Us */}
-            <section className="py-20 bg-gray-100">
+            <section id="section-why-us" className="py-20 bg-gray-100 dark:bg-gray-800 scroll-mt-20">
                 <div className="max-w-6xl mx-auto px-4">
-                    <h2 className="text-5xl md:text-7xl font-bold text-black bebas text-center mb-16" style={{ letterSpacing: '2px' }}>
-                        Why Choose NA Innovations?
+                    <h2 className="text-5xl md:text-7xl font-bold text-black dark:text-white bebas text-center mb-16 reveal" style={{ letterSpacing: '2px' }}>
+                        {t('Why Choose NA Innovations?')}
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 reveal-stagger">
                         {[
-                            { title: 'Full-Stack Expertise', desc: 'From frontend to backend, databases to deployment, we handle the complete technology stack.' },
-                            { title: 'Quality First', desc: 'Clean code, thorough testing, and best practices ensure your product stands the test of time.' },
-                            { title: 'Agile Process', desc: 'Regular updates, transparent communication, and iterative development keep you in control.' },
-                            { title: 'Post-Launch Support', desc: 'Our relationship does not end at deployment. We provide ongoing maintenance and support.' },
+                            { title: t('Full-Stack Expertise'), desc: t('From frontend to backend, databases to deployment, we handle the complete technology stack.') },
+                            { title: t('Quality First'), desc: t('Clean code, thorough testing, and best practices ensure your product stands the test of time.') },
+                            { title: t('Agile Process'), desc: t('Regular updates, transparent communication, and iterative development keep you in control.') },
+                            { title: t('Post-Launch Support'), desc: t('Our relationship does not end at deployment. We provide ongoing maintenance and support.') },
                         ].map((item, index) => (
                             <div key={index} className="text-center">
                                 <div className="w-14 h-14 rounded-full bg-teal-400 text-white flex items-center justify-center mx-auto mb-4 text-2xl font-bold bebas">
                                     {index + 1}
                                 </div>
-                                <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                                <p className="text-gray-600 text-sm">{item.desc}</p>
+                                <h3 className="text-xl font-bold dark:text-white mb-2">{item.title}</h3>
+                                <p className="text-gray-600 dark:text-gray-300 text-sm">{item.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -131,16 +137,16 @@ export default function Services({ services }: Props) {
             </section>
 
             {/* CTA */}
-            <section className="py-20 bg-gray-900 relative overflow-hidden">
+            <section id="section-cta" className="py-20 bg-gray-900 relative overflow-hidden scroll-mt-20">
                 <div className="absolute inset-0 opacity-[0.02] flex items-center justify-center" aria-hidden="true">
                     <span className="text-[20vw] font-bold text-white bebas whitespace-nowrap">LET'S BUILD</span>
                 </div>
-                <div className="max-w-3xl mx-auto text-center px-4 relative z-10">
+                <div className="max-w-3xl mx-auto text-center px-4 relative z-10 reveal">
                     <h2 className="text-5xl md:text-7xl font-bold text-white bebas mb-6" style={{ letterSpacing: '2px' }}>
-                        Have a project in mind?
+                        {t('Have a project in mind?')}
                     </h2>
                     <p className="text-lg text-gray-400 mb-10">
-                        Get in touch and let's discuss how we can bring your vision to life.
+                        {t("Get in touch and let's discuss how we can bring your vision to life.")}
                     </p>
                     <Link
                         href="/contact"
@@ -150,10 +156,16 @@ export default function Services({ services }: Props) {
                         <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                         </svg>
-                        REQUEST A QUOTE
+                        {t('REQUEST A QUOTE')}
                     </Link>
                 </div>
             </section>
+
+            <SectionNav sections={[
+                { id: 'section-services-grid', label: 'Services' },
+                { id: 'section-why-us', label: 'Why Choose Us' },
+                { id: 'section-cta', label: 'Get Started' },
+            ]} />
         </PublicLayout>
     );
 }

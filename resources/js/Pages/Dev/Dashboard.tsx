@@ -4,6 +4,15 @@ import Badge from '@/Components/ui/Badge';
 import ProtectedAmount from '@/Components/ui/ProtectedAmount';
 import { formatProjectType } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import GuidedTour, { TourTriggerButton } from '@/Components/ui/GuidedTour';
+import { useTour } from '@/hooks/useTour';
+import { devDashboardSteps } from '@/data/tourSteps';
+import { useConfirm } from '@/hooks/useConfirm';
+
+interface MonthlyCompleted {
+    month: string;
+    count: number;
+}
 
 interface Props {
     myProjects: any[];
@@ -14,16 +23,32 @@ interface Props {
         pendingClaim: number;
         totalAssigned: number;
     };
+    monthlyCompleted?: MonthlyCompleted[];
+    totalBudgetManaged?: number;
 }
 
-export default function DevDashboard({ myProjects, pendingProjects, stats }: Props) {
+export default function DevDashboard({ myProjects, pendingProjects, stats, monthlyCompleted = [], totalBudgetManaged = 0 }: Props) {
     const { t } = useTranslation();
+    const tour = useTour('dev_dashboard', devDashboardSteps.length);
+
     return (
         <DevLayout title={t("Dashboard")}>
             <Head title={t("Developer Dashboard")} />
 
+            <GuidedTour
+                steps={devDashboardSteps}
+                isActive={tour.isActive}
+                currentStep={tour.currentStep}
+                onNext={tour.next}
+                onPrev={tour.prev}
+                onSkip={tour.skip}
+                onDismiss={tour.dismiss}
+                accentColor="indigo"
+            />
+            <TourTriggerButton onClick={tour.restart} accentColor="indigo" />
+
             {/* Hero banner */}
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8 mb-8">
+            <div data-tour="hero-banner" className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8 mb-8">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
                 <div className="relative z-10">
@@ -34,7 +59,7 @@ export default function DevDashboard({ myProjects, pendingProjects, stats }: Pro
             </div>
 
             {/* Stats grid */}
-            <div className="stagger-children grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div data-tour="stats-grid" className="stagger-children grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm">
                     <div className="flex items-center justify-between mb-3">
                         <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
@@ -76,8 +101,70 @@ export default function DevDashboard({ myProjects, pendingProjects, stats }: Pro
                 </div>
             </div>
 
+            {/* Monthly Completed & Budget */}
+            <div data-tour="monthly-chart" className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
+                {/* Monthly Completed Chart */}
+                <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+                    <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-4">{t('Completed Projects (6 months)')}</h3>
+                    {monthlyCompleted.length > 0 ? (() => {
+                        const maxVal = Math.max(...monthlyCompleted.map(m => m.count), 1);
+                        const chartHeight = 120;
+                        const barWidth = 40;
+                        const gap = 20;
+                        const svgWidth = monthlyCompleted.length * (barWidth + gap);
+                        return (
+                            <div className="overflow-x-auto">
+                                <svg width={svgWidth} height={chartHeight + 40} className="mx-auto">
+                                    {monthlyCompleted.map((m, i) => {
+                                        const x = i * (barWidth + gap) + gap / 2;
+                                        const h = (m.count / maxVal) * chartHeight;
+                                        return (
+                                            <g key={i}>
+                                                <rect
+                                                    x={x} y={chartHeight - h}
+                                                    width={barWidth} height={h}
+                                                    rx={6} className="fill-indigo-400 dark:fill-indigo-500"
+                                                />
+                                                {m.count > 0 && (
+                                                    <text
+                                                        x={x + barWidth / 2} y={chartHeight - h - 6}
+                                                        textAnchor="middle" className="fill-gray-500 dark:fill-gray-400 text-xs" fontSize={11}
+                                                    >
+                                                        {m.count}
+                                                    </text>
+                                                )}
+                                                <text
+                                                    x={x + barWidth / 2} y={chartHeight + 20}
+                                                    textAnchor="middle" className="fill-gray-400 dark:fill-gray-500" fontSize={10}
+                                                >
+                                                    {m.month}
+                                                </text>
+                                            </g>
+                                        );
+                                    })}
+                                </svg>
+                            </div>
+                        );
+                    })() : (
+                        <p className="text-sm text-gray-400 dark:text-gray-500">{t('No data yet.')}</p>
+                    )}
+                </div>
+
+                {/* Total Budget Managed */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 flex flex-col items-center justify-center">
+                    <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center mb-4">
+                        <svg className="w-7 h-7 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider font-semibold mb-2">{t('Budget Managed')}</p>
+                    <p className="text-3xl font-black text-gray-900 dark:text-white">
+                        <ProtectedAmount amount={totalBudgetManaged} />
+                    </p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">{t('Total across all projects')}</p>
+                </div>
+            </div>
+
             {/* Pending Projects */}
-            <div className="mb-8">
+            <div data-tour="pending-projects" className="mb-8">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('Pending Projects')}</h3>
                     <Link href="/dev/projects?tab=pending" className="text-xs text-indigo-500 hover:text-indigo-600 font-semibold">{t('View all')} &rarr;</Link>
@@ -100,7 +187,7 @@ export default function DevDashboard({ myProjects, pendingProjects, stats }: Pro
             </div>
 
             {/* My Projects */}
-            <div>
+            <div data-tour="my-projects">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('My Projects')}</h3>
                     <Link href="/dev/projects?tab=my" className="text-xs text-indigo-500 hover:text-indigo-600 font-semibold">{t('View all')} &rarr;</Link>
@@ -157,14 +244,20 @@ export default function DevDashboard({ myProjects, pendingProjects, stats }: Pro
 
 function PendingProjectCard({ project }: { project: any }) {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
     const { post, processing } = useForm({});
     const partnerName = project.lead?.referral_partner?.user?.name;
 
-    function handleClaim(e: React.FormEvent) {
+    async function handleClaim(e: React.FormEvent) {
         e.preventDefault();
-        if (confirm(t('Are you sure you want to claim "{{name}}"?', { name: project.nom_societe }))) {
-            post(`/dev/projects/${project.id}/claim`);
-        }
+        const ok = await confirm({
+            title: t('Claim Project'),
+            message: t('Are you sure you want to claim "{{name}}"?', { name: project.nom_societe }),
+            confirmText: t('Claim'),
+            variant: 'info',
+        });
+        if (!ok) return;
+        post(`/dev/projects/${project.id}/claim`);
     }
 
     return (
@@ -220,6 +313,7 @@ function PendingProjectCard({ project }: { project: any }) {
                     {t('Details')}
                 </Link>
             </div>
+            <ConfirmDialog />
         </div>
     );
 }

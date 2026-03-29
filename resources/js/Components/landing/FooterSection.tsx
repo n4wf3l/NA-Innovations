@@ -16,8 +16,8 @@ export default function FooterSection({ branding, socialLinks, socialIcons, navL
             <div className="container mx-auto flex flex-col items-center px-4">
                 <div className="flex flex-col md:flex-row justify-between items-center md:items-start w-full gap-8">
                     <div className="w-full md:w-1/4 text-center md:text-left">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">About {branding.company_name.split(' ').map(w => w[0]).join('')}</h3>
-                        <p className="text-sm text-gray-600">NA is a software engineer and fullstack developer graduated in Belgium.</p>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('About')} {branding.company_name.split(' ').map(w => w[0]).join('')}</h3>
+                        <p className="text-sm text-gray-600">{t('NA is a software engineer and fullstack developer graduated in Belgium.')}</p>
                         {Object.keys(socialLinks).length > 0 && (
                             <div className="flex items-center mt-6 justify-center md:justify-start gap-3">
                                 {Object.entries(socialLinks).map(([platform, url]) => (
@@ -31,18 +31,18 @@ export default function FooterSection({ branding, socialLinks, socialIcons, navL
                         )}
                     </div>
                     <div className="w-full md:w-1/4 text-center md:text-left">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Contact</h3>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('Contact')}</h3>
                         <div className="text-sm text-gray-600">
-                            <p className="mb-2">Email: <a href="mailto:info@nainnovations.be" className="hover:underline">info@nainnovations.be</a></p>
-                            <p className="mb-2">Phone: <a href="tel:+32490221912" className="hover:underline">+32 490 22 19 12</a></p>
+                            <p className="mb-2">{t('Email')}: <a href="mailto:info@nainnovations.be" className="hover:underline">info@nainnovations.be</a></p>
+                            <p className="mb-2">{t('Phone')}: <a href="tel:+32490221912" className="hover:underline">+32 490 22 19 12</a></p>
                         </div>
                     </div>
                     <div className="w-full md:w-1/4 text-center md:text-left">
                         <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('Company Information')}</h3>
                         <div className="text-sm text-gray-600">
                             <p className="mb-2 font-bold">NA Innovations BV</p>
-                            <p className="mb-2">Company Registration Number: 1025.939.504</p>
-                            <p className="mb-2">VAT Number: BE1025939504</p>
+                            <p className="mb-2">{t('Company Registration Number')}: 1025.939.504</p>
+                            <p className="mb-2">{t('VAT Number')}: BE1025939504</p>
                         </div>
                     </div>
                     <div className="w-full md:w-1/4 text-center md:text-left">

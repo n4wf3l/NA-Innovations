@@ -85,4 +85,9 @@ class RecurringService extends Model
     {
         return $this->morphMany(TimelineEvent::class, 'timelineable');
     }
+
+    public function notes()
+    {
+        return $this->morphMany(Note::class, 'notable');
+    }
 }

@@ -42,4 +42,39 @@ class CommissionController extends Controller
             'upcomingPayouts' => $upcomingPayouts,
         ]);
     }
+
+    public function exportCsv()
+    {
+        $partner = auth()->user()->referralPartner;
+        if (!$partner) abort(403);
+
+        $commissions = Commission::where('referral_partner_id', $partner->id)
+            ->with('invoice')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $callback = function () use ($commissions) {
+            $file = fopen('php://output', 'w');
+            fwrite($file, "\xEF\xBB\xBF");
+            fputcsv($file, ['Date', 'Facture', 'Base HT', 'Taux', 'Commission', 'Statut', 'Date paiement', 'Référence'], ';');
+            foreach ($commissions as $c) {
+                fputcsv($file, [
+                    $c->created_at->format('d/m/Y'),
+                    $c->invoice?->invoice_number ?? '',
+                    number_format($c->base_amount, 2, ',', '.'),
+                    $c->commission_rate . '%',
+                    number_format($c->commission_amount, 2, ',', '.'),
+                    $c->status,
+                    $c->paid_date ? date('d/m/Y', strtotime($c->paid_date)) : '',
+                    $c->payment_reference ?? '',
+                ], ';');
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="commissions-' . now()->format('Y-m-d') . '.csv"',
+        ]);
+    }
 }

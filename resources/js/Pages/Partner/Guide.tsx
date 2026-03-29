@@ -44,6 +44,8 @@ export default function Guide({ referralCode, commissionRate, projectTypes }: Pr
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                 </svg>
             ),
+            ctaLabel: t('Comment trouver un client ?'),
+            ctaHref: '/partner/prospecting',
         },
         {
             number: 2,
@@ -262,6 +264,17 @@ export default function Guide({ referralCode, commissionRate, projectTypes }: Pr
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                                         </svg>
                                                         {t('Soumettre un client')}
+                                                    </Link>
+                                                )}
+                                                {step.ctaHref && step.ctaLabel && (
+                                                    <Link
+                                                        href={step.ctaHref}
+                                                        className={`inline-flex items-center mt-3 px-4 py-2 ${step.bgColor} ${step.textColor} text-sm font-semibold rounded-xl transition-colors hover:opacity-80`}
+                                                    >
+                                                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                                        </svg>
+                                                        {step.ctaLabel}
                                                     </Link>
                                                 )}
                                             </div>

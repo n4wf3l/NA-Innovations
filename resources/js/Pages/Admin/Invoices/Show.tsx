@@ -8,7 +8,9 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import LocalePicker from '@/Components/ui/LocalePicker';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 import PdfPreviewCard from '@/Components/ui/PdfPreviewCard';
+import { useConfirm } from '@/hooks/useConfirm';
 
 interface Props {
     invoice: Invoice & {
@@ -32,6 +34,7 @@ interface Props {
 
 export default function InvoiceShow({ invoice, emailTemplates }: Props) {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
     const [showPaymentForm, setShowPaymentForm] = useState(false);
     const [showSendModal, setShowSendModal] = useState(false);
     const [sending, setSending] = useState(false);
@@ -90,10 +93,15 @@ export default function InvoiceShow({ invoice, emailTemplates }: Props) {
         }, { onFinish: () => { setSending(false); setShowSendModal(false); } });
     };
 
-    const handleDelete = () => {
-        if (confirm(t('Are you sure you want to delete this invoice?'))) {
-            router.delete(`/admin/invoices/${invoice.id}`);
-        }
+    const handleDelete = async () => {
+        const ok = await confirm({
+            title: t('Delete'),
+            message: t('Are you sure you want to delete this invoice?'),
+            confirmText: t('Delete'),
+            variant: 'danger',
+        });
+        if (!ok) return;
+        router.delete(`/admin/invoices/${invoice.id}`);
     };
 
     const handleRecordPayment = (e: React.FormEvent) => {
@@ -130,6 +138,10 @@ export default function InvoiceShow({ invoice, emailTemplates }: Props) {
                         </button>
                     )}
                     <button onClick={() => setShowPaymentForm(!showPaymentForm)} className="px-4 py-2 text-sm font-medium text-white bg-emerald-500 rounded-lg hover:bg-emerald-600">{t('Record Payment')}</button>
+                    <button onClick={async () => { const ok = await confirm({ title: t('Dupliquer'), message: t('Dupliquer cette facture ?'), confirmText: t('Dupliquer'), variant: 'info' }); if (ok) router.post(`/admin/invoices/${invoice.id}/duplicate`); }} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-1.5">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+                        {t('Duplicate')}
+                    </button>
                     <Link href={`/admin/invoices/${invoice.id}/edit`} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">{t('Edit')}</Link>
                     {invoice.status === 'draft' && (
                         <button onClick={handleDelete} className="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 border border-red-200 dark:border-red-500/30 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10">{t('Delete')}</button>
@@ -148,9 +160,11 @@ export default function InvoiceShow({ invoice, emailTemplates }: Props) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Method")}</label>
-                            <select value={paymentForm.data.method} onChange={e => paymentForm.setData('method', e.target.value)} className="w-full bg-gray-50 dark:bg-gray-700/50 border-0 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-400">
-                                {paymentMethods.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={paymentForm.data.method}
+                                onChange={(val) => paymentForm.setData('method', val)}
+                                options={paymentMethods}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Reference")}</label>
@@ -498,6 +512,7 @@ export default function InvoiceShow({ invoice, emailTemplates }: Props) {
                 </div>,
                 document.body
             )}
+            <ConfirmDialog />
         </AdminLayout>
     );
 }

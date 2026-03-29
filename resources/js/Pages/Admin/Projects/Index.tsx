@@ -13,6 +13,24 @@ import KanbanBoard, { KanbanColumn } from '@/Components/ui/KanbanBoard';
 import { Project, PaginatedData, PageProps } from '@/types';
 import { formatDate, cn, formatProjectType } from '@/lib/utils';
 
+function KanbanCard({ hoverColor, onClick, children }: { hoverColor: string; onClick: () => void; children: React.ReactNode }) {
+    const [hovered, setHovered] = useState(false);
+    return (
+        <div
+            onClick={onClick}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 transition-all duration-200 cursor-pointer"
+            style={{
+                border: `1.5px solid ${hovered ? hoverColor : 'transparent'}`,
+                boxShadow: hovered ? `0 0 0 1px ${hoverColor}20, 0 4px 12px ${hoverColor}15` : undefined,
+            }}
+        >
+            {children}
+        </div>
+    );
+}
+
 interface Props {
     projects: PaginatedData<Project>;
     kanbanProjects: Record<string, Project[]>;
@@ -48,8 +66,21 @@ export default function ProjectsIndex({ projects, kanbanProjects: initialKanban,
         {
             header: t('Company'),
             accessor: (project: Project) => (
-                <Link href={`/admin/projects/${project.id}`} className="font-medium text-gray-900 dark:text-white hover:text-indigo-600">
-                    {project.nom_societe || `Project #${project.id}`}
+                <Link href={`/admin/projects/${project.id}`} className="flex items-center gap-3 group">
+                    {project.image ? (
+                        <img
+                            src={project.image.startsWith('http') ? project.image : `/storage/${project.image}`}
+                            alt={project.nom_societe || ''}
+                            className="w-8 h-8 rounded-lg object-contain bg-gray-50 dark:bg-gray-700 flex-shrink-0"
+                        />
+                    ) : (
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center flex-shrink-0">
+                            <span className="text-[9px] font-bold text-gray-500 dark:text-gray-400">{(project.nom_societe || '?').substring(0, 2).toUpperCase()}</span>
+                        </div>
+                    )}
+                    <span className="font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        {project.nom_societe || `Project #${project.id}`}
+                    </span>
                 </Link>
             ),
         },
@@ -151,23 +182,50 @@ export default function ProjectsIndex({ projects, kanbanProjects: initialKanban,
                             headers: {
                                 'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content || '',
+                                'Accept': 'application/json',
                             },
                             body: JSON.stringify({ status: toColumn }),
+                        }).then(res => {
+                            if (!res.ok) {
+                                // Revert optimistic update on failure
+                                setKanbanProjects(initialKanban);
+                            }
+                        }).catch(() => {
+                            setKanbanProjects(initialKanban);
                         });
                     }}
-                    renderCard={(project, isDragging) => (
-                        <div
-                            className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-3 hover:shadow-md transition-shadow"
-                            onClick={() => !isDragging && (window.location.href = `/admin/projects/${project.id}`)}
+                    renderCard={(project, isDragging) => {
+                        const statusColors: Record<string, string> = {
+                            planning: '#8b5cf6',
+                            in_progress: '#3b82f6',
+                            review: '#f59e0b',
+                            completed: '#10b981',
+                            on_hold: '#6b7280',
+                            cancelled: '#ef4444',
+                        };
+                        return (
+                        <KanbanCard
+                            hoverColor={statusColors[project.status] || '#3b82f6'}
+                            onClick={() => !isDragging && router.visit(`/admin/projects/${project.id}`)}
                         >
-                            <p className="text-sm font-medium text-gray-900 dark:text-white">{project.nom_societe || `Project #${project.id}`}</p>
+                            <div className="flex items-center gap-2 mb-0.5">
+                                {project.image ? (
+                                    <img src={project.image.startsWith('http') ? project.image : `/storage/${project.image}`} alt="" className="w-6 h-6 rounded-md object-contain bg-gray-50 dark:bg-gray-700 flex-shrink-0" />
+                                ) : (
+                                    <div className="w-6 h-6 rounded-md bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center flex-shrink-0">
+                                        <span className="text-[8px] font-bold text-gray-500 dark:text-gray-400">{(project.nom_societe || '?').substring(0, 2).toUpperCase()}</span>
+                                    </div>
+                                )}
+                                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{project.nom_societe || `Project #${project.id}`}</p>
+                            </div>
                             {project.client && <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{project.client.name}</p>}
                             <div className="flex items-center justify-between mt-2">
                                 {project.budget ? <p className="text-xs text-gray-500 dark:text-gray-400 font-medium"><ProtectedAmount amount={project.budget} /></p> : null}
                                 {project.deadline && <p className="text-xs text-gray-400 dark:text-gray-500">{formatDate(project.deadline)}</p>}
                             </div>
-                        </div>
-                    )}
+                        </KanbanCard>
+                    );
+                    }}
                 />
             )}
         </AdminLayout>

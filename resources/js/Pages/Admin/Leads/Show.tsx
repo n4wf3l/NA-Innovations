@@ -4,6 +4,8 @@ import Badge from '@/Components/ui/Badge';
 import { Lead, TimelineEvent } from '@/types';
 import { formatCurrency, formatDate, formatStatus, formatProjectType } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import NotesSection from '@/Components/ui/NotesSection';
+import { useConfirm } from '@/hooks/useConfirm';
 
 interface Props {
     lead: Lead;
@@ -12,10 +14,16 @@ interface Props {
 
 export default function LeadShow({ lead, timeline }: Props) {
     const { t } = useTranslation();
-    const handleDelete = () => {
-        if (confirm('Are you sure you want to delete this lead?')) {
-            router.delete(`/admin/leads/${lead.id}`);
-        }
+    const { confirm, ConfirmDialog } = useConfirm();
+    const handleDelete = async () => {
+        const ok = await confirm({
+            title: t('Delete'),
+            message: t('Are you sure you want to delete this lead?'),
+            confirmText: t('Delete'),
+            variant: 'danger',
+        });
+        if (!ok) return;
+        router.delete(`/admin/leads/${lead.id}`);
     };
 
     return (
@@ -96,6 +104,8 @@ export default function LeadShow({ lead, timeline }: Props) {
                             <p className="text-sm text-red-600">{lead.lost_reason}</p>
                         </div>
                     )}
+
+                    <NotesSection notes={lead.notes || []} notableType="lead" notableId={lead.id} />
                 </div>
 
                 {/* Timeline */}
@@ -138,6 +148,7 @@ export default function LeadShow({ lead, timeline }: Props) {
                     </div>
                 </div>
             </div>
+            <ConfirmDialog />
         </AdminLayout>
     );
 }

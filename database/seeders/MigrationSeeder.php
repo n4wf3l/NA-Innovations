@@ -105,5 +105,21 @@ class MigrationSeeder extends Seeder
         foreach ($seoSettings as $s) {
             Setting::firstOrCreate(['key' => $s['key']], $s);
         }
+
+        // WhatsApp floating button
+        Setting::firstOrCreate(['key' => 'social.whatsapp'], [
+            'group' => 'social',
+            'value' => '+32490221912',
+            'type' => 'string',
+            'description' => 'WhatsApp phone number for floating button',
+        ]);
+
+        // Presentation video URL
+        Setting::firstOrCreate(['key' => 'branding.video_url'], [
+            'group' => 'branding',
+            'value' => '',
+            'type' => 'string',
+            'description' => 'YouTube or Vimeo embed URL for presentation video',
+        ]);
     }
 }

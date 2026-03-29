@@ -20,17 +20,30 @@ class DashboardController extends BaseAdminController
     {
         $now = now();
         $startOfMonth = $now->copy()->startOfMonth();
+        $startOfLastMonth = $now->copy()->subMonth()->startOfMonth();
+        $endOfLastMonth = $now->copy()->subMonth()->endOfMonth();
 
         // Revenue this month (confirmed payments)
         $revenueMonth = Payment::where('status', 'confirmed')
             ->whereBetween('payment_date', [$startOfMonth, $now])
             ->sum('amount');
 
+        // Revenue last month
+        $revenueLastMonth = Payment::where('status', 'confirmed')
+            ->whereBetween('payment_date', [$startOfLastMonth, $endOfLastMonth])
+            ->sum('amount');
+
         // Active projects
         $activeProjects = Projet::whereIn('status', ['planning', 'in_progress', 'review'])->count();
 
-        // Open leads
+        // Open leads + last month comparison
         $openLeads = Lead::whereNotIn('status', ['won', 'lost'])->count();
+        $newLeadsThisMonth = Lead::where('created_at', '>=', $startOfMonth)->count();
+        $newLeadsLastMonth = Lead::whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->count();
+
+        // Won leads this month vs last
+        $wonThisMonth = Lead::where('status', 'won')->where('won_at', '>=', $startOfMonth)->count();
+        $wonLastMonth = Lead::where('status', 'won')->whereBetween('won_at', [$startOfLastMonth, $endOfLastMonth])->count();
 
         // Pending invoices (sent but unpaid)
         $pendingInvoices = Invoice::whereIn('status', ['sent', 'viewed', 'partially_paid', 'overdue'])->sum('amount_due');
@@ -59,16 +72,72 @@ class DashboardController extends BaseAdminController
             ->take(12)
             ->get();
 
+        // Comparisons
+        $revenueChange = $revenueLastMonth > 0
+            ? round(($revenueMonth - $revenueLastMonth) / $revenueLastMonth * 100, 1)
+            : ($revenueMonth > 0 ? 100 : 0);
+
+        $leadsChange = $newLeadsLastMonth > 0
+            ? round(($newLeadsThisMonth - $newLeadsLastMonth) / $newLeadsLastMonth * 100, 1)
+            : ($newLeadsThisMonth > 0 ? 100 : 0);
+
+        // Dashboard layout preferences
+        $dashboardPrefs = auth()->user()->preferences['dashboard_layout'] ?? [
+            'kpis' => true,
+            'quick_actions' => true,
+            'projects' => true,
+            'recent_leads' => true,
+            'alerts' => true,
+        ];
+
+        // Email notification preference
+        $notifyAdminEmails = auth()->user()->preferences['notifications']['notify_admin_emails'] ?? true;
+
         return Inertia::render('Admin/Dashboard', [
             'revenueMonth' => $revenueMonth,
+            'revenueLastMonth' => $revenueLastMonth,
+            'revenueChange' => $revenueChange,
             'activeProjects' => $activeProjects,
             'openLeads' => $openLeads,
+            'newLeadsThisMonth' => $newLeadsThisMonth,
+            'leadsChange' => $leadsChange,
+            'wonThisMonth' => $wonThisMonth,
+            'wonLastMonth' => $wonLastMonth,
             'pendingInvoices' => $pendingInvoices,
             'recentLeads' => $recentLeads,
             'overdueInvoices' => $overdueInvoices,
             'expiringServices' => $expiringServices,
             'pendingCommissions' => $pendingCommissions,
             'projects' => $projects,
+            'dashboardPrefs' => $dashboardPrefs,
+            'notifyAdminEmails' => $notifyAdminEmails,
         ]);
+    }
+
+    /**
+     * Update dashboard layout preferences and notification settings.
+     */
+    public function updatePreferences(Request $request)
+    {
+        $validated = $request->validate([
+            'dashboard_layout' => 'required|array',
+            'notify_admin_emails' => 'nullable|boolean',
+        ]);
+
+        $user = auth()->user();
+        $prefs = $user->preferences ?? [];
+        $prefs['dashboard_layout'] = $validated['dashboard_layout'];
+
+        // Save email notification preference
+        if ($request->has('notify_admin_emails')) {
+            if (!isset($prefs['notifications'])) {
+                $prefs['notifications'] = [];
+            }
+            $prefs['notifications']['notify_admin_emails'] = (bool) $validated['notify_admin_emails'];
+        }
+
+        $user->update(['preferences' => $prefs]);
+
+        return response()->json(['success' => true]);
     }
 }

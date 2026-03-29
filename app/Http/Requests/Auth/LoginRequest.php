@@ -105,6 +105,9 @@ class LoginRequest extends FormRequest
      */
     protected function verifyTurnstile(): void
     {
+        // Skip Turnstile in local/testing environments
+        if (app()->environment('local', 'testing')) return;
+
         $secret = config('services.turnstile.secret_key');
         if (!$secret) return; // Skip if not configured
 

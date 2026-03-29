@@ -45,6 +45,21 @@ class NotificationService
     ];
 
     /**
+     * Check if an active email template exists for the given slug and locale.
+     * Useful for controllers to verify before calling send(), so they can
+     * flash a warning to the user if the template is missing.
+     */
+    public static function templateExists(string $slug, string $locale = 'en'): bool
+    {
+        return EmailTemplate::where('slug', $slug)
+            ->where('is_active', true)
+            ->where(function ($q) use ($locale) {
+                $q->where('locale', $locale)->orWhere('locale', 'en');
+            })
+            ->exists();
+    }
+
+    /**
      * Send a notification to a user.
      *
      * @param User          $recipient      The user to notify
@@ -86,7 +101,10 @@ class NotificationService
         // 2. Replace variables
         $subject = self::replaceVariables($template->subject, $variables);
         $body = self::replaceVariables($template->body, $variables);
-        $plainBody = strip_tags(str_replace(['<br>', '<br/>', '<br />'], "\n", $body));
+        // Convert HTML to clean plain text: replace block tags with spaces, then strip
+        $plain = str_replace(['<br>', '<br/>', '<br />', '</p>', '</li>', '</h1>', '</h2>', '</h3>', '</h4>'], "\n", $body);
+        $plain = str_replace(['<p>', '<li>', '<ul>', '</ul>', '<ol>', '</ol>'], ' ', $plain);
+        $plainBody = trim(preg_replace('/\s+/', ' ', strip_tags($plain)));
 
         // 3. Always create in-app notification
         try {
@@ -147,6 +165,8 @@ class NotificationService
         foreach ($variables as $key => $value) {
             $text = preg_replace('/\{\{\s*' . preg_quote($key, '/') . '\s*\}\}/', $value ?? '', $text);
         }
+        // Remove any unreplaced {{ variables }} so they never show in the output
+        $text = preg_replace('/\{\{[^}]+\}\}/', '', $text);
         return $text;
     }
 }

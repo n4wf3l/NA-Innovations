@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { useTranslation } from 'react-i18next';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
+import SectionNav from '@/Components/landing/SectionNav';
 
 import {
     projectTypeOptions,
@@ -27,6 +29,7 @@ interface Props {
 
 export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
     const { t } = useTranslation();
+    useScrollReveal();
     const { flash, errors } = usePage<{ flash: { success?: string; error?: string }; errors: Record<string, string> }>().props;
     const [activeTab, setActiveTab] = useState<'simulator' | 'quote' | 'contact'>(() => {
         if (typeof window !== 'undefined') {
@@ -35,6 +38,21 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
         }
         return 'simulator';
     });
+    // Referral code from URL
+    const refCode = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('ref') || '' : '';
+
+    // Auto-scroll to tabs when arriving via anchor link
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const hash = window.location.hash.replace('#', '');
+        if (hash === 'simulator' || hash === 'quote' || hash === 'contact' || hash === 'tabs') {
+            setTimeout(() => {
+                const el = document.getElementById('tabs');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 300);
+        }
+    }, []);
+
     const [turnstileToken, setTurnstileToken] = useState('');
     const turnstileRef = useRef<HTMLDivElement>(null);
     const turnstileWidgetId = useRef<string | null>(null);
@@ -199,6 +217,7 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
             name: contactForm.name, email: contactForm.email, service: contactForm.subject,
             budget: 0, message: contactForm.message, website: '',
             _form_loaded_at: formLoadedAt, 'cf-turnstile-response': turnstileToken,
+            ref: refCode,
         }, {
             onFinish: () => { setProcessing(false); resetTurnstile(); },
             onSuccess: () => setContactForm({ name: '', email: '', subject: '', message: '' }),
@@ -216,6 +235,7 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
         formData.append('type', 'quote'); formData.append('website', '');
         formData.append('_form_loaded_at', String(formLoadedAt));
         formData.append('cf-turnstile-response', turnstileToken);
+        if (refCode) formData.append('ref', refCode);
         attachments.forEach((file, i) => { formData.append(`attachments[${i}]`, file); });
         router.post('/send-email', formData, {
             forceFormData: true,
@@ -238,6 +258,7 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
                 ? `[Description libre] ${noIdeaDescription}`
                 : `Price simulator estimate: ${formatEUR(priceBreakdown.total)}`,
             website: '', _form_loaded_at: formLoadedAt, 'cf-turnstile-response': modalTurnstileToken,
+            ref: refCode,
         }, {
             onFinish: () => {
                 setProcessing(false);
@@ -254,19 +275,19 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
         });
     };
 
-    const inputClasses = "w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 focus:outline-none transition-all duration-200";
-    const labelClasses = "block text-sm font-medium text-gray-700 mb-2";
+    const inputClasses = "w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 focus:outline-none transition-all duration-200";
+    const labelClasses = "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2";
 
     // ─── Simulator modal ─────────────────────────────────────────
     const simulatorModal = showSimulatorModal ? createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowSimulatorModal(false)} />
-            <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 max-h-[90vh] overflow-y-auto">
-                <button onClick={() => setShowSimulatorModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
+            <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-lg w-full p-8 max-h-[90vh] overflow-y-auto">
+                <button onClick={() => setShowSimulatorModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('Get Your Free Quote')}</h3>
-                <p className="text-sm text-gray-500 mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('Get Your Free Quote')}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
                     Your estimated budget: <span className="font-bold text-teal-600">{formatEUR(priceBreakdown.total)}</span>.
                     Fill in your details and we will send you a detailed proposal.
                 </p>
@@ -305,7 +326,7 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
 
     // ─── Render ──────────────────────────────────────────────────
     return (
-        <PublicLayout title="Contact">
+        <PublicLayout title={t('Contact')} description="Get in touch for a free quote. Web development, mobile apps and software solutions.">
             {/* Hero Section */}
             <section className="bg-gray-900 relative overflow-hidden py-32">
                 <div aria-hidden="true">
@@ -315,34 +336,34 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
                     <span className="hero-word hero-word-4">HELLO</span>
                 </div>
                 <div className="max-w-4xl mx-auto text-center px-4 relative z-10">
-                    <h1 className="text-7xl md:text-9xl font-bold text-white bebas" style={{ letterSpacing: '3px' }}>{t('Get In Touch')}</h1>
-                    <p className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto">{t('Have a question or a project in mind? We would love to hear from you.')}</p>
+                    <h1 className="text-7xl md:text-9xl font-bold text-white bebas hero-fade" style={{ letterSpacing: '3px' }}>{t('Get In Touch')}</h1>
+                    <p className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto hero-fade hero-fade-delay-1">{t('Have a question or a project in mind? We would love to hear from you.')}</p>
                 </div>
             </section>
 
             {/* Contact Section */}
-            <section className="py-20 bg-white">
+            <section id="section-form" className="py-20 bg-white dark:bg-gray-900 scroll-mt-20">
                 <div className="max-w-6xl mx-auto px-4">
                     {/* Flash messages */}
                     {flash?.success && (
-                        <div className="mb-8 p-4 bg-teal-50 border border-teal-200 rounded-xl text-teal-700 text-sm max-w-3xl mx-auto">{flash.success}</div>
+                        <div className="mb-8 p-4 bg-teal-50 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/20 rounded-xl text-teal-700 dark:text-teal-300 text-sm max-w-3xl mx-auto">{flash.success}</div>
                     )}
                     {(flash as any)?.error && (
-                        <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm max-w-3xl mx-auto">{(flash as any).error}</div>
+                        <div className="mb-8 p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl text-red-700 dark:text-red-300 text-sm max-w-3xl mx-auto">{(flash as any).error}</div>
                     )}
                     {errors?.captcha && (
-                        <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm max-w-3xl mx-auto">{errors.captcha}</div>
+                        <div className="mb-8 p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl text-red-700 dark:text-red-300 text-sm max-w-3xl mx-auto">{errors.captcha}</div>
                     )}
 
                     {/* Tab Pills */}
                     <div id="tabs" className="flex justify-center mb-12 scroll-mt-24">
-                        <div className="inline-flex bg-gray-100 rounded-full p-1 flex-wrap justify-center gap-1">
+                        <div className="inline-flex bg-gray-100 dark:bg-gray-800 rounded-full p-1 flex-wrap justify-center gap-1">
                             {(['simulator', 'quote', 'contact'] as const).map((tab) => (
                                 <button
                                     key={tab}
                                     onClick={() => setActiveTab(tab)}
                                     className={`px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
-                                        activeTab === tab ? 'bg-teal-400 text-white shadow-lg' : 'text-gray-600 hover:text-gray-900'
+                                        activeTab === tab ? 'bg-teal-400 text-white shadow-lg' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                                     }`}
                                 >
                                     {tab === 'simulator' ? t('Price Simulator') : tab === 'quote' ? t('Request a Quote') : t('Contact')}
@@ -386,31 +407,35 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
                     {/* Contact Info */}
                     <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
                         <div className="text-center">
-                            <div className="w-14 h-14 rounded-full bg-teal-50 text-teal-500 flex items-center justify-center mx-auto mb-4">
+                            <div className="w-14 h-14 rounded-full bg-teal-50 dark:bg-teal-500/10 text-teal-500 flex items-center justify-center mx-auto mb-4">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
                             </div>
-                            <h3 className="font-bold text-gray-900 mb-1">Email</h3>
-                            <a href="mailto:info@nainnovations.be" className="text-sm text-gray-600 hover:text-teal-500 transition">info@nainnovations.be</a>
+                            <h3 className="font-bold text-gray-900 dark:text-white mb-1">Email</h3>
+                            <a href="mailto:info@nainnovations.be" className="text-sm text-gray-600 dark:text-gray-300 hover:text-teal-500 transition">info@nainnovations.be</a>
                         </div>
                         <div className="text-center">
-                            <div className="w-14 h-14 rounded-full bg-teal-50 text-teal-500 flex items-center justify-center mx-auto mb-4">
+                            <div className="w-14 h-14 rounded-full bg-teal-50 dark:bg-teal-500/10 text-teal-500 flex items-center justify-center mx-auto mb-4">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
                             </div>
-                            <h3 className="font-bold text-gray-900 mb-1">Phone</h3>
-                            <a href="tel:+32490221912" className="text-sm text-gray-600 hover:text-teal-500 transition">+32 490 22 19 12</a>
+                            <h3 className="font-bold text-gray-900 dark:text-white mb-1">Phone</h3>
+                            <a href="tel:+32490221912" className="text-sm text-gray-600 dark:text-gray-300 hover:text-teal-500 transition">+32 490 22 19 12</a>
                         </div>
                         <div className="text-center">
-                            <div className="w-14 h-14 rounded-full bg-teal-50 text-teal-500 flex items-center justify-center mx-auto mb-4">
+                            <div className="w-14 h-14 rounded-full bg-teal-50 dark:bg-teal-500/10 text-teal-500 flex items-center justify-center mx-auto mb-4">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
                             </div>
-                            <h3 className="font-bold text-gray-900 mb-1">Location</h3>
-                            <p className="text-sm text-gray-600">Belgium</p>
+                            <h3 className="font-bold text-gray-900 dark:text-white mb-1">Location</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300">Belgium</p>
                         </div>
                     </div>
                 </div>
             </section>
 
             {simulatorModal}
+
+            <SectionNav sections={[
+                { id: 'section-form', label: 'Contact' },
+            ]} />
         </PublicLayout>
     );
 }

@@ -6,6 +6,8 @@ import { formatCurrency, formatDate } from '@/lib/utils';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { useConfirm } from '@/hooks/useConfirm';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 
 interface BudgetLine {
     id: number; label: string; type: string; amount: number; frequency: string;
@@ -32,6 +34,7 @@ const triggerLabels: Record<string, string> = { immediate: 'Immediate', from_dat
 
 export default function ProjectBudget({ project, budgetLines, projection, breakEvenMonth, actualIncome, actualExpenses, until, allProjects, selectedProjectIds }: Props) {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
     const [showModal, setShowModal] = useState(false);
     const [editLine, setEditLine] = useState<BudgetLine | null>(null);
     const [showDetail, setShowDetail] = useState(false);
@@ -46,8 +49,15 @@ export default function ProjectBudget({ project, budgetLines, projection, breakE
 
     const openAdd = () => { setEditLine(null); setShowModal(true); };
     const openEdit = (line: BudgetLine) => { setEditLine(line); setShowModal(true); };
-    const handleDelete = (line: BudgetLine) => {
-        if (confirm(t('Are you sure?'))) router.delete(`/admin/projects/${project.id}/budget/${line.id}`, { preserveScroll: true });
+    const handleDelete = async (line: BudgetLine) => {
+        const ok = await confirm({
+            title: t('Delete'),
+            message: t('Are you sure?'),
+            confirmText: t('Delete'),
+            variant: 'danger',
+        });
+        if (!ok) return;
+        router.delete(`/admin/projects/${project.id}/budget/${line.id}`, { preserveScroll: true });
     };
 
     // Generate month options for the selector
@@ -71,10 +81,11 @@ export default function ProjectBudget({ project, budgetLines, projection, breakE
                         </p>
                         <h1 className="text-2xl sm:text-3xl font-bold text-white">{t('Budget & Projections')}</h1>
                     </div>
-                    <select value={until} onChange={e => handleUntilChange(e.target.value)}
-                        className="bg-white/10 border-0 text-white rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-white/30">
-                        {monthOptions.map(o => <option key={o.value} value={o.value} className="text-gray-900">{o.label}</option>)}
-                    </select>
+                    <SearchableSelect
+                        value={until}
+                        onChange={(val) => handleUntilChange(val)}
+                        options={monthOptions}
+                    />
                 </div>
             </div>
 
@@ -163,6 +174,7 @@ export default function ProjectBudget({ project, budgetLines, projection, breakE
 
             {/* Modal */}
             {showModal && <BudgetLineModal projectId={project.id} line={editLine} onClose={() => setShowModal(false)} />}
+            <ConfirmDialog />
         </AdminLayout>
     );
 }
@@ -343,20 +355,28 @@ function BudgetLineModal({ projectId, line, onClose }: { projectId: number; line
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('Frequency')}</label>
-                            <select value={form.data.frequency} onChange={e => form.setData('frequency', e.target.value)} className={inputC}>
-                                <option value="one_time">{t('One-time')}</option>
-                                <option value="monthly">{t('Monthly')}</option>
-                                <option value="quarterly">{t('Quarterly')}</option>
-                                <option value="annual">{t('Annual')}</option>
-                            </select>
+                            <SearchableSelect
+                                value={form.data.frequency}
+                                onChange={(val) => form.setData('frequency', val)}
+                                options={[
+                                    { value: 'one_time', label: t('One-time') },
+                                    { value: 'monthly', label: t('Monthly') },
+                                    { value: 'quarterly', label: t('Quarterly') },
+                                    { value: 'annual', label: t('Annual') },
+                                ]}
+                            />
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('Trigger')}</label>
-                            <select value={form.data.trigger} onChange={e => form.setData('trigger', e.target.value)} className={inputC}>
-                                <option value="immediate">{t('Immediate')}</option>
-                                <option value="from_date">{t('From date')}</option>
-                                <option value="on_project_completed">{t('On completion')}</option>
-                            </select>
+                            <SearchableSelect
+                                value={form.data.trigger}
+                                onChange={(val) => form.setData('trigger', val)}
+                                options={[
+                                    { value: 'immediate', label: t('Immediate') },
+                                    { value: 'from_date', label: t('From date') },
+                                    { value: 'on_project_completed', label: t('On completion') },
+                                ]}
+                            />
                         </div>
                     </div>
                     {form.data.trigger === 'from_date' && (

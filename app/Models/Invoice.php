@@ -109,4 +109,9 @@ class Invoice extends Model
     {
         return $this->morphMany(Document::class, 'documentable');
     }
+
+    public function reminders()
+    {
+        return $this->hasMany(InvoiceReminder::class);
+    }
 }

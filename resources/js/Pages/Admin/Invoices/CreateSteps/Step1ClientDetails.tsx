@@ -65,9 +65,11 @@ export default function Step1ClientDetails({
                         </div>
                         <div>
                             <label className={label}>{t("Invoice Type")}</label>
-                            <select value={form.type} onChange={e => set('type', e.target.value)} className={input}>
-                                {invoiceTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={form.type}
+                                onChange={(val) => set('type', val)}
+                                options={invoiceTypes}
+                            />
                         </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

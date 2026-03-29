@@ -36,6 +36,14 @@ export default function QuotesIndex({ quotes, totalQuotes, acceptedQuotes, pendi
                 actionLabel={t('New Quote')}
             />
 
+            {/* Export buttons */}
+            <div className="flex items-center gap-2 mb-4">
+                <a href="/admin/exports/quotes/csv" className="px-3 py-2 text-xs font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition flex items-center gap-1.5">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                    CSV
+                </a>
+            </div>
+
             {/* KPIs */}
             <div className="stagger-children grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <StatCard label={t('Total Quotes')} value={totalQuotes} borderColor="border-l-amber-500" />

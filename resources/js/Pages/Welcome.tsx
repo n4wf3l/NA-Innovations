@@ -7,6 +7,8 @@ import StatsSection from '@/Components/landing/StatsSection';
 import PortfolioSection from '@/Components/landing/PortfolioSection';
 import TestimonialsSection from '@/Components/landing/TestimonialsSection';
 import FooterSection from '@/Components/landing/FooterSection';
+import WhatsAppButton from '@/Components/landing/WhatsAppButton';
+import SectionNav from '@/Components/landing/SectionNav';
 
 interface PortfolioProject {
     id: number; title: string; slug: string; client_name: string; client_logo: string | null;
@@ -35,6 +37,7 @@ interface Props {
     testimonials?: Testimonial[]; faqs?: FaqData[];
     publicStats?: { projects_delivered: number; active_clients: number; technologies: number; years_experience: number };
     seo?: { title: string; description: string };
+    videoUrl?: string;
 }
 
 const socialIcons: Record<string, JSX.Element> = {
@@ -227,7 +230,7 @@ function SplashScreen({ branding, onComplete }: { branding: { logo_path: string;
                             <p className="text-white mt-4 text-sm tracking-widest uppercase" style={{
                                 ...bebas, animation: 'subtitleFade 0.8s ease-out 1.6s both',
                             }}>
-                                Web Development & Digital Solutions
+                                {t('Web Development & Digital Solutions')}
                             </p>
                         </>
                     )}
@@ -236,7 +239,7 @@ function SplashScreen({ branding, onComplete }: { branding: { logo_path: string;
                 {/* Language selection — visible in language phase */}
                 <div className={`transition-all duration-700 ${phase === 'language' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none absolute'}`}>
                     <p className="text-white/30 text-xs text-center mb-8 tracking-[0.2em] uppercase" style={bebas}>
-                        Select your language
+                        {t('Select your language')}
                     </p>
                     <div className="flex gap-5">
                         {[
@@ -272,11 +275,18 @@ function SplashScreen({ branding, onComplete }: { branding: { logo_path: string;
     );
 }
 
-export default function Welcome({ portfolio, messages, latestPosts, socialLinks = {}, branding = { logo_path: '', company_name: 'NA Innovations', tagline: '' }, services = [], landingSections = {}, testimonials = [], faqs = [], publicStats, seo }: Props) {
+export default function Welcome({ portfolio, messages, latestPosts, socialLinks = {}, branding = { logo_path: '', company_name: 'NA Innovations', tagline: '' }, services = [], landingSections = {}, testimonials = [], faqs = [], publicStats, seo, videoUrl }: Props) {
     const { auth, locale } = usePage<{ auth: { user: { id: number } | null }; locale: string }>().props;
     const { t } = useTranslation();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
+    const [showScrollTop, setShowScrollTop] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => setShowScrollTop(window.scrollY > 600);
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
     const portfolioSection = useInView();
     const statsSection = useInView();
     const testimonialsSection = useInView();
@@ -301,8 +311,10 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
 
     const navLinks = [
         { href: '/', label: t('Home') }, { href: '/services', label: t('Services') },
-        { href: '/projects', label: t('Projects') }, { href: '/about', label: t('About') },
-        { href: '/posts', label: t('News') }, { href: '/contact', label: t('Free Quote') },
+        { href: '/products', label: t('Products') },
+        { href: '/pricing', label: t('Pricing') }, { href: '/projects', label: t('Projects') },
+        { href: '/about', label: t('About') }, { href: '/posts', label: t('News') },
+        { href: '/contact', label: t('Free Quote') },
     ];
 
     const featuredProjects = portfolio.filter(p => p.is_featured);
@@ -351,13 +363,13 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
             <HeroSection heroSection={heroSection} branding={branding} socialLinks={socialLinks} socialIcons={socialIcons} navLinks={navLinks} locale={locale} auth={auth} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
 
             {/* Free Estimate Banner */}
-            <div className="bg-teal-50 border-y border-teal-200 py-3">
+            <div className="bg-gradient-to-r from-gray-900 via-teal-900/40 to-gray-900 border-y border-teal-500/20 py-3">
                 <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center">
-                    <span className="text-sm text-gray-700 font-medium">{t('Get a free estimate in 2 minutes')}</span>
-                    <Link href="/contact" className="inline-flex items-center gap-1.5 px-5 py-2 bg-teal-400 text-gray-900 text-sm font-bold rounded-full hover:bg-teal-300 transition-all duration-300 bebas" style={{ letterSpacing: '1px' }}>
+                    <span className="text-sm text-gray-400 font-medium">{t('Get a free estimate in 2 minutes')}</span>
+                    <a href="/contact#simulator" className="inline-flex items-center gap-1.5 px-5 py-2 bg-teal-400 text-gray-900 text-sm font-bold rounded-full hover:bg-teal-300 hover:shadow-[0_0_20px_rgba(94,234,212,0.2)] transition-all duration-300 bebas" style={{ letterSpacing: '1px' }}>
                         {t('Try our price simulator').toUpperCase()}
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-                    </Link>
+                    </a>
                 </div>
             </div>
 
@@ -370,22 +382,75 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                 </div>
             )}
 
+            {/* Presentation Video Section */}
+            {videoUrl && (
+                <section className="py-20 bg-gray-900">
+                    <div className="max-w-4xl mx-auto px-4">
+                        <div className="text-center mb-10">
+                            <h2 className="text-5xl font-bold text-white bebas" style={{ letterSpacing: '2px' }}>
+                                {t('Watch Our Story')}
+                            </h2>
+                        </div>
+                        <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ paddingBottom: '56.25%' }}>
+                            <iframe
+                                src={videoUrl}
+                                className="absolute inset-0 w-full h-full"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                                title={t('Presentation video')}
+                            />
+                        </div>
+                    </div>
+                </section>
+            )}
+
             {/* Stats Section */}
             {publicStats && <StatsSection publicStats={publicStats} sectionRef={statsSection.ref as any} isVisible={statsSection.isVisible} />}
 
+            {/* Client logos band */}
+            {(() => {
+                const logos = portfolio
+                    .filter(p => p.projet?.image)
+                    .map(p => ({ name: p.projet?.nom_societe || p.title, image: p.projet!.image! }))
+                    .filter((v, i, a) => a.findIndex(t => t.image === v.image) === i);
+
+                if (logos.length < 3) return null;
+
+                return (
+                    <section className="py-12 bg-gray-50 dark:bg-gray-800/50 overflow-hidden">
+                        <div className="max-w-6xl mx-auto px-4 mb-8">
+                            <p className="text-center text-sm uppercase tracking-[0.3em] text-gray-400 dark:text-gray-500 bebas">{t('They Trust Us')}</p>
+                        </div>
+                        <div className="relative">
+                            <div className="flex items-center gap-16 scroll-banner">
+                                {[...logos, ...logos].map((logo, i) => (
+                                    <img
+                                        key={i}
+                                        src={logo.image.startsWith('http') ? logo.image : `/storage/${logo.image}`}
+                                        alt={logo.name}
+                                        className="h-10 md:h-12 w-auto object-contain opacity-40 hover:opacity-100 transition-opacity duration-300 flex-shrink-0"
+                                        title={logo.name}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                );
+            })()}
+
             {/* Services Section */}
             {services.length > 0 && (
-                <section className="py-20 bg-white">
+                <section id="section-services" className="py-20 bg-white dark:bg-gray-900 scroll-mt-20">
                     <div className="max-w-6xl mx-auto px-4">
                         <div className="text-center mb-16">
-                            <h2 className="text-7xl md:text-9xl font-semibold text-black bebas" style={{ letterSpacing: '2px' }}>{t('Our Services')}</h2>
-                            <hr className="mt-6 border-black/20 max-w-md mx-auto" />
+                            <h2 className="text-7xl md:text-9xl font-semibold text-black dark:text-white bebas" style={{ letterSpacing: '2px' }}>{t('Our Services')}</h2>
+                            <hr className="mt-6 border-black/20 dark:border-white/20 max-w-md mx-auto" />
                             <OriginalLanguageBadge className="mt-4 justify-center" />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {services.map((service) => (
-                                <div key={service.id} className="group p-8 bg-gray-50 rounded-2xl border border-gray-100 hover:border-teal-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                                    <div className="w-14 h-14 rounded-xl bg-teal-50 text-teal-500 flex items-center justify-center mb-6">
+                                <div key={service.id} className="group p-8 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-teal-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                                    <div className="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-500/10 text-teal-500 flex items-center justify-center mb-6">
                                         {service.icon === 'globe' && <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" /></svg>}
                                         {service.icon === 'mobile' && <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>}
                                         {service.icon === 'server' && <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 17.25v-.228a4.5 4.5 0 00-.12-1.03l-2.268-9.64a3.375 3.375 0 00-3.285-2.602H7.923a3.375 3.375 0 00-3.285 2.602l-2.268 9.64a4.5 4.5 0 00-.12 1.03v.228m19.5 0a3 3 0 01-3 3H5.25a3 3 0 01-3-3m19.5 0a3 3 0 00-3-3H5.25a3 3 0 00-3 3m16.5 0h.008v.008h-.008v-.008zm-3 0h.008v.008h-.008v-.008z" /></svg>}
@@ -393,23 +458,46 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                                         {service.icon === 'rocket' && <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" /></svg>}
                                         {service.icon === 'shield' && <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>}
                                     </div>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-3">{service.title}</h3>
-                                    <p className="text-gray-600 text-sm leading-relaxed">{service.description}</p>
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{service.title}</h3>
+                                    <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{service.description}</p>
                                 </div>
                             ))}
                         </div>
                         <div className="text-center mt-12">
-                            <Link href="/services" className="inline-flex items-center gap-2 px-8 py-4 border-2 border-black text-black font-bold rounded-full hover:bg-teal-300 hover:border-teal-300 hover:text-white transition-all duration-300 bebas" style={{ letterSpacing: '2px' }}>
+                            <Link href="/services" className="inline-flex items-center gap-2 px-8 py-4 border-2 border-black dark:border-white text-black dark:text-white font-bold rounded-full hover:bg-teal-300 hover:border-teal-300 hover:text-white transition-all duration-300 bebas" style={{ letterSpacing: '2px' }}>
                                 {t('All Services').toUpperCase()}
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                             </Link>
                         </div>
-                        <div className="text-center mt-8 pt-8 border-t border-gray-200">
-                            <p className="text-gray-500 text-sm mb-3">{t('Not sure about the cost?')}</p>
-                            <Link href="/contact" className="inline-flex items-center gap-2 text-teal-600 font-semibold text-sm hover:text-teal-500 transition-colors">
+                        <div className="text-center mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                            <p className="text-gray-500 dark:text-gray-400 text-sm mb-3">{t('Not sure about the cost?')}</p>
+                            <a href="/contact#simulator" className="inline-flex items-center gap-2 text-teal-600 font-semibold text-sm hover:text-teal-500 transition-colors">
                                 {t('Get an instant estimate')}
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-                            </Link>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {/* Process — compact horizontal stepper */}
+            {landingSections?.process?.is_active && (landingSections.process.metadata?.steps || []).length > 0 && (
+                <section className="py-10 bg-gray-900 border-y border-white/5">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-0">
+                            {(landingSections.process.metadata.steps as { title: string; description: string }[]).map((step, i, arr) => (
+                                <div key={i} className="flex items-center gap-0 flex-1">
+                                    <div className="flex flex-col items-center text-center px-3 py-2">
+                                        <div className="w-9 h-9 rounded-full bg-teal-400 text-gray-900 flex items-center justify-center text-sm font-bold bebas mb-2">
+                                            {i + 1}
+                                        </div>
+                                        <span className="text-xs font-bold text-white bebas" style={{ letterSpacing: '1px' }}>{step.title}</span>
+                                    </div>
+                                    {i < arr.length - 1 && (
+                                        <div className="hidden md:block flex-1 h-px bg-gradient-to-r from-teal-400/40 to-white/10 mx-1" />
+                                    )}
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </section>
@@ -420,20 +508,20 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
 
             {/* Latest News Section */}
             {latestPosts.length > 0 && (
-                <section className="py-20 bg-gray-100">
+                <section id="section-news" className="py-20 bg-gray-100 dark:bg-gray-800 scroll-mt-20">
                     <div className="max-w-6xl mx-auto px-4">
                         <div className="text-center mb-16">
-                            <h2 className="text-7xl md:text-9xl font-semibold text-black bebas" style={{ letterSpacing: '2px' }}>{t('Latest News')}</h2>
-                            <hr className="mt-6 border-black/20 max-w-md mx-auto" />
+                            <h2 className="text-7xl md:text-9xl font-semibold text-black dark:text-white bebas" style={{ letterSpacing: '2px' }}>{t('Latest News')}</h2>
+                            <hr className="mt-6 border-black/20 dark:border-white/20 max-w-md mx-auto" />
                             <OriginalLanguageBadge className="mt-4 justify-center" />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             {latestPosts.map((post) => (
-                                <div key={post.id} className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1">
+                                <div key={post.id} className="group bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1">
                                     {post.image_url ? (
-                                        <div className="overflow-hidden h-52"><img src={post.image_url} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
+                                        <div className="overflow-hidden h-52"><img src={post.image_url} alt={post.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
                                     ) : post.photo ? (
-                                        <div className="overflow-hidden h-52"><img src={`/storage/${post.photo}`} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
+                                        <div className="overflow-hidden h-52"><img src={`/storage/${post.photo}`} alt={post.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
                                     ) : (
                                         <div className="h-52 bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center">
                                             <svg className="w-16 h-16 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z" /></svg>
@@ -441,15 +529,15 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                                     )}
                                     <div className="p-6">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <p className="text-xs font-bold text-teal-500 uppercase tracking-widest">{post.category || post.subject || 'News'}</p>
-                                            {post.reading_time && (<><span className="text-gray-300">·</span><span className="text-xs text-gray-400">{post.reading_time} min</span></>)}
+                                            <p className="text-xs font-bold text-teal-500 uppercase tracking-widest">{post.category || post.subject || t('News')}</p>
+                                            {post.reading_time && (<><span className="text-gray-300 dark:text-gray-600">·</span><span className="text-xs text-gray-400 dark:text-gray-500">{post.reading_time} min</span></>)}
                                         </div>
-                                        <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-teal-600 transition-colors">{post.title}</h3>
-                                        <p className="text-sm text-gray-500 line-clamp-3 mb-4">{truncate(post.excerpt || post.description, 120)}</p>
+                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-teal-600 transition-colors">{post.title}</h3>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-3 mb-4">{truncate(post.excerpt || post.description, 120)}</p>
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
-                                                {post.author && <span className="text-xs text-gray-500">{post.author.name}</span>}
-                                                <span className="text-xs text-gray-400">{timeAgo(post.published_at || post.created_at)}</span>
+                                                {post.author && <span className="text-xs text-gray-500 dark:text-gray-400">{post.author.name}</span>}
+                                                <span className="text-xs text-gray-400 dark:text-gray-500">{timeAgo(post.published_at || post.created_at)}</span>
                                             </div>
                                             <Link href={`/posts/${post.slug || post.id}`} className="text-sm font-bold text-teal-500 hover:text-teal-600 flex items-center gap-1 transition-colors">
                                                 {t('Read more')}
@@ -461,7 +549,7 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                             ))}
                         </div>
                         <div className="text-center mt-12">
-                            <Link href="/posts" className="inline-flex items-center gap-2 px-8 py-4 border-2 border-black text-black font-bold rounded-full hover:bg-teal-300 hover:border-teal-300 hover:text-white transition-all duration-300 bebas" style={{ letterSpacing: '2px' }}>
+                            <Link href="/posts" className="inline-flex items-center gap-2 px-8 py-4 border-2 border-black dark:border-white text-black dark:text-white font-bold rounded-full hover:bg-teal-300 hover:border-teal-300 hover:text-white transition-all duration-300 bebas" style={{ letterSpacing: '2px' }}>
                                 {t('View All Articles').toUpperCase()}
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                             </Link>
@@ -475,23 +563,23 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
 
             {/* FAQ Section */}
             {faqs.length > 0 && (
-                <section className="py-20 bg-gray-100">
+                <section className="py-20 bg-gray-100 dark:bg-gray-800">
                     <div className="max-w-3xl mx-auto px-4">
                         <div className="text-center mb-16">
-                            <h2 className="text-7xl md:text-9xl font-semibold text-black bebas" style={{ letterSpacing: '2px' }}>FAQ</h2>
-                            <hr className="mt-6 border-black/20 max-w-md mx-auto" />
-                            <p className="mt-4 text-gray-500 text-lg">{t('Frequently Asked Questions')}</p>
+                            <h2 className="text-7xl md:text-9xl font-semibold text-black dark:text-white bebas" style={{ letterSpacing: '2px' }}>FAQ</h2>
+                            <hr className="mt-6 border-black/20 dark:border-white/20 max-w-md mx-auto" />
+                            <p className="mt-4 text-gray-500 dark:text-gray-400 text-lg">{t('Frequently Asked Questions')}</p>
                             <OriginalLanguageBadge className="mt-3 justify-center" />
                         </div>
                         <div className="space-y-3">
                             {faqs.map((faq) => (
-                                <div key={faq.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden transition-shadow hover:shadow-md">
+                                <div key={faq.id} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-shadow hover:shadow-md">
                                     <button onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id)} className="w-full flex items-center justify-between px-6 py-5 text-left">
-                                        <span className="text-gray-900 font-semibold pr-4">{faq.question}</span>
-                                        <svg className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-300 ${openFaq === faq.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+                                        <span className="text-gray-900 dark:text-white font-semibold pr-4">{faq.question}</span>
+                                        <svg className={`w-5 h-5 text-gray-400 dark:text-gray-500 flex-shrink-0 transition-transform duration-300 ${openFaq === faq.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
                                     </button>
                                     <div className={`overflow-hidden transition-all duration-300 ${openFaq === faq.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                        <div className="px-6 pb-5 text-gray-600 leading-relaxed text-sm border-t border-gray-100 pt-4">{faq.answer}</div>
+                                        <div className="px-6 pb-5 text-gray-600 dark:text-gray-300 leading-relaxed text-sm border-t border-gray-100 dark:border-gray-700 pt-4">{faq.answer}</div>
                                     </div>
                                 </div>
                             ))}
@@ -508,14 +596,14 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                     </div>
                     <div className="max-w-3xl mx-auto text-center px-4 relative z-10">
                         <OriginalLanguageBadge light className="mb-4 justify-center" />
-                        <h2 className="text-5xl md:text-7xl font-bold text-white bebas mb-6" style={{ letterSpacing: '2px' }}>{ctaSection?.title || 'Ready to start your project?'}</h2>
-                        <p className="text-lg text-gray-400 mb-10">{ctaSection?.subtitle || 'Tell us about your idea and we\'ll get back to you within 24 hours with a tailored proposal.'}</p>
+                        <h2 className="text-5xl md:text-7xl font-bold text-white bebas mb-6" style={{ letterSpacing: '2px' }}>{ctaSection?.title || t('Ready to start your project?')}</h2>
+                        <p className="text-lg text-gray-400 mb-10">{ctaSection?.subtitle || t('Tell us about your idea and we\'ll get back to you within 24 hours with a tailored proposal.')}</p>
                         <Link href={ctaSection?.button_url || '/contact'} className="inline-flex items-center gap-3 px-12 py-6 bg-teal-400 text-gray-900 text-2xl font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_60px_rgba(94,234,212,0.4)] bebas" style={{ letterSpacing: '3px' }}>
                             <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
-                            {(ctaSection?.button_text || 'REQUEST A QUOTE').toUpperCase()}
+                            {(ctaSection?.button_text || t('Request a Quote')).toUpperCase()}
                         </Link>
                         <p className="mt-6 text-gray-500 text-sm">
-                            <Link href="/contact" className="text-teal-300 hover:text-teal-200 underline underline-offset-2 transition-colors">{t('Try our price simulator')}</Link>
+                            <a href="/contact#simulator" className="text-teal-300 hover:text-teal-200 underline underline-offset-2 transition-colors">{t('Try our price simulator')}</a>
                         </p>
                     </div>
                 </section>
@@ -524,13 +612,33 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
             <FooterSection branding={branding} socialLinks={socialLinks} socialIcons={socialIcons} navLinks={navLinks} />
 
             {/* Fixed portal access */}
-            <a href={auth?.user ? '/dashboard' : '/login'} className="fixed bottom-6 left-6 z-50 w-11 h-11 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-teal-300 hover:border-teal-300/30 hover:bg-gray-900 transition-all duration-300 group" title={auth?.user ? 'Dashboard' : 'Portal'}>
+            <a href={auth?.user ? '/dashboard' : '/login'} className="fixed bottom-6 left-6 z-50 w-11 h-11 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-teal-300 hover:border-teal-300/30 hover:bg-gray-900 transition-all duration-300 group" title={auth?.user ? t('Dashboard') : t('Portal')}>
                 {auth?.user ? (
                     <svg className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
                 ) : (
                     <svg className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" /></svg>
                 )}
             </a>
+
+            {/* Scroll to top — bottom right */}
+            <button
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className={`fixed bottom-20 right-6 z-50 w-11 h-11 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-teal-300 hover:border-teal-300/30 hover:bg-gray-900 transition-all duration-500 group ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+                title={t('Back to top')}
+            >
+                <svg className="w-5 h-5 transition-transform duration-300 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" /></svg>
+            </button>
+
+            {/* Section navigator */}
+            <SectionNav sections={[
+                { id: 'section-services', label: 'Our Services' },
+                { id: 'section-portfolio', label: 'Our Work' },
+                { id: 'section-news', label: 'Latest News' },
+                { id: 'section-testimonials', label: 'Testimonials' },
+            ]} />
+
+            {/* WhatsApp floating button — bottom right */}
+            <WhatsAppButton phoneNumber={socialLinks.whatsapp || ''} />
         </>
     );
 }

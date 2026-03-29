@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>body{opacity:0;transition:opacity .2s ease-in}body.ready{opacity:1}</style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title inertia>{{ config('app.name', 'NA Innovations') }}</title>
     <link rel="icon" href="{{ asset('NAlogo2.png') }}" type="image/x-icon" />

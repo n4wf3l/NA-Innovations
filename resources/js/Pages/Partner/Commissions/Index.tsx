@@ -139,11 +139,22 @@ export default function PartnerCommissionsIndex({
                 </div>
             )}
 
-            {/* Summary Row */}
+            {/* Summary Row + Export */}
             <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4 mb-4 shadow-sm">
                 <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-500 dark:text-gray-400">Total Earned (all statuses)</span>
-                    <span className="text-lg font-bold text-gray-900 dark:text-white"><ProtectedAmount amount={totalEarned} /></span>
+                    <div className="flex items-center gap-4">
+                        <span className="text-lg font-bold text-gray-900 dark:text-white"><ProtectedAmount amount={totalEarned} /></span>
+                        <a
+                            href="/partner/commissions/export"
+                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                            {t('Export CSV')}
+                        </a>
+                    </div>
                 </div>
             </div>
 

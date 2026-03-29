@@ -18,7 +18,7 @@ interface TopBarActionsProps {
     notifications?: Notification[];
 }
 
-export default function TopBarActions({ notifications = [] }: TopBarActionsProps) {
+export default function TopBarActions({ notifications: initialNotifications = [] }: TopBarActionsProps) {
     const { auth, locale, teamCounts } = usePage<PageProps>().props;
     const [showNotifs, setShowNotifs] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
@@ -30,6 +30,55 @@ export default function TopBarActions({ notifications = [] }: TopBarActionsProps
     const searchRef = useRef<HTMLInputElement>(null);
     const { t } = useTranslation();
 
+    // Live notification polling
+    const [liveNotifications, setLiveNotifications] = useState<Notification[]>(initialNotifications);
+    const [unreadCount, setUnreadCount] = useState(initialNotifications.filter(n => !n.is_read).length);
+    const [pulse, setPulse] = useState(false);
+
+    useEffect(() => {
+        setLiveNotifications(initialNotifications);
+        setUnreadCount(initialNotifications.filter(n => !n.is_read).length);
+    }, [initialNotifications]);
+
+    useEffect(() => {
+        const poll = () => {
+            fetch('/api/notifications/poll', { credentials: 'same-origin' })
+                .then(r => r.ok ? r.json() : null)
+                .then(data => {
+                    if (!data) return;
+                    const oldCount = unreadCount;
+                    setLiveNotifications(data.notifications);
+                    setUnreadCount(data.count);
+                    // Pulse animation if new notifs arrived
+                    if (data.count > oldCount) {
+                        setPulse(true);
+                        setTimeout(() => setPulse(false), 2000);
+                    }
+                })
+                .catch(() => {});
+        };
+
+        const interval = setInterval(poll, 30000); // Poll every 30 seconds
+        return () => clearInterval(interval);
+    }, [unreadCount]);
+
+    const markAsRead = (id: number) => {
+        fetch(`/api/notifications/${id}/read`, { method: 'POST', credentials: 'same-origin', headers: { 'X-CSRF-TOKEN': document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content || '' } })
+            .then(() => {
+                setLiveNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+                setUnreadCount(prev => Math.max(0, prev - 1));
+            });
+    };
+
+    const markAllRead = () => {
+        fetch('/api/notifications/read-all', { method: 'POST', credentials: 'same-origin', headers: { 'X-CSRF-TOKEN': document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content || '' } })
+            .then(() => {
+                setLiveNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+                setUnreadCount(0);
+            });
+    };
+
+    const notifications = liveNotifications;
     const unread = notifications.filter(n => !n.is_read);
     const isAdmin = auth.user?.role === 'admin';
     const { theme, setTheme } = useTheme();
@@ -119,7 +168,9 @@ export default function TopBarActions({ notifications = [] }: TopBarActionsProps
             )}
 
             {/* Financial PIN Unlock */}
-            <PinUnlockButton />
+            <div data-tour="pin-unlock">
+                <PinUnlockButton />
+            </div>
 
             {/* Quick Create Button */}
             {isAdmin && (
@@ -182,17 +233,17 @@ export default function TopBarActions({ notifications = [] }: TopBarActionsProps
             )}
 
             {/* Notifications Bell */}
-            <div className="relative">
+            <div className="relative" data-tour="notifications-bell">
                 <button
                     onClick={() => { setShowNotifs(!showNotifs); setShowProfile(false); setShowSearch(false); }}
-                    className="relative p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    className={`relative p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${pulse ? 'animate-bounce' : ''}`}
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                     </svg>
-                    {unread.length > 0 && (
-                        <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                            {unread.length}
+                    {unreadCount > 0 && (
+                        <span className={`absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center ${pulse ? 'ring-2 ring-rose-300 dark:ring-rose-700' : ''}`}>
+                            {unreadCount > 9 ? '9+' : unreadCount}
                         </span>
                     )}
                 </button>
@@ -201,8 +252,13 @@ export default function TopBarActions({ notifications = [] }: TopBarActionsProps
                     <>
                         <div className="fixed inset-0 z-40" onClick={() => setShowNotifs(false)} />
                         <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 z-50 animate-scale-in overflow-hidden">
-                            <div className="px-4 py-3 border-b border-gray-50 dark:border-gray-700">
+                            <div className="px-4 py-3 border-b border-gray-50 dark:border-gray-700 flex items-center justify-between">
                                 <p className="text-sm font-bold text-gray-900 dark:text-white">{t('Notifications')}</p>
+                                {unreadCount > 0 && (
+                                    <button onClick={markAllRead} className="text-[10px] font-medium text-teal-500 hover:text-teal-600 transition-colors">
+                                        {t('Mark all read')}
+                                    </button>
+                                )}
                             </div>
                             <div className="max-h-64 overflow-y-auto">
                                 {notifications.length === 0 ? (
@@ -211,12 +267,24 @@ export default function TopBarActions({ notifications = [] }: TopBarActionsProps
                                         <p className="text-xs text-gray-400 dark:text-gray-500">{t('No notifications')}</p>
                                     </div>
                                 ) : (
-                                    notifications.slice(0, 5).map(n => (
-                                        <a key={n.id} href={n.action_url || '#'}
-                                            className={`block px-4 py-3 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${!n.is_read ? 'bg-rose-50/30 dark:bg-rose-500/5' : ''}`}>
-                                            <p className="text-sm font-medium text-gray-900 dark:text-white line-clamp-1">{n.title}</p>
-                                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 line-clamp-2">{n.message}</p>
-                                            <p className="text-[10px] text-gray-300 dark:text-gray-600 mt-1">{new Date(n.created_at).toLocaleDateString()}</p>
+                                    notifications.slice(0, 10).map(n => (
+                                        <a key={n.id} href={n.action_url || '#'} onClick={() => !n.is_read && markAsRead(n.id)}
+                                            className={`block px-4 py-3 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${!n.is_read ? 'bg-teal-50/50 dark:bg-teal-500/5' : ''}`}>
+                                            <div className="flex items-start gap-2.5">
+                                                {/* Unread dot */}
+                                                <div className="mt-1.5 flex-shrink-0">
+                                                    {!n.is_read ? (
+                                                        <span className="block w-2 h-2 rounded-full bg-teal-500" />
+                                                    ) : (
+                                                        <span className="block w-2 h-2 rounded-full bg-gray-200 dark:bg-gray-700" />
+                                                    )}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className={`text-sm font-medium line-clamp-1 ${!n.is_read ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>{n.title}</p>
+                                                    <p className={`text-xs mt-0.5 line-clamp-2 ${!n.is_read ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-600'}`}>{n.message}</p>
+                                                    <p className="text-[10px] text-gray-300 dark:text-gray-600 mt-1">{new Date(n.created_at).toLocaleDateString()}</p>
+                                                </div>
+                                            </div>
                                         </a>
                                     ))
                                 )}
@@ -227,7 +295,7 @@ export default function TopBarActions({ notifications = [] }: TopBarActionsProps
             </div>
 
             {/* Profile Avatar */}
-            <div className="relative">
+            <div className="relative" data-tour="profile-menu">
                 <button
                     onClick={() => { setShowProfile(!showProfile); setShowNotifs(false); setShowSearch(false); }}
                     className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-sm font-bold text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"

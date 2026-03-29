@@ -30,9 +30,9 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // Verify Turnstile
+        // Verify Turnstile (skip in local/testing)
         $secret = config('services.turnstile.secret_key');
-        if ($secret) {
+        if ($secret && !app()->environment('local', 'testing')) {
             $token = $request->input('cf-turnstile-response');
             if (!$token) {
                 throw ValidationException::withMessages(['captcha' => 'Please complete the security verification.']);
@@ -76,6 +76,8 @@ class RegisteredUserController extends Controller
             'user_email' => $user->email,
             'role' => $user->role,
         ], actionUrl: '/admin/team');
+
+        \Illuminate\Support\Facades\Cache::forget('team_counts');
 
         // Do NOT auto-login — redirect to pending approval page
         return redirect()->route('pending-approval');

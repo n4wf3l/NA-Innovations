@@ -2,6 +2,7 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 
 interface Log {
     id: number;
@@ -19,6 +20,7 @@ interface Log {
 interface Props {
     logs: { data: Log[]; current_page: number; last_page: number; total: number };
     users: { id: number; name: string; role: string }[];
+    actions: string[];
 }
 
 const actionColors: Record<string, string> = {
@@ -36,6 +38,15 @@ const roleColors: Record<string, string> = {
     developer: 'text-indigo-600 dark:text-indigo-400',
     referral_partner: 'text-rose-600 dark:text-rose-400',
     client: 'text-emerald-600 dark:text-emerald-400',
+};
+
+const actionLabels: Record<string, string> = {
+    page_view: 'Vue de page',
+    login: 'Connexion',
+    logout: 'Déconnexion',
+    create: 'Création',
+    update: 'Modification',
+    delete: 'Suppression',
 };
 
 function formatTime(dateStr: string) {
@@ -60,9 +71,16 @@ function parseDevice(ua: string | null): string {
     return 'Desktop';
 }
 
-export default function AuditLogIndex({ logs, users }: Props) {
+export default function AuditLogIndex({ logs, users, actions }: Props) {
     const { t } = useTranslation();
-    const [filters, setFilters] = useState({ user_id: '', role: '', action: '', search: '' });
+    const [filters, setFilters] = useState({
+        user_id: '',
+        role: '',
+        action: '',
+        search: '',
+        from: '',
+        to: '',
+    });
 
     const applyFilters = () => {
         const params: Record<string, string> = {};
@@ -70,11 +88,13 @@ export default function AuditLogIndex({ logs, users }: Props) {
         if (filters.role) params.role = filters.role;
         if (filters.action) params.action = filters.action;
         if (filters.search) params.search = filters.search;
+        if (filters.from) params.from = filters.from;
+        if (filters.to) params.to = filters.to;
         router.get('/admin/audit-log', params, { preserveState: true });
     };
 
     const clearFilters = () => {
-        setFilters({ user_id: '', role: '', action: '', search: '' });
+        setFilters({ user_id: '', role: '', action: '', search: '', from: '', to: '' });
         router.get('/admin/audit-log', {}, { preserveState: true });
     };
 
@@ -87,6 +107,10 @@ export default function AuditLogIndex({ logs, users }: Props) {
     });
 
     const selectClass = 'bg-gray-50 dark:bg-gray-700/50 border-0 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-400';
+
+    const getActionLabel = (action: string): string => {
+        return actionLabels[action] || action;
+    };
 
     return (
         <AdminLayout title={t('Audit Log')} header={t('Audit Log')}>
@@ -118,35 +142,56 @@ export default function AuditLogIndex({ logs, users }: Props) {
                     </div>
                     <div>
                         <label className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1">{t('User')}</label>
-                        <select value={filters.user_id} onChange={e => setFilters(f => ({ ...f, user_id: e.target.value }))} className={selectClass}>
-                            <option value="">{t('All')}</option>
-                            {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
-                        </select>
+                        <SearchableSelect
+                            value={filters.user_id}
+                            onChange={(val) => setFilters(f => ({ ...f, user_id: val }))}
+                            placeholder={t('All')}
+                            options={users.map(u => ({ value: String(u.id), label: u.name }))}
+                        />
                     </div>
                     <div>
                         <label className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1">{t('Role')}</label>
-                        <select value={filters.role} onChange={e => setFilters(f => ({ ...f, role: e.target.value }))} className={selectClass}>
-                            <option value="">{t('All')}</option>
-                            <option value="admin">{t('Admin')}</option>
-                            <option value="developer">{t('Developer')}</option>
-                            <option value="referral_partner">{t('Partner')}</option>
-                            <option value="client">{t('Client')}</option>
-                        </select>
+                        <SearchableSelect
+                            value={filters.role}
+                            onChange={(val) => setFilters(f => ({ ...f, role: val }))}
+                            placeholder={t('All')}
+                            options={[
+                                { value: 'admin', label: 'Admin' },
+                                { value: 'client', label: 'Client' },
+                                { value: 'developer', label: t('Developer') },
+                                { value: 'referral_partner', label: t('Partner') },
+                            ]}
+                        />
                     </div>
                     <div>
-                        <label className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1">{t('Actions')}</label>
-                        <select value={filters.action} onChange={e => setFilters(f => ({ ...f, action: e.target.value }))} className={selectClass}>
-                            <option value="">{t('All')}</option>
-                            <option value="login">Login</option>
-                            <option value="logout">Logout</option>
-                            <option value="page_view">{t('Page view')}</option>
-                            <option value="create">{t('Create')}</option>
-                            <option value="update">{t('Update')}</option>
-                            <option value="delete">{t('Delete')}</option>
-                        </select>
+                        <label className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1">{t('Action')}</label>
+                        <SearchableSelect
+                            value={filters.action}
+                            onChange={(val) => setFilters(f => ({ ...f, action: val }))}
+                            placeholder={t('All')}
+                            options={actions.map(a => ({ value: a, label: getActionLabel(a) }))}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1">{t('From')}</label>
+                        <input
+                            type="date"
+                            value={filters.from}
+                            onChange={e => setFilters(f => ({ ...f, from: e.target.value }))}
+                            className={selectClass}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1">{t('To')}</label>
+                        <input
+                            type="date"
+                            value={filters.to}
+                            onChange={e => setFilters(f => ({ ...f, to: e.target.value }))}
+                            className={selectClass}
+                        />
                     </div>
                     <button onClick={applyFilters} className="px-4 py-2 bg-violet-500 text-white text-sm font-semibold rounded-lg hover:bg-violet-600 transition-colors">{t('Filter')}</button>
-                    <button onClick={clearFilters} className="px-4 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">{t('Clear')}</button>
+                    <button onClick={clearFilters} className="px-4 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">{t('Reset')}</button>
                 </div>
             </div>
 

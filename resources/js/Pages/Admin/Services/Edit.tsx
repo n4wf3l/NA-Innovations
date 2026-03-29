@@ -3,6 +3,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { User, Project, RecurringService } from '@/types';
 import { formatStatus } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 
 interface Props {
     service: RecurringService & {
@@ -89,9 +90,11 @@ export default function ServiceEdit({ service, clients, projects }: Props) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Type")} *</label>
-                            <select value={data.type} onChange={e => setData('type', e.target.value)} className={inputClass}>
-                                {serviceTypes.map(t => <option key={t} value={t}>{formatStatus(t)}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.type}
+                                onChange={(val) => setData('type', val)}
+                                options={serviceTypes.map(st => ({ value: st, label: formatStatus(st) }))}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Provider")}</label>
@@ -107,9 +110,11 @@ export default function ServiceEdit({ service, clients, projects }: Props) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Status")}</label>
-                            <select value={data.status} onChange={e => setData('status', e.target.value)} className={inputClass}>
-                                {serviceStatuses.map(s => <option key={s} value={s}>{formatStatus(s)}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.status}
+                                onChange={(val) => setData('status', val)}
+                                options={serviceStatuses.map(s => ({ value: s, label: formatStatus(s) }))}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Login URL")}</label>
@@ -128,17 +133,21 @@ export default function ServiceEdit({ service, clients, projects }: Props) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Client")}</label>
-                            <select value={data.client_id} onChange={e => setData('client_id', e.target.value)} className={inputClass}>
-                                <option value="">{t("None")}</option>
-                                {clients.map(c => <option key={c.id} value={c.id}>{c.name} {c.company_name ? `(${c.company_name})` : ''}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.client_id}
+                                onChange={(val) => setData('client_id', val)}
+                                placeholder={t("None")}
+                                options={clients.map(c => ({ value: String(c.id), label: `${c.name}${c.company_name ? ` (${c.company_name})` : ''}` }))}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Project")}</label>
-                            <select value={data.projet_id} onChange={e => setData('projet_id', e.target.value)} className={inputClass}>
-                                <option value="">{t("None")}</option>
-                                {projects.map(p => <option key={p.id} value={p.id}>{p.nom_societe}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.projet_id}
+                                onChange={(val) => setData('projet_id', val)}
+                                placeholder={t("None")}
+                                options={projects.map(p => ({ value: String(p.id), label: p.nom_societe }))}
+                            />
                         </div>
                     </div>
                 </div>
@@ -158,9 +167,11 @@ export default function ServiceEdit({ service, clients, projects }: Props) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Frequency")} *</label>
-                            <select value={data.frequency} onChange={e => setData('frequency', e.target.value)} className={inputClass}>
-                                {frequencies.map(f => <option key={f} value={f}>{formatStatus(f)}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.frequency}
+                                onChange={(val) => setData('frequency', val)}
+                                options={frequencies.map(f => ({ value: f, label: formatStatus(f) }))}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Real Cost")} *</label>
@@ -180,9 +191,11 @@ export default function ServiceEdit({ service, clients, projects }: Props) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Payment Mode")}</label>
-                            <select value={data.payment_mode} onChange={e => setData('payment_mode', e.target.value)} className={inputClass}>
-                                {paymentModes.map(m => <option key={m} value={m}>{formatStatus(m)}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.payment_mode}
+                                onChange={(val) => setData('payment_mode', val)}
+                                options={paymentModes.map(m => ({ value: m, label: formatStatus(m) }))}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Alert Days Before")}</label>

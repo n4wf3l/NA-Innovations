@@ -13,6 +13,18 @@ export default defineConfig({
         }),
         react(),
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vendor: ['react', 'react-dom'],
+                    inertia: ['@inertiajs/react'],
+                    i18n: ['i18next', 'react-i18next'],
+                    dnd: ['@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities'],
+                },
+            },
+        },
+    },
     resolve: {
         alias: {
             '@': '/resources/js',

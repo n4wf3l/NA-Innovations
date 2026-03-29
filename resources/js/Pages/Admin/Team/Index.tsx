@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm, router } from '@inertiajs/react';
+import { useConfirm } from '@/hooks/useConfirm';
 
 interface TeamUser {
     id: number;
@@ -55,6 +56,7 @@ function formatDate(dateStr: string) {
 
 export default function TeamIndex({ partners, developers, admins, pending }: Props) {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
     const [showModal, setShowModal] = useState(false);
     const [modalRole, setModalRole] = useState<ModalRole>('developer');
 
@@ -90,10 +92,15 @@ export default function TeamIndex({ partners, developers, admins, pending }: Pro
         router.patch(`/admin/team/${userId}/approve`, {}, { preserveScroll: true });
     };
 
-    const handleReject = (userId: number) => {
-        if (confirm(t('Are you sure you want to reject this registration? This cannot be undone.'))) {
-            router.delete(`/admin/team/${userId}/reject`, { preserveScroll: true });
-        }
+    const handleReject = async (userId: number) => {
+        const ok = await confirm({
+            title: t('Reject'),
+            message: t('Are you sure you want to reject this registration? This cannot be undone.'),
+            confirmText: t('Reject'),
+            variant: 'danger',
+        });
+        if (!ok) return;
+        router.delete(`/admin/team/${userId}/reject`, { preserveScroll: true });
     };
 
     const handleToggle = (userId: number) => {
@@ -410,6 +417,7 @@ export default function TeamIndex({ partners, developers, admins, pending }: Pro
                 </div>,
                 document.body
             )}
+            <ConfirmDialog />
         </AdminLayout>
     );
 }

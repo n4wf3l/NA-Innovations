@@ -1,6 +1,7 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 
 const inputClass = 'w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-300 focus:ring-teal-300';
 
@@ -40,11 +41,15 @@ export default function PageCreate() {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Audience")} *</label>
-                            <select value={data.audience} onChange={e => setData('audience', e.target.value)} className={inputClass}>
-                                <option value="partner">{t("Partner")}</option>
-                                <option value="developer">{t("Developer")}</option>
-                                <option value="public">{t("Public")}</option>
-                            </select>
+                            <SearchableSelect
+                                value={data.audience}
+                                onChange={(val) => setData('audience', val)}
+                                options={[
+                                    { value: 'partner', label: t("Partner") },
+                                    { value: 'developer', label: t("Developer") },
+                                    { value: 'public', label: t("Public") },
+                                ]}
+                            />
                             {errors.audience && <p className="mt-1 text-sm text-red-600">{errors.audience}</p>}
                         </div>
                         <div>

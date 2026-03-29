@@ -4,6 +4,7 @@ import PartnerLayout from '@/Layouts/PartnerLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { formatProjectType } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 
 interface Props {
     emailTemplate: { subject: string; body: string };
@@ -130,12 +131,12 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                     {/* Service */}
                     <div>
                         <label className={label}>{t('What do they need?')}</label>
-                        <select value={data.service_interest} onChange={e => setData('service_interest', e.target.value)} className={input}>
-                            <option value="">{t('Sélectionner le type')}</option>
-                            {projectTypes.map((pt: any) => (
-                                <option key={pt.value} value={pt.value}>{pt.label}</option>
-                            ))}
-                        </select>
+                        <SearchableSelect
+                            value={data.service_interest}
+                            onChange={(val) => setData('service_interest', val)}
+                            placeholder={t('Sélectionner le type')}
+                            options={projectTypes.map((pt: any) => ({ value: pt.value, label: pt.label }))}
+                        />
                         {data.service_interest && projectTypes && (
                             <div className="mt-2 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl px-4 py-3 flex items-center gap-3">
                                 <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">

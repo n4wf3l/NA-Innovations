@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>body{opacity:0}</style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Pending Approval - NA Innovations</title>
     <link rel="icon" href="{{ asset('NAlogo2.png') }}" type="image/x-icon" />
@@ -10,6 +11,7 @@
     <link href="https://fonts.bunny.net/css?family=bebas-neue:400|figtree:400,500,600,700&display=swap" rel="stylesheet" />
     @vite('resources/js/public.ts')
     <style>
+        body.ready { opacity: 1; transition: opacity 0.15s ease-in; }
         .font-display { font-family: 'Bebas Neue', cursive; }
         .font-body { font-family: 'Figtree', sans-serif; }
 
@@ -79,5 +81,6 @@
         </div>
     </div>
 
+<script>document.body.classList.add('ready');</script>
 </body>
 </html>

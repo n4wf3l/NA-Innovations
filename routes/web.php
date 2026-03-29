@@ -3,7 +3,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjetController;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\PostController;
+
 use App\Http\Controllers\AboutController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AcademicProjetController;
@@ -82,6 +82,15 @@ Route::get('/posts', function (\Illuminate\Http\Request $request) {
         $query->where('category', $request->category);
     }
 
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('title', 'like', "%{$search}%")
+              ->orWhere('excerpt', 'like', "%{$search}%")
+              ->orWhere('content', 'like', "%{$search}%");
+        });
+    }
+
     $posts = $query->latest('published_at')->paginate(9)->withQueryString();
 
     $categories = \App\Models\Post::published()
@@ -129,7 +138,55 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
 Route::get('/', [MessageController::class, 'welcomeMessages'])->name('welcome');
+Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
+// Notification polling endpoint (lightweight JSON)
+Route::get('/api/notifications/poll', function () {
+    if (!auth()->check()) return response()->json(['count' => 0, 'notifications' => []]);
+    $notifications = \App\Models\NotificationLog::where('user_id', auth()->id())
+        ->latest()
+        ->take(10)
+        ->get(['id', 'title', 'message', 'action_url', 'is_read', 'created_at']);
+    $unread = \App\Models\NotificationLog::where('user_id', auth()->id())->where('is_read', false)->count();
+    return response()->json(['count' => $unread, 'notifications' => $notifications]);
+})->middleware('auth')->name('notifications.poll');
+
+// Mark notification as read
+Route::post('/api/notifications/{id}/read', function ($id) {
+    if (!auth()->check()) abort(403);
+    \App\Models\NotificationLog::where('id', $id)->where('user_id', auth()->id())->update(['is_read' => true]);
+    return response()->json(['ok' => true]);
+})->middleware('auth')->name('notifications.read');
+
+// Mark all as read
+Route::post('/api/notifications/read-all', function () {
+    if (!auth()->check()) abort(403);
+    \App\Models\NotificationLog::where('user_id', auth()->id())->where('is_read', false)->update(['is_read' => true]);
+    return response()->json(['ok' => true]);
+})->middleware('auth')->name('notifications.read-all');
+
+// Tour completion — saves in user preferences
+Route::put('/api/tour-completed', function (\Illuminate\Http\Request $request) {
+    if (!auth()->check()) abort(403);
+    $tourKey = $request->input('tour_key');
+    $allowed = ['client_dashboard', 'partner_dashboard', 'dev_dashboard', 'admin_dashboard'];
+    if (!in_array($tourKey, $allowed)) abort(422);
+
+    $user = auth()->user();
+    $prefs = $user->preferences ?? [];
+    $prefs['onboarding'] = $prefs['onboarding'] ?? [];
+
+    if ($request->boolean('reset')) {
+        unset($prefs['onboarding'][$tourKey]);
+    } else {
+        $prefs['onboarding'][$tourKey] = true;
+    }
+
+    $user->preferences = $prefs;
+    $user->save();
+
+    return response()->json(['ok' => true]);
+})->middleware('auth')->name('tour.completed');
 
 
 Route::get('/services', function () {
@@ -137,13 +194,43 @@ Route::get('/services', function () {
     return Inertia::render('Services', ['services' => $services]);
 })->name('services');
 
+Route::get('/products', function () {
+    $products = \App\Models\Product::where('is_published', true)
+        ->with('project')
+        ->orderBy('is_featured', 'desc')
+        ->orderBy('sort_order')
+        ->get();
+    return \Inertia\Inertia::render('Products/SaaS', ['products' => $products]);
+})->name('products.saas');
+
+Route::get('/products/{slug}', function (string $slug) {
+    $product = \App\Models\Product::where('slug', $slug)->where('is_published', true)->firstOrFail();
+    return \Inertia\Inertia::render('Products/SaaSShow', ['product' => $product]);
+})->name('products.saas.show');
+
 Route::get('/terms', function () {
-    return Inertia::render('Legal/Terms');
+    $terms = \App\Models\LandingSection::where('section_key', 'terms')->first();
+    return Inertia::render('Legal/Terms', ['content' => $terms]);
 })->name('terms');
 
 Route::get('/privacy', function () {
-    return Inertia::render('Legal/Privacy');
+    $privacy = \App\Models\LandingSection::where('section_key', 'privacy')->first();
+    return Inertia::render('Legal/Privacy', ['content' => $privacy]);
 })->name('privacy');
+
+Route::get('/pricing', function () {
+    $seo = [
+        'title' => \App\Models\Setting::get('seo.pricing_title', 'Tarifs — NA Innovations'),
+        'description' => \App\Models\Setting::get('seo.pricing_description', 'Nos tarifs indicatifs par type de projet.'),
+    ];
+    return \Inertia\Inertia::render('Pricing', ['seo' => $seo]);
+})->name('pricing');
+
+Route::get('/ref/{code}', function (string $code) {
+    $partner = \App\Models\ReferralPartner::where('referral_code', $code)->where('is_active', true)->first();
+    if (!$partner) return redirect('/contact');
+    return redirect('/contact?ref=' . $code);
+})->name('referral.redirect');
 
 Route::get('/contact', [App\Http\Controllers\ContactController::class, 'index'])->name('contact');
 Route::post('/send-email', [ContactController::class, 'sendEmail'])->name('send-email');
@@ -159,11 +246,30 @@ Route::middleware('auth')->group(function () {
 });
 
 // Developer portal routes
-Route::prefix('dev')->middleware(['auth'])->group(function () {
+Route::prefix('dev')->middleware(['auth', 'developer'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Dev\DashboardController::class, 'index'])->name('dev.dashboard');
     Route::get('/projects', [App\Http\Controllers\Dev\ProjectController::class, 'index'])->name('dev.projects.index');
     Route::get('/projects/{project}', [App\Http\Controllers\Dev\ProjectController::class, 'show'])->name('dev.projects.show');
     Route::post('/projects/{project}/claim', [App\Http\Controllers\Dev\ProjectController::class, 'claim'])->name('dev.projects.claim');
+    Route::patch('/projects/{project}/status', [App\Http\Controllers\Dev\ProjectController::class, 'updateStatus'])->name('dev.projects.update-status');
+
+    // Dev Profile
+    Route::get('/profile', [App\Http\Controllers\Dev\ProfileController::class, 'index'])->name('dev.profile');
+    Route::put('/profile', [App\Http\Controllers\Dev\ProfileController::class, 'update'])->name('dev.profile.update');
+    Route::put('/profile/password', [App\Http\Controllers\Dev\ProfileController::class, 'updatePassword'])->name('dev.profile.password');
+
+    // Time entries
+    Route::post('/projects/{project}/time', [App\Http\Controllers\Dev\TimeEntryController::class, 'store'])->name('dev.time.store');
+    Route::put('/time/{entry}', [App\Http\Controllers\Dev\TimeEntryController::class, 'update'])->name('dev.time.update');
+    Route::delete('/time/{entry}', [App\Http\Controllers\Dev\TimeEntryController::class, 'destroy'])->name('dev.time.destroy');
+
+    // Dev Notes
+    Route::post('/projects/{project}/notes', [App\Http\Controllers\Dev\ProjectController::class, 'storeNote'])->name('dev.notes.store');
+    Route::delete('/notes/{note}', [App\Http\Controllers\Dev\ProjectController::class, 'destroyNote'])->name('dev.notes.destroy');
+
+    // Dev Documentation
+    Route::post('/projects/{project}/docs', [App\Http\Controllers\Dev\ProjectController::class, 'storeDocs'])->name('dev.projects.docs.store');
+    Route::put('/project-docs/{doc}', [App\Http\Controllers\Dev\ProjectController::class, 'updateDocs'])->name('dev.projects.docs.update');
 });
 
 // Partner portal routes
@@ -174,11 +280,14 @@ Route::prefix('partner')->middleware(['auth', 'referral'])->group(function () {
     Route::post('/leads/submit', [App\Http\Controllers\Partner\LeadController::class, 'store'])->name('partner.leads.store');
     Route::get('/leads/{lead}', [App\Http\Controllers\Partner\LeadController::class, 'show'])->name('partner.leads.show');
     Route::get('/commissions', [App\Http\Controllers\Partner\CommissionController::class, 'index'])->name('partner.commissions.index');
+    Route::get('/commissions/export', [App\Http\Controllers\Partner\CommissionController::class, 'exportCsv'])->name('partner.commissions.export');
     Route::get('/resources', [App\Http\Controllers\Partner\PageController::class, 'index'])->name('partner.pages.index');
     Route::get('/resources/{slug}', [App\Http\Controllers\Partner\PageController::class, 'show'])->name('partner.pages.show');
     Route::get('/guide', [App\Http\Controllers\Partner\GuideController::class, 'index'])->name('partner.guide');
+    Route::get('/prospecting', [App\Http\Controllers\Partner\GuideController::class, 'prospecting'])->name('partner.prospecting');
     Route::get('/profile', [App\Http\Controllers\Partner\ProfileController::class, 'edit'])->name('partner.profile');
     Route::put('/profile', [App\Http\Controllers\Partner\ProfileController::class, 'update'])->name('partner.profile.update');
+    Route::put('/profile/password', [App\Http\Controllers\Partner\ProfileController::class, 'updatePassword'])->name('partner.profile.password');
 });
 
 // GitHub OAuth
@@ -191,8 +300,36 @@ Route::middleware('auth')->group(function () {
 // API endpoints (session auth)
 Route::get('/api/projects/{project}/commits', App\Http\Controllers\Api\ProjectCommitsController::class)->middleware('auth')->name('api.projects.commits');
 
+// Public quote actions via token (no login required)
+Route::get('/quotes/{quote}/view/{token}', function (\App\Models\Quote $quote, string $token) {
+    if ($quote->view_token !== $token) abort(403);
+    if (!$quote->viewed_at && in_array($quote->status, ['sent'])) {
+        $quote->update(['status' => 'viewed', 'viewed_at' => now()]);
+    }
+    return \Inertia\Inertia::render('Public/QuoteView', ['quote' => $quote->load('items')]);
+})->name('quotes.public-view');
+
+Route::post('/quotes/{quote}/accept/{token}', function (\Illuminate\Http\Request $request, \App\Models\Quote $quote, string $token) {
+    if ($quote->view_token !== $token) abort(403);
+    if (!in_array($quote->status, ['sent', 'viewed'])) {
+        return redirect()->back()->with('error', 'Ce devis ne peut plus être accepté.');
+    }
+    \App\Services\WorkflowService::onQuoteAccepted($quote);
+    return redirect()->back()->with('success', 'Devis accepté ! Votre projet a été initié.');
+})->name('quotes.public-accept');
+
+Route::post('/quotes/{quote}/reject/{token}', function (\Illuminate\Http\Request $request, \App\Models\Quote $quote, string $token) {
+    if ($quote->view_token !== $token) abort(403);
+    if (!in_array($quote->status, ['sent', 'viewed'])) {
+        return redirect()->back()->with('error', 'Ce devis ne peut plus être refusé.');
+    }
+    $request->validate(['reason' => 'nullable|string|max:1000']);
+    \App\Services\WorkflowService::onQuoteRejected($quote, $request->input('reason'));
+    return redirect()->back()->with('success', 'Devis refusé.');
+})->name('quotes.public-reject');
+
 // Client portal routes
-Route::prefix('client')->middleware(['auth'])->group(function () {
+Route::prefix('client')->middleware(['auth', 'client'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Client\DashboardController::class, 'index'])->name('client.dashboard');
     Route::get('/projects', [App\Http\Controllers\Client\ProjectController::class, 'index'])->name('client.projects.index');
     Route::get('/projects/{project}', [App\Http\Controllers\Client\ProjectController::class, 'show'])->name('client.projects.show');
@@ -214,8 +351,17 @@ Route::prefix('client')->middleware(['auth'])->group(function () {
     Route::put('/profile/notifications', [App\Http\Controllers\Client\ProfileController::class, 'updateNotifications'])->name('client.profile.notifications');
     Route::delete('/profile', [App\Http\Controllers\Client\ProfileController::class, 'deleteAccount'])->name('client.profile.delete');
 
+    // Support
+    Route::get('/support', [App\Http\Controllers\Client\SupportController::class, 'index'])->name('client.support.index');
+    Route::post('/support', [App\Http\Controllers\Client\SupportController::class, 'store'])->name('client.support.store');
+    Route::get('/support/{ticket}', [App\Http\Controllers\Client\SupportController::class, 'show'])->name('client.support.show');
+    Route::post('/support/{ticket}/reply', [App\Http\Controllers\Client\SupportController::class, 'reply'])->name('client.support.reply');
+
     // Project Attachments (external documents)
     Route::get('projects/{project}/attachments/{document}/download', [App\Http\Controllers\Client\ProjectController::class, 'downloadAttachment'])->name('client.projects.attachments.download');
+
+    // Technical Documentation (read-only)
+    Route::get('projects/{project}/docs', [App\Http\Controllers\Client\ProjectController::class, 'docs'])->name('client.projects.docs');
 
     // Documents
     Route::get('documents/{document}', [App\Http\Controllers\Client\DocumentController::class, 'show'])->name('client.documents.show');
@@ -233,6 +379,14 @@ Route::middleware('auth')->group(function () {
 // Admin routes
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::put('dashboard/preferences', [App\Http\Controllers\Admin\DashboardController::class, 'updatePreferences'])->name('admin.dashboard.preferences');
+
+    // Timesheets
+    Route::get('timesheets', [App\Http\Controllers\Admin\TimeEntryController::class, 'index'])->name('admin.timesheets');
+
+    // Bulk actions (MUST be before resource routes)
+    Route::patch('leads/bulk-status', [App\Http\Controllers\Admin\LeadController::class, 'bulkUpdateStatus'])->name('admin.leads.bulk-status');
+    Route::post('leads/bulk-delete', [App\Http\Controllers\Admin\LeadController::class, 'bulkDelete'])->name('admin.leads.bulk-delete');
 
     Route::resource('leads', App\Http\Controllers\Admin\LeadController::class)->names([
         'index' => 'admin.leads.index',
@@ -251,12 +405,21 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::patch('projects/{project}/status', [App\Http\Controllers\Admin\ProjectController::class, 'updateStatus'])->name('admin.projects.update-status');
     Route::patch('projects/{project}/github', [App\Http\Controllers\Admin\ProjectController::class, 'updateGithub'])->name('admin.projects.update-github');
     Route::post('projects/{project}/send-email', [App\Http\Controllers\Admin\ProjectController::class, 'sendEmail'])->name('admin.projects.send-email');
+    Route::post('projects/{project}/payouts', [App\Http\Controllers\Admin\ProjectController::class, 'storePayout'])->name('admin.projects.payouts.store');
+    Route::patch('payouts/{payout}', [App\Http\Controllers\Admin\ProjectController::class, 'updatePayout'])->name('admin.payouts.update');
+    Route::delete('payouts/{payout}', [App\Http\Controllers\Admin\ProjectController::class, 'destroyPayout'])->name('admin.payouts.destroy');
+    Route::get('calendar', [App\Http\Controllers\Admin\CalendarController::class, 'index'])->name('admin.calendar');
     Route::get('revenue', [App\Http\Controllers\Admin\ProjectBudgetController::class, 'global'])->name('admin.revenue');
     Route::get('projects/{project}/budget', [App\Http\Controllers\Admin\ProjectBudgetController::class, 'index'])->name('admin.projects.budget');
     Route::post('projects/{project}/budget', [App\Http\Controllers\Admin\ProjectBudgetController::class, 'store'])->name('admin.projects.budget.store');
     Route::put('projects/{project}/budget/{line}', [App\Http\Controllers\Admin\ProjectBudgetController::class, 'update'])->name('admin.projects.budget.update');
     Route::delete('projects/{project}/budget/{line}', [App\Http\Controllers\Admin\ProjectBudgetController::class, 'destroy'])->name('admin.projects.budget.destroy');
     Route::resource('partners', App\Http\Controllers\Admin\PartnerController::class)->names('admin.partners');
+
+    // Notes (global — works on any entity)
+    Route::post('notes', [App\Http\Controllers\Admin\NoteController::class, 'store'])->name('admin.notes.store');
+    Route::patch('notes/{note}/pin', [App\Http\Controllers\Admin\NoteController::class, 'togglePin'])->name('admin.notes.toggle-pin');
+    Route::delete('notes/{note}', [App\Http\Controllers\Admin\NoteController::class, 'destroy'])->name('admin.notes.destroy');
 
     // Quotes
     Route::post('quotes/upload-external', [App\Http\Controllers\Admin\QuoteController::class, 'storeExternal'])->name('admin.quotes.store-external');
@@ -283,9 +446,12 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::delete('signature', [App\Http\Controllers\Admin\SignatureController::class, 'destroy'])->name('admin.signature.destroy');
 
     // Invoices
+    Route::patch('invoices/bulk-status', [App\Http\Controllers\Admin\InvoiceController::class, 'bulkUpdateStatus'])->name('admin.invoices.bulk-status');
+    Route::post('invoices/bulk-delete', [App\Http\Controllers\Admin\InvoiceController::class, 'bulkDelete'])->name('admin.invoices.bulk-delete');
     Route::post('invoices/upload-external', [App\Http\Controllers\Admin\InvoiceController::class, 'storeExternal'])->name('admin.invoices.store-external');
     Route::resource('invoices', App\Http\Controllers\Admin\InvoiceController::class)->names('admin.invoices');
     Route::post('invoices/{invoice}/send', [App\Http\Controllers\Admin\InvoiceController::class, 'send'])->name('admin.invoices.send');
+    Route::post('invoices/{invoice}/duplicate', [App\Http\Controllers\Admin\InvoiceController::class, 'duplicate'])->name('admin.invoices.duplicate');
     Route::post('invoices/{invoice}/record-payment', [App\Http\Controllers\Admin\InvoiceController::class, 'recordPayment'])->name('admin.invoices.record-payment');
     Route::get('invoices/{invoice}/pdf', [App\Http\Controllers\Admin\InvoiceController::class, 'downloadPdf'])->name('admin.invoices.pdf');
     Route::get('invoices/{invoice}/pdf/preview', [App\Http\Controllers\Admin\InvoiceController::class, 'previewPdf'])->name('admin.invoices.pdf.preview');
@@ -301,6 +467,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     // Recurring Services
     Route::resource('services', App\Http\Controllers\Admin\RecurringServiceController::class)->names('admin.services');
     Route::post('services/{service}/renew', [App\Http\Controllers\Admin\RecurringServiceController::class, 'renew'])->name('admin.services.renew');
+    Route::patch('services/{service}/status', [App\Http\Controllers\Admin\RecurringServiceController::class, 'updateStatus'])->name('admin.services.updateStatus');
 
     // Portfolio
     Route::get('portfolio', [App\Http\Controllers\Admin\PortfolioController::class, 'index'])->name('admin.portfolio.index');
@@ -312,6 +479,12 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('portfolio/{projet}/logo', [App\Http\Controllers\Admin\PortfolioController::class, 'uploadLogo'])->name('admin.portfolio.upload-logo');
     Route::delete('portfolio/{projet}/logo', [App\Http\Controllers\Admin\PortfolioController::class, 'deleteLogo'])->name('admin.portfolio.delete-logo');
     Route::patch('portfolio/{projet}/add', [App\Http\Controllers\Admin\PortfolioController::class, 'addToPortfolio'])->name('admin.portfolio.add');
+
+    // SaaS Products
+    Route::resource('products', App\Http\Controllers\Admin\ProductController::class)->names('admin.products')->except(['show']);
+    Route::post('products/{product}/logo', [App\Http\Controllers\Admin\ProductController::class, 'uploadLogo'])->name('admin.products.logo');
+    Route::post('products/{product}/cover', [App\Http\Controllers\Admin\ProductController::class, 'uploadCover'])->name('admin.products.cover');
+    Route::patch('products/{product}/toggle', [App\Http\Controllers\Admin\ProductController::class, 'togglePublished'])->name('admin.products.toggle');
 
     // Posts (News & Blog)
     Route::resource('posts', App\Http\Controllers\Admin\PostController::class)->names('admin.posts');
@@ -365,6 +538,13 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::patch('projects/{project}/attachments/{document}/toggle', [App\Http\Controllers\Admin\ProjectAttachmentController::class, 'toggleVisibility'])->name('admin.projects.attachments.toggle');
     Route::delete('projects/{project}/attachments/{document}', [App\Http\Controllers\Admin\ProjectAttachmentController::class, 'destroy'])->name('admin.projects.attachments.destroy');
 
+    // Project Technical Documentation (wiki)
+    Route::get('projects/{project}/docs', [App\Http\Controllers\Admin\ProjectDocController::class, 'index'])->name('admin.projects.docs');
+    Route::post('projects/{project}/docs', [App\Http\Controllers\Admin\ProjectDocController::class, 'store'])->name('admin.projects.docs.store');
+    Route::put('project-docs/{doc}', [App\Http\Controllers\Admin\ProjectDocController::class, 'update'])->name('admin.projects.docs.update');
+    Route::patch('project-docs/{doc}/toggle', [App\Http\Controllers\Admin\ProjectDocController::class, 'toggleVisibility'])->name('admin.projects.docs.toggle');
+    Route::delete('project-docs/{doc}', [App\Http\Controllers\Admin\ProjectDocController::class, 'destroy'])->name('admin.projects.docs.destroy');
+
     // Project Documents
     Route::get('projects/{project}/documents', [App\Http\Controllers\Admin\ProjectDocumentController::class, 'index'])->name('admin.projects.documents');
     Route::post('projects/{project}/documents/generate', [App\Http\Controllers\Admin\ProjectDocumentController::class, 'generate'])->name('admin.projects.documents.generate');
@@ -375,12 +555,30 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('projects/{project}/documents/{document}/pdf/preview', [App\Http\Controllers\Admin\ProjectDocumentController::class, 'previewPdf'])->name('admin.projects.documents.pdf.preview');
     Route::delete('projects/{project}/documents/{document}', [App\Http\Controllers\Admin\ProjectDocumentController::class, 'destroy'])->name('admin.projects.documents.destroy');
 
+    // Exports
+    Route::get('exports/invoices/pdf', [App\Http\Controllers\Admin\ExportController::class, 'invoicesPdf'])->name('admin.exports.invoices.pdf');
+    Route::get('exports/invoices/csv', [App\Http\Controllers\Admin\ExportController::class, 'invoicesCsv'])->name('admin.exports.invoices.csv');
+    Route::get('exports/leads/pdf', [App\Http\Controllers\Admin\ExportController::class, 'leadsPdf'])->name('admin.exports.leads.pdf');
+    Route::get('exports/leads/csv', [App\Http\Controllers\Admin\ExportController::class, 'leadsCsv'])->name('admin.exports.leads.csv');
+    Route::get('exports/commissions/pdf', [App\Http\Controllers\Admin\ExportController::class, 'commissionsPdf'])->name('admin.exports.commissions.pdf');
+    Route::get('exports/commissions/csv', [App\Http\Controllers\Admin\ExportController::class, 'commissionsCsv'])->name('admin.exports.commissions.csv');
+    Route::get('exports/quotes/csv', [App\Http\Controllers\Admin\ExportController::class, 'quotesCsv'])->name('admin.exports.quotes.csv');
+    Route::get('exports/payments/csv', [App\Http\Controllers\Admin\ExportController::class, 'paymentsCsv'])->name('admin.exports.payments.csv');
+    Route::get('exports/payments/pdf', [App\Http\Controllers\Admin\ExportController::class, 'paymentsPdf'])->name('admin.exports.payments.pdf');
+
     // Team Management
     Route::get('team', [App\Http\Controllers\Admin\TeamController::class, 'index'])->name('admin.team');
     Route::post('team', [App\Http\Controllers\Admin\TeamController::class, 'store'])->name('admin.team.store');
     Route::patch('team/{user}/approve', [App\Http\Controllers\Admin\TeamController::class, 'approve'])->name('admin.team.approve');
     Route::delete('team/{user}/reject', [App\Http\Controllers\Admin\TeamController::class, 'reject'])->name('admin.team.reject');
     Route::patch('team/{user}/toggle', [App\Http\Controllers\Admin\TeamController::class, 'toggleActive'])->name('admin.team.toggle');
+
+    // Support Tickets
+    Route::get('support', [App\Http\Controllers\Admin\SupportController::class, 'index'])->name('admin.support.index');
+    Route::get('support/{ticket}', [App\Http\Controllers\Admin\SupportController::class, 'show'])->name('admin.support.show');
+    Route::post('support/{ticket}/reply', [App\Http\Controllers\Admin\SupportController::class, 'reply'])->name('admin.support.reply');
+    Route::patch('support/{ticket}/status', [App\Http\Controllers\Admin\SupportController::class, 'updateStatus'])->name('admin.support.status');
+    Route::delete('support/{ticket}', [App\Http\Controllers\Admin\SupportController::class, 'destroy'])->name('admin.support.destroy');
 });
 
 require __DIR__ . '/auth.php';

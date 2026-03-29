@@ -114,7 +114,7 @@ export default function PostShow({ post }: Props) {
                 {/* Cover image */}
                 {post.image_url && (
                     <div className="mb-8 rounded-2xl overflow-hidden">
-                        <img src={post.image_url} alt={post.title} className="w-full aspect-video object-cover" />
+                        <img src={post.image_url} alt={post.title} loading="lazy" className="w-full aspect-video object-cover" />
                     </div>
                 )}
 

@@ -2,7 +2,7 @@
 
 ## 1. CRON Laravel (OBLIGATOIRE)
 
-Le scheduler Laravel fait tourner 3 jobs critiques. Sans cette ligne dans le crontab serveur, **aucun d'eux ne s'executera** :
+Le scheduler Laravel fait tourner 4 jobs critiques. Sans cette ligne dans le crontab serveur, **aucun d'eux ne s'executera** :
 
 ```bash
 * * * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1
@@ -17,6 +17,7 @@ Remplace `/path-to-project` par le chemin absolu du projet sur le serveur.
 | 07:00 | `autoRenewServices()` | Renouvelle les services avec `auto_renew=true`, marque les autres comme `expired`, met a jour le status `expiring_soon` |
 | 07:30 | `sendServiceExpiryNotifications()` | Envoie les notifications a 2 mois, 1 mois, 1 semaine, 1 jour avant expiration (admins + client) |
 | 08:00 | `checkOverdueInvoices()` | Passe les factures `sent`/`partially_paid` avec `due_date` depassee en status `overdue` |
+| 09:00 | `sendInvoiceReminders()` | Envoie des rappels aux clients pour les factures en retard (7j, 14j, 30j). Les rappels ne sont envoyes qu'une fois par palier. |
 
 ### Verifier que ca tourne
 

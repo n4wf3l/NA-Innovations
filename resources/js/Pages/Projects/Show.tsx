@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import OriginalLanguageBadge from '@/Components/ui/OriginalLanguageBadge';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 interface PortfolioImage {
     id: number;
@@ -105,12 +106,43 @@ function Lightbox({ image, onClose }: { image: PortfolioImage; onClose: () => vo
 
 export default function Show({ project, nextProject, previousProject }: Props) {
     const { t } = useTranslation();
+    useScrollReveal();
     const [lightboxImage, setLightboxImage] = useState<PortfolioImage | null>(null);
     const contentSection = useInView();
     const gallerySection = useInView();
 
     const heroImage = project.images.length > 0 ? project.images[0] : null;
     const galleryImages = project.images.length > 1 ? project.images.slice(1) : project.images;
+
+    const sectionIcons: Record<string, JSX.Element> = {
+        Context: (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
+            </svg>
+        ),
+        Challenge: (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+        ),
+        Solution: (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+            </svg>
+        ),
+        Results: (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+            </svg>
+        ),
+    };
+
+    const sectionColors: Record<string, { bg: string; icon: string; border: string }> = {
+        Context: { bg: 'bg-blue-50 dark:bg-blue-500/10', icon: 'text-blue-500', border: 'border-blue-100 dark:border-blue-500/20' },
+        Challenge: { bg: 'bg-amber-50 dark:bg-amber-500/10', icon: 'text-amber-500', border: 'border-amber-100 dark:border-amber-500/20' },
+        Solution: { bg: 'bg-green-50 dark:bg-green-500/10', icon: 'text-green-500', border: 'border-green-100 dark:border-green-500/20' },
+        Results: { bg: 'bg-purple-50 dark:bg-purple-500/10', icon: 'text-purple-500', border: 'border-purple-100 dark:border-purple-500/20' },
+    };
 
     const contentSections = [
         { title: 'Context', content: project.context },
@@ -120,7 +152,7 @@ export default function Show({ project, nextProject, previousProject }: Props) {
     ].filter(s => s.content);
 
     return (
-        <PublicLayout title={project.title}>
+        <PublicLayout title={project.title} description={project.excerpt} ogImage={project.images?.[0] ? `/storage/${project.images[0].image_path}` : undefined}>
             <style>{`
                 .bebas { font-family: 'Bebas Neue', sans-serif; }
 
@@ -177,7 +209,7 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
 
                 {/* Hero content */}
-                <div className="relative z-10 flex flex-col justify-end h-full min-h-[60vh] max-w-7xl mx-auto px-4 pb-12 md:pb-20">
+                <div className="relative z-10 flex flex-col justify-end h-full min-h-[60vh] max-w-7xl mx-auto px-4 pb-12 md:pb-20 hero-fade">
                     {/* Back link */}
                     <Link
                         href="/projects"
@@ -210,80 +242,89 @@ export default function Show({ project, nextProject, previousProject }: Props) {
             </section>
 
             {/* Two-column Layout */}
-            <section className="bg-gray-100 py-16 md:py-24" ref={contentSection.ref}>
+            <section className="bg-gray-100 dark:bg-gray-800 py-16 md:py-24 reveal" ref={contentSection.ref}>
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
                         {/* Left Column (2/3) */}
                         <div className={`lg:w-2/3 space-y-12 ${contentSection.isVisible ? 'slide-in-left' : 'opacity-0'}`}>
                             {/* Project meta */}
-                            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500 border-b border-gray-200 pb-8">
+                            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 pb-8">
                                 {project.client_logo && (
-                                    <div className="w-16 h-16 bg-gray-50 rounded-xl p-2 border border-gray-100 flex items-center justify-center">
-                                        <img src={`/storage/${project.client_logo}`} alt={project.client_name} className="max-w-full max-h-full object-contain" />
+                                    <div className="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-xl p-2 border border-gray-100 dark:border-gray-600 flex items-center justify-center">
+                                        <img src={`/storage/${project.client_logo}`} alt={project.client_name} loading="lazy" className="max-w-full max-h-full object-contain" />
                                     </div>
                                 )}
                                 {project.client_name && (
                                     <div>
-                                        <span className="block text-xs uppercase tracking-widest text-gray-400 mb-1">Client</span>
-                                        <span className="text-gray-900 font-semibold">{project.client_name}</span>
+                                        <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">Client</span>
+                                        <span className="text-gray-900 dark:text-white font-semibold">{project.client_name}</span>
                                     </div>
                                 )}
                                 {project.category && (
                                     <div>
-                                        <span className="block text-xs uppercase tracking-widest text-gray-400 mb-1">Category</span>
-                                        <span className="text-gray-900 font-semibold">{project.category}</span>
+                                        <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">Category</span>
+                                        <span className="text-gray-900 dark:text-white font-semibold">{project.category}</span>
                                     </div>
                                 )}
                                 {project.duration_days && (
                                     <div>
-                                        <span className="block text-xs uppercase tracking-widest text-gray-400 mb-1">{t('Duration')}</span>
-                                        <span className="text-gray-900 font-semibold">{project.duration_days} {t('days')}</span>
+                                        <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">{t('Duration')}</span>
+                                        <span className="text-gray-900 dark:text-white font-semibold">{project.duration_days} {t('days')}</span>
                                     </div>
                                 )}
                                 {project.projet?.type_site && (
                                     <div>
-                                        <span className="block text-xs uppercase tracking-widest text-gray-400 mb-1">Type</span>
-                                        <span className="text-gray-900 font-semibold">{project.projet.type_site}</span>
+                                        <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">Type</span>
+                                        <span className="text-gray-900 dark:text-white font-semibold">{project.projet.type_site}</span>
                                     </div>
                                 )}
                                 {project.projet?.lieu && (
                                     <div>
-                                        <span className="block text-xs uppercase tracking-widest text-gray-400 mb-1">Location</span>
-                                        <span className="text-gray-900 font-semibold">{project.projet.lieu}</span>
+                                        <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">Location</span>
+                                        <span className="text-gray-900 dark:text-white font-semibold">{project.projet.lieu}</span>
                                     </div>
                                 )}
                             </div>
 
-                            {/* Content sections */}
-                            {contentSections.map((section, index) => (
-                                <div key={section.title} className="fade-in-up" style={{ animationDelay: `${(index + 1) * 150}ms` }}>
-                                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 bebas mb-4" style={{ letterSpacing: '1px' }}>
-                                        {section.title}
-                                    </h2>
-                                    <div className="text-gray-600 leading-relaxed whitespace-pre-line text-lg">
-                                        {section.content}
+                            {/* Content sections — styled cards with icons */}
+                            {contentSections.map((section, index) => {
+                                const colors = sectionColors[section.title] || { bg: 'bg-gray-50', icon: 'text-gray-500', border: 'border-gray-100' };
+                                const icon = sectionIcons[section.title] || null;
+                                return (
+                                    <div key={section.title} className={`fade-in-up rounded-2xl border ${colors.border} ${colors.bg} p-6 md:p-8`} style={{ animationDelay: `${(index + 1) * 150}ms` }}>
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className={`w-10 h-10 rounded-xl ${colors.bg} ${colors.icon} flex items-center justify-center flex-shrink-0`}>
+                                                {icon}
+                                            </div>
+                                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white bebas" style={{ letterSpacing: '1px' }}>
+                                                {t(section.title)}
+                                            </h2>
+                                        </div>
+                                        <div className="text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-line text-lg pl-[52px]">
+                                            {section.content}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
 
                             {/* Features grid */}
                             {project.features && project.features.length > 0 && (
                                 <div className="fade-in-up" style={{ animationDelay: `${(contentSections.length + 1) * 150}ms` }}>
-                                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 bebas mb-6" style={{ letterSpacing: '1px' }}>
+                                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white bebas mb-6" style={{ letterSpacing: '1px' }}>
                                         {t('Key Features')}
                                     </h2>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         {project.features.map((feature, i) => (
                                             <div
                                                 key={i}
-                                                className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm"
+                                                className="flex items-start gap-3 p-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm"
                                             >
                                                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-teal-400/10 flex items-center justify-center mt-0.5">
                                                     <svg className="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                                     </svg>
                                                 </div>
-                                                <span className="text-gray-700">{feature}</span>
+                                                <span className="text-gray-700 dark:text-gray-300">{feature}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -295,8 +336,8 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                         <div className={`lg:w-1/3 space-y-8 ${contentSection.isVisible ? 'slide-in-right' : 'opacity-0'}`} style={{ animationDelay: '300ms' }}>
                             {/* Tech stack */}
                             {project.tech_stack && project.tech_stack.length > 0 && (
-                                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                                    <h3 className="text-xl font-bold text-gray-900 bebas mb-4" style={{ letterSpacing: '1px' }}>
+                                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white bebas mb-4" style={{ letterSpacing: '1px' }}>
                                         {t('Tech Stack')}
                                     </h3>
                                     <div className="flex flex-wrap gap-2">
@@ -314,15 +355,15 @@ export default function Show({ project, nextProject, previousProject }: Props) {
 
                             {/* Tags */}
                             {project.tags && project.tags.length > 0 && (
-                                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                                    <h3 className="text-xl font-bold text-gray-900 bebas mb-4" style={{ letterSpacing: '1px' }}>
+                                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white bebas mb-4" style={{ letterSpacing: '1px' }}>
                                         Tags
                                     </h3>
                                     <div className="flex flex-wrap gap-2">
                                         {project.tags.map((tag, i) => (
                                             <span
                                                 key={i}
-                                                className="px-3 py-1.5 text-sm font-medium bg-teal-50 text-teal-700 rounded-full border border-teal-100"
+                                                className="px-3 py-1.5 text-sm font-medium bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 rounded-full border border-teal-100 dark:border-teal-500/20"
                                             >
                                                 {tag}
                                             </span>
@@ -349,21 +390,29 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                                 </a>
                             )}
 
-                            {/* Testimonial */}
+                            {/* Testimonial — prominent quote block */}
                             {project.testimonial_text && (
-                                <div className="bg-gray-900 rounded-2xl p-6 text-white relative overflow-hidden">
-                                    <div className="absolute top-4 left-4 text-teal-400/20 text-8xl font-serif leading-none select-none pointer-events-none">"</div>
+                                <div className="bg-gray-900 rounded-2xl p-8 text-white relative overflow-hidden reveal-scale">
+                                    {/* Large quotation mark SVG */}
+                                    <svg className="absolute top-4 left-4 w-20 h-20 text-teal-400/10" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H0z" />
+                                    </svg>
                                     <div className="relative z-10">
-                                        <p className="text-white/80 italic leading-relaxed text-lg mb-6 pt-8">
-                                            {project.testimonial_text}
+                                        <p className="text-white/90 italic leading-relaxed text-xl mb-6 pt-10 font-light">
+                                            "{project.testimonial_text}"
                                         </p>
-                                        <div className="border-t border-white/10 pt-4">
-                                            {project.testimonial_author && (
-                                                <p className="font-bold text-white">{project.testimonial_author}</p>
-                                            )}
-                                            {project.testimonial_role && (
-                                                <p className="text-teal-400 text-sm">{project.testimonial_role}</p>
-                                            )}
+                                        <div className="border-t border-white/10 pt-4 flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-teal-400/20 flex items-center justify-center text-teal-300 font-bold text-sm">
+                                                {project.testimonial_author ? project.testimonial_author.split(' ').map(w => w[0]).join('') : '?'}
+                                            </div>
+                                            <div>
+                                                {project.testimonial_author && (
+                                                    <p className="font-bold text-white">{project.testimonial_author}</p>
+                                                )}
+                                                {project.testimonial_role && (
+                                                    <p className="text-teal-400 text-sm">{project.testimonial_role}</p>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -375,12 +424,12 @@ export default function Show({ project, nextProject, previousProject }: Props) {
 
             {/* Image Gallery */}
             {galleryImages.length > 0 && (
-                <section className="bg-white py-16 md:py-24" ref={gallerySection.ref}>
+                <section className="bg-white dark:bg-gray-900 py-16 md:py-24" ref={gallerySection.ref}>
                     <div className="max-w-7xl mx-auto px-4">
-                        <h2 className={`text-5xl md:text-6xl font-bold text-gray-900 bebas mb-12 text-center transition-all duration-700 ${gallerySection.isVisible ? 'fade-in-up' : 'opacity-0'}`} style={{ letterSpacing: '2px' }}>
+                        <h2 className={`text-5xl md:text-6xl font-bold text-gray-900 dark:text-white bebas mb-12 text-center transition-all duration-700 ${gallerySection.isVisible ? 'fade-in-up' : 'opacity-0'}`} style={{ letterSpacing: '2px' }}>
                             {t('Gallery')}
                         </h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 reveal-stagger">
                             {galleryImages.map((image, index) => (
                                 <button
                                     key={image.id}
@@ -412,8 +461,33 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                 </section>
             )}
 
+            {/* CTA — Vous avez un projet similaire ? */}
+            <section className="py-16 bg-gray-900 relative overflow-hidden">
+                <div className="absolute inset-0 opacity-[0.03] flex items-center justify-center" aria-hidden="true">
+                    <span className="text-[15vw] font-bold text-white bebas whitespace-nowrap">LET'S TALK</span>
+                </div>
+                <div className="max-w-3xl mx-auto text-center px-4 relative z-10">
+                    <h2 className="text-4xl md:text-5xl font-bold text-white bebas mb-4" style={{ letterSpacing: '2px' }}>
+                        {t('You have a similar project?')}
+                    </h2>
+                    <p className="text-gray-400 mb-8 text-lg">
+                        {t("Let's discuss your project")}
+                    </p>
+                    <Link
+                        href="/contact"
+                        className="inline-flex items-center gap-3 px-10 py-5 bg-teal-400 text-gray-900 text-xl font-bold rounded-full transition-all duration-300 hover:bg-teal-300 hover:shadow-[0_0_40px_rgba(94,234,212,0.3)] hover:scale-105 bebas"
+                        style={{ letterSpacing: '2px' }}
+                    >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                        </svg>
+                        {t('Free Quote').toUpperCase()}
+                    </Link>
+                </div>
+            </section>
+
             {/* Navigation */}
-            <section className="bg-gray-100 border-t border-gray-200">
+            <section className="bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 reveal">
                 <div className="max-w-7xl mx-auto px-4 py-8">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                         {/* Previous project */}
@@ -421,7 +495,7 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                             {previousProject ? (
                                 <Link
                                     href={`/projects/${previousProject.slug}`}
-                                    className="group inline-flex items-center gap-3 text-gray-500 hover:text-gray-900 transition-colors"
+                                    className="group inline-flex items-center gap-3 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                                 >
                                     <svg className="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -439,7 +513,7 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                         {/* Back to projects */}
                         <Link
                             href="/projects"
-                            className="px-6 py-2.5 border-2 border-gray-300 text-gray-600 font-bold rounded-full hover:border-teal-400 hover:text-teal-500 transition-all duration-300 bebas text-lg"
+                            className="px-6 py-2.5 border-2 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 font-bold rounded-full hover:border-teal-400 hover:text-teal-500 transition-all duration-300 bebas text-lg"
                             style={{ letterSpacing: '2px' }}
                         >
                             {t('All Projects').toUpperCase()}
@@ -450,7 +524,7 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                             {nextProject ? (
                                 <Link
                                     href={`/projects/${nextProject.slug}`}
-                                    className="group inline-flex items-center gap-3 text-gray-500 hover:text-gray-900 transition-colors justify-end"
+                                    className="group inline-flex items-center gap-3 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors justify-end"
                                 >
                                     <div>
                                         <span className="block text-xs uppercase tracking-widest text-gray-400 bebas" style={{ letterSpacing: '2px' }}>{t('Next Project')}</span>

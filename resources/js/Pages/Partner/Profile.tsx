@@ -2,6 +2,7 @@ import PartnerLayout from '@/Layouts/PartnerLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 
 interface Props {
     user: {
@@ -63,6 +64,20 @@ export default function PartnerProfile({ user, partner }: Props) {
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
         put('/partner/profile');
+    }
+
+    const passwordForm = useForm({
+        current_password: '',
+        password: '',
+        password_confirmation: '',
+    });
+
+    function handlePassword(e: FormEvent) {
+        e.preventDefault();
+        passwordForm.put('/partner/profile/password', {
+            preserveScroll: true,
+            onSuccess: () => passwordForm.reset(),
+        });
     }
 
     function copyCode() {
@@ -138,12 +153,16 @@ export default function PartnerProfile({ user, partner }: Props) {
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{t("Payment Method")}</label>
-                                <select value={data.payment_method} onChange={e => setData('payment_method', e.target.value)} className={inputClass + ' bg-white dark:bg-gray-700'}>
-                                    <option value="bank_transfer">{t("Bank Transfer")}</option>
-                                    <option value="paypal">{t("PayPal")}</option>
-                                    <option value="cash">{t("Cash")}</option>
-                                    <option value="other">{t("Other")}</option>
-                                </select>
+                                <SearchableSelect
+                                    value={data.payment_method}
+                                    onChange={(val) => setData('payment_method', val)}
+                                    options={[
+                                        { value: 'bank_transfer', label: t("Bank Transfer") },
+                                        { value: 'paypal', label: t("PayPal") },
+                                        { value: 'cash', label: t("Cash") },
+                                        { value: 'other', label: t("Other") },
+                                    ]}
+                                />
                             </div>
                             {data.payment_method === 'bank_transfer' && (
                                 <div>
@@ -267,6 +286,61 @@ export default function PartnerProfile({ user, partner }: Props) {
                         </button>
                     </div>
                 </form>
+
+                {/* Change Password */}
+                <form onSubmit={handlePassword} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+                    <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700 flex items-center gap-2">
+                        <svg className="w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+                        <h3 className="font-bold text-gray-900 dark:text-white">{t('Change Password')}</h3>
+                    </div>
+                    <div className="p-6 space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{t('Current Password')}</label>
+                            <input type="password" value={passwordForm.data.current_password} onChange={e => passwordForm.setData('current_password', e.target.value)} className="w-full bg-gray-50 dark:bg-gray-700/50 border-0 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-rose-400" />
+                            {passwordForm.errors.current_password && <p className="text-xs text-red-500 mt-1">{passwordForm.errors.current_password}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{t('New Password')}</label>
+                            <input type="password" value={passwordForm.data.password} onChange={e => passwordForm.setData('password', e.target.value)} className="w-full bg-gray-50 dark:bg-gray-700/50 border-0 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-rose-400" />
+                            {passwordForm.errors.password && <p className="text-xs text-red-500 mt-1">{passwordForm.errors.password}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{t('Confirm Password')}</label>
+                            <input type="password" value={passwordForm.data.password_confirmation} onChange={e => passwordForm.setData('password_confirmation', e.target.value)} className="w-full bg-gray-50 dark:bg-gray-700/50 border-0 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-rose-400" />
+                        </div>
+                        <div className="flex justify-end">
+                            <button type="submit" disabled={passwordForm.processing} className="px-6 py-2.5 bg-rose-500 text-white text-sm font-bold rounded-xl hover:bg-rose-600 disabled:opacity-50 transition-colors">
+                                {passwordForm.processing ? t('Saving...') : t('Update Password')}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                {/* Guided Tour Reset */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+                    <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700 flex items-center gap-2">
+                        <svg className="w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" /></svg>
+                        <h3 className="font-bold text-gray-900 dark:text-white">{t('Visite guidée')}</h3>
+                    </div>
+                    <div className="p-6">
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t('Relancez la présentation interactive de votre tableau de bord pour redécouvrir toutes les fonctionnalités.')}</p>
+                        <button
+                            type="button"
+                            onClick={async () => {
+                                await fetch('/api/tour-completed', {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '' },
+                                    body: JSON.stringify({ tour_key: 'partner_dashboard', reset: true }),
+                                });
+                                window.location.href = '/partner/dashboard';
+                            }}
+                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-rose-500 text-white text-sm font-bold rounded-xl hover:bg-rose-600 transition-colors"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" /></svg>
+                            {t('Relancer la visite guidée')}
+                        </button>
+                    </div>
+                </div>
             </div>
         </PartnerLayout>
     );

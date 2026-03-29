@@ -1,8 +1,10 @@
 import { Head, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function NotFound() {
     const { auth } = usePage<{ auth: { user: { id: number } | null } }>().props;
+    const { t } = useTranslation();
     const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
     useEffect(() => {
@@ -18,7 +20,7 @@ export default function NotFound() {
 
     return (
         <>
-            <Head title="404 - Page Not Found">
+            <Head title={`404 - ${t('Page Not Found')}`}>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
             </Head>
@@ -74,7 +76,7 @@ export default function NotFound() {
                         style={{ letterSpacing: '2px' }}
                     >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
-                        BACK TO HOME
+                        {t('Back to home').toUpperCase()}
                     </a>
                 </div>
 
@@ -104,10 +106,10 @@ export default function NotFound() {
 
                         {/* Text */}
                         <h2 className="bebas text-4xl sm:text-5xl md:text-6xl text-white mb-4 animate-fade-up-delay" style={{ letterSpacing: '3px' }}>
-                            Page Not Found
+                            {t('Page Not Found')}
                         </h2>
                         <p className="text-gray-400 text-lg mb-12 max-w-md mx-auto animate-fade-up-delay2">
-                            The page you're looking for doesn't exist or has been moved. Let's get you back on track.
+                            {t("The page you're looking for doesn't exist or has been moved.")}
                         </p>
 
                         {/* Action buttons */}
@@ -118,14 +120,14 @@ export default function NotFound() {
                                 style={{ letterSpacing: '3px' }}
                             >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>
-                                GO HOME
+                                {t('Go home').toUpperCase()}
                             </a>
                             <a
-                                href="/contact"
+                                href="/contact#quote"
                                 className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white/20 text-white text-lg font-bold rounded-full transition-all duration-300 hover:border-teal-400/50 hover:text-teal-300 bebas"
                                 style={{ letterSpacing: '2px' }}
                             >
-                                FREE QUOTE
+                                {t('Free Quote').toUpperCase()}
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                             </a>
                         </div>
@@ -133,10 +135,10 @@ export default function NotFound() {
                         {/* Quick links */}
                         <div className="mt-16 flex flex-wrap items-center justify-center gap-6 text-sm">
                             {[
-                                { href: '/services', label: 'Services' },
-                                { href: '/projects', label: 'Projects' },
-                                { href: '/about', label: 'About' },
-                                { href: '/posts', label: 'News' },
+                                { href: '/services', label: t('Services') },
+                                { href: '/projects', label: t('Projects') },
+                                { href: '/about', label: t('About') },
+                                { href: '/posts', label: t('News') },
                             ].map(link => (
                                 <a key={link.href} href={link.href} className="text-gray-500 hover:text-teal-300 transition-colors bebas" style={{ letterSpacing: '2px' }}>
                                     {link.label}

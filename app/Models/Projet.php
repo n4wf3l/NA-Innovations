@@ -138,6 +138,11 @@ class Projet extends Model
         return $this->morphMany(Note::class, 'notable');
     }
 
+    public function payouts()
+    {
+        return $this->hasMany(ProjectPayout::class, 'project_id');
+    }
+
     public function documents()
     {
         return $this->morphMany(Document::class, 'documentable');
@@ -146,5 +151,15 @@ class Projet extends Model
     public function projectDocuments()
     {
         return $this->hasMany(ProjectDocument::class, 'project_id');
+    }
+
+    public function timeEntries()
+    {
+        return $this->hasMany(TimeEntry::class, 'project_id');
+    }
+
+    public function projectDocs()
+    {
+        return $this->hasMany(ProjectDoc::class, 'project_id');
     }
 }

@@ -10,12 +10,16 @@ use Symfony\Component\HttpFoundation\Response;
 class LogActivity
 {
     /**
-     * Log every authenticated page view / action.
-     * Only logs GET (page views) and POST/PUT/PATCH/DELETE (actions).
-     * Skips assets, API polling, and PDF preview requests.
+     * Log authenticated mutation actions (POST/PUT/PATCH/DELETE).
+     * Skips GET requests, API polling, assets, and PDF preview requests.
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Skip GET requests and API/polling endpoints (only log mutations)
+        if ($request->isMethod('GET') || $request->is('api/notifications/*')) {
+            return $next($request);
+        }
+
         $response = $next($request);
 
         // Only log for authenticated users
@@ -36,7 +40,6 @@ class LogActivity
         // Determine action type
         $method = $request->method();
         $action = match (true) {
-            $method === 'GET' => 'page_view',
             $method === 'POST' && str_contains($request->path(), 'login') => 'login',
             $method === 'POST' && str_contains($request->path(), 'logout') => 'logout',
             $method === 'POST' => 'create',

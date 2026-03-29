@@ -54,6 +54,8 @@ class TeamController extends BaseAdminController
             'portal_url' => url('/login'),
         ], transactional: true);
 
+        \Illuminate\Support\Facades\Cache::forget('team_counts');
+
         return redirect()->back()->with('success', "{$user->name} has been approved.");
     }
 
@@ -119,6 +121,8 @@ class TeamController extends BaseAdminController
             // Don't fail if email can't be sent
         }
 
+        \Illuminate\Support\Facades\Cache::forget('team_counts');
+
         return redirect()->back()->with('success', "{$user->name} account created. A password setup email has been sent.");
     }
 
@@ -136,6 +140,8 @@ class TeamController extends BaseAdminController
         }
 
         $user->update($data);
+
+        \Illuminate\Support\Facades\Cache::forget('team_counts');
 
         return redirect()->back()->with('success', $newActive ? 'Account activated.' : 'Account deactivated.');
     }

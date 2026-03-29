@@ -5,20 +5,27 @@ import { formatDate, formatCurrency } from '@/lib/utils';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PdfPreviewCard from '@/Components/ui/PdfPreviewCard';
+import { useConfirm } from '@/hooks/useConfirm';
 
 interface Props { quote: any; }
 
 export default function ClientQuoteShow({ quote }: Props) {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
     const [accepting, setAccepting] = useState(false);
     const items = quote.items || [];
     const canRespond = ['sent', 'viewed'].includes(quote.status);
 
-    const handleAccept = () => {
-        if (confirm(t('Are you sure you want to accept this quote? A deposit invoice will be generated.'))) {
-            setAccepting(true);
-            router.post(`/client/quotes/${quote.id}/accept`, {}, { onFinish: () => setAccepting(false) });
-        }
+    const handleAccept = async () => {
+        const ok = await confirm({
+            title: t('Accept Quote'),
+            message: t('Are you sure you want to accept this quote? A deposit invoice will be generated.'),
+            confirmText: t('Accept'),
+            variant: 'info',
+        });
+        if (!ok) return;
+        setAccepting(true);
+        router.post(`/client/quotes/${quote.id}/accept`, {}, { onFinish: () => setAccepting(false) });
     };
 
     const handleReject = () => {
@@ -160,6 +167,7 @@ export default function ClientQuoteShow({ quote }: Props) {
                     )}
                 </div>
             </div>
+            <ConfirmDialog />
         </ClientLayout>
     );
 }

@@ -19,7 +19,7 @@ export default function TestimonialsSection({ testimonials, sectionRef, isVisibl
     const { t } = useTranslation();
 
     return (
-        <section className="py-20 bg-gray-900 relative overflow-hidden" ref={sectionRef}>
+        <section id="section-testimonials" className="py-20 bg-gray-900 relative overflow-hidden scroll-mt-20" ref={sectionRef}>
             <div className="absolute inset-0 opacity-[0.02]" aria-hidden="true">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(94,234,212,0.4),transparent_50%)]" />
             </div>
@@ -44,7 +44,7 @@ export default function TestimonialsSection({ testimonials, sectionRef, isVisibl
                             <p className="text-white/80 leading-relaxed mb-6 italic">"{testimonial.text}"</p>
                             <div className="flex items-center gap-3">
                                 {testimonial.logo && (
-                                    <img src={`/storage/${testimonial.logo}`} alt="" className="w-10 h-10 rounded-full object-cover border border-white/10" />
+                                    <img src={`/storage/${testimonial.logo}`} alt="" loading="lazy" className="w-10 h-10 rounded-full object-cover border border-white/10" />
                                 )}
                                 <div>
                                     <p className="text-white font-semibold text-sm">{testimonial.author}</p>

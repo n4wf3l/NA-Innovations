@@ -1,9 +1,14 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { useState, PropsWithChildren } from 'react';
+import { useState, useEffect, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import WhatsAppButton from '@/Components/landing/WhatsAppButton';
+import { useTheme } from '@/lib/useTheme';
 
 interface PublicLayoutProps {
     title?: string;
+    description?: string;
+    ogImage?: string;
+    jsonLd?: Record<string, any>;
 }
 
 const socialIcons: Record<string, JSX.Element> = {
@@ -30,24 +35,46 @@ const socialIcons: Record<string, JSX.Element> = {
     ),
 };
 
-export default function PublicLayout({ children, title }: PropsWithChildren<PublicLayoutProps>) {
-    const { auth, locale } = usePage<{ auth: { user: { id: number } | null }; locale: string }>().props;
+export default function PublicLayout({ children, title, description, ogImage, jsonLd }: PropsWithChildren<PublicLayoutProps>) {
+    const { auth, locale, appUrl, branding } = usePage<{ auth: { user: { id: number } | null }; locale: string; appUrl: string; branding: { company_name: string; logo_path: string; tagline: string } }>().props;
     const { t } = useTranslation();
+    const { theme, setTheme } = useTheme();
+    const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const toggleTheme = () => setTheme(isDark ? 'light' : 'dark');
+    const pageUrl = typeof window !== 'undefined' ? window.location.href : appUrl;
+    const siteName = branding?.company_name || 'NA Innovations';
+    const metaDesc = description || branding?.tagline || 'Web Development, Mobile & Software — NA Innovations';
+    const metaImage = ogImage || (branding?.logo_path ? `${appUrl}/storage/${branding.logo_path}` : `${appUrl}/NAlogo2.png`);
+
+    const orgJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'NA Innovations BV',
+        url: appUrl,
+        logo: `${appUrl}/NAlogo2.png`,
+        contactPoint: { '@type': 'ContactPoint', telephone: '+32490221912', contactType: 'customer service', availableLanguage: ['French', 'English', 'Dutch'] },
+        address: { '@type': 'PostalAddress', streetAddress: '170 Nijverheidskaai', addressLocality: 'Anderlecht', postalCode: '1070', addressCountry: 'BE' },
+        sameAs: [],
+    };
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [showLangModal, setShowLangModal] = useState(false);
+    const [showScrollTop, setShowScrollTop] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => setShowScrollTop(window.scrollY > 600);
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const socialLinks: Record<string, string> = (usePage().props.socialLinks as Record<string, string>) || {};
-    const branding = (usePage().props.branding as { logo_path: string; company_name: string; tagline: string }) || {
-        logo_path: '',
-        company_name: 'NA Innovations',
-        tagline: '',
-    };
 
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
 
     const navLinks = [
         { href: '/', label: t('Home') },
         { href: '/services', label: t('Services') },
+        { href: '/products', label: t('Products') },
+        { href: '/pricing', label: t('Pricing') },
         { href: '/projects', label: t('Projects') },
         { href: '/about', label: t('About') },
         { href: '/posts', label: t('News') },
@@ -61,10 +88,42 @@ export default function PublicLayout({ children, title }: PropsWithChildren<Publ
 
     return (
         <>
-            <Head title={title || branding.company_name}>
+            <Head title={title || siteName}>
+                {/* SEO */}
+                <meta name="description" content={metaDesc} />
+                <link rel="canonical" href={pageUrl} />
+
+                {/* Open Graph */}
+                <meta property="og:type" content="website" />
+                <meta property="og:site_name" content={siteName} />
+                <meta property="og:title" content={`${title || siteName} — ${siteName}`} />
+                <meta property="og:description" content={metaDesc} />
+                <meta property="og:image" content={metaImage} />
+                <meta property="og:url" content={pageUrl} />
+                <meta property="og:locale" content={locale === 'fr' ? 'fr_BE' : locale === 'nl' ? 'nl_BE' : 'en_US'} />
+
+                {/* Twitter Card */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={`${title || siteName} — ${siteName}`} />
+                <meta name="twitter:description" content={metaDesc} />
+                <meta name="twitter:image" content={metaImage} />
+
+                {/* Hreflang */}
+                <link rel="alternate" hrefLang="fr" href={`${appUrl}/locale/fr`} />
+                <link rel="alternate" hrefLang="en" href={`${appUrl}/locale/en`} />
+                <link rel="alternate" hrefLang="nl" href={`${appUrl}/locale/nl`} />
+                <link rel="alternate" hrefLang="x-default" href={appUrl} />
+
+                {/* Fonts */}
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
                 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
+
+                {/* Organization JSON-LD */}
+                <script type="application/ld+json">{JSON.stringify(orgJsonLd)}</script>
+
+                {/* Page-specific JSON-LD */}
+                {jsonLd && <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>}
             </Head>
 
             <style>{`
@@ -159,10 +218,22 @@ export default function PublicLayout({ children, title }: PropsWithChildren<Publ
                             </a>
                         )}
                         <span className="w-px h-6 bg-white/20" />
-                        <button onClick={() => setShowLangModal(true)} className="flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors px-2 py-1">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802" /></svg>
-                            <span className="text-xs font-bold uppercase bebas" style={{ letterSpacing: '1px' }}>{locale}</span>
-                        </button>
+                        {/* Theme + Language group */}
+                        <div className="flex items-center gap-1 bg-white/5 rounded-full px-1 py-1">
+                            {/* Theme toggle */}
+                            <button onClick={toggleTheme} className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-teal-300 hover:bg-white/10 transition-all" title={isDark ? t('Light mode') : t('Dark mode')}>
+                                {isDark ? (
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
+                                ) : (
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
+                                )}
+                            </button>
+                            {/* Language */}
+                            <button onClick={() => setShowLangModal(true)} className="h-8 flex items-center gap-1 rounded-full text-gray-400 hover:text-teal-300 hover:bg-white/10 transition-all px-2.5">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802" /></svg>
+                                <span className="text-xs font-bold uppercase bebas" style={{ letterSpacing: '1px' }}>{locale}</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -208,14 +279,25 @@ export default function PublicLayout({ children, title }: PropsWithChildren<Publ
                                 {navLinks.find(l => l.href === '/contact')?.label || t('Free Quote')}
                             </a>
 
-                            {/* Language */}
-                            <button
-                                onClick={() => { setMobileMenuOpen(false); setShowLangModal(true); }}
-                                className="mt-14 flex items-center gap-2.5 text-white/20 hover:text-teal-300 transition-colors"
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802" /></svg>
-                                <span className="text-xs font-bold uppercase bebas" style={{ letterSpacing: '3px' }}>{locale}</span>
-                            </button>
+                            {/* Theme + Language */}
+                            <div className="mt-14 flex items-center gap-6">
+                                <button onClick={() => { toggleTheme(); }} className="flex items-center gap-2 text-white/20 hover:text-teal-300 transition-colors">
+                                    {isDark ? (
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
+                                    ) : (
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
+                                    )}
+                                    <span className="text-xs font-bold uppercase bebas" style={{ letterSpacing: '3px' }}>{isDark ? t('Light') : t('Dark')}</span>
+                                </button>
+                                <span className="w-px h-4 bg-white/10" />
+                                <button
+                                    onClick={() => { setMobileMenuOpen(false); setShowLangModal(true); }}
+                                    className="flex items-center gap-2 text-white/20 hover:text-teal-300 transition-colors"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802" /></svg>
+                                    <span className="text-xs font-bold uppercase bebas" style={{ letterSpacing: '3px' }}>{locale}</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -272,49 +354,68 @@ export default function PublicLayout({ children, title }: PropsWithChildren<Publ
             <main>{children}</main>
 
             {/* Footer */}
-            <footer className="bg-gray-100 py-12">
+            <footer className="bg-gray-100 dark:bg-gray-900 py-12">
                 <div className="container mx-auto flex flex-col items-center px-4">
-                    <div className="flex flex-col md:flex-row justify-between items-center md:items-start w-full gap-8">
-                        <div className="w-full md:w-1/4 text-center md:text-left">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-4">About {branding.company_name.split(' ').map(w => w[0]).join('')}</h3>
-                            <p className="text-sm text-gray-600">NA is a software engineer and fullstack developer graduated in Belgium.</p>
-                            {Object.keys(socialLinks).length > 0 && (
-                                <div className="flex items-center mt-6 justify-center md:justify-start gap-3">
-                                    {Object.entries(socialLinks).map(([platform, url]) => (
-                                        socialIcons[platform] ? (
-                                            <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 text-gray-600 hover:bg-teal-300 hover:border-teal-300 hover:text-white transition-all duration-300">
-                                                {socialIcons[platform]}
-                                            </a>
-                                        ) : null
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                        <div className="w-full md:w-1/4 text-center md:text-left">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Contact</h3>
-                            <div className="text-sm text-gray-600">
-                                <p className="mb-2">Email: <a href="mailto:info@nainnovations.be" className="hover:underline">info@nainnovations.be</a></p>
-                                <p className="mb-2">Phone: <a href="tel:+32490221912" className="hover:underline">+32 490 22 19 12</a></p>
+                    {/* Logo + social row */}
+                    <div className="w-full flex flex-col items-center mb-10">
+                        <Link href="/" className="flex items-center gap-3 mb-4">
+                            {branding.logo_path ? (
+                                <img src={`/storage/${branding.logo_path}`} alt={branding.company_name} className="h-8 w-auto" />
+                            ) : null}
+                            <span className="text-xl font-bold text-gray-800 dark:text-gray-200">{branding.company_name}</span>
+                        </Link>
+                        {Object.keys(socialLinks).length > 0 && (
+                            <div className="flex items-center gap-3">
+                                {Object.entries(socialLinks).map(([platform, url]) => (
+                                    socialIcons[platform] ? (
+                                        <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-teal-300 hover:border-teal-300 hover:text-white transition-all duration-300">
+                                            {socialIcons[platform]}
+                                        </a>
+                                    ) : null
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* 3-column grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+                        {/* Quick Links */}
+                        <div className="text-center md:text-left">
+                            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">{t('Quick Links')}</h3>
+                            <div className="text-sm text-gray-600 dark:text-gray-400 flex flex-col gap-2">
+                                <Link href="/" className="hover:text-teal-500 hover:underline transition">{t('Home')}</Link>
+                                <Link href="/services" className="hover:text-teal-500 hover:underline transition">{t('Services')}</Link>
+                                <Link href="/products" className="hover:text-teal-500 hover:underline transition">{t('Products')}</Link>
+                                <Link href="/projects" className="hover:text-teal-500 hover:underline transition">{t('Projects')}</Link>
+                                <Link href="/posts" className="hover:text-teal-500 hover:underline transition">{t('News')}</Link>
+                                <Link href="/contact" className="hover:text-teal-500 hover:underline transition">{t('Free Quote')}</Link>
                             </div>
                         </div>
-                        <div className="w-full md:w-1/4 text-center md:text-left">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Company Information</h3>
-                            <div className="text-sm text-gray-600">
-                                <p className="mb-2 font-bold">NA Innovations BV</p>
-                                <p className="mb-2">Company Registration Number: 1025.939.504</p>
-                                <p className="mb-2">VAT Number: BE1025939504</p>
+
+                        {/* Contact */}
+                        <div className="text-center md:text-left">
+                            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">{t('Contact')}</h3>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">
+                                <p className="mb-2">{t('Email')}: <a href="mailto:info@nainnovations.be" className="hover:underline">info@nainnovations.be</a></p>
+                                <p className="mb-2">{t('Phone')}: <a href="tel:+32490221912" className="hover:underline">+32 490 22 19 12</a></p>
+                                <p className="mb-2 mt-4 font-bold">NA Innovations BV</p>
+                                <p className="mb-2">{t('Company Registration Number')}: 1025.939.504</p>
+                                <p className="mb-2">{t('VAT Number')}: BE1025939504</p>
                             </div>
                         </div>
-                        <div className="w-full md:w-1/4 text-center md:text-left">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Legal</h3>
-                            <div className="text-sm text-gray-600 flex flex-col gap-2">
-                                <Link href="/terms" className="hover:text-teal-500 hover:underline transition">Terms &amp; Conditions</Link>
-                                <Link href="/privacy" className="hover:text-teal-500 hover:underline transition">Privacy Policy</Link>
+
+                        {/* Legal */}
+                        <div className="text-center md:text-left">
+                            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">{t('Legal')}</h3>
+                            <div className="text-sm text-gray-600 dark:text-gray-400 flex flex-col gap-2">
+                                <Link href="/terms" className="hover:text-teal-500 hover:underline transition">{t('Terms & Conditions')}</Link>
+                                <Link href="/privacy" className="hover:text-teal-500 hover:underline transition">{t('Privacy Policy')}</Link>
                             </div>
                         </div>
                     </div>
-                    <div className="border-t border-gray-300 mt-12 w-full pt-6 text-center">
-                        <p className="text-sm text-gray-500">&copy; {new Date().getFullYear()} {branding.company_name}. All rights reserved.</p>
+
+                    <div className="border-t border-gray-300 dark:border-gray-700 mt-12 w-full pt-6 text-center">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">&copy; {new Date().getFullYear()} {branding.company_name}. {t('All rights reserved')}.</p>
                     </div>
                 </div>
             </footer>
@@ -323,7 +424,7 @@ export default function PublicLayout({ children, title }: PropsWithChildren<Publ
             <a
                 href={auth?.user ? '/dashboard' : '/login'}
                 className="fixed bottom-6 left-6 z-50 w-11 h-11 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-teal-300 hover:border-teal-300/30 hover:bg-gray-900 transition-all duration-300 group"
-                title={auth?.user ? 'Dashboard' : 'Portal'}
+                title={auth?.user ? t('Dashboard') : t('Portal')}
             >
                 {auth?.user ? (
                     <svg className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
@@ -331,6 +432,33 @@ export default function PublicLayout({ children, title }: PropsWithChildren<Publ
                     <svg className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" /></svg>
                 )}
             </a>
+
+            {/* Theme toggle — always visible, top right */}
+            <div className="fixed right-5 top-5 z-50 hidden lg:block">
+                <button
+                    onClick={toggleTheme}
+                    className="group w-10 h-10 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-amber-500 dark:hover:text-amber-300 hover:border-amber-400 dark:hover:border-amber-400/40 shadow-lg shadow-black/5 dark:shadow-black/20 transition-all duration-300 hover:scale-110"
+                    title={isDark ? t('Light mode') : t('Dark mode')}
+                >
+                    {isDark ? (
+                        <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
+                    ) : (
+                        <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
+                    )}
+                </button>
+            </div>
+
+            {/* Scroll to top — bottom right */}
+            <button
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className={`fixed bottom-20 right-6 z-50 w-11 h-11 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-teal-300 hover:border-teal-300/30 hover:bg-gray-900 transition-all duration-500 group ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+                title={t('Back to top')}
+            >
+                <svg className="w-5 h-5 transition-transform duration-300 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" /></svg>
+            </button>
+
+            {/* WhatsApp floating button — bottom right */}
+            <WhatsAppButton phoneNumber={socialLinks.whatsapp || ''} />
         </>
     );
 }

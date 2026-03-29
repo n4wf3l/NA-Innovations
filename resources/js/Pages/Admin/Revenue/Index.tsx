@@ -4,10 +4,11 @@ import ProtectedAmount, { protectedValue } from '@/Components/ui/ProtectedAmount
 import { formatCurrency } from '@/lib/utils';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 import { usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { useTranslation } from 'react-i18next';
-import { RevenueBarChart, LeadConversionCard, ProjectStatusCard, TopClientsCard } from './Charts';
+import { RevenueBarChart, LeadConversionCard, ProjectStatusCard, TopClientsCard, MiniSparkline } from './Charts';
 
 interface BudgetLine {
     id: number; label: string; type: string; amount: number; frequency: string;
@@ -67,6 +68,20 @@ export default function RevenueIndex({ projection, breakEvenMonth, actualIncome,
     const incomeLines = budgetLines.filter(l => l.type === 'income');
     const expenseLines = budgetLines.filter(l => l.type === 'expense');
 
+    // Sparkline data from last 6 months of revenueByMonth
+    const last6 = revenueByMonth.slice(-6);
+    const incomeSparkline = last6.map(m => m.income);
+    const invoicedSparkline = last6.map(m => m.invoiced);
+    // Compute expense sparkline from projection (last 6 data points that are in the past)
+    const pastProjection = projection.filter(p => p.month <= new Date().toISOString().slice(0, 7));
+    const expenseSparkline = pastProjection.slice(-6).map(p => p.expense);
+    const cumulativeSparkline = pastProjection.slice(-6).map(p => p.cumulative);
+
+    // Month-over-month for expenses
+    const thisMonthExpense = pastProjection.length > 0 ? pastProjection[pastProjection.length - 1]?.expense ?? 0 : 0;
+    const lastMonthExpense = pastProjection.length > 1 ? pastProjection[pastProjection.length - 2]?.expense ?? 0 : 0;
+    const expenseMomChange = lastMonthExpense > 0 ? ((thisMonthExpense - lastMonthExpense) / lastMonthExpense * 100) : (thisMonthExpense > 0 ? 100 : 0);
+
     const handleUntilChange = (val: string) => {
         router.get('/admin/revenue', { until: val, projects: selected.join(',') }, { preserveState: true });
     };
@@ -122,13 +137,23 @@ export default function RevenueIndex({ projection, breakEvenMonth, actualIncome,
                         <p className="text-teal-200 text-sm mt-1">{selected.length} {t('Projects')} {t('selected')}</p>
                     </div>
                     <div className="flex items-center gap-3">
+                        <a href="/admin/exports/payments/csv" className="px-3 py-2 bg-white/10 text-white text-sm font-semibold rounded-xl hover:bg-white/20 transition-colors flex items-center gap-2">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                            CSV
+                        </a>
+                        <a href="/admin/exports/payments/pdf" className="px-3 py-2 bg-white/10 text-white text-sm font-semibold rounded-xl hover:bg-white/20 transition-colors flex items-center gap-2">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                            PDF
+                        </a>
                         <button onClick={() => setShowFilters(!showFilters)} className="px-4 py-2 bg-white/10 text-white text-sm font-semibold rounded-xl hover:bg-white/20 transition-colors flex items-center gap-2">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" /></svg>
                             {t('Filter')}
                         </button>
-                        <select value={until} onChange={e => handleUntilChange(e.target.value)} className="bg-white/10 border-0 text-white rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-white/30">
-                            {monthOptions.map(o => <option key={o.value} value={o.value} className="text-gray-900">{o.label}</option>)}
-                        </select>
+                        <SearchableSelect
+                            value={until}
+                            onChange={(val) => handleUntilChange(val)}
+                            options={monthOptions.map(o => ({ value: o.value, label: o.label }))}
+                        />
                     </div>
                 </div>
             </div>
@@ -158,29 +183,55 @@ export default function RevenueIndex({ projection, breakEvenMonth, actualIncome,
             {/* KPIs */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-3">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg>
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg>
+                        </div>
+                        {financialUnlocked && <MiniSparkline data={incomeSparkline} color="#10b981" />}
                     </div>
                     <div className="text-2xl font-black text-gray-900 dark:text-white">{protectedValue(actualIncome, financialUnlocked)}</div>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 uppercase tracking-wider font-semibold">{t('Actual Income')}</p>
+                    <div className="flex items-center justify-between mt-1">
+                        <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider font-semibold">{t('Actual Income')}</p>
+                        {momChange !== 0 && financialUnlocked && (
+                            <span className={`text-xs font-bold flex items-center gap-0.5 ${momChange > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                                {momChange > 0 ? '\u2191' : '\u2193'} {Math.abs(momChange)}%
+                            </span>
+                        )}
+                    </div>
                 </div>
                 <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm">
-                    <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-500 flex items-center justify-center mb-3">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6L9 12.75l4.286-4.286a11.948 11.948 0 014.306 6.43l.776 2.898m0 0l3.182-5.511m-3.182 5.51l-5.511-3.181" /></svg>
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-500 flex items-center justify-center">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6L9 12.75l4.286-4.286a11.948 11.948 0 014.306 6.43l.776 2.898m0 0l3.182-5.511m-3.182 5.51l-5.511-3.181" /></svg>
+                        </div>
+                        {financialUnlocked && <MiniSparkline data={expenseSparkline} color="#ef4444" />}
                     </div>
                     <div className="text-2xl font-black text-gray-900 dark:text-white">{protectedValue(actualExpenses, financialUnlocked)}</div>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 uppercase tracking-wider font-semibold">{t('Actual Expenses')}</p>
+                    <div className="flex items-center justify-between mt-1">
+                        <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider font-semibold">{t('Actual Expenses')}</p>
+                        {expenseMomChange !== 0 && financialUnlocked && (
+                            <span className={`text-xs font-bold flex items-center gap-0.5 ${expenseMomChange < 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                                {expenseMomChange > 0 ? '\u2191' : '\u2193'} {Math.abs(Math.round(expenseMomChange))}%
+                            </span>
+                        )}
+                    </div>
                 </div>
                 <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${(lastPoint?.cumulative ?? 0) >= 0 ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-500' : 'bg-red-50 dark:bg-red-500/10 text-red-500'}`}>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
+                    <div className="flex items-center justify-between mb-3">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${(lastPoint?.cumulative ?? 0) >= 0 ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-500' : 'bg-red-50 dark:bg-red-500/10 text-red-500'}`}>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
+                        </div>
+                        {financialUnlocked && <MiniSparkline data={cumulativeSparkline} color={(lastPoint?.cumulative ?? 0) >= 0 ? '#14b8a6' : '#ef4444'} />}
                     </div>
                     <div className="text-2xl font-black text-gray-900 dark:text-white">{protectedValue(lastPoint?.cumulative ?? 0, financialUnlocked)}</div>
                     <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 uppercase tracking-wider font-semibold">{t('Projected Total')}</p>
                 </div>
                 <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${breakEvenMonth ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-500' : 'bg-gray-50 dark:bg-gray-700 text-gray-400'}`}>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <div className="flex items-center justify-between mb-3">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${breakEvenMonth ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-500' : 'bg-gray-50 dark:bg-gray-700 text-gray-400'}`}>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        {financialUnlocked && <MiniSparkline data={invoicedSparkline} color="#8b5cf6" />}
                     </div>
                     <p className="text-lg font-black text-gray-900 dark:text-white">{breakEvenMonth || t('No break-even')}</p>
                     <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 uppercase tracking-wider font-semibold">{t('Break-even')}</p>
@@ -397,6 +448,10 @@ function ProjectionChart({ projection, breakEvenMonth }: { projection: Projectio
     const barW = Math.min(20, chartW / projection.length * 0.6);
 
     const hp = hover !== null ? projection[hover] : null;
+    const prevHp = hover !== null && hover > 0 ? projection[hover - 1] : null;
+    const hpNetChange = hp && prevHp && prevHp.net !== 0
+        ? ((hp.net - prevHp.net) / Math.abs(prevHp.net) * 100).toFixed(1)
+        : null;
 
     return (
         <div className="relative">
@@ -471,15 +526,29 @@ function ProjectionChart({ projection, breakEvenMonth }: { projection: Projectio
 
             {/* Tooltip */}
             {hp && hover !== null && (
-                <div className="absolute top-2 right-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg px-4 py-3 text-xs pointer-events-none z-10" style={{ minWidth: 180 }}>
+                <div className="absolute top-2 right-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg px-4 py-3 text-xs pointer-events-none z-10" style={{ minWidth: 210 }}>
                     <p className="font-bold text-gray-900 dark:text-white mb-2">
                         {new Date(hp.month + '-01').toLocaleDateString('fr-BE', { month: 'long', year: 'numeric' })}
                     </p>
-                    <div className="space-y-1">
+                    <div className="space-y-1.5">
                         <div className="flex justify-between"><span className="text-emerald-600">{t('Income')}</span><span className="font-semibold text-gray-900 dark:text-white">{formatCurrency(hp.income)}</span></div>
                         <div className="flex justify-between"><span className="text-red-500">{t('Expenses')}</span><span className="font-semibold text-gray-900 dark:text-white">{formatCurrency(hp.expense)}</span></div>
-                        <div className="flex justify-between border-t border-gray-100 dark:border-gray-700 pt-1 mt-1"><span className="text-gray-500">Net</span><span className={`font-bold ${hp.net >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>{formatCurrency(hp.net)}</span></div>
-                        <div className="flex justify-between"><span className="text-gray-500">{t('Cumulative')}</span><span className={`font-black ${hp.cumulative >= 0 ? 'text-teal-600' : 'text-red-500'}`}>{formatCurrency(hp.cumulative)}</span></div>
+                        <div className="flex justify-between border-t border-gray-100 dark:border-gray-700 pt-1 mt-1">
+                            <span className="text-gray-500">Net</span>
+                            <span className={`font-bold ${hp.net >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>{formatCurrency(hp.net)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-gray-500">{t('Cumulative')}</span>
+                            <span className={`font-black ${hp.cumulative >= 0 ? 'text-teal-600' : 'text-red-500'}`}>{formatCurrency(hp.cumulative)}</span>
+                        </div>
+                        {hpNetChange !== null && (
+                            <div className="flex justify-between border-t border-gray-100 dark:border-gray-700 pt-1 mt-1">
+                                <span className="text-gray-500">{t('vs previous month')}</span>
+                                <span className={`font-bold ${parseFloat(hpNetChange) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                                    {parseFloat(hpNetChange) >= 0 ? '+' : ''}{hpNetChange}%
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

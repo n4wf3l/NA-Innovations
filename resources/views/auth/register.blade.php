@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>body{opacity:0}</style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Register - NA Innovations</title>
     <link rel="icon" href="{{ asset('NAlogo2.png') }}" type="image/x-icon" />
@@ -15,6 +16,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
+        body.ready { opacity: 1; transition: opacity 0.15s ease-in; }
         .font-display { font-family: 'Bebas Neue', cursive; }
         .font-body { font-family: 'Figtree', sans-serif; }
 
@@ -43,6 +45,18 @@
             box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.1), 0 0 20px rgba(94, 234, 212, 0.05);
         }
         .input-field::placeholder { color: #475569; }
+        .input-field:-webkit-autofill,
+        .input-field:-webkit-autofill:hover,
+        .input-field:-webkit-autofill:focus,
+        .input-field:-webkit-autofill:active {
+            -webkit-text-fill-color: #ffffff !important;
+            -webkit-box-shadow: 0 0 0 9999px #0f172a inset !important;
+            box-shadow: 0 0 0 9999px #0f172a inset !important;
+            background-color: #0f172a !important;
+            border-color: rgba(71, 85, 105, 0.4) !important;
+            transition: background-color 5000s ease-in-out 0s;
+            caret-color: #ffffff;
+        }
         .btn-submit {
             background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
             transition: all 0.25s ease;
@@ -321,5 +335,6 @@
 
     </div>
 
+<script>document.body.classList.add('ready');</script>
 </body>
 </html>

@@ -3,6 +3,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { ReferralPartner } from '@/types';
 import { formatStatus } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 
 interface Props {
     partners: ReferralPartner[];
@@ -80,31 +81,37 @@ export default function LeadCreate({ partners, projectTypes }: Props) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Status")}</label>
-                            <select value={data.status} onChange={e => setData('status', e.target.value)} className={inputClass}>
-                                {statuses.map(s => <option key={s} value={s}>{formatStatus(s)}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.status}
+                                onChange={(val) => setData('status', val)}
+                                options={statuses.map(s => ({ value: s, label: formatStatus(s) }))}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Source")}</label>
-                            <select value={data.source} onChange={e => setData('source', e.target.value)} className={inputClass}>
-                                {sources.map(s => <option key={s} value={s}>{formatStatus(s)}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.source}
+                                onChange={(val) => setData('source', val)}
+                                options={sources.map(s => ({ value: s, label: formatStatus(s) }))}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Referral Partner")}</label>
-                            <select value={data.referral_partner_id} onChange={e => setData('referral_partner_id', e.target.value)} className={inputClass}>
-                                <option value="">{t("None")}</option>
-                                {partners.map(p => <option key={p.id} value={p.id}>{p.user?.name}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.referral_partner_id}
+                                onChange={(val) => setData('referral_partner_id', val)}
+                                placeholder={t("None")}
+                                options={partners.map(p => ({ value: String(p.id), label: p.user?.name || '' }))}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Service Interest")}</label>
-                            <select value={data.service_interest} onChange={e => setData('service_interest', e.target.value)} className={inputClass}>
-                                <option value="">{t('Sélectionner le type')}</option>
-                                {projectTypes.map((pt: any) => (
-                                    <option key={pt.value} value={pt.value}>{pt.label}</option>
-                                ))}
-                            </select>
+                            <SearchableSelect
+                                value={data.service_interest}
+                                onChange={(val) => setData('service_interest', val)}
+                                placeholder={t('Sélectionner le type')}
+                                options={projectTypes.map((pt: any) => ({ value: pt.value, label: pt.label }))}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Estimated Budget")}</label>

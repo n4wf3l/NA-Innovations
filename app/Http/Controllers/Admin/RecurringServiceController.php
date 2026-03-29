@@ -116,7 +116,7 @@ class RecurringServiceController extends BaseAdminController
      */
     public function show(RecurringService $service)
     {
-        $service->load('client', 'projet', 'renewals');
+        $service->load('client', 'projet', 'renewals', 'notes.user');
 
         return Inertia::render('Admin/Services/Show', [
             'service' => $service,
@@ -217,6 +217,62 @@ class RecurringServiceController extends BaseAdminController
             'status' => 'active',
         ]);
 
-        return redirect()->back()->with('success', 'Service renewed successfully.');
+        // If project was on_hold due to suspension, reactivate it
+        if ($service->projet_id) {
+            $project = \App\Models\Projet::find($service->projet_id);
+            if ($project && $project->status === 'on_hold') {
+                $project->update(['status' => 'completed']);
+                $project->timelineEvents()->create([
+                    'user_id' => auth()->id(),
+                    'event_type' => 'status_change',
+                    'title' => 'Projet réactivé — service renouvelé',
+                    'description' => "Le service {$service->name} a été renouvelé. Le projet est remis en ligne.",
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Service renouvelé avec succès.');
+    }
+
+    /**
+     * Update service status (suspend / reactivate).
+     */
+    public function updateStatus(Request $request, RecurringService $service)
+    {
+        $validated = $request->validate([
+            'status' => 'required|string|in:active,suspended',
+        ]);
+
+        $service->update(['status' => $validated['status']]);
+
+        if ($validated['status'] === 'suspended' && $service->projet_id) {
+            $project = \App\Models\Projet::find($service->projet_id);
+            if ($project && !in_array($project->status, ['on_hold', 'cancelled'])) {
+                $project->update(['status' => 'on_hold']);
+                $project->timelineEvents()->create([
+                    'user_id' => auth()->id(),
+                    'event_type' => 'status_change',
+                    'title' => 'Projet mis en pause — service suspendu',
+                    'description' => "Le service {$service->name} a été suspendu manuellement. Le projet est mis en pause.",
+                ]);
+            }
+            return redirect()->back()->with('success', 'Service suspendu. Le projet a été mis en pause.');
+        }
+
+        if ($validated['status'] === 'active' && $service->projet_id) {
+            $project = \App\Models\Projet::find($service->projet_id);
+            if ($project && $project->status === 'on_hold') {
+                $project->update(['status' => 'completed']);
+                $project->timelineEvents()->create([
+                    'user_id' => auth()->id(),
+                    'event_type' => 'status_change',
+                    'title' => 'Projet réactivé — service réactivé',
+                    'description' => "Le service {$service->name} a été réactivé. Le projet est remis en ligne.",
+                ]);
+            }
+            return redirect()->back()->with('success', 'Service réactivé. Le projet est remis en ligne.');
+        }
+
+        return redirect()->back()->with('success', 'Statut du service mis à jour.');
     }
 }

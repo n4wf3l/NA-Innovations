@@ -10,6 +10,7 @@ export interface NavItem {
     href?: string;
     icon?: string;
     match?: string;
+    tourId?: string;
 }
 
 interface SidebarProps {
@@ -85,7 +86,7 @@ export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedF
 
             {/* CTA */}
             {cta && (
-                <div className={cn('px-3 pb-3', isSmall && 'px-2')}>
+                <div className={cn('px-3 pb-3', isSmall && 'px-2')} data-tour="sidebar-cta">
                     <Link
                         href={cta.href}
                         className={cn(
@@ -122,6 +123,7 @@ export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedF
                         <Link
                             key={item.label}
                             href={item.href || '#'}
+                            {...(item.tourId ? { 'data-tour': item.tourId } : {})}
                             className={cn(
                                 'flex items-center rounded-lg text-sm font-medium transition-all duration-150',
                                 isSmall ? 'justify-center w-10 h-10 mx-auto p-0' : 'px-3 py-2.5',

@@ -2,6 +2,7 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ReferralPartner } from '@/types';
 import { useTranslation } from 'react-i18next';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 
 const inputClass = 'w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-pink-300 focus:ring-pink-300';
 
@@ -58,10 +59,14 @@ export default function PartnerEdit({ partner }: Props) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Payment Method")}</label>
-                            <select value={data.payment_method} onChange={e => setData('payment_method', e.target.value)} className={inputClass}>
-                                <option value="bank_transfer">{t("Bank Transfer")}</option>
-                                <option value="paypal">{t("PayPal")}</option>
-                            </select>
+                            <SearchableSelect
+                                value={data.payment_method}
+                                onChange={(val) => setData('payment_method', val)}
+                                options={[
+                                    { value: 'bank_transfer', label: t("Bank Transfer") },
+                                    { value: 'paypal', label: t("PayPal") },
+                                ]}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Bank IBAN")}</label>

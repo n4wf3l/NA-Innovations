@@ -83,7 +83,7 @@ class PdfService
     {
         return [
             'name' => Setting::get('company.name', 'NA Innovations'),
-            'email' => Setting::get('company.email', 'info@nawfelajari.be'),
+            'email' => Setting::get('company.email', config('mail.from.address', 'info@nainnovations.be')),
             'phone' => Setting::get('company.phone', ''),
             'address' => Setting::get('company.address', '170 Nijverheidskaai, Anderlecht'),
             'vat' => Setting::get('company.vat', ''),

@@ -8,7 +8,9 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import LocalePicker from '@/Components/ui/LocalePicker';
+import { useConfirm } from '@/hooks/useConfirm';
 import PdfPreviewCard from '@/Components/ui/PdfPreviewCard';
+import NotesSection from '@/Components/ui/NotesSection';
 
 interface Props {
     quote: Quote & {
@@ -36,6 +38,7 @@ interface Props {
 
 export default function QuoteShow({ quote, emailTemplates }: Props) {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
     const [invoiceTypeOpen, setInvoiceTypeOpen] = useState(false);
     const [showSendModal, setShowSendModal] = useState(false);
     const [emailLocale, setEmailLocale] = useState(quote.locale || 'fr');
@@ -96,10 +99,15 @@ export default function QuoteShow({ quote, emailTemplates }: Props) {
     };
 
 
-    const handleDelete = () => {
-        if (confirm(t('Are you sure you want to delete this quote?'))) {
-            router.delete(`/admin/quotes/${quote.id}`);
-        }
+    const handleDelete = async () => {
+        const ok = await confirm({
+            title: t('Delete'),
+            message: t('Are you sure you want to delete this quote?'),
+            confirmText: t('Delete'),
+            variant: 'danger',
+        });
+        if (!ok) return;
+        router.delete(`/admin/quotes/${quote.id}`);
     };
 
     const handleDuplicate = () => {
@@ -387,6 +395,8 @@ export default function QuoteShow({ quote, emailTemplates }: Props) {
                         </div>
                     )}
 
+                    <NotesSection notes={quote.notes || []} notableType="quote" notableId={quote.id} />
+
                     {/* Timeline */}
                     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
                         <div className="px-5 py-4 border-b border-gray-50 dark:border-gray-700">
@@ -535,6 +545,7 @@ export default function QuoteShow({ quote, emailTemplates }: Props) {
                 </div>,
                 document.body
             )}
+            <ConfirmDialog />
         </AdminLayout>
     );
 }

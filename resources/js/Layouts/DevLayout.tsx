@@ -5,6 +5,7 @@ import Sidebar, { NavItem } from '@/Components/layout/Sidebar';
 import TopBar from '@/Components/layout/TopBar';
 import TopBarActions from '@/Components/layout/TopBarActions';
 import FlashMessages from '@/Components/layout/FlashMessages';
+import LoginSplash from '@/Components/ui/LoginSplash';
 import { setCurrency } from '@/lib/utils';
 import MobileMenu from '@/Components/layout/MobileMenu';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +16,8 @@ interface DevLayoutProps {
 
 const devNavItems: NavItem[] = [
     { type: 'link', label: 'Dashboard', href: '/dev/dashboard', match: '/dev/dashboard', icon: 'M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z' },
-    { type: 'link', label: 'Projects', href: '/dev/projects', match: '/dev/projects', icon: 'M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0' },
+    { type: 'link', label: 'Projects', href: '/dev/projects', match: '/dev/projects', tourId: 'nav-projects', icon: 'M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0' },
+    { type: 'link', label: 'Profile', href: '/dev/profile', match: '/dev/profile', tourId: 'nav-profile', icon: 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z' },
 ];
 
 export default function DevLayout({ children, title }: PropsWithChildren<DevLayoutProps>) {
@@ -107,6 +109,7 @@ export default function DevLayout({ children, title }: PropsWithChildren<DevLayo
                 />
 
                 <FlashMessages />
+                <LoginSplash />
 
                 <main className="flex-1 overflow-y-auto custom-scroll p-4 sm:p-6">
                     <div className="animate-page-in">

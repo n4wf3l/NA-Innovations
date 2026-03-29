@@ -28,7 +28,15 @@ class AuditLogController extends BaseAdminController
             $query->where('action', $request->action);
         }
 
-        // Filter by date
+        // Filter by date range
+        if ($request->filled('from')) {
+            $query->whereDate('created_at', '>=', $request->from);
+        }
+        if ($request->filled('to')) {
+            $query->whereDate('created_at', '<=', $request->to);
+        }
+
+        // Filter by single date (legacy)
         if ($request->filled('date')) {
             $query->whereDate('created_at', $request->date);
         }
@@ -50,9 +58,12 @@ class AuditLogController extends BaseAdminController
             ->orderBy('name')
             ->get();
 
+        $actions = ActivityLog::distinct()->pluck('action');
+
         return Inertia::render('Admin/AuditLog/Index', [
             'logs' => $logs,
             'users' => $users,
+            'actions' => $actions,
         ]);
     }
 }

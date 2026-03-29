@@ -99,7 +99,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                         <a href="/contact#tabs" onClick={() => setMobileMenuOpen(false)}
                             className="px-12 py-4 bg-teal-400 text-gray-900 text-base font-bold rounded-full hover:bg-teal-300 transition-all duration-300 bebas"
                             style={{ letterSpacing: '4px' }}>
-                            {navLinks.find(l => l.href === '/contact')?.label || 'Free Quote'}
+                            {navLinks.find(l => l.href === '/contact')?.label || t('Free Quote')}
                         </a>
 
                         <button onClick={() => { setMobileMenuOpen(false); setShowLangModal(true); }}
@@ -111,32 +111,48 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                 </div>
             )}
 
+            <style>{`
+                @keyframes heroSlideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+                @keyframes heroBorderDraw { from { opacity: 0; clip-path: inset(0 100% 100% 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
+                @keyframes heroButtonPop { from { opacity: 0; transform: scale(0.8) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+                .hero-anim { opacity: 0; animation: heroSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+                .hero-anim-d1 { animation-delay: 0.1s; }
+                .hero-anim-d2 { animation-delay: 0.25s; }
+                .hero-anim-d3 { animation-delay: 0.4s; }
+                .hero-anim-d4 { animation-delay: 0.55s; }
+                .hero-anim-d5 { animation-delay: 0.7s; }
+                .hero-border-anim { animation: heroBorderDraw 1s ease-out 0.05s forwards; opacity: 0; }
+                .hero-btn-anim { opacity: 0; animation: heroButtonPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+                .hero-btn-d1 { animation-delay: 0.6s; }
+                .hero-btn-d2 { animation-delay: 0.75s; }
+            `}</style>
+
             {/* Hero content */}
             <div className="flex-1 flex flex-col items-center justify-center relative px-4 py-12">
-                <div className="w-full max-w-[1100px] border border-white/20 p-8 md:p-14 relative z-10">
+                <div className="w-full max-w-[1100px] border border-white/20 p-8 md:p-14 relative z-10 hero-border-anim">
                     <OriginalLanguageBadge light className="mb-4" />
-                    <div className="text-sm md:text-base lg:text-xl font-medium text-neutral-400 bebas hover:text-teal-300 transition-colors duration-700" style={{ letterSpacing: '2px' }}>
-                        {heroSection?.subtitle || 'Web Development, Mobile & Software Solutions'}
+                    <div className="text-sm md:text-base lg:text-xl font-medium text-neutral-400 bebas hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d1" style={{ letterSpacing: '2px' }}>
+                        {heroSection?.subtitle || t('Web Development, Mobile & Software Solutions')}
                     </div>
-                    <div className="mt-8 text-6xl sm:text-7xl lg:text-8xl font-bold text-white hover:text-teal-300 transition-colors duration-700">
-                        {heroSection?.title || 'Innovative solutions designed for you.'}
+                    <div className="mt-8 text-6xl sm:text-7xl lg:text-8xl font-bold text-white hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d2">
+                        {heroSection?.title || t('Innovative solutions designed for you.')}
                     </div>
-                    <p className="mt-8 text-sm lg:text-base bebas text-white/60 hover:text-teal-300 transition-colors duration-700" style={{ letterSpacing: '1px' }}>
-                        {heroSection?.description || 'From idea to application'}
+                    <p className="mt-8 text-sm lg:text-base bebas text-white/60 hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d3" style={{ letterSpacing: '1px' }}>
+                        {heroSection?.description || t('From idea to application')}
                     </p>
 
-                    <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                    <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-6 hero-anim hero-anim-d4">
                         <Link href="/contact"
-                            className="inline-flex items-center gap-3 px-10 py-5 bg-teal-400 text-gray-900 text-xl font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_40px_rgba(94,234,212,0.3)] bebas"
+                            className="inline-flex items-center gap-3 px-10 py-5 bg-teal-400 text-gray-900 text-xl font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_40px_rgba(94,234,212,0.3)] bebas hero-btn-anim hero-btn-d1"
                             style={{ letterSpacing: '3px' }}>
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                             </svg>
-                            REQUEST A QUOTE
+                            {t('Request a Quote').toUpperCase()}
                         </Link>
 
                         {Object.keys(socialLinks).length > 0 && (
-                            <div className="flex gap-4 items-center">
+                            <div className="flex gap-4 items-center hero-anim hero-anim-d5">
                                 <span className="hidden sm:block w-px h-8 bg-white/20" />
                                 {Object.entries(socialLinks).map(([platform, url]) => (
                                     socialIcons[platform] ? (

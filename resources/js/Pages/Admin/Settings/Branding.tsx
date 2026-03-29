@@ -2,6 +2,7 @@ import { useState, FormEvent, ChangeEvent } from 'react';
 import { Head, router } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { useTranslation } from 'react-i18next';
+import { useConfirm } from '@/hooks/useConfirm';
 
 interface SocialLink {
     key: string;
@@ -15,6 +16,7 @@ interface Props {
         logo_path: string;
         company_name: string;
         tagline: string;
+        video_url: string;
     };
 }
 
@@ -68,9 +70,11 @@ const socialIcons: Record<string, JSX.Element> = {
 
 export default function Branding({ socialLinks, branding }: Props) {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
     const [links, setLinks] = useState(socialLinks);
     const [companyName, setCompanyName] = useState(branding.company_name);
     const [tagline, setTagline] = useState(branding.tagline);
+    const [videoUrl, setVideoUrl] = useState(branding.video_url || '');
     const [savingSocial, setSavingSocial] = useState(false);
     const [savingBranding, setSavingBranding] = useState(false);
     const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -92,6 +96,7 @@ export default function Branding({ socialLinks, branding }: Props) {
         router.put('/admin/settings/branding/info', {
             company_name: companyName,
             tagline,
+            video_url: videoUrl,
         }, {
             preserveScroll: true,
             onFinish: () => setSavingBranding(false),
@@ -109,8 +114,14 @@ export default function Branding({ socialLinks, branding }: Props) {
         });
     };
 
-    const handleLogoDelete = () => {
-        if (!confirm(t('Êtes-vous sûr de vouloir supprimer le logo ?'))) return;
+    const handleLogoDelete = async () => {
+        const ok = await confirm({
+            title: t('Supprimer'),
+            message: t('Êtes-vous sûr de vouloir supprimer le logo ?'),
+            confirmText: t('Supprimer'),
+            variant: 'danger',
+        });
+        if (!ok) return;
         router.delete('/admin/settings/branding/logo', {
             preserveScroll: true,
         });
@@ -221,6 +232,19 @@ export default function Branding({ socialLinks, branding }: Props) {
                                 placeholder={t('Votre slogan ici...')}
                             />
                         </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                {t('URL vidéo de présentation')}
+                            </label>
+                            <input
+                                type="text"
+                                value={videoUrl}
+                                onChange={e => setVideoUrl(e.target.value)}
+                                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                                placeholder="https://www.youtube.com/embed/..."
+                            />
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('URL d\'intégration YouTube ou Vimeo (format embed)')}</p>
+                        </div>
                         <button
                             type="submit"
                             disabled={savingBranding}
@@ -288,6 +312,7 @@ export default function Branding({ socialLinks, branding }: Props) {
                     </form>
                 </div>
             </div>
+            <ConfirmDialog />
         </AdminLayout>
     );
 }

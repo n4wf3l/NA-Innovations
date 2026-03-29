@@ -4,6 +4,9 @@ import Badge from '@/Components/ui/Badge';
 import ProtectedAmount from '@/Components/ui/ProtectedAmount';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import GuidedTour, { TourTriggerButton } from '@/Components/ui/GuidedTour';
+import { useTour } from '@/hooks/useTour';
+import { partnerDashboardSteps } from '@/data/tourSteps';
 
 interface Notification {
     id: number;
@@ -12,6 +15,12 @@ interface Notification {
     message: string;
     action_url?: string;
     created_at: string;
+}
+
+interface MonthlyLead {
+    month: string;
+    total: number;
+    won: number;
 }
 
 interface Props {
@@ -38,11 +47,14 @@ interface Props {
     recentLeads: any[];
     recentCommissions: any[];
     notifications?: Notification[];
+    monthlyLeads?: MonthlyLead[];
+    cumulativeEarnings?: number;
 }
 
-export default function PartnerDashboard({ partner, stats, recentLeads, recentCommissions, notifications = [] }: Props) {
+export default function PartnerDashboard({ partner, stats, recentLeads, recentCommissions, notifications = [], monthlyLeads = [], cumulativeEarnings = 0 }: Props) {
     const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
+    const tour = useTour('partner_dashboard', partnerDashboardSteps.length);
 
     const referralLink = partner.referral_link || `${window.location.origin}?ref=${partner.referral_code}`;
 
@@ -66,6 +78,18 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
     return (
         <PartnerLayout title={t("Dashboard")}>
             <Head title={t("Partner Dashboard")} />
+
+            <GuidedTour
+                steps={partnerDashboardSteps}
+                isActive={tour.isActive}
+                currentStep={tour.currentStep}
+                onNext={tour.next}
+                onPrev={tour.prev}
+                onSkip={tour.skip}
+                onDismiss={tour.dismiss}
+                accentColor="rose"
+            />
+            <TourTriggerButton onClick={tour.restart} accentColor="rose" />
 
             {/* Notifications */}
             {notifications.length > 0 && (
@@ -95,7 +119,7 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
             )}
 
             {/* Hero banner */}
-            <div className="animate-slide-up relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8 mb-8">
+            <div data-tour="hero-banner" className="animate-slide-up relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8 mb-8">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-pink-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
                 <div className="relative z-10">
@@ -141,7 +165,7 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
             </div>
 
             {/* Stats grid */}
-            <div className="stagger-children grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            <div data-tour="stats-grid" className="stagger-children grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                 <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm">
                     <div className="flex items-center justify-between mb-3">
                         <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center">
@@ -204,7 +228,7 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
             </div>
 
             {/* Pipeline Summary */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 mb-8">
+            <div data-tour="pipeline-summary" className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 mb-8">
                 <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-4">{t('Pipeline Summary')}</h3>
                 {totalPipelineLeads > 0 ? (
                     <>
@@ -240,10 +264,92 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
                 )}
             </div>
 
+            {/* Monthly Performance & Cumulative Earnings */}
+            <div data-tour="monthly-chart" className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                {/* Monthly Leads Chart */}
+                <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+                    <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-4">{t('Monthly Leads')}</h3>
+                    {monthlyLeads.length > 0 ? (() => {
+                        const maxVal = Math.max(...monthlyLeads.map(m => m.total), 1);
+                        const chartHeight = 160;
+                        const barWidth = 40;
+                        const gap = 16;
+                        const svgWidth = monthlyLeads.length * (barWidth + gap);
+                        return (
+                            <div className="overflow-x-auto">
+                                <svg width={svgWidth} height={chartHeight + 40} className="mx-auto">
+                                    {monthlyLeads.map((m, i) => {
+                                        const x = i * (barWidth + gap) + gap / 2;
+                                        const totalH = (m.total / maxVal) * chartHeight;
+                                        const wonH = (m.won / maxVal) * chartHeight;
+                                        return (
+                                            <g key={i}>
+                                                {/* Total bar */}
+                                                <rect
+                                                    x={x} y={chartHeight - totalH}
+                                                    width={barWidth} height={totalH}
+                                                    rx={6} className="fill-rose-200 dark:fill-rose-900/40"
+                                                />
+                                                {/* Won bar overlay */}
+                                                <rect
+                                                    x={x} y={chartHeight - wonH}
+                                                    width={barWidth} height={wonH}
+                                                    rx={6} className="fill-emerald-400 dark:fill-emerald-500"
+                                                />
+                                                {/* Count label */}
+                                                {m.total > 0 && (
+                                                    <text
+                                                        x={x + barWidth / 2} y={chartHeight - totalH - 6}
+                                                        textAnchor="middle" className="fill-gray-500 dark:fill-gray-400 text-xs" fontSize={11}
+                                                    >
+                                                        {m.total}
+                                                    </text>
+                                                )}
+                                                {/* Month label */}
+                                                <text
+                                                    x={x + barWidth / 2} y={chartHeight + 20}
+                                                    textAnchor="middle" className="fill-gray-400 dark:fill-gray-500" fontSize={10}
+                                                >
+                                                    {m.month.split(' ')[0]}
+                                                </text>
+                                            </g>
+                                        );
+                                    })}
+                                </svg>
+                                <div className="flex items-center justify-center gap-6 mt-2">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-3 h-3 rounded-sm bg-rose-200 dark:bg-rose-900/40" />
+                                        <span className="text-xs text-gray-500 dark:text-gray-400">{t('Total')}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-3 h-3 rounded-sm bg-emerald-400 dark:bg-emerald-500" />
+                                        <span className="text-xs text-gray-500 dark:text-gray-400">{t('Won')}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })() : (
+                        <p className="text-sm text-gray-400 dark:text-gray-500">{t('No data yet.')}</p>
+                    )}
+                </div>
+
+                {/* Cumulative Earnings */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 flex flex-col items-center justify-center">
+                    <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center mb-4">
+                        <svg className="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
+                    </div>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider font-semibold mb-2">{t('Total Paid')}</p>
+                    <p className="text-3xl font-black text-gray-900 dark:text-white">
+                        <ProtectedAmount amount={cumulativeEarnings} />
+                    </p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">{t('Cumulative earnings')}</p>
+                </div>
+            </div>
+
             {/* Two columns */}
             <div className="stagger-children grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Leads */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+                <div data-tour="recent-leads" className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700 flex items-center justify-between">
                         <h3 className="font-bold text-gray-900 dark:text-white text-sm">{t('Recent Leads')}</h3>
                         <Link href="/partner/leads" className="text-xs text-rose-500 hover:text-rose-600 font-semibold">{t('View all')} &rarr;</Link>
@@ -277,7 +383,7 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
                 </div>
 
                 {/* Commissions */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+                <div data-tour="commissions-card" className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700 flex items-center justify-between">
                         <h3 className="font-bold text-gray-900 dark:text-white text-sm">{t('Commissions')}</h3>
                         <Link href="/partner/commissions" className="text-xs text-rose-500 hover:text-rose-600 font-semibold">{t('View all')} &rarr;</Link>

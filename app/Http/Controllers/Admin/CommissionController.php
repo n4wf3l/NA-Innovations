@@ -129,7 +129,29 @@ class CommissionController extends BaseAdminController
             'status' => 'paid',
         ]);
 
-        return redirect()->back()->with('success', 'Commission marked as paid.');
+        // Notify partner (in-app + email)
+        $commission->load('referralPartner.user');
+        $partner = $commission->referralPartner;
+        if ($partner && $partner->user) {
+            // In-app notification
+            \App\Models\NotificationLog::create([
+                'user_id' => $partner->user->id,
+                'type' => 'commission_paid',
+                'title' => 'Commission payée',
+                'message' => "Votre commission de " . number_format($commission->commission_amount, 2, ',', '.') . " EUR a été payée." . ($commission->payment_reference ? " Référence : {$commission->payment_reference}" : ''),
+                'action_url' => '/partner/commissions',
+                'is_read' => false,
+            ]);
+
+            // Email notification (prepared for when mail driver is active)
+            \App\Services\WorkflowService::notifyPartnerByEmailPublic($partner->user, 'commission-paid', [
+                'partner_name' => $partner->user->name,
+                'commission_amount' => number_format($commission->commission_amount, 2, ',', '.'),
+                'payment_reference' => $commission->payment_reference ?? 'N/A',
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Commission marquée comme payée.');
     }
 
     /**

@@ -46,9 +46,9 @@ class ContactController extends Controller
             }
         }
 
-        // 4. Cloudflare Turnstile verification
+        // 4. Cloudflare Turnstile verification (skip in local/testing)
         $turnstileSecret = config('services.turnstile.secret_key');
-        if ($turnstileSecret) {
+        if ($turnstileSecret && !app()->environment('local', 'testing')) {
             $turnstileToken = $request->input('cf-turnstile-response');
             if (!$turnstileToken) {
                 return redirect()->back()->withErrors(['captcha' => 'Please complete the security check.'])->withInput();
@@ -198,6 +198,14 @@ class ContactController extends Controller
             'status' => 'new',
         ]);
 
+        // 7b. Link referral partner if ref code is present
+        if ($request->filled('ref')) {
+            $refPartner = \App\Models\ReferralPartner::where('referral_code', $request->ref)->where('is_active', true)->first();
+            if ($refPartner) {
+                $lead->update(['referral_partner_id' => $refPartner->id, 'source' => 'referral']);
+            }
+        }
+
         // 8. Store attachment metadata in lead (as JSON appended to notes)
         if (count($attachmentPaths) > 0) {
             $lead->update([
@@ -205,52 +213,30 @@ class ContactController extends Controller
             ]);
         }
 
-        // 9. Send email to admin
-        $formData = $request->only(['name', 'email', 'message']);
-        $formData['service'] = $selectedService;
-        $formData['budget'] = $request->budget ?? '0';
+        // 9. Send email to admin (via template — controllable by toggle)
+        $this->sendViaTemplate('contact-form-admin', \App\Models\Setting::get('company.email', config('mail.from.address')), [
+            'client_name' => strip_tags($request->name),
+            'client_email' => $request->email,
+            'service' => $selectedService,
+            'budget' => $request->budget ?? '0',
+            'message' => strip_tags($request->message),
+        ]);
 
-        try {
-            $recipientEmail = \App\Models\Setting::get('company.email', 'ajari.nawfel@gmail.com');
-            Mail::to($recipientEmail)->send(new ContactFormMail($formData));
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error("Contact form admin email failed: {$e->getMessage()}");
-        }
-
-        // 10. Send confirmation email to the guest
-        try {
-            $confirmSlug = $isSimulator ? 'simulator-confirmation' : ($isQuote ? 'quote-request-confirmation' : 'contact-confirmation');
-            $confirmTemplate = \App\Models\EmailTemplate::where('slug', $confirmSlug)
-                ->where('is_active', true)
-                ->where('locale', 'en')
-                ->first();
-
-            if ($confirmTemplate) {
-                $portalUrl = config('app.url', 'https://na-innovations.be');
-                $confirmSubject = str_replace(
-                    ['{{ client_name }}', '{{ estimated_budget }}', '{{ portal_url }}'],
-                    [strip_tags($request->name), $request->budget ?? '0', $portalUrl],
-                    $confirmTemplate->subject
-                );
-                $confirmBody = str_replace(
-                    ['{{ client_name }}', '{{ estimated_budget }}', '{{ portal_url }}'],
-                    [strip_tags($request->name), $request->budget ?? '0', $portalUrl],
-                    $confirmTemplate->body
-                );
-
-                Mail::to($request->email)->send(new \App\Mail\TemplateMail($confirmSubject, $confirmBody));
-            }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error("Contact form confirmation email failed: {$e->getMessage()}");
-        }
+        // 10. Send confirmation email to the guest (via template — controllable by toggle)
+        $confirmSlug = $isSimulator ? 'simulator-confirmation' : ($isQuote ? 'quote-request-confirmation' : 'contact-confirmation');
+        $this->sendViaTemplate($confirmSlug, $request->email, [
+            'client_name' => strip_tags($request->name),
+            'estimated_budget' => $request->budget ?? '0',
+            'portal_url' => config('app.url', ''),
+        ]);
 
         if ($isSimulator) {
-            return redirect()->back()->with('success', 'Your estimate request has been sent! Check your inbox for a confirmation. We will get back to you within 24 hours.');
+            return redirect()->back()->with('success', __('Your estimate request has been sent! Check your inbox for a confirmation. We will get back to you within 24 hours.'));
         }
 
         return redirect()->back()->with('success', $isQuote
-            ? 'Your quote request has been sent! Check your inbox for a confirmation.'
-            : 'Your message has been sent! Check your inbox for a confirmation.');
+            ? __('Your quote request has been sent! Check your inbox for a confirmation.')
+            : __('Your message has been sent! Check your inbox for a confirmation.'));
     }
 
     /**
@@ -268,5 +254,41 @@ class ContactController extends Controller
         }
 
         return Storage::disk('local')->download($path, $filename);
+    }
+
+    /**
+     * Send an email via a template slug. Respects is_active toggle.
+     */
+    private function sendViaTemplate(string $slug, string $to, array $variables): void
+    {
+        try {
+            $locale = app()->getLocale(); // fr, en, or nl — set by visitor's language preference
+
+            // Try visitor's locale first, fallback to 'en', then any available
+            $template = \App\Models\EmailTemplate::where('slug', $slug)
+                ->where('is_active', true)
+                ->where('locale', $locale)
+                ->first()
+                ?? \App\Models\EmailTemplate::where('slug', $slug)
+                    ->where('is_active', true)
+                    ->where('locale', 'en')
+                    ->first()
+                ?? \App\Models\EmailTemplate::where('slug', $slug)
+                    ->where('is_active', true)
+                    ->first();
+
+            if (!$template) return; // Template disabled or missing — don't send
+
+            $subject = $template->subject;
+            $body = $template->body;
+            foreach ($variables as $key => $value) {
+                $subject = str_replace("{{ {$key} }}", $value ?? '', $subject);
+                $body = str_replace("{{ {$key} }}", $value ?? '', $body);
+            }
+
+            Mail::to($to)->send(new \App\Mail\TemplateMail($subject, $body));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Email [{$slug}] to {$to} failed: {$e->getMessage()}");
+        }
     }
 }

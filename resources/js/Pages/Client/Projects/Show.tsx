@@ -1,10 +1,21 @@
 import ClientLayout from '@/Layouts/ClientLayout';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import Badge from '@/Components/ui/Badge';
 import { formatDate, formatCurrency, formatStatus, formatProjectType } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import CommitList from '@/Components/ui/CommitList';
+import { PageProps } from '@/types';
+
+interface TechDoc {
+    id: number;
+    title: string;
+    content: string;
+    category: string | null;
+    is_client_visible: boolean;
+    created_at: string;
+    updated_at: string;
+    author?: { id: number; name: string };
+}
 
 interface Props {
     project: any;
@@ -14,6 +25,7 @@ interface Props {
     notes: any[];
     projectDocuments: any[];
     attachments: any[];
+    techDocs: TechDoc[];
 }
 
 const statusSteps = [
@@ -30,11 +42,84 @@ const statusLabels: Record<string, string> = {
     completed: 'Completed',
 };
 
-export default function ClientProjectShow({ project, quotes, invoices, services, notes, projectDocuments, attachments = [] }: Props) {
+const techDocCategoryColors: Record<string, string> = {
+    architecture: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300',
+    api: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+    deployment: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+    database: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
+    setup: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300',
+    other: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+};
+
+const techDocCategoryLabels: Record<string, string> = {
+    architecture: 'Architecture',
+    api: 'API',
+    deployment: 'Deployment',
+    database: 'Database',
+    setup: 'Setup',
+    other: 'Other',
+};
+
+export default function ClientProjectShow({ project, quotes, invoices, services, notes, projectDocuments, attachments = [], techDocs = [] }: Props) {
     const { t } = useTranslation();
+    const { financialUnlocked } = usePage<PageProps>().props;
     const [tab, setTab] = useState<'timeline' | 'documents' | 'finances'>('timeline');
+    const [expandedTechDocId, setExpandedTechDocId] = useState<number | null>(null);
     const currentIdx = statusSteps.findIndex(s => s.key === project.status);
     const timelineEvents = project.timeline_events || [];
+
+    // Fetch GitHub commits and merge with timeline
+    interface UnifiedEntry {
+        id: string;
+        type: 'event' | 'commit' | 'comment';
+        date: string;
+        title: string;
+        description?: string;
+        eventType?: string;
+        oldValue?: string;
+        newValue?: string;
+        // commit-specific
+        hash?: string;
+        authorName?: string;
+        authorAvatar?: string | null;
+    }
+
+    const [commits, setCommits] = useState<any[]>([]);
+    const [commitsLoading, setCommitsLoading] = useState(false);
+
+    useEffect(() => {
+        if (project.show_commits_to_client && project.github_repo) {
+            setCommitsLoading(true);
+            fetch(`/api/projects/${project.id}/commits`)
+                .then(r => r.json())
+                .then(data => setCommits(data.commits || []))
+                .catch(() => {})
+                .finally(() => setCommitsLoading(false));
+        }
+    }, [project.id]);
+
+    // Merge timeline events + commits into one chronological list
+    const unifiedTimeline: UnifiedEntry[] = [
+        ...timelineEvents.map((e: any) => ({
+            id: `te-${e.id}`,
+            type: (e.event_type === 'comment' ? 'comment' : 'event') as UnifiedEntry['type'],
+            date: e.created_at,
+            title: e.title,
+            description: e.description,
+            eventType: e.event_type,
+            oldValue: e.old_value,
+            newValue: e.new_value,
+        })),
+        ...commits.map((c: any) => ({
+            id: `commit-${c.hash}`,
+            type: 'commit' as UnifiedEntry['type'],
+            date: c.date,
+            title: c.message,
+            hash: c.hash,
+            authorName: c.author_name,
+            authorAvatar: c.author_avatar,
+        })),
+    ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     const commentForm = useForm({ content: '' });
     const handleComment = (e: React.FormEvent) => {
@@ -52,6 +137,27 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
     return (
         <ClientLayout title={project.nom_societe}>
             <Head title={project.nom_societe} />
+
+            {/* Expired/Suspended Service Alert */}
+            {services.filter((s: any) => s.status === 'expired' || s.status === 'suspended').map((s: any) => (
+                <div key={s.id} className={`rounded-2xl border p-4 flex items-start gap-3 mb-4 ${
+                    s.status === 'suspended'
+                        ? 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/30'
+                        : 'bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30'
+                }`}>
+                    <svg className={`w-6 h-6 flex-shrink-0 mt-0.5 ${s.status === 'suspended' ? 'text-red-500' : 'text-amber-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                    <div>
+                        <p className={`text-sm font-bold ${s.status === 'suspended' ? 'text-red-700 dark:text-red-400' : 'text-amber-700 dark:text-amber-400'}`}>
+                            {s.status === 'suspended' ? t('Service suspendu') : t('Service expiré')} — {s.name}
+                        </p>
+                        <p className={`text-xs mt-1 ${s.status === 'suspended' ? 'text-red-600/80 dark:text-red-300/80' : 'text-amber-600/80 dark:text-amber-300/80'}`}>
+                            {t('Veuillez nous contacter pour renouveler votre service et réactiver votre projet.')}
+                        </p>
+                    </div>
+                </div>
+            ))}
 
             {/* Project header */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden mb-6">
@@ -165,11 +271,6 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                 {/* ── TIMELINE ── */}
                 {tab === 'timeline' && (
                     <div className="space-y-6">
-                        {/* GitHub Commits (only if admin enabled it) */}
-                        {project.show_commits_to_client && project.github_repo && (
-                            <CommitList projectId={project.id} />
-                        )}
-
                         {/* Comment form */}
                         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
                             <form onSubmit={handleComment} className="flex items-start gap-3">
@@ -195,44 +296,89 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                             </form>
                         </div>
 
-                        {/* Timeline events + notes merged */}
+                        {/* Unified chronological timeline */}
                         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
-                            <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700">
+                            <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700 flex items-center justify-between">
                                 <h3 className="font-bold text-gray-900 dark:text-white">{t('Activity Timeline')}</h3>
+                                <div className="flex items-center gap-3 text-[10px] font-bold">
+                                    {commits.length > 0 && (
+                                        <span className="flex items-center gap-1 text-gray-400 dark:text-gray-500">
+                                            <span className="w-2 h-2 rounded-full bg-violet-500" />
+                                            {commits.length} commits
+                                        </span>
+                                    )}
+                                    {commitsLoading && (
+                                        <span className="text-gray-400 dark:text-gray-500 flex items-center gap-1">
+                                            <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                                            {t('Loading commits...')}
+                                        </span>
+                                    )}
+                                </div>
                             </div>
                             <div className="p-6">
-                                {timelineEvents.length === 0 && notes.length === 0 ? (
+                                {unifiedTimeline.length === 0 ? (
                                     <p className="text-center text-sm text-gray-400 dark:text-gray-500 py-8">{t('No activity yet.')}</p>
                                 ) : (
                                     <div className="relative">
                                         <div className="absolute left-4 top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-700" />
-                                        <div className="space-y-6">
-                                            {timelineEvents.map((event: any) => (
-                                                <div key={`te-${event.id}`} className="relative flex items-start ml-4 pl-6">
+                                        <div className="space-y-5">
+                                            {unifiedTimeline.map(entry => (
+                                                <div key={entry.id} className="relative flex items-start ml-4 pl-6">
+                                                    {/* Dot — color by type */}
                                                     <div className={`absolute -left-1.5 top-1.5 w-3 h-3 rounded-full border-2 ${
-                                                        event.event_type === 'comment'
+                                                        entry.type === 'commit'
+                                                            ? 'bg-violet-500 border-violet-500'
+                                                            : entry.type === 'comment'
                                                             ? 'bg-blue-500 border-blue-500'
-                                                            : event.event_type === 'status_change'
+                                                            : entry.eventType === 'status_change'
                                                             ? 'bg-teal-500 border-teal-500'
+                                                            : entry.eventType === 'email_sent'
+                                                            ? 'bg-amber-500 border-amber-500'
+                                                            : entry.eventType === 'document_signed' || entry.eventType === 'document_countersigned'
+                                                            ? 'bg-emerald-500 border-emerald-500'
                                                             : 'bg-white dark:bg-gray-800 border-teal-400'
                                                     }`} />
-                                                    <div className="flex-1">
-                                                        <div className="flex items-center justify-between">
-                                                            <p className="text-sm font-medium text-gray-900 dark:text-white">{event.title}</p>
-                                                            <span className="text-xs text-gray-400 dark:text-gray-500">{formatDate(event.created_at)}</span>
-                                                        </div>
-                                                        {event.description && (
-                                                            <p className={`text-sm mt-0.5 ${
-                                                                event.event_type === 'comment'
-                                                                    ? 'text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2 mt-1'
-                                                                    : 'text-gray-500 dark:text-gray-400'
-                                                            }`}>{event.description}</p>
-                                                        )}
-                                                        {event.old_value && event.new_value && (
-                                                            <div className="flex items-center gap-2 mt-1">
-                                                                <Badge status={event.old_value} />
-                                                                <span className="text-gray-300 dark:text-gray-600">→</span>
-                                                                <Badge status={event.new_value} />
+
+                                                    <div className="flex-1 min-w-0">
+                                                        {entry.type === 'commit' ? (
+                                                            /* GitHub commit */
+                                                            <div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400">
+                                                                        commit
+                                                                    </span>
+                                                                    <span className="text-xs font-mono text-gray-400 dark:text-gray-500">{entry.hash?.substring(0, 7)}</span>
+                                                                    <span className="text-xs text-gray-400 dark:text-gray-500 ml-auto">{formatDate(entry.date)}</span>
+                                                                </div>
+                                                                <p className="text-sm text-gray-900 dark:text-white mt-1 truncate">{entry.title}</p>
+                                                                {entry.authorName && (
+                                                                    <div className="flex items-center gap-1.5 mt-1">
+                                                                        {entry.authorAvatar && <img src={entry.authorAvatar} className="w-4 h-4 rounded-full" alt="" />}
+                                                                        <span className="text-xs text-gray-400 dark:text-gray-500">{entry.authorName}</span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        ) : (
+                                                            /* Platform event */
+                                                            <div>
+                                                                <div className="flex items-center justify-between">
+                                                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{entry.title}</p>
+                                                                    <span className="text-xs text-gray-400 dark:text-gray-500 ml-2 shrink-0">{formatDate(entry.date)}</span>
+                                                                </div>
+                                                                {entry.description && (
+                                                                    <p className={`text-sm mt-0.5 ${
+                                                                        entry.type === 'comment'
+                                                                            ? 'text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2 mt-1'
+                                                                            : 'text-gray-500 dark:text-gray-400'
+                                                                    }`}>{entry.description}</p>
+                                                                )}
+                                                                {entry.oldValue && entry.newValue && (
+                                                                    <div className="flex items-center gap-2 mt-1">
+                                                                        <Badge status={entry.oldValue} />
+                                                                        <span className="text-gray-300 dark:text-gray-600">{'\u2192'}</span>
+                                                                        <Badge status={entry.newValue} />
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         )}
                                                     </div>
@@ -346,6 +492,53 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                                 )}
                             </div>
                         </div>
+
+                        {/* Technical Documentation */}
+                        {techDocs.length > 0 && (
+                            <div>
+                                <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                    <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.331 0 4.512.645 6.374 1.766m0-14.524A8.966 8.966 0 0118 3.75c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.524v14.524" /></svg>
+                                    {t('Technical Documentation')}
+                                </h3>
+                                <div className="space-y-3">
+                                    {techDocs.map((doc: TechDoc) => (
+                                        <div key={doc.id} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+                                            <button
+                                                onClick={() => setExpandedTechDocId(expandedTechDocId === doc.id ? null : doc.id)}
+                                                className="w-full text-left px-5 py-4 flex items-center justify-between gap-4"
+                                            >
+                                                <div className="flex items-center gap-4 min-w-0">
+                                                    <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center flex-shrink-0">
+                                                        <svg className="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.331 0 4.512.645 6.374 1.766m0-14.524A8.966 8.966 0 0118 3.75c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.524v14.524" /></svg>
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{doc.title}</p>
+                                                        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                                                            {doc.category && (
+                                                                <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${techDocCategoryColors[doc.category] || techDocCategoryColors.other}`}>
+                                                                    {t(techDocCategoryLabels[doc.category] || doc.category)}
+                                                                </span>
+                                                            )}
+                                                            {doc.author && <span className="text-xs text-gray-400 dark:text-gray-500">{doc.author.name}</span>}
+                                                            <span className="text-xs text-gray-400 dark:text-gray-500">{formatDate(doc.updated_at)}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <svg className={`w-5 h-5 text-gray-400 transition-transform flex-shrink-0 ${expandedTechDocId === doc.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+                                            </button>
+                                            {expandedTechDocId === doc.id && (
+                                                <div className="px-5 pb-5 border-t border-gray-100 dark:border-gray-700 pt-4">
+                                                    <div
+                                                        className="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300"
+                                                        dangerouslySetInnerHTML={{ __html: doc.content }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         {/* External Documents (attachments) */}
                         {attachments.length > 0 && (
@@ -486,38 +679,75 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                                     <h3 className="font-bold text-gray-900 dark:text-white">{t('Recurring Services')}</h3>
                                 </div>
                                 <div className="divide-y divide-gray-50 dark:divide-gray-700">
-                                    {services.map((s: any) => (
-                                        <div key={s.id} className={`px-6 py-4 flex items-center justify-between ${s.status === 'expiring_soon' ? 'bg-amber-50/50 dark:bg-amber-500/5' : ''}`}>
-                                            <div className="flex items-center gap-3">
-                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                                                    s.status === 'expired' ? 'bg-red-50 dark:bg-red-500/10' :
-                                                    s.status === 'expiring_soon' ? 'bg-amber-50 dark:bg-amber-500/10' :
-                                                    'bg-teal-50 dark:bg-teal-500/10'
-                                                }`}>
-                                                    <svg className={`w-5 h-5 ${
-                                                        s.status === 'expired' ? 'text-red-500' :
-                                                        s.status === 'expiring_soon' ? 'text-amber-500' :
-                                                        'text-teal-500'
-                                                    }`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d={
-                                                            s.type === 'hosting' ? 'M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z' :
-                                                            s.type === 'domain' ? 'M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418' :
-                                                            s.type === 'ssl' ? 'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z' :
-                                                            'M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3'
-                                                        } />
-                                                    </svg>
+                                    {services.map((s: any) => {
+                                        const freqLabels: Record<string, string> = {
+                                            monthly: 'Mensuel',
+                                            quarterly: 'Trimestriel',
+                                            semi_annual: 'Semestriel',
+                                            annual: 'Annuel',
+                                            biennial: 'Bisannuel',
+                                            triennial: 'Trisannuel',
+                                        };
+                                        return (
+                                            <div key={s.id} className={`px-6 py-4 ${s.status === 'expiring_soon' ? 'bg-amber-50/50 dark:bg-amber-500/5' : ''}`}>
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-3 min-w-0">
+                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                                                            s.status === 'expired' ? 'bg-red-50 dark:bg-red-500/10' :
+                                                            s.status === 'expiring_soon' ? 'bg-amber-50 dark:bg-amber-500/10' :
+                                                            'bg-teal-50 dark:bg-teal-500/10'
+                                                        }`}>
+                                                            <svg className={`w-5 h-5 ${
+                                                                s.status === 'expired' ? 'text-red-500' :
+                                                                s.status === 'expiring_soon' ? 'text-amber-500' :
+                                                                'text-teal-500'
+                                                            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d={
+                                                                    s.type === 'hosting' ? 'M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z' :
+                                                                    s.type === 'domain' ? 'M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418' :
+                                                                    s.type === 'ssl' ? 'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z' :
+                                                                    'M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3'
+                                                                } />
+                                                            </svg>
+                                                        </div>
+                                                        <div className="min-w-0">
+                                                            <p className="text-sm font-medium text-gray-900 dark:text-white">{s.name}</p>
+                                                            <p className="text-xs text-gray-400 dark:text-gray-500">
+                                                                {s.provider} · {s.expiry_date ? `${t('Expiry')}: ${formatDate(s.expiry_date)}` : ''}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                                        {s.auto_renew && (
+                                                            <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-500/10 px-2 py-1 rounded-full whitespace-nowrap">{t('Renouvellement auto')}</span>
+                                                        )}
+                                                        <Badge status={s.status} />
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{s.name}</p>
-                                                    <p className="text-xs text-gray-400 dark:text-gray-500">
-                                                        {s.provider} · {s.expiry_date ? `${t('Expiry')}: ${formatDate(s.expiry_date)}` : formatStatus(s.frequency)}
-                                                        {s.auto_renew && <span className="ml-1 text-teal-500">({t('Auto Renew')})</span>}
-                                                    </p>
+                                                {/* Extra details row */}
+                                                <div className="mt-2 ml-[52px] flex flex-wrap items-center gap-3">
+                                                    {s.frequency && (
+                                                        <span className="text-[11px] text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                                            {freqLabels[s.frequency] || formatStatus(s.frequency)}
+                                                        </span>
+                                                    )}
+                                                    {financialUnlocked && s.billed_price > 0 && (
+                                                        <span className="text-[11px] font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                                            {formatCurrency(s.billed_price)}
+                                                        </span>
+                                                    )}
+                                                    {s.login_url && (
+                                                        <a href={s.login_url} target="_blank" rel="noopener noreferrer" className="text-[11px] font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 flex items-center gap-1 transition-colors">
+                                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                                                            {t('Accéder au service')}
+                                                        </a>
+                                                    )}
                                                 </div>
                                             </div>
-                                            <Badge status={s.status} />
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </div>
                         )}

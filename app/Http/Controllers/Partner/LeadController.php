@@ -163,8 +163,12 @@ class LeadController extends Controller
             'new_value' => 'brief_pending',
         ]);
 
-        // Send outreach email to the prospect with PDF attachment
+        // Send outreach email to the prospect with PDF attachment (respects template toggle)
+        $outreachTemplate = \App\Models\EmailTemplate::where('slug', 'partner-lead-outreach')->where('is_active', true)->first();
         try {
+            if (!$outreachTemplate) {
+                throw new \Exception('Template partner-lead-outreach is disabled');
+            }
             \Illuminate\Support\Facades\Mail::to($validated['email'])->send(
                 new \App\Mail\TemplateMail($validated['email_subject'], $emailBody, $pdfPath)
             );

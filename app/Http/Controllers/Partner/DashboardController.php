@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers\Partner;
 
+use App\Models\Lead;
+use App\Models\Commission;
 use Illuminate\Routing\Controller;
 use Inertia\Inertia;
 
@@ -50,6 +52,20 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Monthly leads for last 6 months
+        $monthlyLeads = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $start = now()->subMonths($i)->startOfMonth();
+            $end = now()->subMonths($i)->endOfMonth();
+            $monthlyLeads[] = [
+                'month' => $start->format('M Y'),
+                'total' => Lead::where('referral_partner_id', $partner->id)->whereBetween('created_at', [$start, $end])->count(),
+                'won' => Lead::where('referral_partner_id', $partner->id)->where('status', 'won')->whereBetween('created_at', [$start, $end])->count(),
+            ];
+        }
+
+        $cumulativeEarnings = Commission::where('referral_partner_id', $partner->id)->where('status', 'paid')->sum('commission_amount');
+
         return Inertia::render('Partner/Dashboard', [
             'partner' => $partner,
             'stats' => [
@@ -67,6 +83,8 @@ class DashboardController extends Controller
             'recentLeads' => $leads->take(10)->values(),
             'recentCommissions' => $commissions->take(10)->values(),
             'notifications' => $notifications,
+            'monthlyLeads' => $monthlyLeads,
+            'cumulativeEarnings' => $cumulativeEarnings,
         ]);
     }
 }

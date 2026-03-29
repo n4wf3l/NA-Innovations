@@ -6,13 +6,17 @@ use App\Models\Lead;
 use App\Models\User;
 use App\Models\Quote;
 use App\Models\Invoice;
+use App\Models\InvoiceReminder;
 use App\Models\Projet;
 use App\Models\Commission;
 use App\Models\NotificationLog;
 use App\Models\RecurringService;
+use App\Models\ServiceRenewal;
+use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 /**
  * Central workflow engine that automates cross-module business logic.
@@ -82,10 +86,11 @@ class WorkflowService
 
                     $actions[] = 'lead_won';
 
-                    // Notify referral partner
+                    // Notify referral partner (in-app + email)
                     if ($lead->referral_partner_id) {
                         $partner = $lead->referralPartner;
                         if ($partner && $partner->user) {
+                            // In-app notification
                             NotificationService::send(
                                 $partner->user,
                                 'lead-won-partner',
@@ -97,6 +102,14 @@ class WorkflowService
                                 ],
                                 actionUrl: '/partner/commissions',
                             );
+
+                            // Email notification (prepared for when mail driver is active)
+                            self::notifyPartnerByEmail($partner->user, 'lead-won-partner', [
+                                'partner_name' => $partner->user->name,
+                                'client_name' => "{$lead->first_name} {$lead->last_name}",
+                                'project_name' => $quote->title,
+                                'commission_rate' => $partner->default_commission_rate,
+                            ]);
                         }
                         $actions[] = 'partner_notified';
                     }
@@ -131,7 +144,11 @@ class WorkflowService
             }
 
             // Regenerate PDF with accepted status
-            PdfService::generateQuotePdf($quote);
+            try {
+                PdfService::generateQuotePdf($quote);
+            } catch (\Exception $e) {
+                Log::warning("Failed to regenerate quote PDF: {$e->getMessage()}");
+            }
         });
 
         return $actions;
@@ -351,6 +368,75 @@ class WorkflowService
                 ]);
             }
 
+            // Auto-generate invoice for the renewal if enabled
+            $autoInvoice = Setting::get('service.auto_invoice_on_renewal', true);
+            if ($autoInvoice && $service->auto_renew && $service->billed_price > 0) {
+                try {
+                    $invoice = Invoice::create([
+                        'invoice_number' => NumberGenerator::generateInvoiceNumber(),
+                        'title' => "Renouvellement service : {$service->name}",
+                        'client_id' => $service->projet?->client_id,
+                        'client_name' => $service->projet?->client?->name ?? 'N/A',
+                        'client_email' => $service->projet?->client?->email ?? '',
+                        'projet_id' => $service->projet_id,
+                        'type' => 'standard',
+                        'status' => 'sent',
+                        'tax_rate' => 21,
+                        'subtotal' => round($service->billed_price / 1.21, 2),
+                        'tax_amount' => round($service->billed_price - ($service->billed_price / 1.21), 2),
+                        'total' => $service->billed_price,
+                        'amount_paid' => 0,
+                        'amount_due' => $service->billed_price,
+                        'issue_date' => now()->toDateString(),
+                        'due_date' => now()->addDays(30)->toDateString(),
+                        'view_token' => Str::random(64),
+                    ]);
+
+                    $invoice->items()->create([
+                        'description' => "{$service->name} — renouvellement ({$service->type})",
+                        'quantity' => 1,
+                        'unit' => 'month',
+                        'unit_price' => round($service->billed_price / 1.21, 2),
+                        'total' => round($service->billed_price / 1.21, 2),
+                        'sort_order' => 0,
+                    ]);
+
+                    // Record the renewal with invoice reference
+                    ServiceRenewal::create([
+                        'recurring_service_id' => $service->id,
+                        'renewal_date' => now()->toDateString(),
+                        'new_expiry_date' => $newExpiry->toDateString(),
+                        'cost' => $service->real_cost,
+                        'billed_amount' => $service->billed_price,
+                        'invoice_id' => $invoice->id,
+                        'status' => 'completed',
+                    ]);
+
+                    // Timeline event on the project
+                    $service->projet?->timelineEvents()->create([
+                        'user_id' => null,
+                        'event_type' => 'invoice_auto_generated',
+                        'title' => "Facture auto-générée pour renouvellement de service",
+                        'description' => "{$service->name} renouvelé — Facture {$invoice->invoice_number} créée ({$invoice->total} EUR)",
+                    ]);
+
+                    // Notify client
+                    if ($invoice->client_id) {
+                        $client = User::find($invoice->client_id);
+                        if ($client) {
+                            NotificationService::send($client, 'invoice-sent', [
+                                'client_name' => $client->name,
+                                'invoice_number' => $invoice->invoice_number,
+                                'total' => number_format($invoice->total, 2, ',', '.') . ' EUR',
+                                'due_date' => $invoice->due_date->format('d/m/Y'),
+                            ], transactional: true, actionUrl: "/client/invoices/{$invoice->id}");
+                        }
+                    }
+                } catch (\Exception $e) {
+                    Log::error("Failed to auto-generate invoice for service renewal {$service->id}: {$e->getMessage()}");
+                }
+            }
+
             // Notify all admins
             self::notifyAdmins(
                 'service_renewed',
@@ -370,10 +456,57 @@ class WorkflowService
             $service->update(['status' => 'expired']);
             self::notifyAdmins(
                 'service_expired',
-                "Service expired: {$service->name}",
-                "{$service->name} ({$service->provider}) has expired and is NOT set to auto-renew. Action required.",
+                "Service expiré : {$service->name}",
+                "{$service->name} ({$service->provider}) a expiré et n'est PAS en renouvellement automatique. Action requise.",
                 "/admin/services/{$service->id}"
             );
+
+            // Notify client that their service expired
+            if ($service->client_id) {
+                NotificationService::notify($service->client_id, [
+                    'type' => 'service_expired',
+                    'title' => "Service expiré : {$service->name}",
+                    'message' => "Votre service {$service->name} a expiré. Contactez-nous pour le renouveler et éviter la suspension.",
+                ]);
+            }
+        }
+
+        // Suspend services expired for more than 14 days
+        $toSuspend = RecurringService::where('status', 'expired')
+            ->where('expiry_date', '<', now()->subDays(14)->toDateString())
+            ->get();
+
+        foreach ($toSuspend as $service) {
+            $service->update(['status' => 'suspended']);
+
+            // Put project on hold
+            if ($service->projet_id) {
+                $project = Projet::find($service->projet_id);
+                if ($project && !in_array($project->status, ['on_hold', 'cancelled'])) {
+                    $project->update(['status' => 'on_hold']);
+                    $project->timelineEvents()->create([
+                        'user_id' => null,
+                        'event_type' => 'status_change',
+                        'title' => 'Projet mis en pause — service expiré',
+                        'description' => "Le service {$service->name} est suspendu depuis plus de 14 jours. Le projet est mis en pause en attendant le renouvellement.",
+                    ]);
+                }
+            }
+
+            self::notifyAdmins(
+                'service_suspended',
+                "Service suspendu : {$service->name}",
+                "{$service->name} est suspendu (expiré depuis plus de 14 jours). Le projet associé a été mis en pause.",
+                "/admin/services/{$service->id}"
+            );
+
+            if ($service->client_id) {
+                NotificationService::notify($service->client_id, [
+                    'type' => 'service_suspended',
+                    'title' => "Service suspendu : {$service->name}",
+                    'message' => "Votre service {$service->name} a été suspendu car le renouvellement n'a pas été effectué. Contactez-nous pour réactiver.",
+                ]);
+            }
         }
 
         // Mark services expiring within alert_days_before as 'expiring_soon'
@@ -449,6 +582,149 @@ class WorkflowService
         }
     }
 
+    // ─── INVOICE OVERDUE REMINDERS (Schedulable) ──────────────────────
+    /**
+     * Send tiered reminders for overdue invoices (7d, 14d, 30d).
+     * Each reminder is sent only once per invoice per tier.
+     */
+    public static function sendInvoiceReminders(): int
+    {
+        $count = 0;
+        $tiers = [
+            ['days' => 7, 'type' => 'overdue_7d', 'label' => '7 jours'],
+            ['days' => 14, 'type' => 'overdue_14d', 'label' => '14 jours'],
+            ['days' => 30, 'type' => 'overdue_30d', 'label' => '30 jours'],
+        ];
+
+        $invoices = Invoice::whereIn('status', ['sent', 'viewed', 'partially_paid', 'overdue'])
+            ->where('due_date', '<', now()->toDateString())
+            ->where('amount_due', '>', 0)
+            ->with('client')
+            ->get();
+
+        foreach ($invoices as $invoice) {
+            $daysOverdue = (int) now()->startOfDay()->diffInDays($invoice->due_date, false) * -1;
+
+            foreach ($tiers as $tier) {
+                if ($daysOverdue < $tier['days']) continue;
+
+                // Check if this reminder was already sent
+                $alreadySent = InvoiceReminder::where('invoice_id', $invoice->id)
+                    ->where('reminder_type', $tier['type'])
+                    ->exists();
+
+                if ($alreadySent) continue;
+
+                // Record the reminder
+                InvoiceReminder::create([
+                    'invoice_id' => $invoice->id,
+                    'reminder_type' => $tier['type'],
+                    'sent_at' => now(),
+                ]);
+
+                // Notify admins
+                self::notifyAdmins(
+                    "invoice_overdue_{$tier['type']}",
+                    "Facture en retard ({$tier['label']}) : {$invoice->invoice_number}",
+                    "La facture {$invoice->invoice_number} de {$invoice->client_name} est en retard de {$daysOverdue} jours. Montant dû : " . number_format($invoice->amount_due, 2) . " EUR",
+                    "/admin/invoices/{$invoice->id}"
+                );
+
+                // Notify client (if exists)
+                if ($invoice->client_id) {
+                    $client = User::find($invoice->client_id);
+                    if ($client) {
+                        NotificationLog::create([
+                            'user_id' => $client->id,
+                            'type' => "invoice_overdue_{$tier['type']}",
+                            'title' => "Rappel : facture {$invoice->invoice_number} en attente",
+                            'message' => "Votre facture {$invoice->invoice_number} d'un montant de " . number_format($invoice->amount_due, 2) . " EUR est en attente depuis {$daysOverdue} jours.",
+                            'action_url' => "/client/invoices/{$invoice->id}",
+                            'is_read' => false,
+                        ]);
+                    }
+                }
+
+                // Log on invoice timeline
+                $invoice->timelineEvents()->create([
+                    'user_id' => null,
+                    'event_type' => 'reminder_sent',
+                    'title' => "Rappel envoyé ({$tier['label']})",
+                    'description' => "Rappel automatique pour retard de {$daysOverdue} jours",
+                ]);
+
+                $count++;
+                break; // Only send the highest applicable tier per invoice
+            }
+        }
+
+        return $count;
+    }
+
+    // ─── INVOICE DUE DATE REMINDERS (J-7, J-3, J-1) (Schedulable) ──
+    /**
+     * Send reminders for invoices approaching their due date.
+     * Runs daily — sends at J-7, J-3, J-1 before the due date.
+     * Each reminder is sent only once per invoice per tier (dedup via InvoiceReminder).
+     */
+    public static function sendInvoiceDueReminders(): array
+    {
+        $reminders = [];
+        $reminderDays = [7, 3, 1];
+
+        foreach ($reminderDays as $days) {
+            $targetDate = now()->addDays($days)->toDateString();
+
+            $invoices = Invoice::where('due_date', $targetDate)
+                ->whereNotIn('status', ['paid', 'cancelled', 'overdue'])
+                ->where('amount_due', '>', 0)
+                ->with('client')
+                ->get();
+
+            foreach ($invoices as $invoice) {
+                if (!$invoice->client_id) continue;
+                $client = User::find($invoice->client_id);
+                if (!$client) continue;
+
+                // Dedup: check if we already sent a reminder for this invoice + day combo
+                $reminderType = "due_reminder_j{$days}";
+                $alreadySent = InvoiceReminder::where('invoice_id', $invoice->id)
+                    ->where('reminder_type', $reminderType)
+                    ->exists();
+
+                if ($alreadySent) continue;
+
+                // Record the reminder
+                InvoiceReminder::create([
+                    'invoice_id' => $invoice->id,
+                    'reminder_type' => $reminderType,
+                    'sent_at' => now(),
+                ]);
+
+                // Send notification via template
+                NotificationService::send($client, 'invoice-due-reminder', [
+                    'client_name' => $client->name,
+                    'invoice_number' => $invoice->invoice_number,
+                    'amount_due' => number_format($invoice->amount_due, 2, ',', '.') . ' EUR',
+                    'due_date' => $invoice->due_date->format('d/m/Y'),
+                    'days_remaining' => $days,
+                ], transactional: true, actionUrl: "/client/invoices/{$invoice->id}");
+
+                // Log on invoice timeline
+                $invoice->timelineEvents()->create([
+                    'user_id' => null,
+                    'event_type' => 'reminder_sent',
+                    'title' => "Rappel d'échéance envoyé (J-{$days})",
+                    'description' => "Rappel automatique : facture {$invoice->invoice_number} arrive à échéance dans {$days} jour(s)",
+                ]);
+
+                $reminders[] = "{$invoice->invoice_number} → {$client->email} (J-{$days})";
+            }
+        }
+
+        return $reminders;
+    }
+
     // ─── HELPER: Add frequency interval to date ─────────────────────
     private static function addFrequencyInterval($date, string $frequency)
     {
@@ -476,6 +752,80 @@ class WorkflowService
                 'action_url' => $actionUrl,
                 'is_read' => false,
             ]);
+
+            // Also send email if admin has email notifications enabled
+            $prefs = $admin->preferences ?? [];
+            $emailEnabled = $prefs['notifications']['notify_admin_emails'] ?? true;
+            if ($emailEnabled) {
+                self::notifyAdminByEmail($admin, $type, $title, $message, $actionUrl);
+            }
+        }
+    }
+
+    // ─── HELPER: Send email notification to admin ────────────────────
+    /**
+     * Send email notification to admin via TemplateMail.
+     *
+     * Triggers that call notifyAdmins() and benefit from email:
+     * - Client accepts/rejects a quote (onQuoteAccepted/Rejected)
+     * - Service renewed/expired (autoRenewServices)
+     * - Invoice overdue reminder (sendInvoiceReminders)
+     * - Service expiry notifications (sendServiceExpiryNotifications)
+     */
+    private static function notifyAdminByEmail(User $admin, string $type, string $title, string $message, ?string $actionUrl = null): void
+    {
+        try {
+            \Illuminate\Support\Facades\Mail::to($admin->email)->send(
+                new \App\Mail\TemplateMail(
+                    "[NA Admin] {$title}",
+                    "<p>{$message}</p>" . ($actionUrl ? "<p><a href='" . url($actionUrl) . "'>Voir les détails</a></p>" : '')
+                )
+            );
+            Log::info("Admin email notification sent to {$admin->email}: [{$type}] {$title}");
+        } catch (\Exception $e) {
+            Log::warning("Failed to send admin email notification: {$e->getMessage()}");
+        }
+    }
+
+    // ─── PUBLIC: Send email notification to partner (callable from other services) ──
+    public static function notifyPartnerByEmailPublic(User $partner, string $type, array $data): void
+    {
+        self::notifyPartnerByEmail($partner, $type, $data);
+    }
+
+    // ─── HELPER: Send email notification to partner ─────────────────────
+    /**
+     * Send email notification to a referral partner via TemplateMail.
+     * Respects partner email notification preferences.
+     *
+     * Triggers:
+     * - Lead converted (won) -> partner earns commission
+     * - Commission paid -> partner receives payment
+     */
+    private static function notifyPartnerByEmail(User $partner, string $type, array $data): void
+    {
+        try {
+            $prefs = $partner->preferences ?? [];
+            $emailEnabled = $prefs['notifications']['notify_partner_emails'] ?? true;
+            if (!$emailEnabled) return;
+
+            $messages = [
+                'lead-won-partner' => "Bonne nouvelle ! Votre référence {$data['client_name']} a été convertie pour le projet \"{$data['project_name']}\". Votre taux de commission : {$data['commission_rate']}%.",
+                'commission-paid' => "Votre commission de {$data['commission_amount']} EUR a été payée. Référence : {$data['payment_reference']}.",
+                'commission-earned' => "Vous avez gagné une commission de {$data['commission_amount']} EUR suite au paiement de la facture {$data['invoice_number']}.",
+            ];
+
+            $message = $messages[$type] ?? "Notification partenaire : {$type}";
+
+            \Illuminate\Support\Facades\Mail::to($partner->email)->send(
+                new \App\Mail\TemplateMail(
+                    "[NA Innovations] Notification partenaire",
+                    "<p>{$message}</p>"
+                )
+            );
+            Log::info("Partner email notification sent to {$partner->email}: [{$type}] {$message}");
+        } catch (\Exception $e) {
+            Log::warning("Failed to send partner email notification: {$e->getMessage()}");
         }
     }
 

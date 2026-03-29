@@ -40,6 +40,8 @@ createInertiaApp({
                 <InstallPrompt />
             </>
         );
+        // Reveal body after React mounts
+        requestAnimationFrame(() => document.body.classList.add('ready'));
     },
     progress: {
         color: '#5eead4',

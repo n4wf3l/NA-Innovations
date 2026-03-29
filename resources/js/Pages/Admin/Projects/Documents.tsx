@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import RichTextEditor from '@/Components/ui/RichTextEditor';
 import { formatDate } from '@/lib/utils';
+import { useConfirm } from '@/hooks/useConfirm';
 
 import DocumentCard from './DocumentsSections/DocumentCard';
 import GenerateModal from './DocumentsSections/GenerateModal';
@@ -63,6 +64,7 @@ interface Props {
 
 export default function Documents({ project, documents, templates }: Props) {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
     const [showGenerateModal, setShowGenerateModal] = useState(false);
     const [showSignModal, setShowSignModal] = useState<ProjectDocument | null>(null);
     const [showEditModal, setShowEditModal] = useState<ProjectDocument | null>(null);
@@ -102,10 +104,15 @@ export default function Documents({ project, documents, templates }: Props) {
         });
     };
 
-    const handleDelete = (doc: ProjectDocument) => {
-        if (confirm(t('Êtes-vous sûr de vouloir supprimer ce document ?'))) {
-            router.delete(`/admin/projects/${project.id}/documents/${doc.id}`, { preserveScroll: true });
-        }
+    const handleDelete = async (doc: ProjectDocument) => {
+        const ok = await confirm({
+            title: t('Supprimer'),
+            message: t('Êtes-vous sûr de vouloir supprimer ce document ?'),
+            confirmText: t('Supprimer'),
+            variant: 'danger',
+        });
+        if (!ok) return;
+        router.delete(`/admin/projects/${project.id}/documents/${doc.id}`, { preserveScroll: true });
     };
 
     const handleSendToClient = (doc: ProjectDocument) => {
@@ -267,6 +274,7 @@ export default function Documents({ project, documents, templates }: Props) {
                 document={showSignModal}
                 project={project}
             />
+            <ConfirmDialog />
         </AdminLayout>
     );
 }

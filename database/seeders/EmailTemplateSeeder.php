@@ -129,6 +129,28 @@ class EmailTemplateSeeder extends Seeder
                 ],
             ],
 
+            // #6b — Invoice due date reminder (before due date: J-7, J-3, J-1)
+            [
+                'slug' => 'invoice-due-reminder',
+                'category' => 'invoice',
+                'variables' => ['client_name', 'invoice_number', 'amount_due', 'due_date', 'days_remaining'],
+                'en' => [
+                    'name' => 'Invoice Due Reminder',
+                    'subject' => 'Reminder: Invoice #{{ invoice_number }} due in {{ days_remaining }} days',
+                    'body' => '<p>Dear {{ client_name }},</p><p>This is a friendly reminder that invoice <strong>#{{ invoice_number }}</strong> for <strong>{{ amount_due }}</strong> is due on <strong>{{ due_date }}</strong> ({{ days_remaining }} days remaining).</p><p>Please ensure payment is made on time to avoid any late fees.</p><p>Log in to your client portal to view and pay your invoice.</p><p>If you have already made the payment, please disregard this message.</p><p>Best regards,<br><strong>NA Innovations</strong></p>',
+                ],
+                'fr' => [
+                    'name' => 'Rappel échéance facture',
+                    'subject' => 'Rappel : Facture #{{ invoice_number }} arrive à échéance dans {{ days_remaining }} jours',
+                    'body' => '<p>Cher(e) {{ client_name }},</p><p>Ceci est un rappel que la facture <strong>#{{ invoice_number }}</strong> d\'un montant de <strong>{{ amount_due }}</strong> arrive à échéance le <strong>{{ due_date }}</strong> ({{ days_remaining }} jour(s) restant(s)).</p><p>Merci de vous assurer que le paiement soit effectué à temps.</p><p>Connectez-vous à votre portail client pour consulter et régler votre facture.</p><p>Si vous avez déjà effectué le paiement, veuillez ignorer ce message.</p><p>Cordialement,<br><strong>NA Innovations</strong></p>',
+                ],
+                'nl' => [
+                    'name' => 'Herinnering vervaldatum factuur',
+                    'subject' => 'Herinnering: Factuur #{{ invoice_number }} vervalt over {{ days_remaining }} dagen',
+                    'body' => '<p>Beste {{ client_name }},</p><p>Dit is een herinnering dat factuur <strong>#{{ invoice_number }}</strong> van <strong>{{ amount_due }}</strong> vervalt op <strong>{{ due_date }}</strong> ({{ days_remaining }} dag(en) resterend).</p><p>Gelieve ervoor te zorgen dat de betaling op tijd wordt uitgevoerd.</p><p>Log in op uw klantenportaal om uw factuur te bekijken en te betalen.</p><p>Als u de betaling reeds heeft uitgevoerd, kunt u dit bericht negeren.</p><p>Met vriendelijke groeten,<br><strong>NA Innovations</strong></p>',
+                ],
+            ],
+
             // #7 — Payment confirmation
             [
                 'slug' => 'payment-confirmation',
@@ -383,6 +405,54 @@ class EmailTemplateSeeder extends Seeder
                 'en' => ['name' => 'Account Rejected', 'subject' => 'Your NA Innovations registration', 'body' => '<p>Dear {{ user_name }},</p><p>Unfortunately, your registration request has not been approved at this time.</p><p>If you believe this is an error, please contact us.</p><p><strong>NA Innovations</strong></p>'],
                 'fr' => ['name' => 'Compte refusé', 'subject' => 'Votre inscription NA Innovations', 'body' => '<p>Cher(e) {{ user_name }},</p><p>Votre demande d\'inscription n\'a malheureusement pas été approuvée.</p><p>Si vous pensez qu\'il s\'agit d\'une erreur, contactez-nous.</p><p><strong>NA Innovations</strong></p>'],
                 'nl' => ['name' => 'Account afgewezen', 'subject' => 'Uw NA Innovations registratie', 'body' => '<p>Beste {{ user_name }},</p><p>Helaas is uw registratieverzoek niet goedgekeurd.</p><p>Als u denkt dat dit een vergissing is, neem dan contact met ons op.</p><p><strong>NA Innovations</strong></p>'],
+            ],
+
+            // ═══════════════════════════════════════════════
+            // SUPPORT
+            // ═══════════════════════════════════════════════
+
+            // #37 — Client creates support ticket → notify admin
+            [
+                'slug' => 'support-ticket',
+                'category' => 'support',
+                'variables' => ['client_name', 'subject'],
+                'en' => [
+                    'name' => 'New Support Ticket (Admin)',
+                    'subject' => 'New support request from {{ client_name }}: {{ subject }}',
+                    'body' => '<p>A new support ticket has been submitted.</p><p>Client: <strong>{{ client_name }}</strong><br>Subject: <strong>{{ subject }}</strong></p><p>Go to the admin panel to review and reply.</p><p><strong>NA Innovations</strong></p>',
+                ],
+                'fr' => [
+                    'name' => 'Nouveau ticket support (Admin)',
+                    'subject' => 'Nouvelle demande de support de {{ client_name }} : {{ subject }}',
+                    'body' => '<p>Un nouveau ticket de support a été soumis.</p><p>Client : <strong>{{ client_name }}</strong><br>Sujet : <strong>{{ subject }}</strong></p><p>Rendez-vous dans le panneau d\'administration pour consulter et répondre.</p><p><strong>NA Innovations</strong></p>',
+                ],
+                'nl' => [
+                    'name' => 'Nieuw supportticket (Admin)',
+                    'subject' => 'Nieuw supportverzoek van {{ client_name }}: {{ subject }}',
+                    'body' => '<p>Er is een nieuw supportticket ingediend.</p><p>Klant: <strong>{{ client_name }}</strong><br>Onderwerp: <strong>{{ subject }}</strong></p><p>Ga naar het beheerpaneel om te bekijken en te beantwoorden.</p><p><strong>NA Innovations</strong></p>',
+                ],
+            ],
+
+            // #38 — Admin replies to support ticket → notify client
+            [
+                'slug' => 'support-reply',
+                'category' => 'support',
+                'variables' => ['client_name', 'ticket_subject', 'admin_reply'],
+                'en' => [
+                    'name' => 'Support Reply',
+                    'subject' => 'Reply to your support request: {{ ticket_subject }}',
+                    'body' => '<p>Dear {{ client_name }},</p><p>We have replied to your support request:</p><blockquote>{{ admin_reply }}</blockquote><p>Log in to your portal to view the full conversation.</p><p>Best regards,<br><strong>NA Innovations</strong></p>',
+                ],
+                'fr' => [
+                    'name' => 'Réponse support',
+                    'subject' => 'Réponse à votre demande de support : {{ ticket_subject }}',
+                    'body' => '<p>Cher(e) {{ client_name }},</p><p>Nous avons répondu à votre demande de support :</p><blockquote>{{ admin_reply }}</blockquote><p>Connectez-vous à votre portail pour consulter la conversation complète.</p><p>Cordialement,<br><strong>NA Innovations</strong></p>',
+                ],
+                'nl' => [
+                    'name' => 'Supportantwoord',
+                    'subject' => 'Antwoord op uw supportverzoek: {{ ticket_subject }}',
+                    'body' => '<p>Beste {{ client_name }},</p><p>Wij hebben geantwoord op uw supportverzoek:</p><blockquote>{{ admin_reply }}</blockquote><p>Log in op uw portaal om het volledige gesprek te bekijken.</p><p>Met vriendelijke groeten,<br><strong>NA Innovations</strong></p>',
+                ],
             ],
         ];
 

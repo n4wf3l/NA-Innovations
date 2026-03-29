@@ -341,8 +341,20 @@ class QuoteController extends BaseAdminController
                     ],
                     $quote->pdf_path,
                     transactional: true,
+                    actionUrl: url("/quotes/{$quote->id}/view/{$quote->view_token}"),
                 );
             }
+        }
+
+        // Send actual email with PDF attachment
+        try {
+            $emailSubject = $request->input('email_subject', "Devis {$quote->quote_number}");
+            $emailBody = $request->input('email_body', "Veuillez trouver ci-joint votre devis.");
+
+            \Illuminate\Support\Facades\Mail::to($quote->client_email)
+                ->send(new \App\Mail\TemplateMail($emailSubject, $emailBody, $quote->pdf_path));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning("Failed to send quote email: {$e->getMessage()}");
         }
 
         return redirect()->back()->with('success', 'Quote marked as sent.');

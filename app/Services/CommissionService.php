@@ -71,7 +71,7 @@ class CommissionService
             'status' => 'estimated',
         ]);
 
-        // Notify the partner
+        // Notify the partner (in-app + email)
         if ($partner->user) {
             NotificationService::send($partner->user, 'commission-earned', [
                 'partner_name' => $partner->user->name,
@@ -79,6 +79,13 @@ class CommissionService
                 'commission_amount' => number_format($commissionAmount, 2, ',', '.'),
                 'invoice_number' => $invoice->invoice_number,
             ], actionUrl: '/partner/commissions');
+
+            // Email notification (prepared for when mail driver is active)
+            WorkflowService::notifyPartnerByEmailPublic($partner->user, 'commission-earned', [
+                'partner_name' => $partner->user->name,
+                'commission_amount' => number_format($commissionAmount, 2, ',', '.'),
+                'invoice_number' => $invoice->invoice_number,
+            ]);
         }
 
         return $commission;

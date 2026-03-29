@@ -4,6 +4,7 @@ import Badge from '@/Components/ui/Badge';
 import ProtectedAmount from '@/Components/ui/ProtectedAmount';
 import { cn, formatProjectType } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { useConfirm } from '@/hooks/useConfirm';
 
 interface Props {
     pendingProjects: any[];
@@ -146,14 +147,20 @@ export default function ProjectsIndex({ pendingProjects, myProjects, tab }: Prop
 
 function PendingProjectCard({ project }: { project: any }) {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
     const { post, processing } = useForm({});
     const partnerName = project.lead?.referral_partner?.user?.name;
 
-    function handleClaim(e: React.FormEvent) {
+    async function handleClaim(e: React.FormEvent) {
         e.preventDefault();
-        if (confirm(t('Are you sure you want to claim "{{name}}"?', { name: project.nom_societe }))) {
-            post(`/dev/projects/${project.id}/claim`);
-        }
+        const ok = await confirm({
+            title: t('Claim Project'),
+            message: t('Are you sure you want to claim "{{name}}"?', { name: project.nom_societe }),
+            confirmText: t('Claim'),
+            variant: 'info',
+        });
+        if (!ok) return;
+        post(`/dev/projects/${project.id}/claim`);
     }
 
     return (
@@ -215,6 +222,7 @@ function PendingProjectCard({ project }: { project: any }) {
                     {t('Details')}
                 </Link>
             </div>
+            <ConfirmDialog />
         </div>
     );
 }

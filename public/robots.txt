@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Disallow: /admin/
+Disallow: /client/
+Disallow: /partner/
+Disallow: /dev/
+Disallow: /api/
+
+Sitemap: https://nainnovations.be/sitemap.xml

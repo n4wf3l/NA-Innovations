@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>body{opacity:0}</style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login - NA Innovations</title>
     <link rel="icon" href="{{ asset('NAlogo2.png') }}" type="image/x-icon" />
@@ -15,6 +16,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
+        body.ready { opacity: 1; transition: opacity 0.15s ease-in; }
         .font-display { font-family: 'Bebas Neue', cursive; }
         .font-body { font-family: 'Figtree', sans-serif; }
 
@@ -46,11 +48,15 @@
         /* Fix Chrome/Edge autocomplete forcing white background */
         .input-field:-webkit-autofill,
         .input-field:-webkit-autofill:hover,
-        .input-field:-webkit-autofill:focus {
-            -webkit-text-fill-color: #ffffff;
-            -webkit-box-shadow: 0 0 0 1000px rgba(15, 23, 42, 0.9) inset;
-            border-color: rgba(71, 85, 105, 0.4);
+        .input-field:-webkit-autofill:focus,
+        .input-field:-webkit-autofill:active {
+            -webkit-text-fill-color: #ffffff !important;
+            -webkit-box-shadow: 0 0 0 9999px #0f172a inset !important;
+            box-shadow: 0 0 0 9999px #0f172a inset !important;
+            background-color: #0f172a !important;
+            border-color: rgba(71, 85, 105, 0.4) !important;
             transition: background-color 5000s ease-in-out 0s;
+            caret-color: #ffffff;
         }
         .btn-submit {
             background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
@@ -162,7 +168,12 @@
                             {{-- Email --}}
                             <div>
                                 <label for="email" class="block text-sm font-medium text-slate-300 mb-2">{{ __('Email') }}</label>
-                                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="you@example.com" class="input-field w-full px-4 py-3 rounded-xl text-white text-sm focus:outline-none" />
+                                <div class="relative">
+                                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="you@example.com" class="input-field w-full px-4 py-3 pr-10 rounded-xl text-white text-sm focus:outline-none" />
+                                    <button type="button" onclick="const e=document.getElementById('email');e.style.transition='opacity 0.15s,transform 0.15s';e.style.opacity='0';e.style.transform='translateX(8px)';setTimeout(()=>{e.value='';e.style.opacity='1';e.style.transform='translateX(0)';e.focus();},150);" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-300 hover:rotate-90 transition-all duration-200 p-1" title="Clear">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
+                                </div>
                             </div>
 
                             {{-- Password --}}
@@ -248,5 +259,6 @@
 
     </div>
 
+<script>document.body.classList.add('ready');</script>
 </body>
 </html>

@@ -1,8 +1,16 @@
+export interface OnboardingState {
+    client_dashboard?: boolean;
+    partner_dashboard?: boolean;
+    dev_dashboard?: boolean;
+    admin_dashboard?: boolean;
+}
+
 export interface UserPreferences {
     email_notifications: boolean;
     name_display: 'full' | 'abbreviated';
     currency: string;
     privacy_full_name: boolean;
+    onboarding?: OnboardingState;
 }
 
 export interface User {
@@ -59,6 +67,7 @@ export interface Project {
     type_societe?: string;
     type_site?: string;
     lieu?: string;
+    image?: string | null;
     client_id?: number;
     developer_id?: number;
     lead_id?: number;

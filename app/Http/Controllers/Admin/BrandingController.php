@@ -18,6 +18,7 @@ class BrandingController extends BaseAdminController
             'logo_path' => Setting::get('branding.logo_path', ''),
             'company_name' => Setting::get('branding.company_name', 'NA Innovations'),
             'tagline' => Setting::get('branding.tagline', ''),
+            'video_url' => Setting::get('branding.video_url', ''),
         ];
 
         return Inertia::render('Admin/Settings/Branding', [
@@ -46,10 +47,12 @@ class BrandingController extends BaseAdminController
         $request->validate([
             'company_name' => 'required|string|max:255',
             'tagline' => 'nullable|string|max:500',
+            'video_url' => 'nullable|string|max:500',
         ]);
 
         Setting::set('branding.company_name', $request->company_name);
         Setting::set('branding.tagline', $request->tagline ?? '');
+        Setting::set('branding.video_url', $request->video_url ?? '');
 
         return redirect()->back()->with('success', 'Informations de marque mises à jour.');
     }

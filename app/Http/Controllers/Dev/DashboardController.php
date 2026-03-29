@@ -32,10 +32,26 @@ class DashboardController extends Controller
             'totalAssigned' => $myProjects->count(),
         ];
 
+        // Monthly completed projects for last 6 months
+        $monthlyCompleted = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $start = now()->subMonths($i)->startOfMonth();
+            $end = now()->subMonths($i)->endOfMonth();
+            $monthlyCompleted[] = [
+                'month' => $start->format('M'),
+                'count' => Projet::where('developer_id', $user->id)->where('status', 'completed')
+                    ->whereBetween('end_date', [$start, $end])->count(),
+            ];
+        }
+
+        $totalBudgetManaged = Projet::where('developer_id', $user->id)->sum('budget');
+
         return Inertia::render('Dev/Dashboard', [
             'myProjects' => $myProjects,
             'pendingProjects' => $pendingProjects,
             'stats' => $stats,
+            'monthlyCompleted' => $monthlyCompleted,
+            'totalBudgetManaged' => $totalBudgetManaged,
         ]);
     }
 }

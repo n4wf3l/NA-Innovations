@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Partner;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 
 class ProfileController extends Controller
@@ -73,5 +75,17 @@ class ProfileController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Profile and settings updated successfully.');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|current_password',
+            'password' => ['required', 'confirmed', Password::min(8)],
+        ]);
+
+        auth()->user()->update(['password' => Hash::make($request->password)]);
+
+        return redirect()->back()->with('success', 'Mot de passe mis à jour.');
     }
 }

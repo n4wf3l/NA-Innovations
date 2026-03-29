@@ -3,14 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 
-class SignatureController extends Controller
+class SignatureController extends BaseAdminController
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     /**
      * Get the current user's saved signature.

@@ -89,7 +89,7 @@ class DocumentTemplateController extends BaseAdminController
             'company' => [
                 'name' => Setting::get('company.name', 'NA Innovations'),
                 'address' => Setting::get('company.address', '170 Nijverheidskaai, Anderlecht'),
-                'email' => Setting::get('company.email', 'info@nawfelajari.be'),
+                'email' => Setting::get('company.email', config('mail.from.address', 'info@nainnovations.be')),
                 'phone' => Setting::get('company.phone', ''),
                 'vat' => Setting::get('company.vat', ''),
                 'country' => Setting::get('company.country', 'Belgique'),

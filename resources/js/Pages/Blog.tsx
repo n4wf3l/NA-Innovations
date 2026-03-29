@@ -1,8 +1,11 @@
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 import { PaginatedData } from '@/types';
 import { useTranslation } from 'react-i18next';
 import OriginalLanguageBadge from '@/Components/ui/OriginalLanguageBadge';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
+import SectionNav from '@/Components/landing/SectionNav';
 
 interface Post {
     id: number;
@@ -45,7 +48,7 @@ function PostCard({ post, featured = false }: { post: Post; featured?: boolean }
     return (
         <Link
             href={`/posts/${post.slug}`}
-            className={`group block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 ${featured ? 'md:flex' : ''}`}
+            className={`group block bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 ${featured ? 'md:flex' : ''}`}
         >
             {/* Image */}
             <div className={`overflow-hidden ${featured ? 'md:w-1/2 h-64 md:h-auto' : 'h-52'}`}>
@@ -71,20 +74,20 @@ function PostCard({ post, featured = false }: { post: Post; featured?: boolean }
                         <span className="text-xs font-bold text-teal-500 uppercase tracking-widest">{post.category}</span>
                     )}
                     {post.category && post.reading_time && (
-                        <span className="text-gray-300">·</span>
+                        <span className="text-gray-300 dark:text-gray-600">·</span>
                     )}
                     {post.reading_time && (
-                        <span className="text-xs text-gray-400">{post.reading_time} {t('min read')}</span>
+                        <span className="text-xs text-gray-400 dark:text-gray-500">{post.reading_time} {t('min read')}</span>
                     )}
                 </div>
 
                 {featured && <OriginalLanguageBadge className="mb-2" />}
-                <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-teal-600 transition-colors ${featured ? 'text-2xl md:text-3xl' : 'text-xl'}`}>
+                <h3 className={`font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-teal-600 transition-colors ${featured ? 'text-2xl md:text-3xl' : 'text-xl'}`}>
                     {post.title}
                 </h3>
 
                 {(post.excerpt || post.description) && (
-                    <p className={`text-gray-500 mb-4 ${featured ? 'text-base line-clamp-4' : 'text-sm line-clamp-3'}`}>
+                    <p className={`text-gray-500 dark:text-gray-400 mb-4 ${featured ? 'text-base line-clamp-4' : 'text-sm line-clamp-3'}`}>
                         {post.excerpt || post.description}
                     </p>
                 )}
@@ -93,7 +96,7 @@ function PostCard({ post, featured = false }: { post: Post; featured?: boolean }
                 {post.tags && post.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mb-4">
                         {post.tags.slice(0, 3).map((tag, i) => (
-                            <span key={i} className="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-500">
+                            <span key={i} className="inline-flex items-center rounded-md bg-gray-100 dark:bg-gray-700 px-2 py-0.5 text-[10px] font-medium text-gray-500 dark:text-gray-400">
                                 {tag}
                             </span>
                         ))}
@@ -105,13 +108,13 @@ function PostCard({ post, featured = false }: { post: Post; featured?: boolean }
                     <div className="flex items-center gap-3">
                         {post.author && (
                             <div className="flex items-center gap-2">
-                                <div className="w-7 h-7 rounded-full bg-teal-100 flex items-center justify-center text-[10px] font-bold text-teal-700">
+                                <div className="w-7 h-7 rounded-full bg-teal-100 dark:bg-teal-500/20 flex items-center justify-center text-[10px] font-bold text-teal-700 dark:text-teal-300">
                                     {post.author.name.charAt(0).toUpperCase()}
                                 </div>
-                                <span className="text-xs text-gray-500">{post.author.name}</span>
+                                <span className="text-xs text-gray-500 dark:text-gray-400">{post.author.name}</span>
                             </div>
                         )}
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-gray-400 dark:text-gray-500">
                             {timeAgo(post.published_at || post.created_at)}
                         </span>
                     </div>
@@ -129,20 +132,32 @@ function PostCard({ post, featured = false }: { post: Post; featured?: boolean }
 
 export default function Blog({ posts, categories, seo }: Props) {
     const { t } = useTranslation();
-    const currentCategory = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').get('category') || '';
+    useScrollReveal();
+    const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
+    const currentCategory = params.get('category') || '';
+    const currentSearch = params.get('search') || '';
+    const [searchInput, setSearchInput] = useState(currentSearch);
 
     const filterByCategory = (category: string) => {
-        router.get('/posts', category ? { category } : {}, {
-            preserveState: true,
-            replace: true,
-        });
+        const q: Record<string, string> = {};
+        if (category) q.category = category;
+        if (searchInput) q.search = searchInput;
+        router.get('/posts', q, { preserveState: true, replace: true });
+    };
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        const q: Record<string, string> = {};
+        if (currentCategory) q.category = currentCategory;
+        if (searchInput.trim()) q.search = searchInput.trim();
+        router.get('/posts', q, { preserveState: true, replace: true });
     };
 
     const featured = posts.data.length > 0 ? posts.data[0] : null;
     const rest = posts.data.slice(1);
 
     return (
-        <PublicLayout title={seo?.title || 'Blog'}>
+        <PublicLayout title={seo?.title || t('Blog')} description={seo?.description || 'Articles, guides and insights about web development, mobile apps and digital strategy.'}>
             <Head>
                 <meta name="description" content={seo?.description || 'Articles et actualités'} />
             </Head>
@@ -157,24 +172,49 @@ export default function Blog({ posts, categories, seo }: Props) {
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(94,234,212,0.4),transparent_50%)]" />
                 </div>
                 <div className="max-w-6xl mx-auto px-4 relative z-10 text-center">
-                    <h1 className="text-7xl md:text-9xl font-semibold text-white bebas" style={{ letterSpacing: '2px' }}>
+                    <h1 className="text-7xl md:text-9xl font-semibold text-white bebas hero-fade" style={{ letterSpacing: '2px' }}>
                         {t('Blog')}
                     </h1>
                     <hr className="mt-6 border-white/10 max-w-md mx-auto" />
-                    <p className="mt-4 text-gray-400 text-lg max-w-2xl mx-auto">
-                        Articles, guides et actualités sur le développement web, mobile et la transformation digitale.
+                    <p className="mt-4 text-gray-400 text-lg max-w-2xl mx-auto hero-fade" style={{ animationDelay: '0.2s' }}>
+                        {t('Articles, guides et actualités sur le développement web, mobile et la transformation digitale.')}
                     </p>
+
+                    {/* Search bar */}
+                    <form onSubmit={handleSearch} className="mt-8 max-w-lg mx-auto hero-fade" style={{ animationDelay: '0.4s' }}>
+                        <div className="relative">
+                            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                            </svg>
+                            <input
+                                type="text"
+                                value={searchInput}
+                                onChange={e => setSearchInput(e.target.value)}
+                                placeholder={t('Rechercher un article...')}
+                                className="w-full bg-white/5 border border-white/10 rounded-full pl-12 pr-28 py-3.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-400/50 focus:border-teal-400/50 transition-all backdrop-blur-sm"
+                            />
+                            <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-2 bg-teal-500 hover:bg-teal-400 text-white text-sm font-bold rounded-full transition-colors">
+                                {t('Rechercher')}
+                            </button>
+                        </div>
+                        {currentSearch && (
+                            <div className="mt-3 flex items-center justify-center gap-2">
+                                <span className="text-xs text-gray-400">{t('Résultats pour')} « <span className="text-teal-400">{currentSearch}</span> »</span>
+                                <button type="button" onClick={() => { setSearchInput(''); router.get('/posts', currentCategory ? { category: currentCategory } : {}, { preserveState: true, replace: true }); }} className="text-xs text-gray-500 hover:text-white transition-colors">✕ {t('Effacer')}</button>
+                            </div>
+                        )}
+                    </form>
                 </div>
             </section>
 
             {/* Category filters */}
             {categories.length > 0 && (
-                <div className="bg-gray-100 border-b border-gray-200">
+                <div className="bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 reveal">
                     <div className="max-w-6xl mx-auto px-4 py-4">
                         <div className="flex items-center gap-2 overflow-x-auto">
                             <button
                                 onClick={() => filterByCategory('')}
-                                className={`px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors ${!currentCategory ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-200'}`}
+                                className={`px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors ${!currentCategory ? 'bg-gray-900 text-white' : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
                             >
                                 {t('All')}
                             </button>
@@ -182,7 +222,7 @@ export default function Blog({ posts, categories, seo }: Props) {
                                 <button
                                     key={cat}
                                     onClick={() => filterByCategory(cat)}
-                                    className={`px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors ${currentCategory === cat ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-200'}`}
+                                    className={`px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors ${currentCategory === cat ? 'bg-gray-900 text-white' : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
                                 >
                                     {cat}
                                 </button>
@@ -193,27 +233,27 @@ export default function Blog({ posts, categories, seo }: Props) {
             )}
 
             {/* Posts */}
-            <section className="py-16 bg-gray-100">
+            <section id="section-articles" className="py-16 bg-gray-100 dark:bg-gray-800/50 scroll-mt-20">
                 <div className="max-w-6xl mx-auto px-4">
                     {posts.data.length === 0 ? (
                         <div className="text-center py-20">
-                            <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
+                            <svg className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z" />
                             </svg>
-                            <h3 className="text-xl font-bold text-gray-700 mb-2">{t('No articles found')}</h3>
-                            <p className="text-gray-500">Revenez bientôt pour découvrir nos prochains articles.</p>
+                            <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-2">{t('No articles found')}</h3>
+                            <p className="text-gray-500 dark:text-gray-400">Revenez bientôt pour découvrir nos prochains articles.</p>
                         </div>
                     ) : (
                         <>
                             {/* Featured post */}
                             {featured && posts.current_page === 1 && (
-                                <div className="mb-10">
+                                <div className="mb-10 reveal">
                                     <PostCard post={featured} featured />
                                 </div>
                             )}
 
                             {/* Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 reveal-stagger">
                                 {(posts.current_page === 1 ? rest : posts.data).map((post) => (
                                     <PostCard key={post.id} post={post} />
                                 ))}
@@ -221,7 +261,7 @@ export default function Blog({ posts, categories, seo }: Props) {
 
                             {/* Pagination */}
                             {posts.last_page > 1 && (
-                                <nav className="flex items-center justify-center space-x-2 mt-12">
+                                <nav className="flex items-center justify-center space-x-2 mt-12 reveal">
                                     {posts.links.map((link, i) => (
                                         <span key={i}>
                                             {link.url ? (
@@ -230,12 +270,12 @@ export default function Blog({ posts, categories, seo }: Props) {
                                                     className={`px-4 py-2 text-sm rounded-full transition-colors ${
                                                         link.active
                                                             ? 'bg-gray-900 text-white'
-                                                            : 'bg-white text-gray-600 hover:bg-gray-200'
+                                                            : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                                                     }`}
                                                     dangerouslySetInnerHTML={{ __html: link.label }}
                                                 />
                                             ) : (
-                                                <span className="px-4 py-2 text-sm text-gray-300" dangerouslySetInnerHTML={{ __html: link.label }} />
+                                                <span className="px-4 py-2 text-sm text-gray-300 dark:text-gray-600" dangerouslySetInnerHTML={{ __html: link.label }} />
                                             )}
                                         </span>
                                     ))}
@@ -245,6 +285,10 @@ export default function Blog({ posts, categories, seo }: Props) {
                     )}
                 </div>
             </section>
+
+            <SectionNav sections={[
+                { id: 'section-articles', label: 'Articles' },
+            ]} />
         </PublicLayout>
     );
 }

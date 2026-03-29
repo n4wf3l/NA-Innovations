@@ -3,6 +3,8 @@ import { Head, Link, useForm, router, usePage } from '@inertiajs/react';
 import { User, Invoice } from '@/types';
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useConfirm } from '@/hooks/useConfirm';
+import SearchableSelect from '@/Components/ui/SearchableSelect';
 
 interface InvoiceItem {
     description: string;
@@ -33,6 +35,7 @@ function toDateInput(val: string | null | undefined): string {
 
 export default function InvoiceEdit({ invoice, clients }: Props) {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
     const initialItems: InvoiceItem[] = (invoice.items && invoice.items.length > 0)
@@ -174,15 +177,19 @@ export default function InvoiceEdit({ invoice, clients }: Props) {
         return Object.keys(errs).length === 0;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validate()) return;
 
         // Confirmation if total is 0
         if (total === 0) {
-            if (!window.confirm(t('Le total de la facture est de 0 €. Voulez-vous continuer ?'))) {
-                return;
-            }
+            const ok = await confirm({
+                title: t('Total à 0 €'),
+                message: t('Le total de la facture est de 0 €. Voulez-vous continuer ?'),
+                confirmText: t('Continuer'),
+                variant: 'warning',
+            });
+            if (!ok) return;
         }
 
         router.put(`/admin/invoices/${invoice.id}`, { ...data, items } as any, {
@@ -225,16 +232,20 @@ export default function InvoiceEdit({ invoice, clients }: Props) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Select Existing Client")}</label>
-                            <select value={data.client_id} onChange={e => handleClientSelect(e.target.value)} className={inputClass}>
-                                <option value="">{t("-- Manual entry --")}</option>
-                                {clients.map(c => <option key={c.id} value={c.id}>{c.name} {c.company_name ? `(${c.company_name})` : ''}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.client_id}
+                                onChange={(val) => handleClientSelect(val)}
+                                placeholder={t("-- Manual entry --")}
+                                options={clients.map(c => ({ value: String(c.id), label: `${c.name}${c.company_name ? ` (${c.company_name})` : ''}` }))}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Invoice Type")}</label>
-                            <select value={data.type} onChange={e => setField('type', e.target.value)} className={inputClass}>
-                                {invoiceTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.type}
+                                onChange={(val) => setField('type', val)}
+                                options={invoiceTypes}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Client Name")} *</label>
@@ -323,14 +334,18 @@ export default function InvoiceEdit({ invoice, clients }: Props) {
                                             <FieldError name={`items.${index}.quantity`} />
                                         </td>
                                         <td className="py-2 px-2">
-                                            <select value={item.unit} onChange={e => updateItem(index, 'unit', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400">
-                                                <option value="unit">{t("Unit")}</option>
-                                                <option value="hour">{t("Hour")}</option>
-                                                <option value="day">{t("Day")}</option>
-                                                <option value="month">{t("Month")}</option>
-                                                <option value="piece">{t("Piece")}</option>
-                                                <option value="lot">{t("Lot")}</option>
-                                            </select>
+                                            <SearchableSelect
+                                                value={item.unit}
+                                                onChange={(val) => updateItem(index, 'unit', val)}
+                                                options={[
+                                                    { value: 'unit', label: t("Unit") },
+                                                    { value: 'hour', label: t("Hour") },
+                                                    { value: 'day', label: t("Day") },
+                                                    { value: 'month', label: t("Month") },
+                                                    { value: 'piece', label: t("Piece") },
+                                                    { value: 'lot', label: t("Lot") },
+                                                ]}
+                                            />
                                         </td>
                                         <td className="py-2 px-2">
                                             <input type="number" value={item.unit_price} onChange={e => updateItem(index, 'unit_price', parseFloat(e.target.value) || 0)} className={`w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400 ${errorRing(`items.${index}.unit_price`)}`} min="0" step="0.01" />
@@ -394,6 +409,7 @@ export default function InvoiceEdit({ invoice, clients }: Props) {
                     </button>
                 </div>
             </form>
+            <ConfirmDialog />
         </AdminLayout>
     );
 }

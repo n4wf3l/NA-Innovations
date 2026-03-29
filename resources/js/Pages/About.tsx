@@ -2,6 +2,8 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { useTranslation } from 'react-i18next';
 import OriginalLanguageBadge from '@/Components/ui/OriginalLanguageBadge';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
+import SectionNav from '@/Components/landing/SectionNav';
 
 interface AboutData {
     id: number;
@@ -24,6 +26,7 @@ interface Props {
 
 export default function About({ about, seo }: Props) {
     const { t } = useTranslation();
+    useScrollReveal();
     const metadata = about?.metadata || {};
     const values = metadata.values || ['Innovation', 'Qualité', 'Transparence', 'Accompagnement'];
 
@@ -35,7 +38,7 @@ export default function About({ about, seo }: Props) {
     ];
 
     return (
-        <PublicLayout title={seo?.title || 'About'}>
+        <PublicLayout title={seo?.title || 'About'} description={seo?.description || 'Belgian software company passionate about building digital products that make a difference.'}>
             {seo?.description && (
                 <Head>
                     <meta name="description" content={seo.description} />
@@ -53,25 +56,25 @@ export default function About({ about, seo }: Props) {
                     <span className="hero-word hero-word-6">INNOVATION</span>
                 </div>
                 <div className="max-w-4xl mx-auto text-center px-4 relative z-10">
-                    <h1 className="text-7xl md:text-9xl font-bold text-white bebas" style={{ letterSpacing: '3px' }}>
+                    <h1 className="text-7xl md:text-9xl font-bold text-white bebas hero-fade" style={{ letterSpacing: '3px' }}>
                         {about?.title || 'About Us'}
                     </h1>
-                    <p className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto">
+                    <p className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto hero-fade hero-fade-delay-1">
                         {about?.subtitle || 'We are a Belgian software company passionate about building digital products that make a difference.'}
                     </p>
                 </div>
             </section>
 
             {/* Who We Are */}
-            <section className="py-20 bg-white">
+            <section id="section-who" className="py-20 bg-white dark:bg-gray-900 scroll-mt-20">
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-                        <div>
+                        <div className="reveal-left">
                             <OriginalLanguageBadge className="mb-3" />
-                            <h2 className="text-5xl font-bold text-gray-900 bebas mb-6" style={{ letterSpacing: '2px' }}>
+                            <h2 className="text-5xl font-bold text-gray-900 dark:text-white bebas mb-6" style={{ letterSpacing: '2px' }}>
                                 {t('Who We Are')}
                             </h2>
-                            <div className="space-y-4 text-gray-600 leading-relaxed">
+                            <div className="space-y-4 text-gray-600 dark:text-gray-300 leading-relaxed">
                                 {about?.description ? (
                                     about.description.split('\n').filter(Boolean).map((p, i) => <p key={i}>{p}</p>)
                                 ) : (
@@ -82,7 +85,7 @@ export default function About({ about, seo }: Props) {
                                 )}
                             </div>
                         </div>
-                        <div className="space-y-6">
+                        <div className="space-y-6 reveal-right">
                             {metadata.mission && (
                                 <div className="bg-gradient-to-br from-teal-400 to-teal-600 rounded-3xl p-8 text-white">
                                     <h3 className="text-2xl font-bold bebas mb-3" style={{ letterSpacing: '1px' }}>{t('Our Mission')}</h3>
@@ -101,18 +104,18 @@ export default function About({ about, seo }: Props) {
             </section>
 
             {/* Our Values */}
-            <section className="py-20 bg-gray-100">
+            <section id="section-values" className="py-20 bg-gray-100 dark:bg-gray-800 scroll-mt-20">
                 <div className="max-w-6xl mx-auto px-4">
-                    <h2 className="text-5xl md:text-7xl font-bold text-black bebas text-center mb-16" style={{ letterSpacing: '2px' }}>
+                    <h2 className="text-5xl md:text-7xl font-bold text-black dark:text-white bebas text-center mb-16 reveal" style={{ letterSpacing: '2px' }}>
                         {t('Our Values')}
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 reveal-stagger">
                         {values.map((value, index) => (
-                            <div key={index} className="bg-white rounded-2xl p-8 border border-gray-200 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 text-center">
-                                <div className="w-14 h-14 rounded-xl bg-teal-50 text-teal-500 flex items-center justify-center mb-6 mx-auto">
+                            <div key={index} className="bg-white dark:bg-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 text-center">
+                                <div className="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-500/10 text-teal-500 flex items-center justify-center mb-6 mx-auto">
                                     {valueIcons[index % valueIcons.length]}
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900">{value}</h3>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{value}</h3>
                             </div>
                         ))}
                     </div>
@@ -120,31 +123,64 @@ export default function About({ about, seo }: Props) {
             </section>
 
             {/* Our Tech Stack */}
-            <section className="py-20 bg-white">
+            <section id="section-tech" className="py-20 bg-white dark:bg-gray-900 scroll-mt-20">
                 <div className="max-w-5xl mx-auto px-4">
-                    <h2 className="text-5xl md:text-7xl font-bold text-black bebas text-center mb-16" style={{ letterSpacing: '2px' }}>
+                    <h2 className="text-5xl md:text-7xl font-bold text-black dark:text-white bebas text-center mb-16 reveal" style={{ letterSpacing: '2px' }}>
                         {t('Our Tech Stack')}
                     </h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 reveal-stagger">
                         {[
                             'Laravel', 'React', 'TypeScript', 'Tailwind CSS',
                             'Node.js', 'PostgreSQL', 'MySQL', 'Docker',
                             'Flutter', 'React Native', 'AWS', 'Git',
                         ].map((tech, index) => (
-                            <div key={index} className="text-center py-6 px-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-teal-300 hover:bg-teal-50 transition-all duration-300">
-                                <span className="text-gray-700 font-semibold">{tech}</span>
+                            <div key={index} className="text-center py-6 px-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-teal-300 hover:bg-teal-50 dark:hover:bg-teal-500/10 transition-all duration-300">
+                                <span className="text-gray-700 dark:text-gray-300 font-semibold">{tech}</span>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
 
+            {/* How We Work */}
+            <section className="py-20 bg-white">
+                <div className="max-w-5xl mx-auto px-4">
+                    <div className="text-center mb-16 reveal">
+                        <h2 className="text-5xl md:text-7xl font-bold text-gray-900 bebas" style={{ letterSpacing: '2px' }}>
+                            {t('How We Work')}
+                        </h2>
+                        <p className="mt-4 text-gray-500 max-w-2xl mx-auto">{t('A transparent, efficient process from first contact to delivery.')}</p>
+                    </div>
+                    <div className="relative">
+                        {/* Connecting line */}
+                        <div className="hidden lg:block absolute top-16 left-0 right-0 h-px bg-gray-200" />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 reveal-stagger">
+                            {[
+                                { num: '01', title: t('Discovery'), desc: t('We listen, analyze your needs and define the scope together.'), color: 'from-teal-400 to-teal-500' },
+                                { num: '02', title: t('Design'), desc: t('Wireframes, mockups and architecture validated by you before any code.'), color: 'from-blue-400 to-blue-500' },
+                                { num: '03', title: t('Development'), desc: t('We build with regular updates. Track progress via your client portal.'), color: 'from-violet-400 to-violet-500' },
+                                { num: '04', title: t('Testing'), desc: t('Rigorous testing on all devices. Every detail polished.'), color: 'from-amber-400 to-amber-500' },
+                                { num: '05', title: t('Launch'), desc: t('Deployment, training and ongoing support. We stay by your side.'), color: 'from-emerald-400 to-emerald-500' },
+                            ].map((step) => (
+                                <div key={step.num} className="flex flex-col items-center text-center group">
+                                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${step.color} text-white flex items-center justify-center text-xl font-bold bebas mb-4 shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
+                                        {step.num}
+                                    </div>
+                                    <h3 className="text-base font-bold text-gray-900 mb-2">{step.title}</h3>
+                                    <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* CTA */}
-            <section className="py-20 bg-gray-900 relative overflow-hidden">
+            <section id="section-cta" className="py-20 bg-gray-900 relative overflow-hidden scroll-mt-20">
                 <div className="absolute inset-0 opacity-[0.02] flex items-center justify-center" aria-hidden="true">
                     <span className="text-[20vw] font-bold text-white bebas whitespace-nowrap">LET'S TALK</span>
                 </div>
-                <div className="max-w-3xl mx-auto text-center px-4 relative z-10">
+                <div className="max-w-3xl mx-auto text-center px-4 relative z-10 reveal">
                     <h2 className="text-5xl md:text-7xl font-bold text-white bebas mb-6" style={{ letterSpacing: '2px' }}>
                         {t('Want to work with us?')}
                     </h2>
@@ -160,6 +196,13 @@ export default function About({ about, seo }: Props) {
                     </Link>
                 </div>
             </section>
+
+            <SectionNav sections={[
+                { id: 'section-who', label: 'Who We Are' },
+                { id: 'section-values', label: 'Our Values' },
+                { id: 'section-tech', label: 'Tech Stack' },
+                { id: 'section-cta', label: 'Contact' },
+            ]} />
         </PublicLayout>
     );
 }

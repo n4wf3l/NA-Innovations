@@ -13,6 +13,7 @@ class QuoteService
     {
         $data['quote_number'] = NumberGenerator::generateQuoteNumber();
         $data['view_token'] = Str::random(64);
+        $data['status'] = $data['status'] ?? 'draft';
         $data['issue_date'] = $data['issue_date'] ?? now()->toDateString();
         $data['valid_until'] = $data['valid_until'] ?? now()->addDays(
             (int) Setting::get('quote.default_validity_days', 30)

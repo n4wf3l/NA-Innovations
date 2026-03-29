@@ -26,6 +26,16 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             \App\Services\WorkflowService::sendServiceExpiryNotifications();
         })->dailyAt('07:30');
+
+        // Send invoice overdue reminders daily at 9am
+        $schedule->call(function () {
+            \App\Services\WorkflowService::sendInvoiceReminders();
+        })->dailyAt('09:00');
+
+        // Send invoice due date reminders (J-7, J-3, J-1) daily at 09:30
+        $schedule->call(function () {
+            \App\Services\WorkflowService::sendInvoiceDueReminders();
+        })->dailyAt('09:30')->name('invoice-due-reminders');
     }
 
     /**
