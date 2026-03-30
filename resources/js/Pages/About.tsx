@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import OriginalLanguageBadge from '@/Components/ui/OriginalLanguageBadge';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import SectionNav from '@/Components/landing/SectionNav';
+import SpinnerLink from '@/Components/landing/SpinnerLink';
 
 interface AboutData {
     id: number;
@@ -187,13 +188,13 @@ export default function About({ about, seo }: Props) {
                     <p className="text-lg text-gray-400 mb-10">
                         {t("Let's talk about your project.")}
                     </p>
-                    <Link
-                        href="/contact"
+                    <SpinnerLink
+                        href="/contact#contact"
                         className="inline-flex items-center gap-3 px-12 py-6 bg-teal-400 text-gray-900 text-2xl font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_60px_rgba(94,234,212,0.4)] bebas"
                         style={{ letterSpacing: '3px' }}
                     >
                         {t('Contact Us').toUpperCase()}
-                    </Link>
+                    </SpinnerLink>
                 </div>
             </section>
 

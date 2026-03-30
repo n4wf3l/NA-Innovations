@@ -6,7 +6,7 @@ interface TopBarProps {
 
 export default function TopBar({ title, onMenuClick, right }: TopBarProps) {
     return (
-        <header className="sticky top-0 z-30 h-14 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-4 sm:px-6 transition-colors duration-200">
+        <header className="sticky top-0 z-30 h-14 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-4 sm:px-6 transition-colors duration-200 topbar-animate">
             <div className="flex items-center">
                 <button onClick={onMenuClick} className="lg:hidden text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 mr-4 -ml-1">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>

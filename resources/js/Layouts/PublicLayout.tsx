@@ -41,7 +41,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
     const { t } = useTranslation();
     const { theme, setTheme } = useTheme();
     const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    const toggleTheme = () => setTheme(isDark ? 'light' : 'dark');
+    const toggleTheme = (e: React.MouseEvent) => setTheme(isDark ? 'light' : 'dark', e.nativeEvent);
     const pageUrl = typeof window !== 'undefined' ? window.location.href : appUrl;
     const siteName = branding?.company_name || 'NA Innovations';
     const metaDesc = description || branding?.tagline || 'Web Development, Mobile & Software — NA Innovations';
@@ -74,11 +74,11 @@ export default function PublicLayout({ children, title, description, ogImage, js
     const navLinks = [
         { href: '/', label: t('Home') },
         { href: '/services', label: t('Services') },
+        { href: '/projects', label: t('Projects') },
         { href: '/products', label: t('Products') },
         { href: '/pricing', label: t('Pricing') },
-        { href: '/projects', label: t('Projects') },
-        { href: '/about', label: t('About') },
         { href: '/posts', label: t('News') },
+        { href: '/about', label: t('About') },
         { href: '/contact', label: t('Free Quote') },
     ];
 
@@ -214,7 +214,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
                             </Link>
                         ))}
                         {navLinks.find(l => l.href === '/contact') && (
-                            <a href="/contact#tabs" className={`px-5 py-2 text-sm font-bold rounded-full transition-all duration-300 ${isActive('/contact') ? 'bg-teal-300 text-gray-900' : 'bg-teal-400 text-gray-900 hover:bg-teal-300 hover:shadow-[0_0_20px_rgba(94,234,212,0.3)]'}`} style={{ letterSpacing: '1px' }}>
+                            <a href="/contact#quote" className={`px-5 py-2 text-sm font-bold rounded-full transition-all duration-300 ${isActive('/contact') ? 'bg-teal-300 text-gray-900' : 'bg-teal-400 text-gray-900 hover:bg-teal-300 hover:shadow-[0_0_20px_rgba(94,234,212,0.3)]'}`} style={{ letterSpacing: '1px' }}>
                                 {navLinks.find(l => l.href === '/contact')!.label}
                             </a>
                         )}
@@ -272,7 +272,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
 
                             {/* CTA */}
                             <a
-                                href="/contact#tabs"
+                                href="/contact#quote"
                                 onClick={() => setMobileMenuOpen(false)}
                                 className="px-12 py-4 bg-teal-400 text-gray-900 text-base font-bold rounded-full hover:bg-teal-300 transition-all duration-300 bebas"
                                 style={{ letterSpacing: '4px' }}

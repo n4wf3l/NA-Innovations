@@ -3,6 +3,7 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { useTranslation } from 'react-i18next';
 import SectionNav from '@/Components/landing/SectionNav';
+import SpinnerLink from '@/Components/landing/SpinnerLink';
 
 interface ServiceData {
     id: number;
@@ -148,8 +149,8 @@ export default function Services({ services }: Props) {
                     <p className="text-lg text-gray-400 mb-10">
                         {t("Get in touch and let's discuss how we can bring your vision to life.")}
                     </p>
-                    <Link
-                        href="/contact"
+                    <SpinnerLink
+                        href="/contact#quote"
                         className="inline-flex items-center gap-3 px-12 py-6 bg-teal-400 text-gray-900 text-2xl font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_60px_rgba(94,234,212,0.4)] bebas"
                         style={{ letterSpacing: '3px' }}
                     >
@@ -157,7 +158,7 @@ export default function Services({ services }: Props) {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                         </svg>
                         {t('REQUEST A QUOTE')}
-                    </Link>
+                    </SpinnerLink>
                 </div>
             </section>
 

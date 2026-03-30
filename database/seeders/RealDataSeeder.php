@@ -1735,6 +1735,222 @@ Website: nainnovations.be');
 
         Setting::set('chatbot.enabled', 'true');
 
-        echo "Données réelles insérées avec succès.\n";
+        // =====================================================================
+        // RWDM ACADEMY — 14th project (internship, no revenue)
+        // =====================================================================
+
+        $projRwdm = Projet::updateOrCreate(
+            ['nom_societe' => 'RWDM Academy'],
+            [
+                'type_societe'          => 'Sport / Football',
+                'type_site'             => 'platform_saas',
+                'lieu'                  => 'Brussels',
+                'developer_id'          => $nawfel->id,
+                'status'                => 'completed',
+                'description'           => "Official RWDM Brussels FC Academy platform. Built during internship at the club. Full dashboard for managing registrations, selection tests, accident declarations, medical certificates (certificats de guérison), liability waivers (décharges de responsabilité). Integrated with Pro Soccer Data API for precise player statistics. Actively used by the club since 2024.",
+                'start_date'            => '2024-06-01',
+                'end_date'              => '2024-09-01',
+                'budget'                => 0,
+                'total_billed'          => 0,
+                'lien'                  => 'www.rwdmacademy.be',
+                'langage_programmation' => 'Laravel + React + Pro Soccer Data API',
+                'nombre_collaborateurs' => 1,
+            ]
+        );
+
+        RecurringService::updateOrCreate(
+            ['name' => 'Hosting - RWDM Academy', 'projet_id' => $projRwdm->id],
+            [
+                'type' => 'hosting', 'provider' => 'Combell', 'status' => 'active',
+                'billed_price' => 250, 'real_cost' => 50,
+                'purchase_date' => '2024-06-01', 'expiry_date' => '2026-06-01',
+                'auto_renew' => true, 'alert_days_before' => 30,
+            ]
+        );
+
+        // =====================================================================
+        // PORTFOLIO — Published projects for the landing page
+        // =====================================================================
+
+        $portfolioData = [
+            [
+                'project' => $projTiptong,
+                'title' => 'TipTong',
+                'slug' => 'tiptong',
+                'client_name' => 'TipTong SRL',
+                'excerpt' => 'Revolutionary LMS platform that goes beyond binary true/false. A world-first in learning memorization, born from years of teaching experience. Mobile app (iOS/Android) + web admin dashboard.',
+                'tech_stack' => ['Vue 3', 'Inertia.js', 'Laravel 10', 'React Native', 'MySQL', 'Stripe', 'AWS S3'],
+                'features' => ['Mobile App (iOS & Android)', 'Hint-based learning system', 'Mastery scoring', 'Admin analytics dashboard', 'Multi-role (SuperAdmin, Admin, Editor)', 'Push notifications', 'Pro Soccer Data API'],
+                'tags' => ['lms', 'education', 'mobile', 'innovation'],
+                'category' => 'Mobile App + Web Platform',
+                'live_url' => 'https://www.app.tiptong.fr',
+                'is_featured' => true,
+            ],
+            [
+                'project' => $projBxcars,
+                'title' => 'BX Cars',
+                'slug' => 'bx-cars',
+                'client_name' => 'BX Cars',
+                'excerpt' => 'Custom car reservation platform built with Laravel. Fully tailored booking system for a Brussels-based automotive service.',
+                'tech_stack' => ['Laravel', 'Tailwind CSS', 'MySQL', 'Stripe'],
+                'features' => ['Online booking system', 'Admin dashboard', 'Responsive design', 'Payment integration'],
+                'tags' => ['automobile', 'reservation', 'web'],
+                'category' => 'Web Application',
+                'live_url' => 'https://www.bxcars.be',
+                'is_featured' => false,
+            ],
+            [
+                'project' => $projDina,
+                'title' => 'Dina Kenitra FC',
+                'slug' => 'dina-kenitra',
+                'client_name' => 'Dina Kenitra Futsal Club',
+                'excerpt' => 'First futsal club website in Africa. Famous on social media with a professional communication structure. Full SaaS platform for club management.',
+                'tech_stack' => ['Laravel', 'Tailwind CSS', 'MySQL'],
+                'features' => ['Online registration', 'Team management', 'News section', 'Match calendar', 'Social media integration'],
+                'tags' => ['futsal', 'club', 'saas', 'africa'],
+                'category' => 'SaaS Platform',
+                'live_url' => 'https://www.dinakenitrafc.ma',
+                'is_featured' => true,
+            ],
+            [
+                'project' => $projSognodoro,
+                'title' => 'Sogno D\'Oro',
+                'slug' => 'sogno-doro',
+                'client_name' => 'Sogno D\'Oro',
+                'excerpt' => 'Bespoke e-commerce platform for a luxury perfume brand. Custom-built with Laravel and React for a unique shopping experience.',
+                'tech_stack' => ['Laravel', 'React', 'Tailwind CSS', 'MySQL', 'Stripe'],
+                'features' => ['Product catalog', 'Shopping cart', 'Secure payment', 'Admin inventory management', 'Order tracking'],
+                'tags' => ['ecommerce', 'luxury', 'perfume'],
+                'category' => 'E-commerce',
+                'live_url' => 'https://sognodoro.com',
+                'is_featured' => false,
+            ],
+            [
+                'project' => $projRwdm,
+                'title' => 'RWDM Academy',
+                'slug' => 'rwdm-academy',
+                'client_name' => 'RWDM Brussels FC',
+                'excerpt' => 'Official academy platform for RWDM Brussels FC. Registration, selection tests, accident declarations, medical certificates, liability waivers. Integrated with Pro Soccer Data API for player statistics.',
+                'tech_stack' => ['Laravel', 'React', 'TypeScript', 'Tailwind CSS', 'MySQL', 'Pro Soccer Data API'],
+                'features' => ['Online registration', 'Selection test management', 'Accident declarations', 'Medical certificates', 'Liability waivers', 'Player statistics (API)', 'Admin dashboard'],
+                'tags' => ['football', 'academy', 'saas'],
+                'category' => 'SaaS Platform',
+                'live_url' => 'https://www.rwdmacademy.be',
+                'is_featured' => true,
+            ],
+            [
+                'project' => $projEasywed,
+                'title' => 'EasyWed',
+                'slug' => 'easywed',
+                'client_name' => 'EasyWed',
+                'excerpt' => 'Mobile application connecting wedding service providers with clients. Premium accounts with integrated payments for a seamless planning experience.',
+                'tech_stack' => ['React Native', 'Laravel', 'MySQL', 'Stripe'],
+                'features' => ['Provider marketplace', 'Client matching', 'Premium accounts', 'Payment integration', 'Push notifications'],
+                'tags' => ['wedding', 'mobile', 'marketplace'],
+                'category' => 'Mobile Application',
+                'live_url' => null,
+                'is_featured' => false,
+            ],
+            [
+                'project' => $projVericore,
+                'title' => 'Vericore',
+                'slug' => 'vericore',
+                'client_name' => 'Vericore',
+                'excerpt' => 'Professional showcase website for a construction and building company. Clean, modern design focused on credibility and lead generation.',
+                'tech_stack' => ['Laravel', 'Tailwind CSS'],
+                'features' => ['Responsive design', 'Project gallery', 'Contact form', 'SEO optimized'],
+                'tags' => ['construction', 'showcase', 'web'],
+                'category' => 'Showcase Website',
+                'live_url' => null,
+                'is_featured' => false,
+            ],
+            [
+                'project' => $projCabs,
+                'title' => 'Cabs',
+                'slug' => 'cabs',
+                'client_name' => 'NA Innovations',
+                'excerpt' => 'Complete taxi fleet management SaaS. Real-time driver tracking, shift management, daily/monthly/annual cash reports. Built for the Belgian and Dutch taxi market.',
+                'tech_stack' => ['React', 'Tailwind CSS', 'Vite', 'Laravel', 'React Native'],
+                'features' => ['Real-time GPS tracking', 'Shift management', 'Cash reports', 'Driver profiles', 'Fleet analytics', 'Mobile app'],
+                'tags' => ['taxi', 'saas', 'fleet', 'management'],
+                'category' => 'SaaS Platform',
+                'live_url' => null,
+                'is_featured' => true,
+            ],
+        ];
+
+        foreach ($portfolioData as $i => $pd) {
+            $pd['project']->update(['is_portfolio' => true]);
+
+            PortfolioProject::updateOrCreate(
+                ['slug' => $pd['slug']],
+                [
+                    'projet_id'    => $pd['project']->id,
+                    'title'        => $pd['title'],
+                    'client_name'  => $pd['client_name'],
+                    'excerpt'      => $pd['excerpt'],
+                    'tech_stack'   => $pd['tech_stack'],
+                    'features'     => $pd['features'],
+                    'tags'         => $pd['tags'],
+                    'category'     => $pd['category'],
+                    'live_url'     => $pd['live_url'],
+                    'is_published' => true,
+                    'is_featured'  => $pd['is_featured'],
+                    'sort_order'   => $i,
+                ]
+            );
+        }
+
+        // =====================================================================
+        // BLOG POSTS — 3 articles for the landing page
+        // =====================================================================
+
+        $post = new \App\Models\Post;
+        $post::updateOrCreate(
+            ['slug' => 'why-every-business-needs-website-2026'],
+            [
+                'title'        => 'Why Every Business Needs a Professional Website in 2026',
+                'subject'      => 'Web Development',
+                'category'     => 'Web Development',
+                'excerpt'      => 'In today\'s digital landscape, a professional website is no longer optional. Discover why investing in a quality website is crucial for your business growth.',
+                'description'  => '<p>In today\'s digital-first world, your website is often the first impression potential customers have of your business. A well-designed, fast, and mobile-responsive website can be the difference between gaining a new client or losing them to a competitor.</p><p>At NA Innovations, we build websites that are not just visually stunning but also optimized for performance, SEO, and conversions.</p><p>Key reasons to invest in a professional website:</p><ul><li><strong>First impressions matter:</strong> 75% of users judge credibility based on website design.</li><li><strong>Mobile-first:</strong> Over 60% of web traffic comes from mobile devices.</li><li><strong>SEO visibility:</strong> A well-structured site ranks higher on Google.</li><li><strong>24/7 availability:</strong> Your website works for you around the clock.</li></ul>',
+                'status'       => 'published',
+                'published_at' => now()->subDays(5),
+                'author_id'    => $nawfel->id,
+                'reading_time' => 4,
+            ]
+        );
+
+        $post::updateOrCreate(
+            ['slug' => 'mobile-app-vs-pwa'],
+            [
+                'title'        => 'Mobile App vs Progressive Web App: Which One Should You Choose?',
+                'subject'      => 'Mobile Development',
+                'category'     => 'Mobile Development',
+                'excerpt'      => 'Native apps, hybrid apps, or PWAs? We break down the pros, cons, and costs of each approach to help you make the right decision.',
+                'description'  => '<p>When reaching your audience on mobile, you have three main options: native apps, hybrid apps, and Progressive Web Apps (PWAs).</p><p><strong>Native Apps</strong> offer the best performance but require separate iOS and Android development.</p><p><strong>Hybrid Apps</strong> (React Native, Flutter) use a single codebase, reducing dev time by up to 40%.</p><p><strong>PWAs</strong> work like native apps with offline support and push notifications, without app stores.</p><p>At NA Innovations, we help clients choose the right approach based on budget, timeline, and features.</p>',
+                'status'       => 'published',
+                'published_at' => now()->subDays(12),
+                'author_id'    => $nawfel->id,
+                'reading_time' => 6,
+            ]
+        );
+
+        $post::updateOrCreate(
+            ['slug' => 'building-saas-platform-from-scratch'],
+            [
+                'title'        => 'How We Built a Complete SaaS Platform from Scratch',
+                'subject'      => 'Case Study',
+                'category'     => 'Case Study',
+                'excerpt'      => 'A behind-the-scenes look at how we designed, developed, and launched a full business management SaaS using Laravel, React, and modern web technologies.',
+                'description'  => '<p>Building a SaaS platform is one of the most complex challenges in software development. Here is our experience building a complete business management platform from the ground up.</p><p>Stack: <strong>Laravel 10</strong> backend, <strong>React 18 + TypeScript</strong> frontend, <strong>Inertia.js</strong> bridge, <strong>Tailwind CSS</strong> styling.</p><p>Key features implemented:</p><ul><li>Multi-role authentication (admin, clients, partners, developers)</li><li>CRM pipeline with Kanban drag-and-drop</li><li>Quote and invoice generation with PDF</li><li>Commission tracking for referral partners</li><li>Real-time notifications and email automation</li><li>GitHub integration for project tracking</li></ul><p>The entire platform was built in under 3 months with a team of 3 developers.</p>',
+                'status'       => 'published',
+                'published_at' => now()->subDays(2),
+                'author_id'    => $nawfel->id,
+                'reading_time' => 8,
+            ]
+        );
+
+        echo "Real data seeded successfully.\n";
     }
 }

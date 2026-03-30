@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import SectionNav from '@/Components/landing/SectionNav';
+import SpinnerLink from '@/Components/landing/SpinnerLink';
 import {
     projectTypeOptions,
     formatEUR,
@@ -139,12 +140,12 @@ export default function Pricing({ seo }: Props) {
                                             ))}
                                         </ul>
                                         <div className="mt-8">
-                                            <Link
+                                            <SpinnerLink
                                                 href="/contact#simulator"
                                                 className={`block w-full text-center px-6 py-3.5 rounded-xl font-bold text-sm transition-all duration-200 ${btnBg}`}
                                             >
                                                 {t('Get a quote')}
-                                            </Link>
+                                            </SpinnerLink>
                                         </div>
                                     </div>
                                 </div>
@@ -195,19 +196,19 @@ export default function Pricing({ seo }: Props) {
                         {t('Every project is unique. Use our simulator for a personalized estimate, or contact us directly to discuss your needs.')}
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link
+                        <SpinnerLink
                             href="/contact#simulator"
                             className="inline-flex items-center justify-center px-8 py-4 bg-teal-400 text-gray-900 font-bold rounded-full hover:bg-teal-300 hover:shadow-[0_0_20px_rgba(94,234,212,0.3)] transition-all duration-300 text-sm"
                         >
                             {t('Try the price simulator')}
                             <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-                        </Link>
-                        <Link
-                            href="/contact"
+                        </SpinnerLink>
+                        <SpinnerLink
+                            href="/contact#contact"
                             className="inline-flex items-center justify-center px-8 py-4 border border-white/20 text-white font-bold rounded-full hover:border-white/40 hover:bg-white/5 transition-all duration-300 text-sm"
                         >
                             {t('Contact us')}
-                        </Link>
+                        </SpinnerLink>
                     </div>
                 </div>
             </section>

@@ -7,12 +7,59 @@ function getSystemTheme(): 'light' | 'dark' {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
+function resolveTheme(theme: Theme): 'light' | 'dark' {
+    return theme === 'system' ? getSystemTheme() : theme;
+}
+
 function applyTheme(theme: Theme) {
-    const resolved = theme === 'system' ? getSystemTheme() : theme;
+    const resolved = resolveTheme(theme);
     if (resolved === 'dark') {
         document.documentElement.classList.add('dark');
     } else {
         document.documentElement.classList.remove('dark');
+    }
+}
+
+function animateThemeTransition(theme: Theme, event?: MouseEvent | null) {
+    const resolved = resolveTheme(theme);
+    const isDark = resolved === 'dark';
+
+    // If View Transitions API is supported (Chrome 111+)
+    if (document.startViewTransition) {
+        // Get the click origin for the circular reveal
+        const x = event?.clientX ?? window.innerWidth / 2;
+        const y = event?.clientY ?? 0;
+        const maxRadius = Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        );
+
+        const transition = document.startViewTransition(() => {
+            applyTheme(theme);
+        });
+
+        transition.ready.then(() => {
+            document.documentElement.animate(
+                {
+                    clipPath: [
+                        `circle(0px at ${x}px ${y}px)`,
+                        `circle(${maxRadius}px at ${x}px ${y}px)`,
+                    ],
+                },
+                {
+                    duration: 500,
+                    easing: 'ease-in-out',
+                    pseudoElement: '::view-transition-new(root)',
+                }
+            );
+        });
+    } else {
+        // Fallback: smooth opacity transition
+        document.documentElement.style.transition = 'background-color 0.4s ease, color 0.4s ease';
+        applyTheme(theme);
+        setTimeout(() => {
+            document.documentElement.style.transition = '';
+        }, 400);
     }
 }
 
@@ -50,11 +97,10 @@ export function useTheme() {
         return () => window.removeEventListener(THEME_CHANGE_EVENT, handler);
     }, [theme]);
 
-    const setTheme = useCallback((t: Theme) => {
+    const setTheme = useCallback((t: Theme, event?: MouseEvent | React.MouseEvent | null) => {
         setThemeState(t);
         localStorage.setItem('na_theme', t);
-        applyTheme(t);
-        // Notify other useTheme instances
+        animateThemeTransition(t, event as MouseEvent | null);
         window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
     }, []);
 

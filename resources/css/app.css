@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Theme transition — circular reveal animation */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+    z-index: 1;
+}
+::view-transition-new(root) {
+    z-index: 9999;
+}
+
 /* Dashboard layouts handle their own scroll — lock body only when a layout is active */
 html.dashboard-layout, html.dashboard-layout body {
     overflow: hidden;
@@ -79,6 +92,157 @@ html {
 @keyframes pageIn {
     from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* While splash is active, pause all dashboard animations */
+body.splash-active .animate-page-in,
+body.splash-active .stagger-children > *,
+body.splash-active .animate-slide-up,
+body.splash-active .animate-fade-in {
+    animation-play-state: paused;
+    opacity: 0;
+}
+
+/* When splash ends, replay animations */
+body.splash-done .animate-page-in {
+    animation: pageIn 0.6s ease-out 0.05s both;
+}
+body.splash-done .stagger-children > * {
+    animation: fadeSlideUp 0.5s ease-out both;
+}
+body.splash-done .stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+body.splash-done .stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+body.splash-done .stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+body.splash-done .stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+body.splash-done .stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+body.splash-done .stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+body.splash-done .stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+body.splash-done .stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+body.splash-done .animate-slide-up {
+    animation: fadeSlideUp 0.6s ease-out 0.1s both;
+}
+
+/* Sidebar entrance after splash */
+body.splash-done .sidebar-animate {
+    animation: sidebarSlideIn 0.5s ease-out both;
+}
+@keyframes sidebarSlideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+body.splash-done .sidebar-animate-right {
+    animation: sidebarSlideInRight 0.5s ease-out 0.1s both;
+}
+@keyframes sidebarSlideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+body.splash-done .topbar-animate {
+    animation: fadeSlideDown 0.4s ease-out 0.05s both;
+}
+@keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scroll arrow animations (used on landing page) */
+@keyframes scrollPulse {
+    0%, 100% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(8px); opacity: 0.5; }
+}
+@keyframes scrollRing {
+    0% { transform: scale(1); opacity: 0.3; }
+    100% { transform: scale(2); opacity: 0; }
+}
+
+/* Force dark text colors on HTML content from WYSIWYG editor */
+.dark .prose p,
+.dark .prose li,
+.dark .prose span:not(a span),
+.dark .prose div {
+    color: #d1d5db !important; /* gray-300 */
+}
+.dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4 {
+    color: #ffffff !important;
+}
+.dark .prose strong, .dark .prose b {
+    color: #f3f4f6 !important; /* gray-100 */
+}
+
+/* Links in prose content — visible in both light and dark, override inline styles */
+.prose a,
+.prose a[href],
+.prose a[style] {
+    color: #0d9488 !important; /* teal-600 */
+    text-decoration: underline !important;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(13, 148, 136, 0.3) !important;
+    transition: all 0.2s ease;
+    position: relative;
+    cursor: pointer;
+}
+.prose a:hover,
+.prose a[href]:hover,
+.prose a[style]:hover {
+    color: #14b8a6 !important; /* teal-500 */
+    text-decoration-color: rgba(20, 184, 166, 0.8) !important;
+}
+.dark .prose a,
+.dark .prose a[href],
+.dark .prose a[style] {
+    color: #5eead4 !important; /* teal-300 */
+    text-decoration-color: rgba(94, 234, 212, 0.3) !important;
+}
+.dark .prose a:hover,
+.dark .prose a[href]:hover,
+.dark .prose a[style]:hover {
+    color: #99f6e4 !important; /* teal-200 */
+    text-decoration-color: rgba(153, 246, 228, 0.8) !important;
+}
+
+/* External link tooltip on hover */
+.prose a[href^="http"]::after {
+    content: attr(href);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #111827;
+    color: #d1d5db;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 50;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-decoration: none !important;
+}
+.prose a[href^="http"]::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    border: 5px solid transparent;
+    border-top-color: #111827;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 50;
+}
+.prose a[href^="http"]:hover::after,
+.prose a[href^="http"]:hover::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 @keyframes fadeIn {

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, KeyboardEvent } from 'react';
 import { useConfirm } from '@/hooks/useConfirm';
 import SearchableSelect from '@/Components/ui/SearchableSelect';
+import RichTextEditor from '@/Components/ui/RichTextEditor';
 
 interface Props {
     project: any;
@@ -112,20 +113,37 @@ export default function PortfolioEdit({ project, portfolio }: Props) {
         post(`/admin/portfolio/${project.id}`, { forceFormData: true });
     };
 
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+    const [uploading, setUploading] = useState(false);
+    const [dragOver, setDragOver] = useState(false);
 
+    const uploadFiles = (files: FileList | File[]) => {
+        const validFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+        if (validFiles.length === 0) return;
+
+        setUploading(true);
         const formData = new FormData();
-        formData.append('image', file);
+        validFiles.forEach(f => formData.append('images[]', f));
         formData.append('alt_text', project.nom_societe || '');
 
         router.post(`/admin/portfolio/${project.id}/images`, formData, {
             forceFormData: true,
             preserveScroll: true,
+            onFinish: () => setUploading(false),
         });
+    };
 
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files?.length) return;
+        uploadFiles(e.target.files);
         e.target.value = '';
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        setDragOver(false);
+        if (e.dataTransfer.files?.length) {
+            uploadFiles(e.dataTransfer.files);
+        }
     };
 
     const handleDeleteImage = async (imageId: number) => {
@@ -220,15 +238,33 @@ export default function PortfolioEdit({ project, portfolio }: Props) {
                         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
                             <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">{t("Galerie d'images")}</h3>
 
-                            <div className="mb-4">
-                                <label className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl cursor-pointer transition-colors">
-                                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                    </svg>
-                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('Ajouter une image')}</span>
-                                    <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={handleImageUpload} className="hidden" />
-                                </label>
-                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t('JPG, PNG, WebP — max 5 Mo')}</p>
+                            {/* Drop zone + multi-select */}
+                            <div
+                                onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                                onDragLeave={() => setDragOver(false)}
+                                onDrop={handleDrop}
+                                className={`mb-4 border-2 border-dashed rounded-2xl p-6 text-center transition-all duration-200 cursor-pointer ${
+                                    dragOver
+                                        ? 'border-teal-400 bg-teal-500/10 scale-[1.01]'
+                                        : 'border-gray-300 dark:border-gray-600 hover:border-teal-400 hover:bg-teal-500/5'
+                                } ${uploading ? 'opacity-60 pointer-events-none' : ''}`}
+                                onClick={() => document.getElementById('portfolio-image-input')?.click()}
+                            >
+                                {uploading ? (
+                                    <div className="flex flex-col items-center gap-2">
+                                        <svg className="w-8 h-8 text-teal-500 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
+                                        <p className="text-sm font-medium text-teal-600 dark:text-teal-400">{t('Upload en cours...')}</p>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center gap-2">
+                                        <svg className="w-10 h-10 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M2.25 18V6a2.25 2.25 0 012.25-2.25h15A2.25 2.25 0 0121.75 6v12A2.25 2.25 0 0119.5 20.25H4.5A2.25 2.25 0 012.25 18z" />
+                                        </svg>
+                                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t('Glissez vos images ici')}</p>
+                                        <p className="text-xs text-gray-400 dark:text-gray-500">{t('ou cliquez pour sélectionner')} — JPG, PNG, WebP — max 5 Mo — {t('plusieurs fichiers possibles')}</p>
+                                    </div>
+                                )}
+                                <input id="portfolio-image-input" type="file" accept=".jpg,.jpeg,.png,.webp" multiple onChange={handleImageUpload} className="hidden" />
                             </div>
 
                             {images.length > 0 ? (
@@ -271,46 +307,22 @@ export default function PortfolioEdit({ project, portfolio }: Props) {
                             <div className="space-y-4">
                                 <div>
                                     <label className={labelClass}>{t('Contexte')}</label>
-                                    <textarea
-                                        value={data.context}
-                                        onChange={e => setData('context', e.target.value)}
-                                        rows={3}
-                                        className={inputClass}
-                                        placeholder={t('Quel était le besoin du client ?')}
-                                    />
+                                    <RichTextEditor value={data.context} onChange={html => setData('context', html)} placeholder={t('Quel était le besoin du client ?')} minHeight={100} />
                                     {errors.context && <p className="mt-1 text-sm text-red-600">{errors.context}</p>}
                                 </div>
                                 <div>
                                     <label className={labelClass}>{t('Défi')}</label>
-                                    <textarea
-                                        value={data.challenge}
-                                        onChange={e => setData('challenge', e.target.value)}
-                                        rows={3}
-                                        className={inputClass}
-                                        placeholder={t('Quelles étaient les difficultés ?')}
-                                    />
+                                    <RichTextEditor value={data.challenge} onChange={html => setData('challenge', html)} placeholder={t('Quelles étaient les difficultés ?')} minHeight={100} />
                                     {errors.challenge && <p className="mt-1 text-sm text-red-600">{errors.challenge}</p>}
                                 </div>
                                 <div>
                                     <label className={labelClass}>{t('Solution')}</label>
-                                    <textarea
-                                        value={data.solution}
-                                        onChange={e => setData('solution', e.target.value)}
-                                        rows={3}
-                                        className={inputClass}
-                                        placeholder={t('Comment avez-vous résolu le problème ?')}
-                                    />
+                                    <RichTextEditor value={data.solution} onChange={html => setData('solution', html)} placeholder={t('Comment avez-vous résolu le problème ?')} minHeight={100} />
                                     {errors.solution && <p className="mt-1 text-sm text-red-600">{errors.solution}</p>}
                                 </div>
                                 <div>
                                     <label className={labelClass}>{t('Résultats')}</label>
-                                    <textarea
-                                        value={data.results}
-                                        onChange={e => setData('results', e.target.value)}
-                                        rows={3}
-                                        className={inputClass}
-                                        placeholder={t('Quels résultats concrets ?')}
-                                    />
+                                    <RichTextEditor value={data.results} onChange={html => setData('results', html)} placeholder={t('Quels résultats concrets ?')} minHeight={100} />
                                     {errors.results && <p className="mt-1 text-sm text-red-600">{errors.results}</p>}
                                 </div>
                             </div>

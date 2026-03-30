@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { router, usePage } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { useTranslation } from 'react-i18next';
+import RichTextEditor from '@/Components/ui/RichTextEditor';
 
 interface SectionData {
     id: number;
@@ -141,11 +142,11 @@ export default function LandingSections({ sections }: Props) {
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('Description')}</label>
-                                    <textarea
+                                    <RichTextEditor
                                         value={form.description || ''}
-                                        onChange={(e) => updateForm(section.id, 'description', e.target.value)}
-                                        rows={3}
-                                        className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                                        onChange={(html) => updateForm(section.id, 'description', html)}
+                                        placeholder={t('Section content...')}
+                                        minHeight={150}
                                     />
                                 </div>
 

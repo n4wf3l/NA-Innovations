@@ -3,6 +3,7 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { formatProjectType } from '@/lib/utils';
 import OriginalLanguageBadge from '@/Components/ui/OriginalLanguageBadge';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
@@ -35,7 +36,7 @@ interface PortfolioProject {
     testimonial_author: string | null;
     testimonial_role: string | null;
     images: PortfolioImage[];
-    projet?: { nom_societe: string; type_site: string; lieu: string };
+    projet?: { nom_societe: string; type_site: string; lieu: string; image?: string };
 }
 
 interface Props {
@@ -156,65 +157,83 @@ export default function Show({ project, nextProject, previousProject }: Props) {
             <style>{`
                 .bebas { font-family: 'Bebas Neue', sans-serif; }
 
+                @keyframes heroReveal {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes heroZoom {
+                    from { transform: scale(1.15); }
+                    to { transform: scale(1); }
+                }
+                @keyframes heroTitleReveal {
+                    from { opacity: 0; transform: translateY(60px) scale(0.95); filter: blur(10px); }
+                    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+                }
+                @keyframes heroLineGrow {
+                    from { transform: scaleX(0); }
+                    to { transform: scaleX(1); }
+                }
+                @keyframes heroMetaSlide {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes heroPulseDown {
+                    0%, 100% { transform: translateY(0) translateX(-50%); opacity: 0.8; }
+                    50% { transform: translateY(10px) translateX(-50%); opacity: 0.4; }
+                }
                 @keyframes fadeInUp {
                     from { opacity: 0; transform: translateY(40px); }
                     to { opacity: 1; transform: translateY(0); }
                 }
-                .fade-in-up {
-                    animation: fadeInUp 0.7s ease-out forwards;
-                    opacity: 0;
-                }
-
+                .fade-in-up { animation: fadeInUp 0.7s ease-out forwards; opacity: 0; }
                 @keyframes slideInLeft {
                     from { opacity: 0; transform: translateX(-40px); }
                     to { opacity: 1; transform: translateX(0); }
                 }
-                .slide-in-left {
-                    animation: slideInLeft 0.7s ease-out forwards;
-                    opacity: 0;
-                }
-
+                .slide-in-left { animation: slideInLeft 0.7s ease-out forwards; opacity: 0; }
                 @keyframes slideInRight {
                     from { opacity: 0; transform: translateX(40px); }
                     to { opacity: 1; transform: translateX(0); }
                 }
-                .slide-in-right {
-                    animation: slideInRight 0.7s ease-out forwards;
-                    opacity: 0;
-                }
-
+                .slide-in-right { animation: slideInRight 0.7s ease-out forwards; opacity: 0; }
                 @keyframes galleryFadeIn {
                     from { opacity: 0; transform: scale(0.9); }
                     to { opacity: 1; transform: scale(1); }
                 }
-                .gallery-animate {
-                    animation: galleryFadeIn 0.6s ease-out forwards;
-                    opacity: 0;
-                }
+                .gallery-animate { animation: galleryFadeIn 0.6s ease-out forwards; opacity: 0; }
             `}</style>
 
-            {/* Full-width Hero Image */}
-            <section className="relative overflow-hidden" style={{ minHeight: '60vh' }}>
-                {heroImage ? (
-                    <img
-                        src={`/storage/${heroImage.image_path}`}
-                        alt={heroImage.alt_text || project.title}
-                        className="absolute inset-0 w-full h-full object-cover"
-                    />
-                ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black" />
-                )}
+            {/* Cinematic Fullscreen Hero */}
+            <section className="relative overflow-hidden bg-black" style={{ minHeight: '100vh' }}>
+                {/* Background image with zoom animation */}
+                <div className="absolute inset-0" style={{ animation: 'heroZoom 6s ease-out forwards' }}>
+                    {heroImage ? (
+                        <img
+                            src={`/storage/${heroImage.image_path}`}
+                            alt={heroImage.alt_text || project.title}
+                            className="w-full h-full object-cover"
+                            style={{ animation: 'heroReveal 1.2s ease-out forwards', opacity: 0 }}
+                        />
+                    ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-gray-800 via-gray-900 to-black" />
+                    )}
+                </div>
 
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+                {/* Multi-layer gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
 
-                {/* Hero content */}
-                <div className="relative z-10 flex flex-col justify-end h-full min-h-[60vh] max-w-7xl mx-auto px-4 pb-12 md:pb-20 hero-fade">
+                {/* Decorative corner accents */}
+                <div className="absolute top-8 left-8 w-16 h-16 border-l-2 border-t-2 border-teal-400/30 opacity-0" style={{ animation: 'heroMetaSlide 0.6s ease-out 1.2s forwards' }} />
+                <div className="absolute bottom-8 right-8 w-16 h-16 border-r-2 border-b-2 border-teal-400/30 opacity-0" style={{ animation: 'heroMetaSlide 0.6s ease-out 1.4s forwards' }} />
+
+                {/* Hero content — vertically centered */}
+                <div className="relative z-10 flex flex-col justify-center h-full min-h-[100vh] max-w-7xl mx-auto px-6 md:px-12">
                     {/* Back link */}
                     <Link
                         href="/projects"
-                        className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors mb-8 self-start bebas text-lg"
-                        style={{ letterSpacing: '2px' }}
+                        className="absolute top-8 left-6 md:left-12 inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors bebas text-lg opacity-0"
+                        style={{ letterSpacing: '2px', animation: 'heroMetaSlide 0.6s ease-out 0.4s forwards' }}
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -222,22 +241,83 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                         {t('Back to Projects').toUpperCase()}
                     </Link>
 
+                    {/* Client logo */}
+                    {(project.client_logo || project.projet?.image) && (() => {
+                        const logoSrc = project.client_logo || project.projet?.image || '';
+                        const src = logoSrc.startsWith('http') ? logoSrc : `/storage/${logoSrc}`;
+                        return (
+                            <div className="mb-8 opacity-0" style={{ animation: 'heroMetaSlide 0.8s ease-out 0.6s forwards' }}>
+                                <img src={src} alt={project.client_name} className="h-14 md:h-20 w-auto object-contain drop-shadow-2xl" />
+                            </div>
+                        );
+                    })()}
+
+                    {/* Category badge */}
                     {project.category && (
-                        <span className="inline-block px-4 py-1.5 bg-teal-400 text-gray-900 text-sm font-bold rounded-full bebas mb-4 self-start" style={{ letterSpacing: '1px' }}>
+                        <span
+                            className="inline-block px-5 py-2 bg-teal-400/10 border border-teal-400/30 text-teal-300 text-sm font-bold rounded-full bebas self-start mb-6 opacity-0"
+                            style={{ letterSpacing: '2px', animation: 'heroMetaSlide 0.6s ease-out 0.8s forwards' }}
+                        >
                             {project.category}
                         </span>
                     )}
 
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white bebas fade-in-up" style={{ letterSpacing: '3px' }}>
+                    {/* Title — cinematic reveal */}
+                    <h1
+                        className="text-6xl md:text-8xl lg:text-[10rem] font-bold text-white bebas leading-[0.85] opacity-0"
+                        style={{ letterSpacing: '4px', animation: 'heroTitleReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards' }}
+                    >
                         {project.title}
                     </h1>
 
-                    <OriginalLanguageBadge light className="mt-4" />
+                    {/* Accent line */}
+                    <div
+                        className="h-[3px] w-32 md:w-48 bg-gradient-to-r from-teal-400 to-teal-300 mt-8 origin-left"
+                        style={{ transform: 'scaleX(0)', animation: 'heroLineGrow 0.8s ease-out 1s forwards' }}
+                    />
+
+                    {/* Excerpt */}
+                    <OriginalLanguageBadge light className="mt-6 opacity-0" style={{ animation: 'heroMetaSlide 0.6s ease-out 1.1s forwards' } as any} />
                     {project.excerpt && (
-                        <p className="mt-4 text-lg md:text-xl text-white/70 max-w-3xl fade-in-up" style={{ animationDelay: '200ms' }}>
+                        <p
+                            className="mt-4 text-lg md:text-xl text-white/60 max-w-2xl leading-relaxed opacity-0"
+                            style={{ animation: 'heroMetaSlide 0.8s ease-out 1.2s forwards' }}
+                        >
                             {project.excerpt}
                         </p>
                     )}
+
+                    {/* Tech stack pills */}
+                    {project.tech_stack?.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-8 opacity-0" style={{ animation: 'heroMetaSlide 0.8s ease-out 1.4s forwards' }}>
+                            {project.tech_stack.map((tech, i) => (
+                                <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 text-white/60 text-xs font-medium rounded-full">
+                                    {tech}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Live URL button */}
+                    {project.live_url && (
+                        <a
+                            href={project.live_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 mt-10 px-8 py-4 bg-teal-400 text-gray-900 font-bold rounded-full hover:bg-teal-300 hover:scale-105 transition-all duration-300 bebas text-lg self-start opacity-0"
+                            style={{ letterSpacing: '2px', animation: 'heroMetaSlide 0.8s ease-out 1.6s forwards' }}
+                        >
+                            {t('Visit Website').toUpperCase()}
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                        </a>
+                    )}
+                </div>
+
+                {/* Scroll indicator */}
+                <div className="absolute bottom-8 left-1/2 opacity-0" style={{ animation: 'heroPulseDown 2s ease-in-out 2s infinite, heroMetaSlide 0.6s ease-out 2s forwards' }}>
+                    <svg className="w-6 h-6 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+                    </svg>
                 </div>
             </section>
 
@@ -249,11 +329,15 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                         <div className={`lg:w-2/3 space-y-12 ${contentSection.isVisible ? 'slide-in-left' : 'opacity-0'}`}>
                             {/* Project meta */}
                             <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 pb-8">
-                                {project.client_logo && (
-                                    <div className="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-xl p-2 border border-gray-100 dark:border-gray-600 flex items-center justify-center">
-                                        <img src={`/storage/${project.client_logo}`} alt={project.client_name} loading="lazy" className="max-w-full max-h-full object-contain" />
-                                    </div>
-                                )}
+                                {(project.client_logo || project.projet?.image) && (() => {
+                                    const src = project.client_logo || project.projet?.image || '';
+                                    const imgUrl = src.startsWith('http') ? src : `/storage/${src}`;
+                                    return (
+                                        <div className="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-xl p-2 border border-gray-100 dark:border-gray-600 flex items-center justify-center">
+                                            <img src={imgUrl} alt={project.client_name} loading="lazy" className="max-w-full max-h-full object-contain" />
+                                        </div>
+                                    );
+                                })()}
                                 {project.client_name && (
                                     <div>
                                         <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">Client</span>
@@ -275,7 +359,7 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                                 {project.projet?.type_site && (
                                     <div>
                                         <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">Type</span>
-                                        <span className="text-gray-900 dark:text-white font-semibold">{project.projet.type_site}</span>
+                                        <span className="text-gray-900 dark:text-white font-semibold">{formatProjectType(project.projet.type_site)}</span>
                                     </div>
                                 )}
                                 {project.projet?.lieu && (
@@ -300,9 +384,10 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                                                 {t(section.title)}
                                             </h2>
                                         </div>
-                                        <div className="text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-line text-lg pl-[52px]">
-                                            {section.content}
-                                        </div>
+                                        <div
+                                            className="prose prose-gray dark:prose-invert max-w-none text-lg leading-relaxed pl-[52px] text-gray-600 dark:text-gray-300 prose-a:text-teal-500 prose-a:underline hover:prose-a:text-teal-400"
+                                            dangerouslySetInnerHTML={{ __html: section.content || '' }}
+                                        />
                                     </div>
                                 );
                             })}

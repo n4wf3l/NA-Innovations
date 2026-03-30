@@ -6,15 +6,56 @@ interface Message {
     id: string;
     role: 'bot' | 'user';
     content: string;
+    typed?: boolean; // true once typing animation is complete
 }
 
 const SESSION_KEY = 'na_chatbot_messages';
 const REMAINING_KEY = 'na_chatbot_remaining';
 
+/** Linkify URLs and paths like /contact into clickable links */
+function linkify(text: string): (string | JSX.Element)[] {
+    const parts = text.split(/(https?:\/\/[^\s]+|\/[a-z][a-z0-9\-\/]*)/gi);
+    return parts.map((part, i) => {
+        if (/^https?:\/\//.test(part)) {
+            return <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-teal-400 underline underline-offset-2 hover:text-teal-300 transition-colors">{part}</a>;
+        }
+        if (/^\/[a-z]/.test(part)) {
+            return <a key={i} href={part} className="text-teal-400 underline underline-offset-2 hover:text-teal-300 transition-colors">{part}</a>;
+        }
+        return part;
+    });
+}
+
+/** Typing animation for bot messages */
+function TypedBotMessage({ content, onComplete }: { content: string; onComplete: () => void }) {
+    const [displayed, setDisplayed] = useState('');
+    const indexRef = useRef(0);
+
+    useEffect(() => {
+        indexRef.current = 0;
+        setDisplayed('');
+        const interval = setInterval(() => {
+            indexRef.current++;
+            if (indexRef.current >= content.length) {
+                setDisplayed(content);
+                clearInterval(interval);
+                onComplete();
+            } else {
+                setDisplayed(content.slice(0, indexRef.current));
+            }
+        }, 18); // 18ms per character — fast but visible
+        return () => clearInterval(interval);
+    }, [content]);
+
+    return <>{linkify(displayed)}<span className="inline-block w-0.5 h-4 bg-teal-400 ml-0.5 animate-pulse align-middle" style={{ display: displayed.length < content.length ? 'inline-block' : 'none' }} /></>;
+}
+
 function getStoredMessages(): Message[] {
     try {
         const raw = sessionStorage.getItem(SESSION_KEY);
-        return raw ? JSON.parse(raw) : [];
+        const msgs: Message[] = raw ? JSON.parse(raw) : [];
+        // Mark all restored messages as already typed
+        return msgs.map(m => ({ ...m, typed: true }));
     } catch {
         return [];
     }
@@ -57,8 +98,14 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [remaining, setRemaining] = useState<number>(3);
     const [rateLimited, setRateLimited] = useState(false);
+    const [closing, setClosing] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const handleClose = () => {
+        setClosing(true);
+        setTimeout(() => { setClosing(false); onClose(); }, 300);
+    };
 
     // Load stored messages on mount
     useEffect(() => {
@@ -70,6 +117,7 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
                 id: 'welcome',
                 role: 'bot',
                 content: t('Bonjour ! Je peux répondre à vos questions sur nos services, nos tarifs et nos projets. Que souhaitez-vous savoir ?'),
+                typed: true, // Welcome message doesn't animate
             };
             setMessages([welcome]);
             storeMessages([welcome]);
@@ -200,10 +248,9 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
                     from { opacity: 0; transform: scale(0.95) translateY(20px); }
                     to { opacity: 1; transform: scale(1) translateY(0); }
                 }
-                @keyframes chatOverlayIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
+                @keyframes chatOverlayIn { from { opacity: 0; } to { opacity: 1; } }
+                @keyframes chatOverlayOut { from { opacity: 1; } to { opacity: 0; } }
+                @keyframes chatModalOut { from { opacity: 1; transform: scale(1) translateY(0); } to { opacity: 0; transform: scale(0.95) translateY(20px); } }
                 @keyframes typingDot {
                     0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
                     30% { opacity: 1; transform: translateY(-4px); }
@@ -213,14 +260,14 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
             {/* Overlay */}
             <div
                 className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-                style={{ animation: 'chatOverlayIn 0.2s ease-out' }}
-                onClick={onClose}
+                style={{ animation: `${closing ? 'chatOverlayOut' : 'chatOverlayIn'} 0.3s ease-out forwards` }}
+                onClick={handleClose}
             />
 
             {/* Modal */}
             <div
                 className="relative w-full max-w-2xl bg-gray-900 rounded-3xl shadow-2xl overflow-hidden border border-white/10 flex flex-col"
-                style={{ maxHeight: '80vh', animation: 'chatModalIn 0.3s ease-out' }}
+                style={{ maxHeight: '80vh', animation: `${closing ? 'chatModalOut' : 'chatModalIn'} 0.3s ease-out forwards` }}
             >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 flex-shrink-0">
@@ -238,7 +285,7 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
                     <div className="flex items-center gap-3">
                         <span className="text-xs text-gray-500">{remaining}/3 {t('restants')}</span>
                         <button
-                            onClick={onClose}
+                            onClick={handleClose}
                             className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -269,7 +316,15 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
                                         : 'bg-white/5 text-gray-300 rounded-tl-none'
                                 }`}
                             >
-                                {msg.content}
+                                {msg.role === 'bot' && !msg.typed ? (
+                                    <TypedBotMessage content={msg.content} onComplete={() => {
+                                        setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, typed: true } : m));
+                                    }} />
+                                ) : msg.role === 'bot' ? (
+                                    <>{linkify(msg.content)}</>
+                                ) : (
+                                    msg.content
+                                )}
                             </div>
                         </div>
                     ))}

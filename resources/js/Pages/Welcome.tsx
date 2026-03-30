@@ -1,7 +1,9 @@
 import { Head, Link, usePage } from '@inertiajs/react';
+import SpinnerLink from '@/Components/landing/SpinnerLink';
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import OriginalLanguageBadge from '@/Components/ui/OriginalLanguageBadge';
+import AdminEditButton from '@/Components/landing/AdminEditButton';
 import HeroSection from '@/Components/landing/HeroSection';
 import StatsSection from '@/Components/landing/StatsSection';
 import PortfolioSection from '@/Components/landing/PortfolioSection';
@@ -10,6 +12,7 @@ import FooterSection from '@/Components/landing/FooterSection';
 import WhatsAppButton from '@/Components/landing/WhatsAppButton';
 import { ChatModal } from '@/Components/landing/ChatWidget';
 import SectionNav from '@/Components/landing/SectionNav';
+import ScrollNextButton from '@/Components/landing/ScrollNextButton';
 
 interface PortfolioProject {
     id: number; title: string; slug: string; client_name: string; client_logo: string | null;
@@ -334,7 +337,7 @@ function TypewriterText() {
 function AIAssistantSection({ onOpenChat }: { onOpenChat: () => void }) {
     const { t } = useTranslation();
     return (
-        <section className="py-16 bg-gray-900 relative overflow-hidden">
+        <section className="flex-1 flex flex-col justify-center py-16 bg-gray-900 relative overflow-hidden">
             <style>{`
                 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
                 @keyframes aiGlow { 0%, 100% { opacity: 0.03; } 50% { opacity: 0.06; } }
@@ -371,6 +374,8 @@ function AIAssistantSection({ onOpenChat }: { onOpenChat: () => void }) {
                 </div>
 
                 <p className="mt-4 text-xs text-gray-600">{t('3 questions gratuites par jour')}</p>
+
+                {/* Scroll arrow handled by fixed global ScrollNextButton */}
             </div>
         </section>
     );
@@ -422,10 +427,13 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
     const ctaSection = landingSections['cta'];
 
     const navLinks = [
-        { href: '/', label: t('Home') }, { href: '/services', label: t('Services') },
+        { href: '/', label: t('Home') },
+        { href: '/services', label: t('Services') },
+        { href: '/projects', label: t('Projects') },
         { href: '/products', label: t('Products') },
-        { href: '/pricing', label: t('Pricing') }, { href: '/projects', label: t('Projects') },
-        { href: '/about', label: t('About') }, { href: '/posts', label: t('News') },
+        { href: '/pricing', label: t('Pricing') },
+        { href: '/posts', label: t('News') },
+        { href: '/about', label: t('About') },
         { href: '/contact', label: t('Free Quote') },
     ];
 
@@ -474,53 +482,57 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
 
             <HeroSection heroSection={heroSection} branding={branding} socialLinks={socialLinks} socialIcons={socialIcons} navLinks={navLinks} locale={locale} auth={auth} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
 
-            {/* Free Estimate Banner */}
-            <div className="bg-gradient-to-r from-gray-900 via-teal-900/40 to-gray-900 border-y border-teal-500/20 py-3">
-                <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center">
-                    <span className="text-sm text-gray-400 font-medium">{t('Get a free estimate in 2 minutes')}</span>
-                    <a href="/contact#simulator" className="inline-flex items-center gap-1.5 px-5 py-2 bg-teal-400 text-gray-900 text-sm font-bold rounded-full hover:bg-teal-300 hover:shadow-[0_0_20px_rgba(94,234,212,0.2)] transition-all duration-300 bebas" style={{ letterSpacing: '1px' }}>
-                        {t('Try our price simulator').toUpperCase()}
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-                    </a>
+            {/* ═══ Second screen: Estimate + Stats + AI ═══ */}
+            <div id="estimate-banner" className="min-h-screen flex flex-col">
+                {/* Free Estimate Banner */}
+                <div className="bg-gradient-to-r from-gray-100 via-teal-50 to-gray-100 dark:from-gray-900 dark:via-teal-900/40 dark:to-gray-900 border-y border-teal-200 dark:border-teal-500/20 py-3">
+                    <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center">
+                        <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">{t('Get a free estimate in 2 minutes')}</span>
+                        <SpinnerLink href="/contact#simulator" className="inline-flex items-center gap-1.5 px-5 py-2 bg-teal-400 text-gray-900 text-sm font-bold rounded-full hover:bg-teal-300 hover:shadow-[0_0_20px_rgba(94,234,212,0.2)] transition-all duration-300 bebas" style={{ letterSpacing: '1px' }}>
+                            {t('Try our price simulator').toUpperCase()}
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                        </SpinnerLink>
+                    </div>
                 </div>
+
+                {/* Scrolling Messages Banner */}
+                {messages.length > 0 && (
+                    <div className="bg-teal-300 text-white text-3xl bebas overflow-hidden py-4" style={{ letterSpacing: '3px' }}>
+                        <div className="scroll-banner">
+                            {[...messages, ...messages].map((msg, i) => (<span key={i} className="mx-12 whitespace-nowrap">{msg}</span>))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Presentation Video Section */}
+                {videoUrl && (
+                    <section className="py-20 bg-gray-900">
+                        <div className="max-w-4xl mx-auto px-4">
+                            <div className="text-center mb-10">
+                                <h2 className="text-5xl font-bold text-white bebas" style={{ letterSpacing: '2px' }}>
+                                    {t('Watch Our Story')}
+                                </h2>
+                            </div>
+                            <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ paddingBottom: '56.25%' }}>
+                                <iframe
+                                    src={videoUrl}
+                                    className="absolute inset-0 w-full h-full"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    title={t('Presentation video')}
+                                />
+                            </div>
+                        </div>
+                    </section>
+                )}
+
+                {/* Stats Section */}
+                {publicStats && <StatsSection publicStats={publicStats} sectionRef={statsSection.ref as any} isVisible={statsSection.isVisible} />}
+
+                {/* AI Assistant Section — fills remaining space */}
+                {chatAvailable && <AIAssistantSection onOpenChat={() => setChatOpen(true)} />}
+                {!chatAvailable && <div className="flex-1 bg-gray-900" />}
             </div>
-
-            {/* Scrolling Messages Banner */}
-            {messages.length > 0 && (
-                <div className="bg-teal-300 text-white text-3xl bebas overflow-hidden py-4" style={{ letterSpacing: '3px' }}>
-                    <div className="scroll-banner">
-                        {[...messages, ...messages].map((msg, i) => (<span key={i} className="mx-12 whitespace-nowrap">{msg}</span>))}
-                    </div>
-                </div>
-            )}
-
-            {/* Presentation Video Section */}
-            {videoUrl && (
-                <section className="py-20 bg-gray-900">
-                    <div className="max-w-4xl mx-auto px-4">
-                        <div className="text-center mb-10">
-                            <h2 className="text-5xl font-bold text-white bebas" style={{ letterSpacing: '2px' }}>
-                                {t('Watch Our Story')}
-                            </h2>
-                        </div>
-                        <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ paddingBottom: '56.25%' }}>
-                            <iframe
-                                src={videoUrl}
-                                className="absolute inset-0 w-full h-full"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                title={t('Presentation video')}
-                            />
-                        </div>
-                    </div>
-                </section>
-            )}
-
-            {/* Stats Section */}
-            {publicStats && <StatsSection publicStats={publicStats} sectionRef={statsSection.ref as any} isVisible={statsSection.isVisible} />}
-
-            {/* AI Assistant Section */}
-            {chatAvailable && <AIAssistantSection onOpenChat={() => setChatOpen(true)} />}
 
             {/* Client logos band */}
             {(() => {
@@ -532,7 +544,7 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                 if (logos.length < 3) return null;
 
                 return (
-                    <section className="py-12 bg-gray-50 dark:bg-gray-800/50 overflow-hidden">
+                    <section className="py-12 bg-gray-50 dark:bg-gray-800/50 overflow-hidden" data-section-theme="light">
                         <div className="max-w-6xl mx-auto px-4 mb-8">
                             <p className="text-center text-sm uppercase tracking-[0.3em] text-gray-400 dark:text-gray-500 bebas">{t('They Trust Us')}</p>
                         </div>
@@ -555,7 +567,7 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
 
             {/* Services Section */}
             {services.length > 0 && (
-                <section id="section-services" className="py-20 bg-white dark:bg-gray-900 scroll-mt-20">
+                <section id="section-services" className="py-20 bg-white dark:bg-gray-900 scroll-mt-2" data-section-theme="light">
                     <div className="max-w-6xl mx-auto px-4">
                         <div className="text-center mb-16">
                             <h2 className="text-7xl md:text-9xl font-semibold text-black dark:text-white bebas" style={{ letterSpacing: '2px' }}>{t('Our Services')}</h2>
@@ -579,10 +591,10 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                             ))}
                         </div>
                         <div className="text-center mt-12">
-                            <Link href="/services" className="inline-flex items-center gap-2 px-8 py-4 border-2 border-black dark:border-white text-black dark:text-white font-bold rounded-full hover:bg-teal-300 hover:border-teal-300 hover:text-white transition-all duration-300 bebas" style={{ letterSpacing: '2px' }}>
+                            <SpinnerLink href="/services" className="inline-flex items-center gap-2 px-8 py-4 border-2 border-black dark:border-white text-black dark:text-white font-bold rounded-full hover:bg-teal-300 hover:border-teal-300 hover:text-white transition-all duration-300 bebas" style={{ letterSpacing: '2px' }}>
                                 {t('All Services').toUpperCase()}
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-                            </Link>
+                            </SpinnerLink>
                         </div>
                         <div className="text-center mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
                             <p className="text-gray-500 dark:text-gray-400 text-sm mb-3">{t('Not sure about the cost?')}</p>
@@ -591,6 +603,8 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                             </a>
                         </div>
+
+                        {/* Scroll arrow handled by fixed global ScrollNextButton */}
                     </div>
                 </section>
             )}
@@ -598,18 +612,18 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
             {/* Process — compact horizontal stepper */}
             {landingSections?.process?.is_active && (landingSections.process.metadata?.steps || []).length > 0 && (
                 <section className="py-10 bg-gray-900 border-y border-white/5">
-                    <div className="max-w-6xl mx-auto px-4">
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-0">
+                    <div className="max-w-4xl mx-auto px-4">
+                        <div className="flex flex-col md:flex-row items-center justify-center gap-0">
                             {(landingSections.process.metadata.steps as { title: string; description: string }[]).map((step, i, arr) => (
-                                <div key={i} className="flex items-center gap-0 flex-1">
-                                    <div className="flex flex-col items-center text-center px-3 py-2">
-                                        <div className="w-9 h-9 rounded-full bg-teal-400 text-gray-900 flex items-center justify-center text-sm font-bold bebas mb-2">
+                                <div key={i} className="flex items-center gap-0">
+                                    <div className="flex flex-col items-center text-center px-5 py-2">
+                                        <div className="w-10 h-10 rounded-full bg-teal-400 text-gray-900 flex items-center justify-center text-sm font-bold bebas mb-2">
                                             {i + 1}
                                         </div>
-                                        <span className="text-xs font-bold text-white bebas" style={{ letterSpacing: '1px' }}>{step.title}</span>
+                                        <span className="text-xs font-bold text-white bebas" style={{ letterSpacing: '1px' }}>{t(step.title)}</span>
                                     </div>
                                     {i < arr.length - 1 && (
-                                        <div className="hidden md:block flex-1 h-px bg-gradient-to-r from-teal-400/40 to-white/10 mx-1" />
+                                        <div className="hidden md:block w-16 h-px bg-gradient-to-r from-teal-400/40 to-white/10" />
                                     )}
                                 </div>
                             ))}
@@ -623,7 +637,7 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
 
             {/* Latest News Section */}
             {latestPosts.length > 0 && (
-                <section id="section-news" className="py-20 bg-gray-100 dark:bg-gray-800 scroll-mt-20">
+                <section id="section-news" className="py-20 bg-gray-100 dark:bg-gray-800 scroll-mt-2" data-section-theme="light">
                     <div className="max-w-6xl mx-auto px-4">
                         <div className="text-center mb-16">
                             <h2 className="text-7xl md:text-9xl font-semibold text-black dark:text-white bebas" style={{ letterSpacing: '2px' }}>{t('Latest News')}</h2>
@@ -632,7 +646,8 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             {latestPosts.map((post) => (
-                                <div key={post.id} className="group bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1">
+                                <div key={post.id} className="group relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1">
+                                    <AdminEditButton href={`/admin/posts/${post.id}/edit`} className="!bg-black/30" />
                                     {post.image_url ? (
                                         <div className="overflow-hidden h-52"><img src={post.image_url} alt={post.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
                                     ) : post.photo ? (
@@ -705,7 +720,7 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
 
             {/* CTA Banner */}
             {(!ctaSection || ctaSection.is_active) && (
-                <section className="py-20 bg-gray-900 relative overflow-hidden">
+                <section id="section-cta" className="py-20 bg-gray-900 relative overflow-hidden">
                     <div className="absolute inset-0 opacity-[0.02] flex items-center justify-center" aria-hidden="true">
                         <span className="text-[20vw] font-bold text-white bebas whitespace-nowrap">GET STARTED</span>
                     </div>
@@ -713,10 +728,10 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                         <OriginalLanguageBadge light className="mb-4 justify-center" />
                         <h2 className="text-5xl md:text-7xl font-bold text-white bebas mb-6" style={{ letterSpacing: '2px' }}>{ctaSection?.title || t('Ready to start your project?')}</h2>
                         <p className="text-lg text-gray-400 mb-10">{ctaSection?.subtitle || t('Tell us about your idea and we\'ll get back to you within 24 hours with a tailored proposal.')}</p>
-                        <Link href={ctaSection?.button_url || '/contact'} className="inline-flex items-center gap-3 px-12 py-6 bg-teal-400 text-gray-900 text-2xl font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_60px_rgba(94,234,212,0.4)] bebas" style={{ letterSpacing: '3px' }}>
+                        <SpinnerLink href={ctaSection?.button_url || '/contact#quote'} className="inline-flex items-center gap-3 px-12 py-6 bg-teal-400 text-gray-900 text-2xl font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_60px_rgba(94,234,212,0.4)] bebas" style={{ letterSpacing: '3px' }}>
                             <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
                             {(ctaSection?.button_text || t('Request a Quote')).toUpperCase()}
-                        </Link>
+                        </SpinnerLink>
                         <p className="mt-6 text-gray-500 text-sm">
                             <a href="/contact#simulator" className="text-teal-300 hover:text-teal-200 underline underline-offset-2 transition-colors">{t('Try our price simulator')}</a>
                         </p>
@@ -745,7 +760,9 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
             </button>
 
             {/* Section navigator */}
+            <ScrollNextButton />
             <SectionNav sections={[
+                { id: 'ai-assistant', label: 'Assistant IA', highlight: true, onClick: () => setChatOpen(true) },
                 { id: 'section-services', label: 'Our Services' },
                 { id: 'section-portfolio', label: 'Our Work' },
                 { id: 'section-news', label: 'Latest News' },

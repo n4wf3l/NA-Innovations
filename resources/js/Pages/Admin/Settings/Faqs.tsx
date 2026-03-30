@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { router, usePage } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { useTranslation } from 'react-i18next';
+import RichTextEditor from '@/Components/ui/RichTextEditor';
 
 interface FaqData {
     id: number;
@@ -144,12 +145,11 @@ export default function Faqs({ faqs }: Props) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('Réponse')}</label>
-                            <textarea
-                                required
+                            <RichTextEditor
                                 value={newForm.answer}
-                                onChange={(e) => setNewForm({ ...newForm, answer: e.target.value })}
-                                rows={3}
-                                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                                onChange={(html) => setNewForm({ ...newForm, answer: html })}
+                                placeholder={t('Réponse à la question...')}
+                                minHeight={120}
                             />
                         </div>
                         <div className="flex items-center gap-4">
@@ -219,11 +219,11 @@ export default function Faqs({ faqs }: Props) {
                                             </div>
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('Réponse')}</label>
-                                                <textarea
+                                                <RichTextEditor
                                                     value={form.answer || ''}
-                                                    onChange={(e) => updateEditForm(faq.id, 'answer', e.target.value)}
-                                                    rows={2}
-                                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                                                    onChange={(html) => updateEditForm(faq.id, 'answer', html)}
+                                                    placeholder={t('Réponse à la question...')}
+                                                    minHeight={120}
                                                 />
                                             </div>
                                             <div className="flex items-center gap-4">

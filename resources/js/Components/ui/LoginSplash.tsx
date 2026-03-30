@@ -37,15 +37,22 @@ export default function LoginSplash() {
     const [show, setShow] = useState(shouldShow);
     const [phase, setPhase] = useState(shouldShow ? 1 : 0);
 
+    // Freeze dashboard animations while splash is active
     useEffect(() => {
         if (!shouldShow) return;
+        document.body.classList.add('splash-active');
+        document.body.classList.remove('splash-done');
         sessionStorage.setItem('login_splash_active', '1');
 
         const t1 = setTimeout(() => setPhase(2), 400);
         const t2 = setTimeout(() => setPhase(3), 2000);
         const t3 = setTimeout(() => {
             setShow(false);
+            document.body.classList.remove('splash-active');
+            document.body.classList.add('splash-done');
             sessionStorage.removeItem('login_splash_active');
+            // Clean up splash-done after animations complete
+            setTimeout(() => document.body.classList.remove('splash-done'), 1500);
         }, 2600);
 
         return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };

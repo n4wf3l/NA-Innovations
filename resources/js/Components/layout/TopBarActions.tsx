@@ -232,6 +232,19 @@ export default function TopBarActions({ notifications: initialNotifications = []
                 </button>
             )}
 
+            {/* Support Tickets (admin only) */}
+            {isAdmin && (
+                <Link
+                    href="/admin/support"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/30 rounded-full hover:bg-orange-100 dark:hover:bg-orange-500/20 transition-all"
+                >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                    </svg>
+                    Support
+                </Link>
+            )}
+
             {/* Notifications Bell */}
             <div className="relative" data-tour="notifications-bell">
                 <button
@@ -317,17 +330,17 @@ export default function TopBarActions({ notifications: initialNotifications = []
                                 <div className="flex items-center justify-between">
                                     <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{t('Theme')}</p>
                                     <div className="flex items-center gap-1">
-                                        <button onClick={() => setTheme('light')}
+                                        <button onClick={(e) => setTheme('light', e.nativeEvent)}
                                             className={`p-2 rounded-lg transition-all ${theme === 'light' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-500' : 'text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
                                             title={t('Light')}>
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
                                         </button>
-                                        <button onClick={() => setTheme('dark')}
+                                        <button onClick={(e) => setTheme('dark', e.nativeEvent)}
                                             className={`p-2 rounded-lg transition-all ${theme === 'dark' ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500 dark:text-indigo-400' : 'text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
                                             title={t('Dark')}>
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
                                         </button>
-                                        <button onClick={() => setTheme('system')}
+                                        <button onClick={(e) => setTheme('system', e.nativeEvent)}
                                             className={`p-2 rounded-lg transition-all ${theme === 'system' ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-500 dark:text-teal-400' : 'text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
                                             title={t('Auto')}>
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" /></svg>

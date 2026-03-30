@@ -2,6 +2,7 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import SearchableSelect from '@/Components/ui/SearchableSelect';
+import RichTextEditor from '@/Components/ui/RichTextEditor';
 
 interface Page {
     id: number;
@@ -102,13 +103,12 @@ export default function PageEdit({ page }: Props) {
 
                 {/* Content */}
                 <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm">
-                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">{t("Content (HTML)")}</h3>
-                    <textarea
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">{t("Content")}</h3>
+                    <RichTextEditor
                         value={data.content}
-                        onChange={e => setData('content', e.target.value)}
-                        rows={20}
-                        className={inputClass + ' font-mono text-xs'}
-                        required
+                        onChange={(html) => setData('content', html)}
+                        placeholder={t('Page content...')}
+                        minHeight={350}
                     />
                     {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content}</p>}
                 </div>

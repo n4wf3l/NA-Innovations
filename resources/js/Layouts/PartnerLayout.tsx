@@ -9,6 +9,8 @@ import LoginSplash from '@/Components/ui/LoginSplash';
 import { setCurrency } from '@/lib/utils';
 import MobileMenu from '@/Components/layout/MobileMenu';
 import { useTranslation } from 'react-i18next';
+import { useSidebarConfig } from '@/hooks/useSidebarConfig';
+import SidebarCustomizer from '@/Components/layout/SidebarCustomizer';
 
 interface PartnerLayoutProps {
     title?: string;
@@ -36,6 +38,8 @@ export default function PartnerLayout({ children, title }: PropsWithChildren<Par
     const { auth } = usePage<PageProps>().props;
     const { t } = useTranslation();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [customizerOpen, setCustomizerOpen] = useState(false);
+    const sidebarConfig = useSidebarConfig(partnerNavItems);
     const [collapsed, setCollapsed] = useState(() => typeof window !== 'undefined' && localStorage.getItem('partner_sidebar_collapsed') === 'true');
     const [hovered, setHovered] = useState(false);
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
@@ -97,19 +101,21 @@ export default function PartnerLayout({ children, title }: PropsWithChildren<Par
 
             {/* Desktop sidebar */}
             <aside
-                className={`hidden lg:block fixed inset-y-0 left-0 z-50 bg-[#0b0f19] transition-all duration-200 ${sw}`}
+                className={`hidden lg:block fixed inset-y-0 left-0 z-50 bg-[#0b0f19] transition-all duration-200 sidebar-animate ${sw}`}
                 onMouseEnter={() => collapsed && setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
             >
                 <Sidebar
-                    items={partnerNavItems}
+                    items={sidebarConfig.visibleItems}
                     logo={sidebarLogo}
                     footer={sidebarFooter}
                     cta={{ label: 'Submit a Client', href: '/partner/leads/submit' }}
-                    accentColor="rose"
+                    accentColor={sidebarConfig.accentColor || 'rose'}
                     currentPath={currentPath}
                     collapsed={collapsed}
                     hovered={hovered}
+                    onOpenCustomizer={() => setCustomizerOpen(true)}
+                    sidebarStyle={sidebarConfig.sidebarStyle}
                 />
                 <button onClick={toggleCollapse} className="absolute -right-3 top-20 w-6 h-6 bg-[#0b0f19] border-2 border-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:text-white hover:border-rose-400 transition-all z-50 shadow-lg" title={collapsed ? t('Pin open') : t('Collapse')}>
                     <svg className={`w-3 h-3 transition-transform duration-200 ${collapsed ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
@@ -134,6 +140,20 @@ export default function PartnerLayout({ children, title }: PropsWithChildren<Par
                 </main>
             </div>
 
+            <SidebarCustomizer
+                open={customizerOpen}
+                onClose={() => setCustomizerOpen(false)}
+                items={sidebarConfig.items}
+                hiddenItems={sidebarConfig.hiddenItems}
+                accentColor={sidebarConfig.accentColor}
+                sidebarStyle={sidebarConfig.sidebarStyle}
+                onReorder={sidebarConfig.reorderItems}
+                onToggleHide={sidebarConfig.toggleHideItem}
+                onAccentChange={sidebarConfig.updateAccentColor}
+                onStyleChange={sidebarConfig.updateStyle}
+                onReset={sidebarConfig.resetToDefault}
+                saving={sidebarConfig.saving}
+            />
         </div>
     );
 }

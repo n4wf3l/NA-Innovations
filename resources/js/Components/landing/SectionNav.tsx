@@ -4,6 +4,9 @@ import { useTranslation } from 'react-i18next';
 export interface SectionItem {
     id: string;
     label: string;
+    icon?: string;
+    onClick?: () => void;
+    highlight?: boolean;
 }
 
 interface Props {
@@ -51,15 +54,18 @@ export default function SectionNav({ sections }: Props) {
         >
             {sections.map((section) => {
                 const isActive = activeId === section.id;
+                const isHighlight = section.highlight;
                 return (
                     <button
                         key={section.id}
-                        onClick={() => scrollTo(section.id)}
+                        onClick={() => section.onClick ? section.onClick() : scrollTo(section.id)}
                         className="group flex items-center gap-3 py-1.5 transition-all duration-300"
                     >
                         <span
                             className={`text-[11px] font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 ${
-                                isActive
+                                isHighlight
+                                    ? 'opacity-100 translate-x-0 text-violet-400'
+                                    : isActive
                                     ? 'opacity-100 translate-x-0 text-teal-500 dark:text-teal-400'
                                     : 'opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 text-gray-500 dark:text-gray-400'
                             }`}
@@ -69,12 +75,17 @@ export default function SectionNav({ sections }: Props) {
                         </span>
 
                         <div className="relative flex items-center justify-center">
-                            {isActive && (
+                            {isActive && !isHighlight && (
                                 <div className="absolute w-6 h-6 rounded-full bg-teal-400/20 animate-ping" style={{ animationDuration: '2s' }} />
+                            )}
+                            {isHighlight && (
+                                <div className="absolute w-6 h-6 rounded-full bg-violet-400/20 animate-ping" style={{ animationDuration: '2s' }} />
                             )}
                             <div
                                 className={`rounded-full transition-all duration-500 ${
-                                    isActive
+                                    isHighlight
+                                        ? 'w-3 h-3 bg-violet-500 shadow-lg shadow-violet-500/50'
+                                        : isActive
                                         ? 'w-3 h-3 bg-teal-500 dark:bg-teal-400 shadow-lg shadow-teal-500/50 dark:shadow-teal-400/50'
                                         : 'w-2 h-2 bg-gray-300 dark:bg-gray-600 group-hover:bg-gray-500 dark:group-hover:bg-gray-400 group-hover:scale-125'
                                 }`}

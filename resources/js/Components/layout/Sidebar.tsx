@@ -25,6 +25,8 @@ interface SidebarProps {
     collapsed: boolean;
     hovered: boolean;
     tooltipSide?: 'right' | 'left';
+    onOpenCustomizer?: () => void;
+    sidebarStyle?: string;
 }
 
 function Tooltip({ text, anchor, side = 'right' }: { text: string; anchor: DOMRect | null; side?: 'right' | 'left' }) {
@@ -58,7 +60,7 @@ function Tooltip({ text, anchor, side = 'right' }: { text: string; anchor: DOMRe
     );
 }
 
-export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedFooter, cta, accentColor, currentPath, collapsed, hovered, tooltipSide = 'right' }: SidebarProps) {
+export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedFooter, cta, accentColor, currentPath, collapsed, hovered, tooltipSide = 'right', onOpenCustomizer, sidebarStyle = 'default' }: SidebarProps) {
     const { t } = useTranslation();
     const isSmall = collapsed && !hovered;
     const [tooltip, setTooltip] = useState<{ text: string; rect: DOMRect } | null>(null);
@@ -70,11 +72,18 @@ export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedF
 
     const hideTooltip = useCallback(() => setTooltip(null), []);
 
-    const activeClasses = accentColor === 'rose'
-        ? 'bg-white/10 text-white'
-        : accentColor === 'indigo'
-        ? 'bg-indigo-500/10 text-indigo-400'
-        : 'bg-teal-500/10 text-teal-400';
+    const accentMap: Record<string, string> = {
+        teal: 'bg-teal-500/10 text-teal-400',
+        blue: 'bg-blue-500/10 text-blue-400',
+        purple: 'bg-purple-500/10 text-purple-400',
+        rose: 'bg-rose-500/10 text-rose-400',
+        amber: 'bg-amber-500/10 text-amber-400',
+        emerald: 'bg-emerald-500/10 text-emerald-400',
+        indigo: 'bg-indigo-500/10 text-indigo-400',
+        cyan: 'bg-cyan-500/10 text-cyan-400',
+        orange: 'bg-orange-500/10 text-orange-400',
+    };
+    const activeClasses = accentMap[accentColor] || 'bg-teal-500/10 text-teal-400';
     const inactiveClasses = 'text-gray-400 hover:bg-white/5 hover:text-gray-200';
 
     return (
@@ -92,9 +101,17 @@ export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedF
                         className={cn(
                             'flex items-center justify-center py-2.5 rounded-xl text-white text-sm font-bold shadow-lg transition-all duration-200',
                             isSmall ? 'px-0 w-10 h-10 mx-auto' : 'w-full px-4',
-                            accentColor === 'rose' ? 'bg-gradient-to-r from-rose-500 to-pink-600 shadow-rose-600/30' :
-                            accentColor === 'indigo' ? 'bg-gradient-to-r from-indigo-500 to-indigo-600 shadow-indigo-600/30' :
-                            'bg-gradient-to-r from-teal-400 to-teal-500 shadow-teal-500/30'
+                            {
+                                teal: 'bg-gradient-to-r from-teal-400 to-teal-500 shadow-teal-500/30',
+                                blue: 'bg-gradient-to-r from-blue-500 to-blue-600 shadow-blue-600/30',
+                                purple: 'bg-gradient-to-r from-purple-500 to-purple-600 shadow-purple-600/30',
+                                rose: 'bg-gradient-to-r from-rose-500 to-pink-600 shadow-rose-600/30',
+                                amber: 'bg-gradient-to-r from-amber-500 to-amber-600 shadow-amber-600/30',
+                                emerald: 'bg-gradient-to-r from-emerald-500 to-emerald-600 shadow-emerald-600/30',
+                                indigo: 'bg-gradient-to-r from-indigo-500 to-indigo-600 shadow-indigo-600/30',
+                                cyan: 'bg-gradient-to-r from-cyan-500 to-cyan-600 shadow-cyan-600/30',
+                                orange: 'bg-gradient-to-r from-orange-500 to-orange-600 shadow-orange-600/30',
+                            }[accentColor] || 'bg-gradient-to-r from-teal-400 to-teal-500 shadow-teal-500/30'
                         )}
                         onMouseEnter={e => showTooltip(t(cta.label), e.currentTarget)}
                         onMouseLeave={hideTooltip}
@@ -108,32 +125,45 @@ export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedF
             )}
 
             {/* Nav */}
-            <nav className={cn('flex-1 overflow-y-auto space-y-0.5 scrollbar-thin', isSmall ? 'px-2' : 'px-3')}>
+            <nav className={cn(
+                'flex-1 overflow-y-auto scrollbar-thin',
+                isSmall ? 'px-2 space-y-0.5' : sidebarStyle === 'compact' ? 'px-2 space-y-px' : sidebarStyle === 'minimal' ? 'px-2 space-y-0' : 'px-3 space-y-0.5'
+            )}>
                 {items.map((item, i) => {
                     if (item.type === 'section') {
                         if (isSmall) return <div key={`s-${i}`} className="pt-3 pb-1"><div className="border-t border-white/5" /></div>;
+                        if (sidebarStyle === 'minimal') return <div key={`s-${i}`} className="pt-3 pb-0.5"><div className="border-t border-white/5" /></div>;
                         return (
-                            <div key={`s-${i}`} className="pt-4 pb-1 px-3">
-                                <p className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">{t(item.label)}</p>
+                            <div key={`s-${i}`} className={sidebarStyle === 'compact' ? 'pt-3 pb-0.5 px-3' : 'pt-4 pb-1 px-3'}>
+                                <p className={cn('font-semibold text-gray-600 uppercase tracking-wider', sidebarStyle === 'compact' ? 'text-[10px]' : 'text-[11px]')}>{t(item.label)}</p>
                             </div>
                         );
                     }
                     const isActive = item.match ? currentPath.startsWith(item.match) : currentPath === item.href;
+                    const linkPadding = isSmall ? 'justify-center w-10 h-10 mx-auto p-0'
+                        : sidebarStyle === 'compact' ? 'px-2.5 py-1.5'
+                        : sidebarStyle === 'minimal' ? 'px-2.5 py-1'
+                        : 'px-3 py-2.5';
+                    const textSize = sidebarStyle === 'compact' ? 'text-xs' : sidebarStyle === 'minimal' ? 'text-xs' : 'text-sm';
+                    const iconSize = sidebarStyle === 'compact' ? 'w-4 h-4' : sidebarStyle === 'minimal' ? 'w-3.5 h-3.5' : 'w-[18px] h-[18px]';
+                    const iconGap = sidebarStyle === 'minimal' ? 'mr-2' : 'mr-3';
+
                     return (
                         <Link
                             key={item.label}
                             href={item.href || '#'}
                             {...(item.tourId ? { 'data-tour': item.tourId } : {})}
                             className={cn(
-                                'flex items-center rounded-lg text-sm font-medium transition-all duration-150',
-                                isSmall ? 'justify-center w-10 h-10 mx-auto p-0' : 'px-3 py-2.5',
+                                'flex items-center rounded-lg font-medium transition-all duration-150',
+                                textSize,
+                                linkPadding,
                                 isActive ? activeClasses : inactiveClasses
                             )}
                             onMouseEnter={e => showTooltip(t(item.label), e.currentTarget)}
                             onMouseLeave={hideTooltip}
                         >
                             {item.icon && (
-                                <svg className={cn('w-[18px] h-[18px] flex-shrink-0', !isSmall && 'mr-3')} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                <svg className={cn(iconSize, 'flex-shrink-0', !isSmall && iconGap)} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
                                 </svg>
                             )}
@@ -142,6 +172,27 @@ export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedF
                     );
                 })}
             </nav>
+
+            {/* Customize button */}
+            {onOpenCustomizer && (
+                <div className={cn('flex-shrink-0 px-3 py-2', isSmall && 'px-2')}>
+                    <button
+                        onClick={onOpenCustomizer}
+                        className={cn(
+                            'flex items-center rounded-lg text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-all duration-150 w-full',
+                            isSmall ? 'justify-center w-10 h-10 mx-auto p-0' : 'px-3 py-2'
+                        )}
+                        onMouseEnter={e => showTooltip(t('Personnaliser'), e.currentTarget)}
+                        onMouseLeave={hideTooltip}
+                    >
+                        <svg className={cn('w-[18px] h-[18px] flex-shrink-0', !isSmall && 'mr-3')} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {!isSmall && <span className="text-sm">{t('Personnaliser')}</span>}
+                    </button>
+                </div>
+            )}
 
             {/* Footer */}
             {isSmall ? (collapsedFooter || null) : (footer && <div className="flex-shrink-0">{footer}</div>)}

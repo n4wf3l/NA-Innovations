@@ -9,6 +9,8 @@ import LoginSplash from '@/Components/ui/LoginSplash';
 import { setCurrency } from '@/lib/utils';
 import MobileMenu from '@/Components/layout/MobileMenu';
 import { useTranslation } from 'react-i18next';
+import { useSidebarConfig } from '@/hooks/useSidebarConfig';
+import SidebarCustomizer from '@/Components/layout/SidebarCustomizer';
 
 interface DevLayoutProps {
     title?: string;
@@ -24,6 +26,8 @@ export default function DevLayout({ children, title }: PropsWithChildren<DevLayo
     const { auth } = usePage<PageProps>().props;
     const { t } = useTranslation();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [customizerOpen, setCustomizerOpen] = useState(false);
+    const sidebarConfig = useSidebarConfig(devNavItems);
     const [collapsed, setCollapsed] = useState(() => typeof window !== 'undefined' && localStorage.getItem('dev_sidebar_collapsed') === 'true');
     const [hovered, setHovered] = useState(false);
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
@@ -82,18 +86,20 @@ export default function DevLayout({ children, title }: PropsWithChildren<DevLayo
 
             {/* Desktop sidebar */}
             <aside
-                className={`hidden lg:block fixed inset-y-0 left-0 z-50 bg-[#0b0f19] transition-all duration-200 ${sw}`}
+                className={`hidden lg:block fixed inset-y-0 left-0 z-50 bg-[#0b0f19] transition-all duration-200 sidebar-animate ${sw}`}
                 onMouseEnter={() => collapsed && setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
             >
                 <Sidebar
-                    items={devNavItems}
+                    items={sidebarConfig.visibleItems}
                     logo={sidebarLogo}
                     footer={sidebarFooter}
-                    accentColor="indigo"
+                    accentColor={sidebarConfig.accentColor || 'indigo'}
                     currentPath={currentPath}
                     collapsed={collapsed}
                     hovered={hovered}
+                    onOpenCustomizer={() => setCustomizerOpen(true)}
+                    sidebarStyle={sidebarConfig.sidebarStyle}
                 />
                 <button onClick={toggleCollapse} className="absolute -right-3 top-20 w-6 h-6 bg-[#0b0f19] border-2 border-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:text-white hover:border-indigo-400 transition-all z-50 shadow-lg" title={collapsed ? 'Pin open' : 'Collapse'}>
                     <svg className={`w-3 h-3 transition-transform duration-200 ${collapsed ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
@@ -118,6 +124,20 @@ export default function DevLayout({ children, title }: PropsWithChildren<DevLayo
                 </main>
             </div>
 
+            <SidebarCustomizer
+                open={customizerOpen}
+                onClose={() => setCustomizerOpen(false)}
+                items={sidebarConfig.items}
+                hiddenItems={sidebarConfig.hiddenItems}
+                accentColor={sidebarConfig.accentColor}
+                sidebarStyle={sidebarConfig.sidebarStyle}
+                onReorder={sidebarConfig.reorderItems}
+                onToggleHide={sidebarConfig.toggleHideItem}
+                onAccentChange={sidebarConfig.updateAccentColor}
+                onStyleChange={sidebarConfig.updateStyle}
+                onReset={sidebarConfig.resetToDefault}
+                saving={sidebarConfig.saving}
+            />
         </div>
     );
 }

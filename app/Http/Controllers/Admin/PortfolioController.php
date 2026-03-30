@@ -119,22 +119,38 @@ class PortfolioController extends BaseAdminController
     public function uploadImage(Request $request, Projet $projet)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'images' => 'nullable|array|max:20',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
             'alt_text' => 'nullable|string|max:255',
-            'caption' => 'nullable|string|max:500',
         ]);
 
-        $path = $request->file('image')->store('portfolio', 'public');
+        $files = [];
+        if ($request->hasFile('images')) {
+            $files = $request->file('images');
+        } elseif ($request->hasFile('image')) {
+            $files = [$request->file('image')];
+        }
+
+        if (empty($files)) {
+            return redirect()->back()->with('error', 'Aucune image fournie.');
+        }
+
         $maxOrder = $projet->portfolioProject->images()->max('sort_order') ?? 0;
+        $count = 0;
 
-        $projet->portfolioProject->images()->create([
-            'image_path' => $path,
-            'alt_text' => $request->input('alt_text', $projet->nom_societe),
-            'caption' => $request->input('caption'),
-            'sort_order' => $maxOrder + 1,
-        ]);
+        foreach ($files as $file) {
+            $path = $file->store('portfolio', 'public');
+            $projet->portfolioProject->images()->create([
+                'image_path' => $path,
+                'alt_text' => $request->input('alt_text', $projet->nom_societe),
+                'sort_order' => ++$maxOrder,
+            ]);
+            $count++;
+        }
 
-        return redirect()->back()->with('success', 'Image ajoutée.');
+        $msg = $count === 1 ? 'Image ajoutée.' : "{$count} images ajoutées.";
+        return redirect()->back()->with('success', $msg);
     }
 
     public function deleteImage(PortfolioImage $image)

@@ -19,7 +19,7 @@ export default function TestimonialsSection({ testimonials, sectionRef, isVisibl
     const { t } = useTranslation();
 
     return (
-        <section id="section-testimonials" className="py-20 bg-gray-900 relative overflow-hidden scroll-mt-20" ref={sectionRef}>
+        <section id="section-testimonials" className="py-20 bg-gray-900 relative overflow-hidden scroll-mt-2" ref={sectionRef}>
             <div className="absolute inset-0 opacity-[0.02]" aria-hidden="true">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(94,234,212,0.4),transparent_50%)]" />
             </div>

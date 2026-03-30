@@ -165,6 +165,27 @@ Route::post('/api/notifications/read-all', function () {
     return response()->json(['ok' => true]);
 })->middleware('auth')->name('notifications.read-all');
 
+// Sidebar preferences (order, hidden items, accent color)
+Route::put('/api/sidebar-preferences', function (\Illuminate\Http\Request $request) {
+    if (!auth()->check()) abort(403);
+    $validated = $request->validate([
+        'sidebar_order' => 'nullable|array',
+        'hidden_items' => 'nullable|array',
+        'accent_color' => 'nullable|string|max:20',
+        'sidebar_style' => 'nullable|string|in:default,compact,minimal',
+    ]);
+    $user = auth()->user();
+    $prefs = $user->preferences ?? [];
+    $prefs['sidebar'] = array_filter([
+        'order' => $validated['sidebar_order'] ?? null,
+        'hidden' => $validated['hidden_items'] ?? null,
+        'accent_color' => $validated['accent_color'] ?? null,
+        'style' => $validated['sidebar_style'] ?? null,
+    ]);
+    $user->update(['preferences' => $prefs]);
+    return response()->json(['ok' => true]);
+})->middleware('auth')->name('sidebar.preferences');
+
 // Tour completion — saves in user preferences
 Route::put('/api/tour-completed', function (\Illuminate\Http\Request $request) {
     if (!auth()->check()) abort(403);
@@ -448,6 +469,12 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('settings/email-templates', [App\Http\Controllers\Admin\EmailTemplateController::class, 'index'])->name('admin.email-templates.index');
     Route::put('settings/email-templates/{emailTemplate}', [App\Http\Controllers\Admin\EmailTemplateController::class, 'update'])->name('admin.email-templates.update');
     Route::patch('settings/email-templates/{emailTemplate}/toggle', [App\Http\Controllers\Admin\EmailTemplateController::class, 'toggleActive'])->name('admin.email-templates.toggle');
+
+    // Email Signature Settings
+    Route::get('settings/email-signature', [App\Http\Controllers\Admin\EmailSignatureController::class, 'index'])->name('admin.email-signature.index');
+    Route::put('settings/email-signature', [App\Http\Controllers\Admin\EmailSignatureController::class, 'update'])->name('admin.email-signature.update');
+    Route::post('settings/email-signature/logo', [App\Http\Controllers\Admin\EmailSignatureController::class, 'uploadLogo'])->name('admin.email-signature.upload-logo');
+    Route::delete('settings/email-signature/logo', [App\Http\Controllers\Admin\EmailSignatureController::class, 'deleteLogo'])->name('admin.email-signature.delete-logo');
 
     // Signature
     Route::get('signature', [App\Http\Controllers\Admin\SignatureController::class, 'show'])->name('admin.signature.show');

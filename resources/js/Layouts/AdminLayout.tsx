@@ -9,6 +9,8 @@ import LoginSplash from '@/Components/ui/LoginSplash';
 import MobileMenu from '@/Components/layout/MobileMenu';
 import { setCurrency } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { useSidebarConfig } from '@/hooks/useSidebarConfig';
+import SidebarCustomizer from '@/Components/layout/SidebarCustomizer';
 
 interface AdminLayoutProps {
     title?: string;
@@ -32,13 +34,12 @@ const leftNavItems: NavItem[] = [
     { type: 'section', label: 'People' },
     { type: 'link', label: 'Partners', href: '/admin/partners', match: '/admin/partners', icon: 'M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z' },
     { type: 'link', label: 'Team', href: '/admin/team', match: '/admin/team', icon: 'M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z' },
-    { type: 'link', label: 'Support', href: '/admin/support', match: '/admin/support', icon: 'M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z' },
     { type: 'section', label: 'Administration' },
     { type: 'link', label: 'Services', href: '/admin/services', match: '/admin/services', icon: 'M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3' },
     { type: 'link', label: 'Taux de commission', href: '/admin/settings/commission-rates', match: '/admin/settings/commission-rates', icon: 'M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0l-4.725 2.885a.562.562 0 01-.84-.61l1.285-5.385a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z' },
     { type: 'link', label: 'Audit Log', href: '/admin/audit-log', match: '/admin/audit-log', icon: 'M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z' },
     { type: 'link', label: 'Modèles documents', href: '/admin/settings/document-templates', match: '/admin/settings/document-templates', icon: 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z' },
-    { type: 'link', label: 'Modèles emails', href: '/admin/settings/email-templates', match: '/admin/settings/email-templates', icon: 'M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75' },
+    { type: 'link', label: 'Emails', href: '/admin/settings/email-templates', match: '/admin/settings/email', icon: 'M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75' },
 ];
 
 // RIGHT sidebar: Landing Page & Content
@@ -71,7 +72,12 @@ export default function AdminLayout({ children, title, header }: PropsWithChildr
     const { auth, locale, notifications } = usePage<PageProps>().props;
     const { t } = useTranslation();
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [customizerOpen, setCustomizerOpen] = useState(false);
+    const [customizerSide, setCustomizerSide] = useState<'left' | 'right'>('left');
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+
+    const leftConfig = useSidebarConfig(leftNavItems);
+    const rightConfig = useSidebarConfig(rightNavItems);
 
     // Lock body scroll for dashboard layout
     useEffect(() => {
@@ -200,19 +206,21 @@ export default function AdminLayout({ children, title, header }: PropsWithChildr
 
             {/* ── LEFT SIDEBAR (Business) ── */}
             <aside
-                className={`hidden lg:block fixed inset-y-0 left-0 z-50 bg-[#0b0f19] transition-all duration-200 ${leftW}`}
+                className={`hidden lg:block fixed inset-y-0 left-0 z-50 bg-[#0b0f19] transition-all duration-200 sidebar-animate ${leftW}`}
                 onMouseEnter={() => leftMode === 'collapsed' && setLeftHovered(true)}
                 onMouseLeave={() => setLeftHovered(false)}
             >
                 <Sidebar
-                    items={leftNavItems}
+                    items={leftConfig.visibleItems}
                     logo={sidebarLogo}
                     collapsedLogo={collapsedLogo}
                     footer={sidebarFooter}
-                    accentColor="teal"
+                    accentColor={leftConfig.accentColor || 'teal'}
                     currentPath={currentPath}
                     collapsed={leftCollapsed}
                     hovered={leftMode === 'collapsed' && leftHovered}
+                    onOpenCustomizer={() => { setCustomizerSide('left'); setCustomizerOpen(true); }}
+                    sidebarStyle={leftConfig.sidebarStyle}
                 />
                 <button
                     onClick={cycleLeftMode}
@@ -227,21 +235,23 @@ export default function AdminLayout({ children, title, header }: PropsWithChildr
 
             {/* ── RIGHT SIDEBAR (Vitrine) ── */}
             <aside
-                className={`hidden lg:block fixed inset-y-0 right-0 z-50 bg-[#0b0f19] transition-all duration-200 ${rightW}`}
+                className={`hidden lg:block fixed inset-y-0 right-0 z-50 bg-[#0b0f19] transition-all duration-200 sidebar-animate-right ${rightW}`}
                 onMouseEnter={() => rightMode === 'collapsed' && setRightHovered(true)}
                 onMouseLeave={() => setRightHovered(false)}
             >
                 <Sidebar
-                    items={rightNavItems}
+                    items={rightConfig.visibleItems}
                     logo={rightLogo}
                     collapsedLogo={collapsedRightLogo}
                     footer={rightSidebarFooter}
                     collapsedFooter={rightSidebarFooterCollapsed}
-                    accentColor="amber"
+                    accentColor={rightConfig.accentColor || 'amber'}
                     currentPath={currentPath}
                     collapsed={rightCollapsed}
                     hovered={rightMode === 'collapsed' && rightHovered}
                     tooltipSide="left"
+                    onOpenCustomizer={() => { setCustomizerSide('right'); setCustomizerOpen(true); }}
+                    sidebarStyle={rightConfig.sidebarStyle}
                 />
                 <button
                     onClick={cycleRightMode}
@@ -271,6 +281,22 @@ export default function AdminLayout({ children, title, header }: PropsWithChildr
                     </div>
                 </main>
             </div>
+
+            {/* Sidebar Customizer Modal */}
+            <SidebarCustomizer
+                open={customizerOpen}
+                onClose={() => setCustomizerOpen(false)}
+                items={customizerSide === 'left' ? leftConfig.items : rightConfig.items}
+                hiddenItems={customizerSide === 'left' ? leftConfig.hiddenItems : rightConfig.hiddenItems}
+                accentColor={customizerSide === 'left' ? leftConfig.accentColor : rightConfig.accentColor}
+                sidebarStyle={customizerSide === 'left' ? leftConfig.sidebarStyle : rightConfig.sidebarStyle}
+                onReorder={customizerSide === 'left' ? leftConfig.reorderItems : rightConfig.reorderItems}
+                onToggleHide={customizerSide === 'left' ? leftConfig.toggleHideItem : rightConfig.toggleHideItem}
+                onAccentChange={customizerSide === 'left' ? leftConfig.updateAccentColor : rightConfig.updateAccentColor}
+                onStyleChange={customizerSide === 'left' ? leftConfig.updateStyle : rightConfig.updateStyle}
+                onReset={customizerSide === 'left' ? leftConfig.resetToDefault : rightConfig.resetToDefault}
+                saving={customizerSide === 'left' ? leftConfig.saving : rightConfig.saving}
+            />
         </div>
     );
 }

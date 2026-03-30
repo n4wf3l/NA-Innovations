@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { router, usePage } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { useTranslation } from 'react-i18next';
+import RichTextEditor from '@/Components/ui/RichTextEditor';
 
 interface ServiceData {
     id: number;
@@ -267,11 +268,11 @@ export default function PublicServices({ services }: Props) {
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('Description')}</label>
-                                <textarea
+                                <RichTextEditor
                                     value={form.description}
-                                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                                    className="w-full px-4 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 focus:outline-none transition min-h-[120px] resize-y"
-                                    required
+                                    onChange={(html) => setForm({ ...form, description: html })}
+                                    placeholder={t('Description du service...')}
+                                    minHeight={120}
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">

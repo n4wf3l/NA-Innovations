@@ -1,9 +1,11 @@
 import { Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import OriginalLanguageBadge from '@/Components/ui/OriginalLanguageBadge';
+import AdminEditButton from '@/Components/landing/AdminEditButton';
 
 interface PortfolioProject {
     id: number;
+    projet_id?: number;
     title: string;
     slug: string;
     client_name: string;
@@ -31,7 +33,7 @@ export default function PortfolioSection({ portfolio, featuredProjects, regularP
     const { t } = useTranslation();
 
     return (
-        <section id="section-portfolio" className="py-20 bg-gray-100 dark:bg-gray-800 scroll-mt-20" ref={sectionRef}>
+        <section id="section-portfolio" className="py-20 bg-gray-100 dark:bg-gray-800 scroll-mt-2" ref={sectionRef} data-section-theme="light">
             <div className="max-w-7xl mx-auto px-4">
                 <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'fade-in-up' : 'opacity-0'}`}>
                     <h2 className="text-7xl md:text-9xl font-semibold text-black dark:text-white bebas" style={{ letterSpacing: '2px' }}>{t('Our Work')}</h2>
@@ -55,6 +57,7 @@ export default function PortfolioSection({ portfolio, featuredProjects, regularP
                             <Link key={project.id} href={`/projects/${project.slug}`}
                                 className={`group block relative overflow-hidden rounded-2xl ${isVisible ? 'portfolio-card-animate' : 'opacity-0'}`}
                                 style={{ animationDelay: `${index * 200}ms`, minHeight: '480px' }}>
+                                <AdminEditButton href={`/admin/portfolio/${project.projet_id || project.id}/edit`} />
                                 {project.images.length > 0 ? (
                                     <img src={`/storage/${project.images[0].image_path}`} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                 ) : (
@@ -64,18 +67,18 @@ export default function PortfolioSection({ portfolio, featuredProjects, regularP
                                 {(() => {
                                     const logo = project.client_logo || project.projet?.image;
                                     return logo ? (
-                                        <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 group-hover:scale-110 z-[1]" style={{ paddingBottom: '80px' }}>
-                                            <img src={`/storage/${logo}`} alt={project.client_name} loading="lazy" className="max-w-[280px] max-h-[200px] object-contain drop-shadow-2xl" />
+                                        <div className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 z-[1] transition-all duration-700 group-hover:translate-x-[-10px] group-hover:scale-105">
+                                            <img src={`/storage/${logo}`} alt={project.client_name} loading="lazy" className="w-[120px] h-[120px] md:w-[180px] md:h-[180px] object-contain drop-shadow-2xl opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
                                         </div>
                                     ) : null;
                                 })()}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
                                 {project.category && (
                                     <span className="absolute top-6 left-6 z-10 px-4 py-1.5 bg-teal-400 text-gray-900 text-sm font-bold rounded-full bebas" style={{ letterSpacing: '1px' }}>{project.category}</span>
                                 )}
-                                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 z-10">
+                                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 z-10 max-w-[65%]">
                                     <h3 className="text-4xl md:text-5xl font-bold text-white bebas mb-3 transition-colors duration-300 group-hover:text-teal-300" style={{ letterSpacing: '2px' }}>{project.title}</h3>
-                                    {project.excerpt && <p className="text-white/70 text-lg max-w-2xl mb-6">{project.excerpt}</p>}
+                                    {project.excerpt && <p className="text-white/70 text-lg mb-6 line-clamp-3">{project.excerpt}</p>}
                                     {project.tech_stack && project.tech_stack.length > 0 && (
                                         <div className="flex flex-wrap gap-2 mb-6">
                                             {project.tech_stack.map((tech, i) => (
@@ -97,6 +100,7 @@ export default function PortfolioSection({ portfolio, featuredProjects, regularP
                                     <Link key={project.id} href={`/projects/${project.slug}`}
                                         className={`group block relative overflow-hidden rounded-2xl ${isVisible ? 'portfolio-card-animate' : 'opacity-0'}`}
                                         style={{ animationDelay: `${(featuredProjects.length + index) * 150 + 200}ms`, minHeight: '360px' }}>
+                                        <AdminEditButton href={`/admin/portfolio/${project.projet_id || project.id}/edit`} />
                                         {project.images.length > 0 ? (
                                             <img src={`/storage/${project.images[0].image_path}`} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                         ) : (
@@ -106,12 +110,12 @@ export default function PortfolioSection({ portfolio, featuredProjects, regularP
                                         {(() => {
                                             const logo = project.client_logo || project.projet?.image;
                                             return logo ? (
-                                                <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 group-hover:scale-110 z-[1]" style={{ paddingBottom: '60px' }}>
-                                                    <img src={`/storage/${logo}`} alt={project.client_name} loading="lazy" className="max-w-[150px] max-h-[110px] object-contain drop-shadow-2xl" />
+                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 z-[1] transition-all duration-700 group-hover:translate-x-[-5px] group-hover:scale-105">
+                                                    <img src={`/storage/${logo}`} alt={project.client_name} loading="lazy" className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] object-contain drop-shadow-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
                                                 </div>
                                             ) : null;
                                         })()}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                                        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
                                         {project.category && (
                                             <span className="absolute top-4 left-4 z-10 px-3 py-1 bg-teal-400 text-gray-900 text-xs font-bold rounded-full bebas" style={{ letterSpacing: '1px' }}>{project.category}</span>
                                         )}

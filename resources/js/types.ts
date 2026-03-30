@@ -213,4 +213,5 @@ export interface PageProps {
     notifications: Notification[];
     financialUnlocked: boolean;
     teamCounts: { partners: number; developers: number; admins: number };
+    [key: string]: unknown;
 }

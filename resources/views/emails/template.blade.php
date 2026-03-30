@@ -33,6 +33,55 @@
             <div class="accent-line"></div>
             <div class="body">
                 {!! $body !!}
+
+                @if(\App\Models\Setting::get('email_signature.enabled', '1') === '1')
+                @php
+                    $sigColor = \App\Models\Setting::get('email_signature.color', '#0d9488');
+                    $sigLogo = \App\Models\Setting::get('email_signature.logo_path', '');
+                    $sigName = \App\Models\Setting::get('email_signature.name', '');
+                    $sigTitle = \App\Models\Setting::get('email_signature.title', '');
+                    $sigCompany = \App\Models\Setting::get('email_signature.company', '');
+                    $sigPhone = \App\Models\Setting::get('email_signature.phone', '');
+                    $sigEmail = \App\Models\Setting::get('email_signature.email', '');
+                    $sigWebsite = \App\Models\Setting::get('email_signature.website', '');
+                    $sigAddress = \App\Models\Setting::get('email_signature.address', '');
+                    $sigLinkedin = \App\Models\Setting::get('email_signature.linkedin', '');
+                    $sigInstagram = \App\Models\Setting::get('email_signature.instagram', '');
+                    $sigGithub = \App\Models\Setting::get('email_signature.github', '');
+                    $sigLogoUrl = $sigLogo ? asset('storage/' . $sigLogo) : '';
+                @endphp
+                @if($sigName)
+                <div style="border-top: 2px solid {{ $sigColor }}; padding-top: 16px; margin-top: 24px;">
+                    <table cellpadding="0" cellspacing="0" style="font-family: Arial, sans-serif;">
+                        <tr>
+                            @if($sigLogoUrl)
+                            <td style="padding-right: 16px; vertical-align: top;">
+                                <img src="{{ $sigLogoUrl }}" alt="Logo" style="height: 50px; width: auto;" />
+                            </td>
+                            @endif
+                            <td style="vertical-align: top;{{ $sigLogoUrl ? ' border-left: 2px solid ' . $sigColor . '20; padding-left: 16px;' : '' }}">
+                                <p style="margin: 0; font-size: 14px; font-weight: 700; color: #111827;">{{ $sigName }}</p>
+                                @if($sigTitle)<p style="margin: 2px 0 0; font-size: 12px; color: {{ $sigColor }}; font-weight: 600;">{{ $sigTitle }}</p>@endif
+                                @if($sigCompany)<p style="margin: 2px 0 0; font-size: 11px; color: #6b7280;">{{ $sigCompany }}</p>@endif
+                                <div style="margin-top: 8px; font-size: 11px; color: #6b7280; line-height: 1.6;">
+                                    @if($sigPhone)<span style="font-weight: 600; color: #374151;">T.</span> {{ $sigPhone }}<br>@endif
+                                    @if($sigEmail)<span style="font-weight: 600; color: #374151;">E.</span> {{ $sigEmail }}<br>@endif
+                                    @if($sigWebsite)<span style="font-weight: 600; color: #374151;">W.</span> {{ $sigWebsite }}<br>@endif
+                                    @if($sigAddress)<span style="font-weight: 600; color: #374151;">A.</span> {{ $sigAddress }}@endif
+                                </div>
+                                @if($sigLinkedin || $sigInstagram || $sigGithub)
+                                <div style="margin-top: 8px;">
+                                    @if($sigLinkedin)<a href="{{ $sigLinkedin }}" style="color: {{ $sigColor }}; font-size: 11px; text-decoration: none; font-weight: 600; margin-right: 8px;">LinkedIn</a>@endif
+                                    @if($sigInstagram)<a href="{{ $sigInstagram }}" style="color: {{ $sigColor }}; font-size: 11px; text-decoration: none; font-weight: 600; margin-right: 8px;">Instagram</a>@endif
+                                    @if($sigGithub)<a href="{{ $sigGithub }}" style="color: {{ $sigColor }}; font-size: 11px; text-decoration: none; font-weight: 600;">GitHub</a>@endif
+                                </div>
+                                @endif
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                @endif
+                @endif
             </div>
             <div class="footer">
                 <p>
