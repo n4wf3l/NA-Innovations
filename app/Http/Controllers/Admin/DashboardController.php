@@ -93,6 +93,27 @@ class DashboardController extends BaseAdminController
         // Email notification preference
         $notifyAdminEmails = auth()->user()->preferences['notifications']['notify_admin_emails'] ?? true;
 
+        // Activity chart — last 24 hours, grouped by hour
+        $activityData = \App\Models\ActivityLog::where('created_at', '>=', now()->subHours(24))
+            ->selectRaw("DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00') as hour, COUNT(*) as count")
+            ->groupBy('hour')
+            ->orderBy('hour')
+            ->pluck('count', 'hour')
+            ->toArray();
+
+        $activityChart = [];
+        for ($i = 23; $i >= 0; $i--) {
+            $h = now()->subHours($i)->format('Y-m-d H:00:00');
+            $activityChart[] = [
+                'hour' => now()->subHours($i)->format('H:00'),
+                'count' => $activityData[$h] ?? 0,
+            ];
+        }
+        $activityNow = $activityChart[count($activityChart) - 1]['count'] ?? 0;
+        $activityPeak = collect($activityChart)->max('count');
+        $activityPeakHour = collect($activityChart)->sortByDesc('count')->first()['hour'] ?? '--';
+        $activityTotal = collect($activityChart)->sum('count');
+
         return Inertia::render('Admin/Dashboard', [
             'revenueMonth' => $revenueMonth,
             'revenueLastMonth' => $revenueLastMonth,
@@ -111,6 +132,11 @@ class DashboardController extends BaseAdminController
             'projects' => $projects,
             'dashboardPrefs' => $dashboardPrefs,
             'notifyAdminEmails' => $notifyAdminEmails,
+            'activityChart' => $activityChart,
+            'activityNow' => $activityNow,
+            'activityPeak' => $activityPeak,
+            'activityPeakHour' => $activityPeakHour,
+            'activityTotal' => $activityTotal,
         ]);
     }
 

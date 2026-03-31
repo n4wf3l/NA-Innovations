@@ -219,6 +219,7 @@ export default function SidebarCustomizer({ open, onClose, items, hiddenItems, a
 
                 {/* Body */}
                 <div className="p-6 max-h-[60vh] overflow-y-auto scrollbar-thin">
+                    <div key={activeTab} className="animate-tab-in">
                     {activeTab === 'order' ? (
                         <div className="space-y-1.5">
                             <p className="text-xs text-gray-500 dark:text-gray-400 mb-3 flex items-center gap-1.5">
@@ -335,6 +336,7 @@ export default function SidebarCustomizer({ open, onClose, items, hiddenItems, a
                             </div>
                         </div>
                     )}
+                    </div>
                 </div>
 
                 {/* Footer */}

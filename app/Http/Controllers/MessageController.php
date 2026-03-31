@@ -63,7 +63,11 @@ public function welcomeMessages()
             'tagline' => Setting::get('branding.tagline', ''),
         ];
 
-        $services = PublicService::where('is_active', true)->orderBy('sort_order')->get();
+        $services = PublicService::where('is_active', true)->orderBy('sort_order')->get()->map(function ($s) {
+            $s->title = __($s->title);
+            $s->description = __($s->description);
+            return $s;
+        });
 
         // Portfolio projects (published only) with images
         $portfolioProjects = \App\Models\PortfolioProject::where('is_published', true)
@@ -74,7 +78,19 @@ public function welcomeMessages()
 
         // Landing sections (hero, cta, etc.)
         $landingSections = LandingSection::orderBy('sort_order')->get()
-            ->keyBy('section_key');
+            ->keyBy('section_key')
+            ->map(function ($section) {
+                if ($section->section_key === 'process' && isset($section->metadata['steps'])) {
+                    $meta = $section->metadata;
+                    $meta['steps'] = array_map(function ($step) {
+                        $step['title'] = __($step['title']);
+                        if (isset($step['description'])) $step['description'] = __($step['description']);
+                        return $step;
+                    }, $meta['steps']);
+                    $section->metadata = $meta;
+                }
+                return $section;
+            });
 
         // Testimonials from portfolio projects
         $testimonials = \App\Models\PortfolioProject::whereNotNull('testimonial_text')

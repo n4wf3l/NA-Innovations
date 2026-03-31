@@ -58,6 +58,11 @@ html {
     .stagger-children > *:nth-child(10) { animation-delay: 0.30s; }
     .stagger-children > *:nth-child(n+11) { animation-delay: 0.33s; }
 
+    /* Tab content entrance */
+    .animate-tab-in {
+        animation: tabFadeIn 0.35s ease-out both;
+    }
+
     /* Slide up for individual elements */
     .animate-slide-up {
         animation: fadeSlideUp 0.5s ease-out both;
@@ -248,6 +253,11 @@ body.splash-done .topbar-animate {
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+@keyframes tabFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeSlideUp {

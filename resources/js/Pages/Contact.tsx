@@ -374,6 +374,7 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
 
                     {/* Tab content */}
                     {activeTab === 'simulator' && (
+                        <div key={activeTab} className="animate-tab-in">
                         <PriceSimulator
                             selectedType={selectedType} setSelectedType={setSelectedType}
                             selectedFeatures={selectedFeatures} toggleFeature={toggleFeature}
@@ -384,17 +385,21 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
                             priceBreakdown={priceBreakdown}
                             onGetQuote={() => setShowSimulatorModal(true)}
                         />
+                        </div>
                     )}
 
                     {activeTab === 'contact' && (
+                        <div key={activeTab} className="animate-tab-in">
                         <ContactForm
                             contactForm={contactForm} setContactForm={setContactForm}
                             onSubmit={handleContactSubmit} processing={processing} errors={errors}
                             turnstileSiteKey={turnstileSiteKey} turnstileRef={turnstileRef as any} turnstileToken={turnstileToken}
                         />
+                        </div>
                     )}
 
                     {activeTab === 'quote' && (
+                        <div key={activeTab} className="animate-tab-in">
                         <QuoteForm
                             quoteForm={quoteForm} setQuoteForm={setQuoteForm}
                             onSubmit={handleQuoteSubmit} processing={processing}
@@ -402,6 +407,7 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
                             attachments={attachments} setAttachments={setAttachments}
                             turnstileSiteKey={turnstileSiteKey} turnstileRef={turnstileRef as any} turnstileToken={turnstileToken}
                         />
+                        </div>
                     )}
 
                     {/* Contact Info */}

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\FinancialSimulation;
 use App\Models\Invoice;
+use App\Models\Product;
 use App\Models\ProjectBudgetLine;
 use App\Models\Projet;
 use App\Models\RecurringService;
@@ -184,6 +186,25 @@ class ProjectBudgetController extends BaseAdminController
             'momChange' => $momChange,
             'topClients' => $topClients,
             'commissionStats' => $commissionStats,
+            'simulations' => FinancialSimulation::with('product:id,name')
+                ->orderByDesc('updated_at')
+                ->get()
+                ->map(function ($sim) {
+                    $proj = $sim->computeProjection();
+                    return [
+                        'id' => $sim->id,
+                        'name' => $sim->name,
+                        'product_name' => $sim->product_name ?: ($sim->product->name ?? null),
+                        'monthly_price' => $sim->monthly_price,
+                        'time_horizon' => $sim->time_horizon,
+                        'team_member_count' => count($sim->team_members ?? []),
+                        'updated_at' => $sim->updated_at?->toISOString(),
+                        'total_projected_revenue' => $proj['total_revenue'],
+                        'total_profit' => $proj['total_profit'],
+                        'break_even_month' => $proj['break_even_month'],
+                    ];
+                }),
+            'simulatorProducts' => Product::select('id', 'name', 'pricing_monthly')->orderBy('name')->get(),
         ]);
     }
 

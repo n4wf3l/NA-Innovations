@@ -453,7 +453,7 @@ class RealDataSeeder extends Seeder
             ]
         );
 
-        // 8. EasyWed -- 2 600 EUR -- status: completed -- dev: Shakil
+        // 8. EasyWed -- 2 600 EUR -- status: planning (client agreed, dev not started) -- dev: Shakil
         $projEasywed = Projet::updateOrCreate(
             ['nom_societe' => 'EasyWed'],
             [
@@ -462,12 +462,9 @@ class RealDataSeeder extends Seeder
                 'lieu'                  => 'Brussels',
                 'client_id'             => $oussama->id,
                 'developer_id'          => $shakil->id,
-                'status'                => 'completed',
-                'description'           => "Application mobile pour connecter les prestataires de services de mariage avec les clients.\nComptes premium avec paiements.\nDéveloppé par Shakil Nirob (1 200 EUR).\nClient direct.",
-                'start_date'            => '2025-06-01',
-                'end_date'              => '2025-09-30',
+                'status'                => 'planning',
+                'description'           => "Application mobile pour connecter les prestataires de services de mariage avec les clients.\nComptes premium avec paiements.\nDéveloppé par Shakil Nirob (1 200 EUR).\nClient direct.\nDevis accepté, développement pas encore commencé.",
                 'budget'                => 2600,
-                'total_billed'          => 2600,
                 'langage_programmation' => 'React Native + Laravel',
                 'nombre_collaborateurs' => 1,
             ]
@@ -523,7 +520,7 @@ class RealDataSeeder extends Seeder
                 'lieu'                  => 'Brussels',
                 'developer_id'          => $nawfel->id,
                 'status'                => 'in_progress',
-                'description'           => "Produit interne -- SaaS de gestion de flotte de taxis.\nDéveloppé par Nawfel Ajari, Kristian Vasiaj, Ismael Bouzrouti.",
+                'description'           => "Cabs — Complete taxi fleet management SaaS. Real-time GPS tracking of all drivers, daily/monthly/annual cash reports, live shift monitoring, driver profiles, fleet analytics. Built for the Belgian and Dutch taxi market, compatible with Uber and Heetch. Mobile app for drivers + desktop dashboard for owners.\nTeam: Nawfel Ajari (lead + admin), Kristian Vasiaj (backend), Ismael Bouzrouti (dev).\nBusiness model: B2B subscription — Starter 99 EUR/month (max 5 vehicles), Premium 149.99 EUR/month (GPS + advanced features), Enterprise on request.",
                 'start_date'            => '2025-09-01',
                 'deadline'              => '2026-06-01',
                 'budget'                => 0,
@@ -1739,12 +1736,26 @@ Website: nainnovations.be');
         // RWDM ACADEMY — 14th project (internship, no revenue)
         // =====================================================================
 
+        $rwdmClient = User::updateOrCreate(
+            ['email' => 'info@rwdmacademy.be'],
+            [
+                'name'          => 'RWDM Academy',
+                'password'      => Hash::make('password'),
+                'role'          => 'client',
+                'company_name'  => 'RWDM Academy',
+                'is_active'     => true,
+                'last_login_at' => now(),
+                'approved_at'   => now()->subYear(),
+            ]
+        );
+
         $projRwdm = Projet::updateOrCreate(
             ['nom_societe' => 'RWDM Academy'],
             [
                 'type_societe'          => 'Sport / Football',
                 'type_site'             => 'platform_saas',
                 'lieu'                  => 'Brussels',
+                'client_id'             => $rwdmClient->id,
                 'developer_id'          => $nawfel->id,
                 'status'                => 'completed',
                 'description'           => "Official RWDM Brussels FC Academy platform. Built during internship at the club. Full dashboard for managing registrations, selection tests, accident declarations, medical certificates (certificats de guérison), liability waivers (décharges de responsabilité). Integrated with Pro Soccer Data API for precise player statistics. Actively used by the club since 2024.",
@@ -1802,7 +1813,7 @@ Website: nainnovations.be');
             [
                 'project' => $projDina,
                 'title' => 'Dina Kenitra FC',
-                'slug' => 'dina-kenitra',
+                'slug' => 'dina-kenitra-fc',
                 'client_name' => 'Dina Kenitra Futsal Club',
                 'excerpt' => 'First futsal club website in Africa. Famous on social media with a professional communication structure. Full SaaS platform for club management.',
                 'tech_stack' => ['Laravel', 'Tailwind CSS', 'MySQL'],
@@ -1850,6 +1861,7 @@ Website: nainnovations.be');
                 'category' => 'Mobile Application',
                 'live_url' => null,
                 'is_featured' => false,
+                'is_published' => false, // Not started yet — planning phase
             ],
             [
                 'project' => $projVericore,
@@ -1869,13 +1881,14 @@ Website: nainnovations.be');
                 'title' => 'Cabs',
                 'slug' => 'cabs',
                 'client_name' => 'NA Innovations',
-                'excerpt' => 'Complete taxi fleet management SaaS. Real-time driver tracking, shift management, daily/monthly/annual cash reports. Built for the Belgian and Dutch taxi market.',
-                'tech_stack' => ['React', 'Tailwind CSS', 'Vite', 'Laravel', 'React Native'],
-                'features' => ['Real-time GPS tracking', 'Shift management', 'Cash reports', 'Driver profiles', 'Fleet analytics', 'Mobile app'],
+                'excerpt' => 'The definitive taxi fleet management SaaS. Real-time GPS tracking, shift monitoring, daily/monthly/annual cash reports, driver management. Built for the Belgian and Dutch taxi market.',
+                'tech_stack' => ['React.js', 'Tailwind CSS', 'Vite', 'Laravel', 'React Native', 'MySQL'],
+                'features' => ['Real-time GPS tracking', 'Shift management', 'Cash reports (daily/monthly/annual)', 'Driver profiles', 'Fleet analytics', 'Mobile driver app', 'Dispatch system', 'Multi-language (FR/NL/EN)'],
                 'tags' => ['taxi', 'saas', 'fleet', 'management'],
                 'category' => 'SaaS Platform',
                 'live_url' => null,
                 'is_featured' => true,
+                'is_published' => false, // Own product — shown in /products only
             ],
         ];
 
@@ -1894,7 +1907,7 @@ Website: nainnovations.be');
                     'tags'         => $pd['tags'],
                     'category'     => $pd['category'],
                     'live_url'     => $pd['live_url'],
-                    'is_published' => true,
+                    'is_published' => $pd['is_published'] ?? true,
                     'is_featured'  => $pd['is_featured'],
                     'sort_order'   => $i,
                 ]

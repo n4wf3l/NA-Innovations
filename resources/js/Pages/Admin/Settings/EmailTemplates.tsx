@@ -188,7 +188,7 @@ export default function EmailTemplates({ templates, signature }: Props) {
                 </button>
             </div>
 
-            {activeTab === 'templates' && (<>
+            {activeTab === 'templates' && (<div key="templates" className="animate-tab-in"><>
             {/* Language filter */}
             <div className="flex items-center justify-between mb-6">
                 <LocalePicker value={filterLocale} onChange={setFilterLocale} label={t('Language')} />
@@ -424,10 +424,11 @@ export default function EmailTemplates({ templates, signature }: Props) {
                 document.body
             )}
             {/* Email Overview Modal */}
-            </>)}
+            </></div>)}
 
             {/* Tab: Signature */}
             {activeTab === 'signature' && (
+                <div key="signature" className="animate-tab-in">
                 <div className="max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Form */}
                     <div className="space-y-5">
@@ -547,6 +548,7 @@ export default function EmailTemplates({ templates, signature }: Props) {
                         </div>
                         <p className="text-xs text-gray-400 dark:text-gray-500 text-center">{t('Aperçu en temps réel')}</p>
                     </div>
+                </div>
                 </div>
             )}
 

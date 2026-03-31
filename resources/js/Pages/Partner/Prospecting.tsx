@@ -1,7 +1,8 @@
 import PartnerLayout from '@/Layouts/PartnerLayout';
-import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, Link, router } from '@inertiajs/react';
+import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import SignaturePad from '@/Components/ui/SignaturePad';
 
 function CopyButton({ text }: { text: string }) {
     const { t } = useTranslation();
@@ -115,8 +116,167 @@ function StepList({ steps }: { steps: string[] }) {
     );
 }
 
-export default function Prospecting() {
+interface Props {
+    kbAccessStatus?: string;
+    kbNdaSignedAt?: string;
+}
+
+export default function Prospecting({ kbAccessStatus = 'none', kbNdaSignedAt }: Props) {
     const { t } = useTranslation();
+    const [ndaFullName, setNdaFullName] = useState('');
+    const [ndaSignature, setNdaSignature] = useState('');
+    const [ndaSubmitting, setNdaSubmitting] = useState(false);
+    const [ndaAgreed, setNdaAgreed] = useState(false);
+
+    const submitNdaRequest = () => {
+        if (!ndaFullName.trim() || !ndaSignature || !ndaAgreed) return;
+        setNdaSubmitting(true);
+        router.post('/partner/prospecting/request-access', {
+            full_name: ndaFullName,
+            signature_data: ndaSignature,
+        }, {
+            onFinish: () => setNdaSubmitting(false),
+        });
+    };
+
+    // If access not approved, show NDA gate
+    if (kbAccessStatus !== 'approved') {
+        return (
+            <PartnerLayout title={t('Prospecting')}>
+                <Head title={t('Prospecting')} />
+                <div className="max-w-2xl mx-auto py-16 px-4">
+                    {/* Header */}
+                    <div className="text-center mb-10">
+                        <div className="w-20 h-20 mx-auto mb-6 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center justify-center">
+                            <svg className="w-10 h-10 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                            </svg>
+                        </div>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('Contenu restreint')}</h1>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm max-w-md mx-auto">
+                            {t('Cette section contient des informations confidentielles et stratégiques. Un accord de non-divulgation (NDA) est requis pour y accéder.')}
+                        </p>
+                    </div>
+
+                    {kbAccessStatus === 'pending' ? (
+                        /* Waiting for approval */
+                        <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 rounded-2xl p-8 text-center">
+                            <svg className="w-12 h-12 mx-auto mb-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <h3 className="text-lg font-bold text-amber-800 dark:text-amber-300 mb-2">{t('Demande en cours de traitement')}</h3>
+                            <p className="text-sm text-amber-700 dark:text-amber-400">
+                                {t('Vous avez signé l\'accord de confidentialité. L\'administrateur examinera votre demande dans les plus brefs délais.')}
+                            </p>
+                            {kbNdaSignedAt && (
+                                <p className="text-xs text-amber-600 dark:text-amber-500 mt-4">
+                                    {t('Signé le')} {new Date(kbNdaSignedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                </p>
+                            )}
+                        </div>
+                    ) : kbAccessStatus === 'rejected' ? (
+                        /* Rejected */
+                        <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-2xl p-8 text-center">
+                            <svg className="w-12 h-12 mx-auto mb-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                            </svg>
+                            <h3 className="text-lg font-bold text-red-800 dark:text-red-300 mb-2">{t('Demande refusée')}</h3>
+                            <p className="text-sm text-red-700 dark:text-red-400">
+                                {t('Votre demande d\'accès a été refusée. Contactez l\'administrateur pour plus d\'informations.')}
+                            </p>
+                        </div>
+                    ) : (
+                        /* NDA Form */
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden">
+                            {/* NDA Document */}
+                            <div className="p-8 border-b border-gray-200 dark:border-gray-700">
+                                <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                                    <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                                    </svg>
+                                    {t('Accord de Non-Divulgation (NDA)')}
+                                </h2>
+
+                                <div className="prose prose-sm dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 space-y-4">
+                                    <p><strong>{t('Entre les soussignés :')}</strong></p>
+                                    <p><strong>NA Innovations</strong>, {t('ci-après dénommée « la Société »,')}</p>
+                                    <p>{t('et le soussigné, ci-après dénommé « le Partenaire ».')}</p>
+
+                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mt-6">{t('Article 1 — Objet')}</h3>
+                                    <p>{t('Le présent accord a pour objet de protéger les informations confidentielles et stratégiques communiquées au Partenaire dans le cadre de son activité d\'apporteur d\'affaires pour NA Innovations, incluant mais non limité à : les stratégies de prospection, les méthodes d\'acquisition de clients, les scripts de vente, les listes de prospects, les taux de commission, et toute documentation interne.')}</p>
+
+                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mt-6">{t('Article 2 — Obligations')}</h3>
+                                    <p>{t('Le Partenaire s\'engage à :')}</p>
+                                    <ul className="list-disc pl-5 space-y-1">
+                                        <li>{t('Ne divulguer aucune information confidentielle à des tiers, directement ou indirectement')}</li>
+                                        <li>{t('Ne pas reproduire, copier ou transmettre les documents et méthodes fournis')}</li>
+                                        <li>{t('Utiliser les informations uniquement dans le cadre de son activité de partenaire pour NA Innovations')}</li>
+                                        <li>{t('Ne pas utiliser ces informations au profit d\'une entreprise concurrente')}</li>
+                                        <li>{t('Restituer ou détruire tous les documents confidentiels en cas de fin de collaboration')}</li>
+                                    </ul>
+
+                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mt-6">{t('Article 3 — Durée')}</h3>
+                                    <p>{t('Le présent accord est conclu pour une durée indéterminée et reste en vigueur même après la fin de la collaboration entre les parties.')}</p>
+
+                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mt-6">{t('Article 4 — Sanctions')}</h3>
+                                    <p>{t('Toute violation du présent accord expose le Partenaire à des poursuites judiciaires et au paiement de dommages et intérêts, conformément au droit international applicable.')}</p>
+
+                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mt-6">{t('Article 5 — Juridiction')}</h3>
+                                    <p>{t('Le présent accord est régi par le droit belge. Tout litige sera soumis aux tribunaux compétents de Bruxelles, Belgique.')}</p>
+                                </div>
+                            </div>
+
+                            {/* Signature form */}
+                            <div className="p-8 bg-gray-50 dark:bg-gray-800/50 space-y-6">
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('Nom complet (tel que sur votre pièce d\'identité)')}</label>
+                                    <input
+                                        type="text"
+                                        value={ndaFullName}
+                                        onChange={e => setNdaFullName(e.target.value)}
+                                        placeholder={t('Prénom et nom de famille')}
+                                        className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('Votre signature')}</label>
+                                    <SignaturePad
+                                        value={ndaSignature || null}
+                                        onChange={(data) => setNdaSignature(data || '')}
+                                    />
+                                </div>
+
+                                <label className="flex items-start gap-3 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={ndaAgreed}
+                                        onChange={e => setNdaAgreed(e.target.checked)}
+                                        className="mt-1 rounded border-gray-300 dark:border-gray-600 text-rose-500 focus:ring-rose-500"
+                                    />
+                                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                                        {t('Je déclare avoir lu et compris l\'intégralité de l\'accord de non-divulgation ci-dessus. Je m\'engage à respecter toutes les clauses mentionnées et j\'accepte les conséquences en cas de violation.')}
+                                    </span>
+                                </label>
+
+                                <button
+                                    onClick={submitNdaRequest}
+                                    disabled={!ndaFullName.trim() || !ndaSignature || !ndaAgreed || ndaSubmitting}
+                                    className="w-full py-3.5 bg-rose-500 text-white font-bold rounded-xl hover:bg-rose-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-rose-500/20"
+                                >
+                                    {ndaSubmitting ? t('Envoi en cours...') : t('Signer et demander l\'accès')}
+                                </button>
+
+                                <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
+                                    {t('Votre signature sera enregistrée avec votre adresse IP et la date exacte. Ce document a valeur juridique.')}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </PartnerLayout>
+        );
+    }
 
     const emailRestaurant = t(`Objet : Augmentez vos commandes en ligne - sans commission
 

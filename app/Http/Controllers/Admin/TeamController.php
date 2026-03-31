@@ -77,6 +77,46 @@ class TeamController extends BaseAdminController
     }
 
     /**
+     * Approve knowledge base access for a partner.
+     */
+    public function approveKbAccess(User $user)
+    {
+        $partner = $user->referralPartner;
+        if (!$partner || $partner->kb_access_status !== 'pending') {
+            return redirect()->back()->with('error', 'Aucune demande en attente.');
+        }
+
+        $partner->update([
+            'kb_access_status' => 'approved',
+            'kb_access_granted_at' => now(),
+            'kb_access_granted_by' => auth()->id(),
+        ]);
+
+        NotificationService::send($user, 'account-approved', [
+            'user_name' => $user->name,
+        ]);
+
+        return redirect()->back()->with('success', 'Accès à la Knowledge Base accordé à ' . $user->name . '.');
+    }
+
+    /**
+     * Reject knowledge base access for a partner.
+     */
+    public function rejectKbAccess(User $user)
+    {
+        $partner = $user->referralPartner;
+        if (!$partner || $partner->kb_access_status !== 'pending') {
+            return redirect()->back()->with('error', 'Aucune demande en attente.');
+        }
+
+        $partner->update([
+            'kb_access_status' => 'rejected',
+        ]);
+
+        return redirect()->back()->with('success', 'Demande d\'accès refusée.');
+    }
+
+    /**
      * Admin creates an account directly.
      * No password in the form — user sets their own via reset link.
      */

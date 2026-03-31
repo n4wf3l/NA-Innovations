@@ -36,6 +36,41 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             \App\Services\WorkflowService::sendInvoiceDueReminders();
         })->dailyAt('09:30')->name('invoice-due-reminders');
+
+        // Process partner reminders every 15 minutes
+        $schedule->call(function () {
+            $dueReminders = \App\Models\PartnerReminder::due()->with('user')->get();
+            foreach ($dueReminders as $reminder) {
+                // Create in-app notification
+                \App\Models\NotificationLog::create([
+                    'user_id' => $reminder->user_id,
+                    'type' => 'reminder',
+                    'title' => __('Rappel : relancer :name', ['name' => $reminder->contact_name]),
+                    'message' => $reminder->notes ? $reminder->contact_name . ' — ' . \Illuminate\Support\Str::limit($reminder->notes, 100) : __('Il est temps de relancer :name', ['name' => $reminder->contact_name]),
+                    'action_url' => '/partner/reminders',
+                    'is_read' => false,
+                ]);
+
+                // Send email if enabled
+                if ($reminder->send_email_notification && $reminder->user) {
+                    try {
+                        $tpl = \App\Models\EmailTemplate::where('slug', 'partner-reminder')
+                            ->where('locale', $reminder->user->locale ?? app()->getLocale())
+                            ->where('is_active', true)
+                            ->first();
+                        if ($tpl) {
+                            $subject = str_replace(['{{ contact_name }}', '{{ company }}'], [$reminder->contact_name, $reminder->company_name ?? ''], $tpl->subject);
+                            $body = str_replace(['{{ partner_name }}', '{{ contact_name }}', '{{ company }}', '{{ phone }}', '{{ email }}', '{{ notes }}'], [$reminder->user->name, $reminder->contact_name, $reminder->company_name ?? '-', $reminder->contact_phone ?? '-', $reminder->contact_email ?? '-', $reminder->notes ?? '-'], $tpl->body);
+                            \Illuminate\Support\Facades\Mail::to($reminder->user->email)->send(new \App\Mail\TemplateMail($subject, $body));
+                        }
+                    } catch (\Exception $e) {
+                        // Silent fail — don't break the loop
+                    }
+                }
+
+                $reminder->update(['status' => 'sent', 'sent_at' => now()]);
+            }
+        })->everyFifteenMinutes()->name('partner-reminders');
     }
 
     /**

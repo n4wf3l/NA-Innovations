@@ -21,6 +21,13 @@ class ReferralPartner extends Model
         'paypal_email',
         'notes',
         'is_active',
+        'kb_access_status',
+        'kb_nda_signature',
+        'kb_nda_full_name',
+        'kb_nda_signed_at',
+        'kb_nda_signed_ip',
+        'kb_access_granted_at',
+        'kb_access_granted_by',
     ];
 
     /**
@@ -31,6 +38,8 @@ class ReferralPartner extends Model
     protected $casts = [
         'default_commission_rate' => 'decimal:2',
         'is_active' => 'boolean',
+        'kb_nda_signed_at' => 'datetime',
+        'kb_access_granted_at' => 'datetime',
     ];
 
     // ──────────────────────────────────────────────

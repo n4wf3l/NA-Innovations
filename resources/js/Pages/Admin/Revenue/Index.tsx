@@ -9,6 +9,7 @@ import { usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { useTranslation } from 'react-i18next';
 import { RevenueBarChart, LeadConversionCard, ProjectStatusCard, TopClientsCard, MiniSparkline } from './Charts';
+import SimulatorTab from '../Simulator/SimulatorTab';
 
 interface BudgetLine {
     id: number; label: string; type: string; amount: number; frequency: string;
@@ -53,13 +54,16 @@ interface Props {
     momChange: number;
     topClients: TopClient[];
     commissionStats: { total_paid: number; total_pending: number; total_all: number };
+    simulations: any[];
+    simulatorProducts: any[];
 }
 
 // Frequency labels use t() at render time — see LineRow
 
-export default function RevenueIndex({ projection, breakEvenMonth, actualIncome, actualExpenses, until, allProjects, selectedProjectIds, budgetLines, revenueByMonth, leadsBySource, projectsByStatus, thisMonthRevenue, lastMonthRevenue, momChange, topClients, commissionStats }: Props) {
+export default function RevenueIndex({ projection, breakEvenMonth, actualIncome, actualExpenses, until, allProjects, selectedProjectIds, budgetLines, revenueByMonth, leadsBySource, projectsByStatus, thisMonthRevenue, lastMonthRevenue, momChange, topClients, commissionStats, simulations, simulatorProducts }: Props) {
     const { t } = useTranslation();
     const { financialUnlocked } = usePage<PageProps>().props;
+    const [activeTab, setActiveTab] = useState<'revenue' | 'simulator'>('revenue');
     const [showFilters, setShowFilters] = useState(false);
     const [selected, setSelected] = useState<number[]>(selectedProjectIds);
     const [showDetail, setShowDetail] = useState(false);
@@ -102,31 +106,44 @@ export default function RevenueIndex({ projection, breakEvenMonth, actualIncome,
         monthOptions.push({ value: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`, label: d.toLocaleDateString('fr-BE', { month: 'long', year: 'numeric' }) });
     }
 
-    if (!financialUnlocked) {
-        return (
-            <AdminLayout title={t("Revenue")} header={t("Revenue")}>
-                <Head title={t("Revenue")} />
-                <div className="flex flex-col items-center justify-center py-32">
-                    <div className="w-20 h-20 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-6">
-                        <svg className="w-10 h-10 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                        </svg>
-                    </div>
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('Financial data locked')}</h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center max-w-md mb-6">{t('Unlock financial data using the PIN button in the top bar to access revenue projections and budget details.')}</p>
-                    <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                        {t('Click "Show $" in the top bar')}
-                    </div>
-                </div>
-            </AdminLayout>
-        );
-    }
+    const lockedContent = (
+        <div className="flex flex-col items-center justify-center py-32">
+            <div className="w-20 h-20 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-6">
+                <svg className="w-10 h-10 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('Financial data locked')}</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 text-center max-w-md mb-6">{t('Unlock financial data using the PIN button in the top bar to access revenue projections and budget details.')}</p>
+            <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                {t('Click "Show $" in the top bar')}
+            </div>
+        </div>
+    );
 
     return (
         <AdminLayout title={t("Revenue")} header={t("Revenue")}>
             <Head title={t("Revenue")} />
 
+            {/* Tabs */}
+            <div className="flex gap-1 mb-6 bg-gray-100 dark:bg-gray-800 rounded-xl p-1 w-fit">
+                <button onClick={() => setActiveTab('revenue')} className={`px-5 py-2 text-sm font-semibold rounded-lg transition-all ${activeTab === 'revenue' ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}>
+                    {t('Données financières')}
+                </button>
+                <button onClick={() => setActiveTab('simulator')} className={`px-5 py-2 text-sm font-semibold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'simulator' ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}>
+                    {t('Simulateur')}
+                    <span className="text-xs bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 px-1.5 py-0.5 rounded-full font-medium">{simulations.length}</span>
+                </button>
+            </div>
+
+            {activeTab === 'simulator' && (
+                <div key="simulator" className="animate-tab-in">
+                <SimulatorTab simulations={simulations} products={simulatorProducts} />
+                </div>
+            )}
+
+            {activeTab === 'revenue' && (<div key="revenue" className="animate-tab-in">{!financialUnlocked ? lockedContent : <>
             {/* Banner */}
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 p-6 sm:p-8 mb-6">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -379,6 +396,7 @@ export default function RevenueIndex({ projection, breakEvenMonth, actualIncome,
                     </div>
                 )}
             </div>
+            </>}</div>)}
         </AdminLayout>
     );
 }

@@ -74,6 +74,9 @@ class HandleInertiaRequests extends Middleware
                     'admins' => \App\Models\User::where('role', 'admin')->where('is_active', true)->count(),
                 ];
             }),
+            'activityChartMode' => $request->user() && $request->user()->role === 'admin'
+                ? \App\Models\Setting::get('activity_chart_mode', 'hour')
+                : null,
             'financialUnlocked' => (function () use ($request) {
                 if (!$request->user()) return false;
                 $unlockedAt = session('financial_unlocked_at');

@@ -69,7 +69,8 @@ const rightNavItems: NavItem[] = [
 const allNavItems: NavItem[] = [...leftNavItems, ...rightNavItems];
 
 export default function AdminLayout({ children, title, header }: PropsWithChildren<AdminLayoutProps>) {
-    const { auth, locale, notifications } = usePage<PageProps>().props;
+    const pageProps = usePage<PageProps>().props;
+    const { auth, locale, notifications } = pageProps;
     const { t } = useTranslation();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [customizerOpen, setCustomizerOpen] = useState(false);

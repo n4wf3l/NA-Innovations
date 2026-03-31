@@ -62,7 +62,7 @@ export default function ProjectsIndex({ pendingProjects, myProjects, tab }: Prop
 
             {/* Pending Tab */}
             {activeTab === 'pending' && (
-                <div className="animate-fade-in">
+                <div key={activeTab} className="animate-tab-in">
                     {pendingProjects.length === 0 ? (
                         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm px-6 py-16 text-center">
                             <div className="w-14 h-14 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center mx-auto mb-4">
@@ -83,7 +83,7 @@ export default function ProjectsIndex({ pendingProjects, myProjects, tab }: Prop
 
             {/* My Projects Tab */}
             {activeTab === 'my' && (
-                <div className="animate-fade-in">
+                <div key={activeTab} className="animate-tab-in">
                     {myProjects.length === 0 ? (
                         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm px-6 py-16 text-center">
                             <div className="w-14 h-14 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center mx-auto mb-4">

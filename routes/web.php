@@ -211,7 +211,11 @@ Route::put('/api/tour-completed', function (\Illuminate\Http\Request $request) {
 
 
 Route::get('/services', function () {
-    $services = PublicService::where('is_active', true)->orderBy('sort_order')->get();
+    $services = PublicService::where('is_active', true)->orderBy('sort_order')->get()->map(function ($s) {
+        $s->title = __($s->title);
+        $s->description = __($s->description);
+        return $s;
+    });
     return Inertia::render('Services', ['services' => $services]);
 })->name('services');
 
@@ -315,6 +319,12 @@ Route::prefix('partner')->middleware(['auth', 'referral'])->group(function () {
     Route::get('/resources/{slug}', [App\Http\Controllers\Partner\PageController::class, 'show'])->name('partner.pages.show');
     Route::get('/guide', [App\Http\Controllers\Partner\GuideController::class, 'index'])->name('partner.guide');
     Route::get('/prospecting', [App\Http\Controllers\Partner\GuideController::class, 'prospecting'])->name('partner.prospecting');
+    Route::post('/prospecting/request-access', [App\Http\Controllers\Partner\GuideController::class, 'requestKbAccess'])->name('partner.kb.request');
+    Route::get('/reminders', [App\Http\Controllers\Partner\ReminderController::class, 'index'])->name('partner.reminders');
+    Route::post('/reminders', [App\Http\Controllers\Partner\ReminderController::class, 'store'])->name('partner.reminders.store');
+    Route::put('/reminders/{reminder}', [App\Http\Controllers\Partner\ReminderController::class, 'update'])->name('partner.reminders.update');
+    Route::patch('/reminders/{reminder}/dismiss', [App\Http\Controllers\Partner\ReminderController::class, 'dismiss'])->name('partner.reminders.dismiss');
+    Route::delete('/reminders/{reminder}', [App\Http\Controllers\Partner\ReminderController::class, 'destroy'])->name('partner.reminders.destroy');
     Route::get('/profile', [App\Http\Controllers\Partner\ProfileController::class, 'edit'])->name('partner.profile');
     Route::put('/profile', [App\Http\Controllers\Partner\ProfileController::class, 'update'])->name('partner.profile.update');
     Route::put('/profile/password', [App\Http\Controllers\Partner\ProfileController::class, 'updatePassword'])->name('partner.profile.password');
@@ -410,6 +420,57 @@ Route::middleware('auth')->group(function () {
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
     Route::put('dashboard/preferences', [App\Http\Controllers\Admin\DashboardController::class, 'updatePreferences'])->name('admin.dashboard.preferences');
+    Route::put('dashboard/activity-mode', function (\Illuminate\Http\Request $request) {
+        $mode = $request->validate(['mode' => 'required|in:hour,day,week,month'])['mode'];
+        \App\Models\Setting::set('activity_chart_mode', $mode);
+        \Illuminate\Support\Facades\Cache::forget('activity_chart_hour');
+        \Illuminate\Support\Facades\Cache::forget('activity_chart_day');
+        \Illuminate\Support\Facades\Cache::forget('activity_chart_week');
+        \Illuminate\Support\Facades\Cache::forget('activity_chart_month');
+        return response()->json(['ok' => true]);
+    })->name('admin.dashboard.activity-mode');
+
+    Route::get('dashboard/activity-chart', function () {
+        $mode = \App\Models\Setting::get('activity_chart_mode', 'hour');
+        $chart = [];
+        try {
+            if ($mode === 'hour') {
+                $data = \App\Models\ActivityLog::where('created_at', '>=', now()->subHours(24))
+                    ->selectRaw("DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00') as period, COUNT(*) as count")
+                    ->groupBy('period')->pluck('count', 'period')->toArray();
+                for ($i = 23; $i >= 0; $i--) {
+                    $key = now()->subHours($i)->format('Y-m-d H:00:00');
+                    $chart[] = ['label' => now()->subHours($i)->format('H:00'), 'count' => $data[$key] ?? 0];
+                }
+            } elseif ($mode === 'day') {
+                $data = \App\Models\ActivityLog::where('created_at', '>=', now()->subDays(30))
+                    ->selectRaw("DATE(created_at) as period, COUNT(*) as count")
+                    ->groupBy('period')->pluck('count', 'period')->toArray();
+                for ($i = 29; $i >= 0; $i--) {
+                    $key = now()->subDays($i)->format('Y-m-d');
+                    $chart[] = ['label' => now()->subDays($i)->format('d/m'), 'count' => $data[$key] ?? 0];
+                }
+            } elseif ($mode === 'week') {
+                $data = \App\Models\ActivityLog::where('created_at', '>=', now()->subWeeks(12))
+                    ->selectRaw("DATE(DATE_SUB(created_at, INTERVAL WEEKDAY(created_at) DAY)) as period, COUNT(*) as count")
+                    ->groupBy('period')->pluck('count', 'period')->toArray();
+                for ($i = 11; $i >= 0; $i--) {
+                    $d = now()->subWeeks($i)->startOfWeek();
+                    $key = $d->format('Y-m-d');
+                    $chart[] = ['label' => 'S' . $d->weekOfYear, 'count' => $data[$key] ?? 0];
+                }
+            } elseif ($mode === 'month') {
+                $data = \App\Models\ActivityLog::where('created_at', '>=', now()->subMonths(12))
+                    ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as period, COUNT(*) as count")
+                    ->groupBy('period')->pluck('count', 'period')->toArray();
+                for ($i = 11; $i >= 0; $i--) {
+                    $key = now()->subMonths($i)->format('Y-m');
+                    $chart[] = ['label' => now()->subMonths($i)->format('M'), 'count' => $data[$key] ?? 0];
+                }
+            }
+        } catch (\Throwable $e) {}
+        return response()->json(['mode' => $mode, 'chart' => $chart]);
+    })->name('admin.dashboard.activity-chart');
 
     // Timesheets
     Route::get('timesheets', [App\Http\Controllers\Admin\TimeEntryController::class, 'index'])->name('admin.timesheets');
@@ -475,6 +536,15 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::put('settings/email-signature', [App\Http\Controllers\Admin\EmailSignatureController::class, 'update'])->name('admin.email-signature.update');
     Route::post('settings/email-signature/logo', [App\Http\Controllers\Admin\EmailSignatureController::class, 'uploadLogo'])->name('admin.email-signature.upload-logo');
     Route::delete('settings/email-signature/logo', [App\Http\Controllers\Admin\EmailSignatureController::class, 'deleteLogo'])->name('admin.email-signature.delete-logo');
+
+    // Financial Simulator
+    Route::get('simulator', [App\Http\Controllers\Admin\FinancialSimulatorController::class, 'index'])->name('admin.simulator.index');
+    Route::get('simulator/create', [App\Http\Controllers\Admin\FinancialSimulatorController::class, 'create'])->name('admin.simulator.create');
+    Route::post('simulator', [App\Http\Controllers\Admin\FinancialSimulatorController::class, 'store'])->name('admin.simulator.store');
+    Route::get('simulator/{simulation}', [App\Http\Controllers\Admin\FinancialSimulatorController::class, 'show'])->name('admin.simulator.show');
+    Route::put('simulator/{simulation}', [App\Http\Controllers\Admin\FinancialSimulatorController::class, 'update'])->name('admin.simulator.update');
+    Route::delete('simulator/{simulation}', [App\Http\Controllers\Admin\FinancialSimulatorController::class, 'destroy'])->name('admin.simulator.destroy');
+    Route::post('simulator/{simulation}/duplicate', [App\Http\Controllers\Admin\FinancialSimulatorController::class, 'duplicate'])->name('admin.simulator.duplicate');
 
     // Signature
     Route::get('signature', [App\Http\Controllers\Admin\SignatureController::class, 'show'])->name('admin.signature.show');
@@ -613,6 +683,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('team', [App\Http\Controllers\Admin\TeamController::class, 'store'])->name('admin.team.store');
     Route::patch('team/{user}/approve', [App\Http\Controllers\Admin\TeamController::class, 'approve'])->name('admin.team.approve');
     Route::delete('team/{user}/reject', [App\Http\Controllers\Admin\TeamController::class, 'reject'])->name('admin.team.reject');
+    Route::patch('team/{user}/kb-approve', [App\Http\Controllers\Admin\TeamController::class, 'approveKbAccess'])->name('admin.team.kb-approve');
+    Route::patch('team/{user}/kb-reject', [App\Http\Controllers\Admin\TeamController::class, 'rejectKbAccess'])->name('admin.team.kb-reject');
     Route::patch('team/{user}/toggle', [App\Http\Controllers\Admin\TeamController::class, 'toggleActive'])->name('admin.team.toggle');
 
     // Support Tickets

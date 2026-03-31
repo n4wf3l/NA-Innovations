@@ -34,6 +34,11 @@ interface Props {
     projects: any[];
     dashboardPrefs: DashboardPrefs;
     notifyAdminEmails: boolean;
+    activityChart: { hour: string; count: number }[];
+    activityNow: number;
+    activityPeak: number;
+    activityPeakHour: string;
+    activityTotal: number;
 }
 
 const statusBorder: Record<string, string> = {
@@ -45,7 +50,7 @@ const statusBorder: Record<string, string> = {
     cancelled: 'border-t-red-500',
 };
 
-export default function Dashboard({ revenueMonth, revenueLastMonth, revenueChange, activeProjects, openLeads, newLeadsThisMonth, leadsChange, wonThisMonth, wonLastMonth, pendingInvoices, recentLeads, overdueInvoices, expiringServices, pendingCommissions, projects, dashboardPrefs: initialPrefs, notifyAdminEmails: initialNotifyEmails }: Props) {
+export default function Dashboard({ revenueMonth, revenueLastMonth, revenueChange, activeProjects, openLeads, newLeadsThisMonth, leadsChange, wonThisMonth, wonLastMonth, pendingInvoices, recentLeads, overdueInvoices, expiringServices, pendingCommissions, projects, dashboardPrefs: initialPrefs, notifyAdminEmails: initialNotifyEmails, activityChart = [], activityNow = 0, activityPeak = 0, activityPeakHour = '--', activityTotal = 0 }: Props) {
     const { financialUnlocked } = usePage<PageProps>().props;
     const { t } = useTranslation();
 

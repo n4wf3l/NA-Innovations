@@ -82,7 +82,7 @@ export default function Seo({ seoSettings }: Props) {
                 </div>
 
                 {/* Active tab content */}
-                <div>
+                <div key={activeTab} className="animate-tab-in">
                     {pages.filter(p => p.key === activeTab).map((page) => {
                         const titleValue = form[page.titleKey] || '';
                         const descValue = form[page.descriptionKey] || '';
