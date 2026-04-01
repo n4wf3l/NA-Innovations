@@ -6,6 +6,7 @@ import TopBar from '@/Components/layout/TopBar';
 import TopBarActions from '@/Components/layout/TopBarActions';
 import FlashMessages from '@/Components/layout/FlashMessages';
 import LoginSplash from '@/Components/ui/LoginSplash';
+import LogoutButton from '@/Components/layout/LogoutButton';
 import MobileMenu from '@/Components/layout/MobileMenu';
 import { setCurrency } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
@@ -63,6 +64,7 @@ const rightNavItems: NavItem[] = [
     { type: 'link', label: 'Branding', href: '/admin/settings/branding', match: '/admin/settings/branding', icon: 'M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42' },
     { type: 'link', label: 'SEO', href: '/admin/settings/seo', match: '/admin/settings/seo', icon: 'M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z' },
     { type: 'link', label: 'Chatbot IA', href: '/admin/settings/chatbot', match: '/admin/settings/chatbot', icon: 'M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z' },
+    { type: 'link', label: 'NDA Partenaires', href: '/admin/settings/nda', match: '/admin/settings/nda', icon: 'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z' },
 ];
 
 // Combine for mobile
@@ -173,7 +175,11 @@ export default function AdminLayout({ children, title, header }: PropsWithChildr
         </div>
     );
 
-    const sidebarFooter = null;
+    const sidebarFooter = (
+        <div className="border-t border-white/5 px-3 py-3">
+            <LogoutButton />
+        </div>
+    );
 
     const rightSidebarFooter = (
         <div className="border-t border-white/5 px-3 py-3">

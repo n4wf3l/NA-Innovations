@@ -203,6 +203,29 @@ class ContactController extends Controller
             $refPartner = \App\Models\ReferralPartner::where('referral_code', $request->ref)->where('is_active', true)->first();
             if ($refPartner) {
                 $lead->update(['referral_partner_id' => $refPartner->id, 'source' => 'referral']);
+
+                // Notify the partner
+                \App\Models\NotificationLog::create([
+                    'user_id' => $refPartner->user_id,
+                    'type' => 'referral_used',
+                    'title' => 'Nouveau lead via votre code !',
+                    'message' => strip_tags($request->name) . ' a demandé un devis en utilisant votre code de parrainage.',
+                    'action_url' => '/partner/leads/' . $lead->id,
+                    'is_read' => false,
+                ]);
+
+                // Email notification if enabled
+                $partnerUser = $refPartner->user;
+                if ($partnerUser && ($partnerUser->preferences['email_notifications'] ?? true)) {
+                    try {
+                        \Illuminate\Support\Facades\Mail::to($partnerUser->email)->send(
+                            new \App\Mail\TemplateMail(
+                                'Votre code de parrainage a été utilisé !',
+                                '<p>Bonjour ' . $partnerUser->name . ',</p><p><strong>' . strip_tags($request->name) . '</strong> vient de demander un devis en utilisant votre code de parrainage <strong>' . $request->ref . '</strong>.</p><p>Connectez-vous pour suivre l\'avancement de ce lead.</p>'
+                            )
+                        );
+                    } catch (\Exception $e) {}
+                }
             }
         }
 

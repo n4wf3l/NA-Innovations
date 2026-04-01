@@ -24,6 +24,7 @@ interface Props {
     developers: TeamUser[];
     admins: TeamUser[];
     pending: TeamUser[];
+    kbPending: TeamUser[];
 }
 
 type ModalRole = 'admin' | 'developer' | 'referral_partner';
@@ -54,7 +55,7 @@ function formatDate(dateStr: string) {
     return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-export default function TeamIndex({ partners, developers, admins, pending }: Props) {
+export default function TeamIndex({ partners, developers, admins, pending, kbPending = [] }: Props) {
     const { t } = useTranslation();
     const { confirm, ConfirmDialog } = useConfirm();
     const [showModal, setShowModal] = useState(false);
@@ -223,6 +224,63 @@ export default function TeamIndex({ partners, developers, admins, pending }: Pro
                                     </button>
                                     <button
                                         onClick={() => handleReject(user.id)}
+                                        className="inline-flex items-center px-3 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-medium transition-colors shadow-sm"
+                                    >
+                                        <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        {t('Reject')}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* KB Access Requests */}
+            {kbPending.length > 0 && (
+                <div className="mb-6 rounded-2xl border-2 border-violet-400/30 bg-violet-50 dark:bg-violet-500/5 overflow-hidden">
+                    <div className="px-5 py-4 bg-violet-100 dark:bg-violet-500/10 border-b border-violet-200 dark:border-violet-500/20 flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-lg bg-violet-400/20 flex items-center justify-center flex-shrink-0">
+                            <svg className="w-4 h-4 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-bold text-violet-900 dark:text-violet-300">{t('Knowledge Base Access Requests')}</h3>
+                            <p className="text-xs text-violet-700 dark:text-violet-400/70">{kbPending.length} {t('partner(s) signed the NDA and await your approval')}</p>
+                        </div>
+                    </div>
+                    <div className="divide-y divide-violet-200/50 dark:divide-violet-500/10">
+                        {kbPending.map(user => (
+                            <div key={user.id} className="px-5 py-4 flex items-center justify-between">
+                                <div className="flex items-center space-x-3 min-w-0">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-200 to-violet-300 dark:from-violet-600 dark:to-violet-700 flex items-center justify-center flex-shrink-0">
+                                        <span className="text-sm font-bold text-violet-800 dark:text-violet-200">{user.name.split(' ').map((n: string) => n[0]).join('')}</span>
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{user.name}</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+                                        {(user as any).referral_partner?.kb_nda_full_name && (
+                                            <p className="text-xs text-violet-600 dark:text-violet-400 mt-0.5">
+                                                {t('NDA signé par')} : {(user as any).referral_partner.kb_nda_full_name}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="flex items-center space-x-2 flex-shrink-0 ml-4">
+                                    <button
+                                        onClick={() => router.patch(`/admin/team/${user.id}/kb-approve`, {}, { preserveScroll: true })}
+                                        className="inline-flex items-center px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-medium transition-colors shadow-sm"
+                                    >
+                                        <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                        {t('Approve')}
+                                    </button>
+                                    <button
+                                        onClick={() => router.patch(`/admin/team/${user.id}/kb-reject`, {}, { preserveScroll: true })}
                                         className="inline-flex items-center px-3 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-medium transition-colors shadow-sm"
                                     >
                                         <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>

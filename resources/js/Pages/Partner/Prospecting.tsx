@@ -119,10 +119,14 @@ function StepList({ steps }: { steps: string[] }) {
 interface Props {
     kbAccessStatus?: string;
     kbNdaSignedAt?: string;
+    ndaMode?: 'text' | 'pdf';
+    ndaText?: string;
+    ndaPdfUrl?: string | null;
 }
 
-export default function Prospecting({ kbAccessStatus = 'none', kbNdaSignedAt }: Props) {
+export default function Prospecting({ kbAccessStatus = 'none', kbNdaSignedAt, ndaMode = 'text', ndaText = '', ndaPdfUrl = null }: Props) {
     const { t } = useTranslation();
+    const [prospectTab, setProspectTab] = useState('strategies');
     const [ndaFullName, setNdaFullName] = useState('');
     const [ndaSignature, setNdaSignature] = useState('');
     const [ndaSubmitting, setNdaSubmitting] = useState(false);
@@ -189,6 +193,7 @@ export default function Prospecting({ kbAccessStatus = 'none', kbNdaSignedAt }: 
                         /* NDA Form */
                         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden">
                             {/* NDA Document */}
+                            {/* NDA Content — dynamic from admin settings */}
                             <div className="p-8 border-b border-gray-200 dark:border-gray-700">
                                 <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                                     <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -197,33 +202,19 @@ export default function Prospecting({ kbAccessStatus = 'none', kbNdaSignedAt }: 
                                     {t('Accord de Non-Divulgation (NDA)')}
                                 </h2>
 
-                                <div className="prose prose-sm dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 space-y-4">
-                                    <p><strong>{t('Entre les soussignés :')}</strong></p>
-                                    <p><strong>NA Innovations</strong>, {t('ci-après dénommée « la Société »,')}</p>
-                                    <p>{t('et le soussigné, ci-après dénommé « le Partenaire ».')}</p>
-
-                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mt-6">{t('Article 1 — Objet')}</h3>
-                                    <p>{t('Le présent accord a pour objet de protéger les informations confidentielles et stratégiques communiquées au Partenaire dans le cadre de son activité d\'apporteur d\'affaires pour NA Innovations, incluant mais non limité à : les stratégies de prospection, les méthodes d\'acquisition de clients, les scripts de vente, les listes de prospects, les taux de commission, et toute documentation interne.')}</p>
-
-                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mt-6">{t('Article 2 — Obligations')}</h3>
-                                    <p>{t('Le Partenaire s\'engage à :')}</p>
-                                    <ul className="list-disc pl-5 space-y-1">
-                                        <li>{t('Ne divulguer aucune information confidentielle à des tiers, directement ou indirectement')}</li>
-                                        <li>{t('Ne pas reproduire, copier ou transmettre les documents et méthodes fournis')}</li>
-                                        <li>{t('Utiliser les informations uniquement dans le cadre de son activité de partenaire pour NA Innovations')}</li>
-                                        <li>{t('Ne pas utiliser ces informations au profit d\'une entreprise concurrente')}</li>
-                                        <li>{t('Restituer ou détruire tous les documents confidentiels en cas de fin de collaboration')}</li>
-                                    </ul>
-
-                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mt-6">{t('Article 3 — Durée')}</h3>
-                                    <p>{t('Le présent accord est conclu pour une durée indéterminée et reste en vigueur même après la fin de la collaboration entre les parties.')}</p>
-
-                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mt-6">{t('Article 4 — Sanctions')}</h3>
-                                    <p>{t('Toute violation du présent accord expose le Partenaire à des poursuites judiciaires et au paiement de dommages et intérêts, conformément au droit international applicable.')}</p>
-
-                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mt-6">{t('Article 5 — Juridiction')}</h3>
-                                    <p>{t('Le présent accord est régi par le droit belge. Tout litige sera soumis aux tribunaux compétents de Bruxelles, Belgique.')}</p>
-                                </div>
+                                {ndaMode === 'pdf' && ndaPdfUrl ? (
+                                    <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                                        <iframe src={ndaPdfUrl} className="w-full" style={{ height: '500px' }} title="NDA" />
+                                        <div className="px-4 py-2 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex items-center gap-2">
+                                            <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                                            <span className="text-xs text-gray-500">{t('Lisez attentivement le document ci-dessus avant de signer')}</span>
+                                        </div>
+                                    </div>
+                                ) : ndaText ? (
+                                    <div className="prose prose-sm dark:prose-invert max-w-none text-gray-600 dark:text-gray-300" dangerouslySetInnerHTML={{ __html: ndaText }} />
+                                ) : (
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 italic">{t('Aucun contenu NDA configuré. Contactez l\'administrateur.')}</p>
+                                )}
                             </div>
 
                             {/* Signature form */}
@@ -354,25 +345,50 @@ Est-ce que je pourrais vous envoyer une courte présentation par e-mail ? Cela n
         <PartnerLayout title={t('Prospecting')}>
             <Head title={t('Prospecting')} />
 
-            <div className="max-w-4xl mx-auto space-y-8">
+            <div className="space-y-5">
 
                 {/* Banner */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 p-8 sm:p-10">
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 p-6 sm:p-8">
                     <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiLz48L3N2Zz4=')] opacity-50" />
-                    <div className="relative">
-                        <div className="flex items-center gap-3 mb-3">
-                            <svg className="w-8 h-8 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                            </svg>
-                            <h1 className="text-2xl sm:text-3xl font-black text-white">{t('Comment trouver des clients')}</h1>
+                    <div className="relative flex items-center justify-between">
+                        <div>
+                            <h1 className="text-xl sm:text-2xl font-black text-white mb-1">{t('Comment trouver des clients')}</h1>
+                            <p className="text-rose-100 text-sm max-w-xl">{t('Stratégies, templates et outils pour trouver des prospects qualifiés')}</p>
                         </div>
-                        <p className="text-rose-100 text-sm sm:text-base max-w-2xl leading-relaxed">
-                            {t('Stratégies éprouvées pour identifier des entreprises qui ont besoin de nos services. Suivez ces méthodes pour trouver des prospects qualifiés.')}
-                        </p>
+                        <Link href="/partner/leads/submit" className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 bg-white text-rose-600 font-bold rounded-xl hover:bg-rose-50 transition-colors shadow-lg text-sm">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                            {t('Soumettre un client')}
+                        </Link>
                     </div>
                 </div>
 
+                {/* Tabs */}
+                <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
+                    {[
+                        { id: 'strategies', label: t('Stratégies'), icon: 'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z' },
+                        { id: 'templates', label: t('Templates'), icon: 'M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75' },
+                        { id: 'scripts', label: t('Scripts d\'appel'), icon: 'M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z' },
+                    ].map(tab => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setProspectTab(tab.id)}
+                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                                prospectTab === tab.id
+                                    ? 'bg-white dark:bg-gray-700 text-rose-600 dark:text-rose-400 shadow-sm'
+                                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            }`}
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={tab.icon} /></svg>
+                            <span className="hidden sm:inline">{tab.label}</span>
+                        </button>
+                    ))}
+                </div>
+
+                {/* Tab Content */}
+                <div key={prospectTab} className="animate-tab-in">
+
+                {/* === STRATEGIES TAB === */}
+                {prospectTab === 'strategies' && (<>
                 {/* Strategy 1: Google Search */}
                 <StrategyCard number={1} title={t('Recherche Google - Restaurants sans site web')}>
                     <StepList steps={[
@@ -464,7 +480,10 @@ Est-ce que je pourrais vous envoyer une courte présentation par e-mail ? Cela n
                         text={t('Nous avons une plateforme qui permet à vos clients de commander directement depuis votre propre site web - plus besoin de payer 30% de commission à Uber Eats.')}
                     />
                 </StrategyCard>
+                </>)}
 
+                {/* === TEMPLATES TAB === */}
+                {prospectTab === 'templates' && (<>
                 {/* Strategy 5: Email Templates */}
                 <StrategyCard number={5} title={t('Modèles d\'e-mails prêts à l\'emploi')}>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -486,7 +505,10 @@ Est-ce que je pourrais vous envoyer une courte présentation par e-mail ? Cela n
                         body={emailGeneral}
                     />
                 </StrategyCard>
+                </>)}
 
+                {/* === SCRIPTS TAB === */}
+                {prospectTab === 'scripts' && (<>
                 {/* Strategy 6: Cold Call Script */}
                 <StrategyCard number={6} title={t('Script d\'appel téléphonique')}>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -533,8 +555,11 @@ Est-ce que je pourrais vous envoyer une courte présentation par e-mail ? Cela n
                         {t('Gardez l\'appel en dessous de 60 secondes. Ne vendez pas - obtenez juste la permission d\'envoyer plus d\'informations.')}
                     </TipBox>
                 </StrategyCard>
+                </>)}
 
-                {/* Bottom CTA */}
+                </div>{/* end animate-tab-in wrapper */}
+
+                {/* Bottom CTA — always visible */}
                 <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-8 text-center">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                         {t('Vous avez trouvé un client potentiel ?')}
@@ -552,7 +577,6 @@ Est-ce que je pourrais vous envoyer une courte présentation par e-mail ? Cela n
                         {t('Soumettre un client')}
                     </Link>
                 </div>
-
             </div>
         </PartnerLayout>
     );

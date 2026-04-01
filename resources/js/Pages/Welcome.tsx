@@ -534,7 +534,7 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                 {!chatAvailable && <div className="flex-1 bg-gray-900" />}
             </div>
 
-            {/* Client logos band */}
+            {/* Client logos band — infinite seamless scroll */}
             {(() => {
                 const logos = portfolio
                     .filter(p => p.projet?.image)
@@ -543,21 +543,37 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
 
                 if (logos.length < 3) return null;
 
+                // Duplicate enough to fill any screen width seamlessly
+                const repeatedLogos = [...logos, ...logos, ...logos, ...logos];
+
                 return (
                     <section className="py-12 bg-gray-50 dark:bg-gray-800/50 overflow-hidden" data-section-theme="light">
                         <div className="max-w-6xl mx-auto px-4 mb-8">
                             <p className="text-center text-sm uppercase tracking-[0.3em] text-gray-400 dark:text-gray-500 bebas">{t('They Trust Us')}</p>
                         </div>
-                        <div className="relative">
-                            <div className="flex items-center gap-16 scroll-banner">
-                                {[...logos, ...logos].map((logo, i) => (
-                                    <img
-                                        key={i}
-                                        src={logo.image.startsWith('http') ? logo.image : `/storage/${logo.image}`}
-                                        alt={logo.name}
-                                        className="h-10 md:h-12 w-auto object-contain opacity-40 hover:opacity-100 transition-opacity duration-300 flex-shrink-0"
-                                        title={logo.name}
-                                    />
+                        <style>{`
+                            @keyframes logoScroll {
+                                0% { transform: translateX(0); }
+                                100% { transform: translateX(-${logos.length * (80 + 64)}px); }
+                            }
+                        `}</style>
+                        <div className="relative w-full">
+                            <div
+                                className="flex items-center"
+                                style={{
+                                    animation: `logoScroll ${logos.length * 3}s linear infinite`,
+                                    width: 'max-content',
+                                }}
+                            >
+                                {repeatedLogos.map((logo, i) => (
+                                    <div key={i} className="flex-shrink-0 px-8" style={{ width: 80 + 64 + 'px' }}>
+                                        <img
+                                            src={logo.image.startsWith('http') ? logo.image : `/storage/${logo.image}`}
+                                            alt={logo.name}
+                                            className="h-10 md:h-12 w-20 object-contain opacity-40 hover:opacity-100 transition-opacity duration-300 mx-auto"
+                                            title={logo.name}
+                                        />
+                                    </div>
                                 ))}
                             </div>
                         </div>

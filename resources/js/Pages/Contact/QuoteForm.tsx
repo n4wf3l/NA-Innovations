@@ -24,9 +24,11 @@ interface Props {
     turnstileSiteKey?: string;
     turnstileRef: React.RefObject<HTMLDivElement>;
     turnstileToken: string;
+    refCode?: string;
+    setRefCode?: (code: string) => void;
 }
 
-export default function QuoteForm({ quoteForm, setQuoteForm, onSubmit, processing, projectTypes, errors, attachments, setAttachments, turnstileSiteKey, turnstileRef, turnstileToken }: Props) {
+export default function QuoteForm({ quoteForm, setQuoteForm, onSubmit, processing, projectTypes, errors, attachments, setAttachments, turnstileSiteKey, turnstileRef, turnstileToken, refCode, setRefCode }: Props) {
     const { t } = useTranslation();
 
     const inputClasses = "w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 focus:outline-none transition-all duration-200";
@@ -175,6 +177,29 @@ export default function QuoteForm({ quoteForm, setQuoteForm, onSubmit, processin
                         </div>
                     )}
                 </div>
+                {/* Referral code */}
+                <div>
+                    <label className={labelClasses}>
+                        {t('Code partenaire')}
+                        <span className="text-gray-400 font-normal ml-1">({t('optional').toLowerCase()})</span>
+                    </label>
+                    <div className="relative">
+                        <input
+                            type="text"
+                            value={refCode || ''}
+                            onChange={e => setRefCode?.(e.target.value.toUpperCase())}
+                            className={`${inputClasses} ${refCode ? 'border-teal-400 bg-teal-50 dark:bg-teal-500/10' : ''}`}
+                            placeholder={t('Ex: JONATHAN')}
+                        />
+                        {refCode && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                <svg className="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            </div>
+                        )}
+                    </div>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t('Si quelqu\'un vous a recommandé, entrez son code ici.')}</p>
+                </div>
+
                 {turnstileSiteKey && (
                     <div className="flex justify-center pt-2">
                         <div ref={turnstileRef} />

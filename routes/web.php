@@ -325,6 +325,13 @@ Route::prefix('partner')->middleware(['auth', 'referral'])->group(function () {
     Route::put('/reminders/{reminder}', [App\Http\Controllers\Partner\ReminderController::class, 'update'])->name('partner.reminders.update');
     Route::patch('/reminders/{reminder}/dismiss', [App\Http\Controllers\Partner\ReminderController::class, 'dismiss'])->name('partner.reminders.dismiss');
     Route::delete('/reminders/{reminder}', [App\Http\Controllers\Partner\ReminderController::class, 'destroy'])->name('partner.reminders.destroy');
+    // Partner Prospects (mini-CRM)
+    Route::get('/prospects', [App\Http\Controllers\Partner\ProspectController::class, 'index'])->name('partner.prospects.index');
+    Route::post('/prospects', [App\Http\Controllers\Partner\ProspectController::class, 'store'])->name('partner.prospects.store');
+    Route::put('/prospects/{prospect}', [App\Http\Controllers\Partner\ProspectController::class, 'update'])->name('partner.prospects.update');
+    Route::patch('/prospects/{prospect}/status', [App\Http\Controllers\Partner\ProspectController::class, 'updateStatus'])->name('partner.prospects.status');
+    Route::delete('/prospects/{prospect}', [App\Http\Controllers\Partner\ProspectController::class, 'destroy'])->name('partner.prospects.destroy');
+
     Route::get('/profile', [App\Http\Controllers\Partner\ProfileController::class, 'edit'])->name('partner.profile');
     Route::put('/profile', [App\Http\Controllers\Partner\ProfileController::class, 'update'])->name('partner.profile.update');
     Route::put('/profile/password', [App\Http\Controllers\Partner\ProfileController::class, 'updatePassword'])->name('partner.profile.password');
@@ -617,6 +624,12 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::put('settings/chatbot', [App\Http\Controllers\Admin\ChatbotController::class, 'update'])->name('admin.chatbot.update');
     Route::post('settings/chatbot/pdf', [App\Http\Controllers\Admin\ChatbotController::class, 'uploadPdf'])->name('admin.chatbot.pdf');
     Route::get('settings/chatbot/test-api', [App\Http\Controllers\Admin\ChatbotController::class, 'testApi'])->name('admin.chatbot.test');
+
+    // NDA Settings
+    Route::get('settings/nda', [App\Http\Controllers\Admin\NdaSettingsController::class, 'index'])->name('admin.nda.index');
+    Route::put('settings/nda', [App\Http\Controllers\Admin\NdaSettingsController::class, 'update'])->name('admin.nda.update');
+    Route::post('settings/nda/pdf', [App\Http\Controllers\Admin\NdaSettingsController::class, 'uploadPdf'])->name('admin.nda.upload-pdf');
+    Route::delete('settings/nda/pdf', [App\Http\Controllers\Admin\NdaSettingsController::class, 'deletePdf'])->name('admin.nda.delete-pdf');
 
     // Landing Sections
     Route::get('settings/landing-sections', [App\Http\Controllers\Admin\LandingSectionController::class, 'index'])->name('admin.landing-sections.index');

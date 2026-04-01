@@ -176,11 +176,30 @@ class WorkflowService
         if ($quote->lead_id) {
             $lead = Lead::find($quote->lead_id);
             if ($lead && !in_array($lead->status, ['won'])) {
+                $oldStatus = $lead->status;
                 $lead->update([
                     'status' => 'lost',
                     'lost_at' => now(),
                     'lost_reason' => $reason ?? "Quote {$quote->quote_number} rejected",
                 ]);
+
+                // Notify referral partner of lead lost
+                if ($lead->referral_partner_id) {
+                    $partner = $lead->referralPartner;
+                    if ($partner && $partner->user_id) {
+                        NotificationLog::create([
+                            'user_id' => $partner->user_id,
+                            'type' => 'lead_status_update',
+                            'title' => __('Statut du lead mis à jour'),
+                            'message' => __('Votre lead :name est passé au statut :status', [
+                                'name' => $lead->first_name . ' ' . $lead->last_name,
+                                'status' => 'lost',
+                            ]),
+                            'action_url' => '/partner/leads/' . $lead->id,
+                            'is_read' => false,
+                        ]);
+                    }
+                }
             }
         }
 
@@ -255,6 +274,24 @@ class WorkflowService
 
         if (isset($timestamps[$newStatus]) && !$lead->{$timestamps[$newStatus]}) {
             $lead->update([$timestamps[$newStatus] => now()]);
+        }
+
+        // Notify referral partner of lead status change
+        if ($lead->referral_partner_id) {
+            $partner = $lead->referralPartner;
+            if ($partner && $partner->user_id) {
+                NotificationLog::create([
+                    'user_id' => $partner->user_id,
+                    'type' => 'lead_status_update',
+                    'title' => __('Statut du lead mis à jour'),
+                    'message' => __('Votre lead :name est passé au statut :status', [
+                        'name' => $lead->first_name . ' ' . $lead->last_name,
+                        'status' => $newStatus,
+                    ]),
+                    'action_url' => '/partner/leads/' . $lead->id,
+                    'is_read' => false,
+                ]);
+            }
         }
     }
 

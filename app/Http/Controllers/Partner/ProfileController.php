@@ -59,6 +59,8 @@ class ProfileController extends Controller
             'preferences.name_display' => 'required|in:full,abbreviated',
             'preferences.currency' => 'required|in:EUR,USD,GBP,PKR,BDT,INR,MAD',
             'preferences.privacy_full_name' => 'boolean',
+            'referral_code' => 'nullable|string|max:50|alpha_num|unique:referral_partners,referral_code,' . $partner->id,
+            'referral_active' => 'nullable|boolean',
         ]);
 
         $user->update([
@@ -67,6 +69,14 @@ class ProfileController extends Controller
             'phone' => $validated['phone'],
             'preferences' => $validated['preferences'],
         ]);
+
+        // Update referral code if changed
+        if (!empty($validated['referral_code'])) {
+            $partner->referral_code = strtoupper($validated['referral_code']);
+        }
+        if (isset($validated['referral_active'])) {
+            $partner->is_active = $validated['referral_active'];
+        }
 
         $partner->update([
             'payment_method' => $validated['payment_method'],

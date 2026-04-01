@@ -32,6 +32,35 @@ class Kernel extends ConsoleKernel
             \App\Services\WorkflowService::sendInvoiceReminders();
         })->dailyAt('09:00');
 
+        // Partner prospect follow-up reminders
+        $schedule->call(function () {
+            $due = \App\Models\PartnerProspect::dueFollowUp()->with('user')->get();
+            foreach ($due as $prospect) {
+                \App\Models\NotificationLog::create([
+                    'user_id' => $prospect->user_id,
+                    'type' => 'prospect_follow_up',
+                    'title' => 'Relance : ' . $prospect->name,
+                    'message' => $prospect->notes ? $prospect->name . ' — ' . \Illuminate\Support\Str::limit($prospect->notes, 100) : 'Il est temps de relancer ' . $prospect->name,
+                    'action_url' => '/partner/prospects',
+                    'is_read' => false,
+                ]);
+                if ($prospect->send_email_reminder && $prospect->user) {
+                    $prefs = $prospect->user->preferences ?? [];
+                    if ($prefs['email_notifications'] ?? true) {
+                        try {
+                            \Illuminate\Support\Facades\Mail::to($prospect->user->email)->send(
+                                new \App\Mail\TemplateMail(
+                                    'Relance prospect : ' . $prospect->name,
+                                    '<p>Bonjour ' . $prospect->user->name . ',</p><p>C\'est le moment de relancer <strong>' . $prospect->name . '</strong>' . ($prospect->company_name ? ' (' . $prospect->company_name . ')' : '') . '.</p>' . ($prospect->notes ? '<blockquote>' . $prospect->notes . '</blockquote>' : '') . '<p>Connectez-vous pour voir vos prospects.</p>'
+                                )
+                            );
+                        } catch (\Exception $e) {}
+                    }
+                }
+                $prospect->update(['follow_up_notified' => true]);
+            }
+        })->dailyAt('08:30')->name('prospect-follow-ups');
+
         // Send invoice due date reminders (J-7, J-3, J-1) daily at 09:30
         $schedule->call(function () {
             \App\Services\WorkflowService::sendInvoiceDueReminders();

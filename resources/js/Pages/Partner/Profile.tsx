@@ -50,6 +50,8 @@ export default function PartnerProfile({ user, partner }: Props) {
         name: user.name,
         email: user.email,
         phone: user.phone || '',
+        referral_code: partner.referral_code || '',
+        referral_active: partner.is_active ?? true,
         payment_method: partner.payment_method,
         bank_iban: partner.bank_iban || '',
         paypal_email: partner.paypal_email || '',
@@ -81,7 +83,7 @@ export default function PartnerProfile({ user, partner }: Props) {
     }
 
     function copyCode() {
-        navigator.clipboard.writeText(partner.referral_code);
+        navigator.clipboard.writeText(data.referral_code);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     }
@@ -96,28 +98,58 @@ export default function PartnerProfile({ user, partner }: Props) {
         <PartnerLayout title={t("Profile & Settings")}>
             <Head title={t("Profile & Settings")} />
 
-            <div className="max-w-2xl mx-auto space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                {/* Left column */}
+                <div className="space-y-6">
 
                 {/* Referral Info */}
                 <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm">
-                    <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">{t("Referral Information")}</h3>
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{t("Parrainage")}</h3>
+                        {/* Active toggle */}
+                        <label className="flex items-center gap-2 cursor-pointer">
+                            <span className={`text-xs font-medium ${data.referral_active ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400'}`}>
+                                {data.referral_active ? t('Actif') : t('Désactivé')}
+                            </span>
+                            <div className="relative inline-flex items-center">
+                                <input type="checkbox" checked={data.referral_active} onChange={e => setData('referral_active', e.target.checked)} className="sr-only peer" />
+                                <div className="w-9 h-5 bg-gray-200 dark:bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500" />
+                            </div>
+                        </label>
+                    </div>
+
+                    {!data.referral_active && (
+                        <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl px-4 py-3 mb-4">
+                            <p className="text-xs text-amber-700 dark:text-amber-300">{t('Votre parrainage est désactivé. Votre code et lien ne fonctionneront plus jusqu\'à réactivation.')}</p>
+                        </div>
+                    )}
+
                     <div className="space-y-3">
                         <div>
-                            <label className="block text-sm text-gray-400 dark:text-gray-500 mb-1">{t("Referral Code")}</label>
+                            <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">{t("Code de parrainage")}</label>
                             <div className="flex items-center space-x-2">
-                                <div className="flex-1 px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl font-mono text-sm font-bold text-rose-600 dark:text-rose-400 tracking-wider">
-                                    {partner.referral_code}
-                                </div>
-                                <button type="button" onClick={copyCode} className="px-4 py-2.5 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-sm font-medium rounded-xl hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
-                                    {copied ? 'Copied!' : 'Copy'}
+                                <input
+                                    type="text"
+                                    value={data.referral_code}
+                                    onChange={e => setData('referral_code', e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
+                                    className="flex-1 px-4 py-2.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl font-mono text-sm font-bold text-rose-600 dark:text-rose-400 tracking-wider focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                                    placeholder="MONCODE"
+                                    maxLength={20}
+                                />
+                                <button type="button" onClick={copyCode} className="px-4 py-2.5 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-sm font-medium rounded-xl hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors shrink-0">
+                                    {copied ? t('Copié !') : t('Copier')}
                                 </button>
                             </div>
+                            {errors.referral_code && <p className="mt-1 text-xs text-red-500">{errors.referral_code}</p>}
+                            <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">{t('Lettres et chiffres uniquement. C\'est ce que vos contacts taperont pour vous identifier.')}</p>
                         </div>
                         <div>
-                            <label className="block text-sm text-gray-400 dark:text-gray-500 mb-1">{t("Commission Rate")}</label>
+                            <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">{t("Taux de commission")}</label>
                             <div className="px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-sm font-bold text-gray-900 dark:text-white">
                                 {partner.default_commission_rate}%
                             </div>
+                            <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">{t('Défini par l\'administrateur. Contactez-nous si vous souhaitez en discuter.')}</p>
                         </div>
                     </div>
                 </div>
@@ -287,6 +319,11 @@ export default function PartnerProfile({ user, partner }: Props) {
                     </div>
                 </form>
 
+                </div>
+
+                {/* Right column */}
+                <div className="space-y-6">
+
                 {/* Change Password */}
                 <form onSubmit={handlePassword} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700 flex items-center gap-2">
@@ -340,6 +377,7 @@ export default function PartnerProfile({ user, partner }: Props) {
                             {t('Relancer la visite guidée')}
                         </button>
                     </div>
+                </div>
                 </div>
             </div>
         </PartnerLayout>

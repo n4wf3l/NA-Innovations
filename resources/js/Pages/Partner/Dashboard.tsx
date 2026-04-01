@@ -2,11 +2,14 @@ import PartnerLayout from '@/Layouts/PartnerLayout';
 import { Head, Link } from '@inertiajs/react';
 import Badge from '@/Components/ui/Badge';
 import ProtectedAmount from '@/Components/ui/ProtectedAmount';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuidedTour, { TourTriggerButton } from '@/Components/ui/GuidedTour';
 import { useTour } from '@/hooks/useTour';
 import { partnerDashboardSteps } from '@/data/tourSteps';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface Notification {
     id: number;
@@ -51,10 +54,83 @@ interface Props {
     cumulativeEarnings?: number;
 }
 
+// Sortable tile wrapper
+function DashboardTile({ id, title, collapsed, hidden, onToggleCollapse, onToggleHide, children, showSettings }: {
+    id: string; title: string; collapsed: boolean; hidden: boolean; onToggleCollapse: () => void; onToggleHide: () => void; children: React.ReactNode; showSettings: boolean;
+}) {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+    const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 50 : 'auto', opacity: isDragging ? 0.85 : 1 };
+
+    if (hidden) return null;
+    return (
+        <div ref={setNodeRef} style={style} className={`transition-shadow duration-200 ${isDragging ? 'shadow-2xl ring-2 ring-rose-500/30 rounded-2xl' : ''}`}>
+            {showSettings && (
+                <div className="flex items-center justify-between mb-2 px-2 py-1.5 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 rounded-xl animate-scale-in">
+                    <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing flex items-center gap-2 text-rose-600 dark:text-rose-400 p-1 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" /></svg>
+                        <span className="text-xs font-bold uppercase tracking-wider">{title}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                        <button onClick={onToggleCollapse} className="p-1.5 text-rose-500 hover:text-rose-700 dark:hover:text-rose-300 rounded-lg bg-white dark:bg-gray-800 border border-rose-200 dark:border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/20 transition-colors" title={collapsed ? 'Ouvrir' : 'Fermer'}>
+                            <svg className={`w-4 h-4 transition-transform duration-200 ${collapsed ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" /></svg>
+                        </button>
+                        <button onClick={onToggleHide} className="p-1.5 text-red-500 hover:text-red-700 rounded-lg bg-white dark:bg-gray-800 border border-red-200 dark:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors" title="Masquer">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
+                        </button>
+                    </div>
+                </div>
+            )}
+            <div className={`transition-all duration-300 overflow-hidden ${collapsed ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'}`}>
+                {children}
+            </div>
+            {collapsed && (
+                <button onClick={onToggleCollapse} className="w-full py-2 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700 border-dashed flex items-center justify-center gap-1.5 transition-colors">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+                    {title}
+                </button>
+            )}
+        </div>
+    );
+}
+
+const TILE_IDS = ['hero', 'stats', 'pipeline', 'charts', 'recent'];
+const TILE_LABELS: Record<string, string> = { hero: 'Referral Info', stats: 'Statistics', pipeline: 'Pipeline', charts: 'Performance', recent: 'Activity' };
+
 export default function PartnerDashboard({ partner, stats, recentLeads, recentCommissions, notifications = [], monthlyLeads = [], cumulativeEarnings = 0 }: Props) {
     const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
     const tour = useTour('partner_dashboard', partnerDashboardSteps.length);
+
+    // Dashboard customization
+    const [showSettings, setShowSettings] = useState(false);
+    const [tileOrder, setTileOrder] = useState<string[]>(() => {
+        if (typeof window === 'undefined') return TILE_IDS;
+        try { const saved = JSON.parse(localStorage.getItem('partner_tile_order') || 'null'); return saved || TILE_IDS; } catch { return TILE_IDS; }
+    });
+    const [collapsedTiles, setCollapsedTiles] = useState<Record<string, boolean>>(() => {
+        if (typeof window === 'undefined') return {};
+        try { return JSON.parse(localStorage.getItem('partner_tile_collapsed') || '{}'); } catch { return {}; }
+    });
+    const [hiddenTiles, setHiddenTiles] = useState<Record<string, boolean>>(() => {
+        if (typeof window === 'undefined') return {};
+        try { return JSON.parse(localStorage.getItem('partner_tile_hidden') || '{}'); } catch { return {}; }
+    });
+
+    const saveTileOrder = (order: string[]) => { setTileOrder(order); localStorage.setItem('partner_tile_order', JSON.stringify(order)); };
+    const toggleCollapse = (id: string) => { const n = { ...collapsedTiles, [id]: !collapsedTiles[id] }; setCollapsedTiles(n); localStorage.setItem('partner_tile_collapsed', JSON.stringify(n)); };
+    const toggleHide = (id: string) => { const n = { ...hiddenTiles, [id]: !hiddenTiles[id] }; setHiddenTiles(n); localStorage.setItem('partner_tile_hidden', JSON.stringify(n)); };
+    const resetLayout = () => { setTileOrder(TILE_IDS); setCollapsedTiles({}); setHiddenTiles({}); localStorage.removeItem('partner_tile_order'); localStorage.removeItem('partner_tile_collapsed'); localStorage.removeItem('partner_tile_hidden'); setShowSettings(false); };
+
+    const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+        const oldIdx = tileOrder.indexOf(active.id as string);
+        const newIdx = tileOrder.indexOf(over.id as string);
+        saveTileOrder(arrayMove(tileOrder, oldIdx, newIdx));
+    };
+
+    const hiddenCount = Object.values(hiddenTiles).filter(Boolean).length;
 
     const referralLink = partner.referral_link || `${window.location.origin}?ref=${partner.referral_code}`;
 
@@ -91,6 +167,35 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
             />
             <TourTriggerButton onClick={tour.restart} accentColor="rose" />
 
+            {/* Dashboard Settings Toggle */}
+            <div className="flex items-center justify-end gap-2 mb-4">
+                {hiddenCount > 0 && showSettings && (
+                    <button onClick={resetLayout} className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                        {t('Réinitialiser')} ({hiddenCount} {t('masqué')})
+                    </button>
+                )}
+                {showSettings && hiddenCount > 0 && (
+                    <div className="flex items-center gap-1">
+                        {TILE_IDS.filter(id => hiddenTiles[id]).map(id => (
+                            <button key={id} onClick={() => toggleHide(id)} className="px-2.5 py-1 text-[10px] font-semibold bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-lg hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 transition-colors flex items-center gap-1">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                {t(TILE_LABELS[id])}
+                            </button>
+                        ))}
+                    </div>
+                )}
+                <button
+                    onClick={() => setShowSettings(!showSettings)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all ${showSettings ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/20' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
+                >
+                    <svg className={`w-4 h-4 transition-transform duration-300 ${showSettings ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {showSettings ? t('Terminé') : t('Personnaliser')}
+                </button>
+            </div>
+
             {/* Notifications */}
             {notifications.length > 0 && (
                 <div className="mb-6 space-y-3">
@@ -118,6 +223,14 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
                 </div>
             )}
 
+            {/* === Draggable Tiles === */}
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={tileOrder} strategy={verticalListSortingStrategy}>
+            {tileOrder.map(tileId => {
+                const tileProps = { id: tileId, title: t(TILE_LABELS[tileId] || tileId), collapsed: !!collapsedTiles[tileId], hidden: !!hiddenTiles[tileId], onToggleCollapse: () => toggleCollapse(tileId), onToggleHide: () => toggleHide(tileId), showSettings };
+
+                if (tileId === 'hero') return (
+                <DashboardTile key={tileId} {...tileProps}>
             {/* Hero banner */}
             <div data-tour="hero-banner" className="animate-slide-up relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8 mb-8">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
@@ -161,9 +274,19 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
                             </button>
                         </div>
                     </div>
+
+                    {/* Explanation */}
+                    <p className="mt-5 text-xs text-white/30 leading-relaxed max-w-xl">
+                        {t('Vous touchez une commission sur chaque client que vous nous apportez. Deux options : soumettez-le directement via "Soumettre un client" (le système sait que c\'est vous), ou partagez ce lien — si quelqu\'un passe par là, il sera automatiquement rattaché à votre compte.')}
+                    </p>
                 </div>
             </div>
 
+                </DashboardTile>
+                );
+
+                if (tileId === 'stats') return (
+                <DashboardTile key={tileId} {...tileProps}>
             {/* Stats grid */}
             <div data-tour="stats-grid" className="stagger-children grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                 <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm">
@@ -227,6 +350,11 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
                 </div>
             </div>
 
+                </DashboardTile>
+                );
+
+                if (tileId === 'pipeline') return (
+                <DashboardTile key={tileId} {...tileProps}>
             {/* Pipeline Summary */}
             <div data-tour="pipeline-summary" className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 mb-8">
                 <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-4">{t('Pipeline Summary')}</h3>
@@ -264,6 +392,11 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
                 )}
             </div>
 
+                </DashboardTile>
+                );
+
+                if (tileId === 'charts') return (
+                <DashboardTile key={tileId} {...tileProps}>
             {/* Monthly Performance & Cumulative Earnings */}
             <div data-tour="monthly-chart" className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 {/* Monthly Leads Chart */}
@@ -346,6 +479,11 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
                 </div>
             </div>
 
+                </DashboardTile>
+                );
+
+                if (tileId === 'recent') return (
+                <DashboardTile key={tileId} {...tileProps}>
             {/* Two columns */}
             <div className="stagger-children grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Leads */}
@@ -411,6 +549,14 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
                     )}
                 </div>
             </div>
+                </DashboardTile>
+                );
+
+                return null;
+            })}
+            </SortableContext>
+            </DndContext>
+
         </PartnerLayout>
     );
 }

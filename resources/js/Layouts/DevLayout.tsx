@@ -6,6 +6,7 @@ import TopBar from '@/Components/layout/TopBar';
 import TopBarActions from '@/Components/layout/TopBarActions';
 import FlashMessages from '@/Components/layout/FlashMessages';
 import LoginSplash from '@/Components/ui/LoginSplash';
+import LogoutButton from '@/Components/layout/LogoutButton';
 import { setCurrency } from '@/lib/utils';
 import MobileMenu from '@/Components/layout/MobileMenu';
 import { useTranslation } from 'react-i18next';
@@ -64,10 +65,7 @@ export default function DevLayout({ children, title }: PropsWithChildren<DevLayo
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
                 {t('View Website')}
             </a>
-            <Link href="/logout" method="post" as="button" className="flex items-center w-full px-4 py-2 text-xs text-gray-600 hover:text-red-400 rounded-lg transition-colors">
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
-                {t('Sign Out')}
-            </Link>
+            <LogoutButton />
         </div>
     );
 

@@ -38,8 +38,8 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
         }
         return 'simulator';
     });
-    // Referral code from URL
-    const refCode = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('ref') || '' : '';
+    // Referral code from URL or manual entry
+    const [refCode, setRefCode] = useState(() => typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('ref') || '' : '');
 
     // Auto-scroll to tabs when arriving via anchor link
     useEffect(() => {
@@ -406,6 +406,7 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
                             projectTypes={projectTypes} errors={errors}
                             attachments={attachments} setAttachments={setAttachments}
                             turnstileSiteKey={turnstileSiteKey} turnstileRef={turnstileRef as any} turnstileToken={turnstileToken}
+                            refCode={refCode} setRefCode={setRefCode}
                         />
                         </div>
                     )}

@@ -24,7 +24,13 @@ class TeamController extends BaseAdminController
         // Pending = inactive + never approved
         $pending = User::where('is_active', false)->whereNull('approved_at')->latest()->get();
 
-        return Inertia::render('Admin/Team/Index', compact('partners', 'developers', 'admins', 'pending'));
+        // KB access requests
+        $kbPending = User::where('role', 'referral_partner')
+            ->whereHas('referralPartner', fn($q) => $q->where('kb_access_status', 'pending'))
+            ->with('referralPartner')
+            ->get();
+
+        return Inertia::render('Admin/Team/Index', compact('partners', 'developers', 'admins', 'pending', 'kbPending'));
     }
 
     /**

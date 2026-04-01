@@ -67,7 +67,7 @@ class DashboardController extends Controller
         $cumulativeEarnings = Commission::where('referral_partner_id', $partner->id)->where('status', 'paid')->sum('commission_amount');
 
         return Inertia::render('Partner/Dashboard', [
-            'partner' => $partner,
+            'partner' => $partner->load('user'),
             'stats' => [
                 'totalLeads' => $totalLeads,
                 'wonLeads' => $wonLeads,

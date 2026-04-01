@@ -50,7 +50,13 @@ class AuthenticatedSessionController extends Controller
             default => '/',
         };
 
-        return redirect()->intended($home)->with('success', "Bienvenue, {$user->name} !");
+        // Clear intended URL if it's an API/polling route
+        $intended = session()->pull('url.intended', $home);
+        if (str_contains($intended, '/api/') || str_contains($intended, '/poll')) {
+            $intended = $home;
+        }
+
+        return redirect()->to($intended)->with('success', "Bienvenue, {$user->name} !");
     }
 
     /**

@@ -32,6 +32,9 @@ class GuideController extends Controller
         return Inertia::render('Partner/Prospecting', [
             'kbAccessStatus' => $partner?->kb_access_status ?? 'none',
             'kbNdaSignedAt' => $partner?->kb_nda_signed_at,
+            'ndaMode' => \App\Models\Setting::get('kb.nda_mode', 'text'),
+            'ndaText' => \App\Models\Setting::get('kb.nda_text', ''),
+            'ndaPdfUrl' => \App\Models\Setting::get('kb.nda_pdf_path') ? '/storage/' . \App\Models\Setting::get('kb.nda_pdf_path') : null,
         ]);
     }
 
@@ -56,12 +59,17 @@ class GuideController extends Controller
             'kb_nda_signed_ip' => $request->ip(),
         ]);
 
-        // Notify admins
-        if (class_exists(\App\Services\NotificationService::class)) {
-            \App\Services\NotificationService::sendToAdmins('admin-new-registration', [
-                'user_name' => auth()->user()->name,
-                'role' => 'referral_partner',
-            ], actionUrl: '/admin/team');
+        // Notify all admins with in-app notification
+        $admins = \App\Models\User::where('role', 'admin')->where('is_active', true)->get();
+        foreach ($admins as $admin) {
+            \App\Models\NotificationLog::create([
+                'user_id' => $admin->id,
+                'type' => 'kb_access_request',
+                'title' => __('Demande d\'accès Knowledge Base'),
+                'message' => auth()->user()->name . ' ' . __('a signé le NDA et demande l\'accès à la Knowledge Base de prospection.'),
+                'action_url' => '/admin/team',
+                'is_read' => false,
+            ]);
         }
 
         return redirect()->back()->with('success', 'Votre demande d\'accès a été envoyée. L\'administrateur la traitera dans les plus brefs délais.');
