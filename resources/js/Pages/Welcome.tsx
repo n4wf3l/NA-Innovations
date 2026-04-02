@@ -84,6 +84,7 @@ function useInView(options?: IntersectionObserverInit) {
 }
 
 function SplashScreen({ branding, onComplete }: { branding: { logo_path: string; company_name: string }; onComplete: (locale: string) => void }) {
+    const { t } = useTranslation();
     const [phase, setPhase] = useState<'intro' | 'reveal' | 'language' | 'exit'>('intro');
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
