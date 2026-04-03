@@ -1523,5 +1523,14 @@
     "Sélectionner le type": "Selecteer het type",
     "de commission": "commissie",
     "Soumettre": "Indienen",
-    "Type de projet": "Projecttype"
+    "Type de projet": "Projecttype",
+    "Stats": "Statistieken",
+    "Pipeline": "Pipeline",
+    "Performance": "Prestaties",
+    "Activity": "Activiteit",
+    "Personnaliser": "Personaliseren",
+    "Terminé": "Klaar",
+    "masqué": "verborgen",
+    "Réinitialiser": "Resetten",
+    "Personnaliser le tableau de bord": "Dashboard personaliseren"
 }

@@ -94,7 +94,7 @@ function DashboardTile({ id, title, collapsed, hidden, onToggleCollapse, onToggl
 }
 
 const TILE_IDS = ['hero', 'stats', 'pipeline', 'charts', 'recent'];
-const TILE_LABELS: Record<string, string> = { hero: 'Referral Info', stats: 'Statistics', pipeline: 'Pipeline', charts: 'Performance', recent: 'Activity' };
+const TILE_LABELS: Record<string, string> = { hero: 'Referral', stats: 'Stats', pipeline: 'Pipeline', charts: 'Performance', recent: 'Activity' };
 
 export default function PartnerDashboard({ partner, stats, recentLeads, recentCommissions, notifications = [], monthlyLeads = [], cumulativeEarnings = 0 }: Props) {
     const { t } = useTranslation();

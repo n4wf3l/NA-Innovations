@@ -349,63 +349,61 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                         Mobile: full screen, 3-part layout (fixed header, scrollable body, fixed footer)
                         Desktop: centered card with max-height
                     */}
-                    <div className="relative z-10 bg-white w-full h-full sm:h-auto sm:max-w-2xl sm:max-h-[85vh] sm:rounded-2xl sm:shadow-2xl flex flex-col animate-modal">
+                    <div className="relative z-10 bg-white dark:bg-gray-900 w-full h-full sm:h-auto sm:max-w-2xl sm:max-h-[85vh] sm:rounded-2xl sm:shadow-2xl flex flex-col animate-modal sm:m-4 overflow-hidden">
 
                         {/* Fixed header */}
-                        <div className="flex-shrink-0 bg-white border-b border-gray-100 px-5 py-4 flex items-center justify-between safe-top">
+                        <div className="flex-shrink-0 bg-gradient-to-r from-rose-500 to-pink-600 px-8 py-6 flex items-center justify-between safe-top sm:rounded-t-2xl">
                             <div>
-                                <h3 className="text-lg font-black text-gray-900">{t("Review Email")}</h3>
-                                <p className="text-xs text-gray-400 mt-0.5">To: {data.first_name} {data.last_name}</p>
+                                <h3 className="text-lg font-black text-white">{t("Review Email")}</h3>
+                                <p className="text-xs text-rose-200 mt-0.5">To: {data.first_name} {data.last_name}</p>
                             </div>
-                            <button onClick={() => !processing && setShowModal(false)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100 text-gray-500 active:bg-gray-200 transition-colors">
+                            <button onClick={() => !processing && setShowModal(false)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                             </button>
                         </div>
 
-                        {/* Scrollable body - this is the ONLY scrollable area */}
-                        <div ref={modalRef} className="flex-1 overflow-y-auto overscroll-contain -webkit-overflow-scrolling-touch">
-                            <div className="p-5 space-y-5">
+                        {/* Scrollable body */}
+                        <div ref={modalRef} className="flex-1 overflow-y-auto overscroll-contain">
+                            <div className="p-6 space-y-5">
                                 {/* Subject */}
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t("Subject")}</label>
+                                    <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t("Subject")}</label>
                                     <input
                                         type="text"
                                         value={data.email_subject}
                                         onChange={e => setData('email_subject', e.target.value)}
-                                        className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:border-rose-400 focus:ring-rose-400"
+                                        className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3.5 text-base focus:border-rose-400 focus:ring-rose-400"
                                     />
                                 </div>
 
                                 {/* Email body */}
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                                        {t('Message')} <span className="font-normal normal-case text-gray-300 ml-1">({t('editable')})</span>
+                                    <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                                        {t('Message')} <span className="font-normal normal-case text-gray-300 dark:text-gray-600 ml-1">({t('editable')})</span>
                                     </label>
                                     <textarea
                                         value={data.email_body}
                                         onChange={e => setData('email_body', e.target.value)}
                                         rows={10}
-                                        className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:border-rose-400 focus:ring-rose-400 font-mono leading-relaxed"
+                                        className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3.5 text-sm focus:border-rose-400 focus:ring-rose-400 font-mono leading-relaxed"
                                     />
                                 </div>
 
                                 {/* Preview */}
                                 <details className="group">
-                                    <summary className="cursor-pointer flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3.5 active:bg-gray-100 transition-colors">
-                                        <span className="text-sm font-semibold text-gray-700">{t('Preview with variables replaced')}</span>
+                                    <summary className="cursor-pointer flex items-center justify-between bg-gray-50 dark:bg-gray-800 rounded-xl px-4 py-3.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t('Preview with variables replaced')}</span>
                                         <svg className="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                                     </summary>
-                                    <div className="mt-2 bg-gray-50 rounded-xl p-4 text-sm text-gray-600 whitespace-pre-wrap border border-gray-100 max-h-60 overflow-y-auto">
-                                        {getPreviewBody()}
-                                    </div>
+                                    <div className="mt-2 bg-gray-50 dark:bg-gray-800 rounded-xl p-4 text-sm text-gray-600 dark:text-gray-300 border border-gray-100 dark:border-gray-700 max-h-60 overflow-y-auto prose prose-sm dark:prose-invert" dangerouslySetInnerHTML={{ __html: getPreviewBody() }} />
                                 </details>
 
                                 {/* PDF info */}
-                                <div className="bg-blue-50 rounded-xl p-4 flex items-center space-x-3">
+                                <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-xl p-4 flex items-center space-x-3">
                                     <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
                                     </svg>
-                                    <p className="text-sm text-blue-600">{t("PDF attached automatically")}</p>
+                                    <p className="text-sm text-blue-600 dark:text-blue-400">{t("PDF attached automatically")}</p>
                                 </div>
 
                                 {/* Extra padding at bottom so content doesn't hide behind footer */}
@@ -414,12 +412,12 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                         </div>
 
                         {/* Fixed footer */}
-                        <div className="flex-shrink-0 bg-white border-t border-gray-100 px-5 py-4 flex items-center space-x-3 safe-bottom">
+                        <div className="flex-shrink-0 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 p-8 flex items-center space-x-3 safe-bottom">
                             <button
                                 type="button"
                                 onClick={() => setShowModal(false)}
                                 disabled={processing}
-                                className="flex-1 py-4 text-base font-semibold text-gray-500 bg-gray-100 rounded-xl active:bg-gray-200 transition-colors"
+                                className="flex-1 py-4 text-base font-semibold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                             >
                                 {t('Cancel')}
                             </button>

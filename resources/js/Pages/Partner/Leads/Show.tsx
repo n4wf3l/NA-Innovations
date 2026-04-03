@@ -27,10 +27,10 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
             </Link>
 
             {/* Header with Pipeline Stepper */}
-            <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm mb-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm mb-6">
                 <div className="flex items-start justify-between mb-6">
                     <div>
-                        <h2 className="text-xl font-bold text-gray-900">
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                             {lead.first_name} {lead.last_name}
                         </h2>
                         {lead.company_name && (
@@ -70,14 +70,14 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 {/* Contact Info Card */}
-                <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+                <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
                         Contact Information
                     </h3>
                     <dl className="space-y-3 text-sm">
                         <div className="flex justify-between">
                             <dt className="text-gray-400">{t("Email")}</dt>
-                            <dd className="text-gray-900 font-medium">
+                            <dd className="text-gray-900 dark:text-white font-medium">
                                 <a href={`mailto:${lead.email}`} className="text-rose-600 hover:text-rose-700">
                                     {lead.email}
                                 </a>
@@ -86,31 +86,31 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
                         {lead.phone && (
                             <div className="flex justify-between">
                                 <dt className="text-gray-400">{t("Phone")}</dt>
-                                <dd className="text-gray-900 font-medium">{lead.phone}</dd>
+                                <dd className="text-gray-900 dark:text-white font-medium">{lead.phone}</dd>
                             </div>
                         )}
                         {lead.company_name && (
                             <div className="flex justify-between">
                                 <dt className="text-gray-400">{t("Company")}</dt>
-                                <dd className="text-gray-900 font-medium">{lead.company_name}</dd>
+                                <dd className="text-gray-900 dark:text-white font-medium">{lead.company_name}</dd>
                             </div>
                         )}
                         {lead.service_interest && (
                             <div className="flex justify-between">
                                 <dt className="text-gray-400">{t("Service Interest")}</dt>
-                                <dd className="text-gray-900 font-medium">{formatProjectType(lead.service_interest)}</dd>
+                                <dd className="text-gray-900 dark:text-white font-medium">{formatProjectType(lead.service_interest)}</dd>
                             </div>
                         )}
                         {lead.estimated_budget && (
                             <>
                                 <div className="flex justify-between">
                                     <dt className="text-gray-400">{t("Estimated Budget")}</dt>
-                                    <dd className="text-gray-900 font-medium">
+                                    <dd className="text-gray-900 dark:text-white font-medium">
                                         <ProtectedAmount amount={parseFloat(lead.estimated_budget)} />
                                     </dd>
                                 </div>
                                 {partnerShare !== null && (
-                                    <div className="flex justify-between border-t border-gray-100 pt-3">
+                                    <div className="flex justify-between border-t border-gray-100 dark:border-gray-700 pt-3">
                                         <dt className="text-gray-400">Your Share ({commissionRate}%)</dt>
                                         <dd className="text-rose-600 font-bold">
                                             <ProtectedAmount amount={partnerShare} />
@@ -121,21 +121,21 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
                         )}
                         <div className="flex justify-between">
                             <dt className="text-gray-400">{t("Submitted")}</dt>
-                            <dd className="text-gray-900 font-medium">{formatDate(lead.created_at)}</dd>
+                            <dd className="text-gray-900 dark:text-white font-medium">{formatDate(lead.created_at)}</dd>
                         </div>
                     </dl>
                 </div>
 
                 {/* Project Section (if won) */}
                 {lead.status === 'won' && project && (
-                    <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                        <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm">
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
                             Project Details
                         </h3>
                         <dl className="space-y-3 text-sm">
                             <div className="flex justify-between">
                                 <dt className="text-gray-400">{t("Project Name")}</dt>
-                                <dd className="text-gray-900 font-medium">{project.nom_societe || 'Untitled'}</dd>
+                                <dd className="text-gray-900 dark:text-white font-medium">{project.nom_societe || 'Untitled'}</dd>
                             </div>
                             <div className="flex justify-between items-center">
                                 <dt className="text-gray-400">Status</dt>
@@ -144,20 +144,20 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
                             {project.developer && (
                                 <div className="flex justify-between">
                                     <dt className="text-gray-400">{t("Developer")}</dt>
-                                    <dd className="text-gray-900 font-medium">{project.developer.name}</dd>
+                                    <dd className="text-gray-900 dark:text-white font-medium">{project.developer.name}</dd>
                                 </div>
                             )}
                             {project.budget && (
                                 <div className="flex justify-between">
                                     <dt className="text-gray-400">{t("Budget")}</dt>
-                                    <dd className="text-gray-900 font-medium"><ProtectedAmount amount={parseFloat(project.budget)} /></dd>
+                                    <dd className="text-gray-900 dark:text-white font-medium"><ProtectedAmount amount={parseFloat(project.budget)} /></dd>
                                 </div>
                             )}
                         </dl>
 
                         {/* Quote info */}
                         {lead.quotes && lead.quotes.length > 0 && (
-                            <div className="mt-4 pt-4 border-t border-gray-100">
+                            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
                                 <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Quotes</p>
                                 {lead.quotes.map((quote: any) => (
                                     <div key={quote.id} className="flex items-center justify-between py-1.5">
@@ -168,7 +168,7 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
                                             <Badge status={quote.status} />
                                         </div>
                                         {quote.total && (
-                                            <span className="text-sm font-bold text-gray-900">
+                                            <span className="text-sm font-bold text-gray-900 dark:text-white">
                                                 <ProtectedAmount amount={parseFloat(quote.total)} />
                                             </span>
                                         )}
@@ -181,8 +181,8 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
 
                 {/* If not won but has quotes, show them in a separate card */}
                 {lead.status !== 'won' && lead.quotes && lead.quotes.length > 0 && (
-                    <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                        <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm">
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
                             Quotes
                         </h3>
                         <div className="space-y-2">
@@ -195,7 +195,7 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
                                         <Badge status={quote.status} />
                                     </div>
                                     {quote.total && (
-                                        <span className="text-sm font-bold text-gray-900">
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">
                                             <ProtectedAmount amount={parseFloat(quote.total)} />
                                         </span>
                                     )}
@@ -208,16 +208,16 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
 
             {/* Commission Card */}
             {lead.commissions && lead.commissions.length > 0 && (
-                <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm mb-6">
-                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+                <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm mb-6">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
                         Commissions
                     </h3>
                     <div className="space-y-3">
                         {lead.commissions.map((commission: any) => (
-                            <div key={commission.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div key={commission.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                                 <div className="space-y-1">
                                     <div className="flex items-center space-x-3">
-                                        <span className="text-sm font-bold text-gray-900">
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">
                                             <ProtectedAmount amount={parseFloat(commission.commission_amount)} />
                                         </span>
                                         <Badge status={commission.status} />
@@ -245,8 +245,8 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
 
             {/* Timeline */}
             {lead.timeline_events && lead.timeline_events.length > 0 && (
-                <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm mb-6">
-                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+                <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm mb-6">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
                         Timeline
                     </h3>
                     <div className="relative">
@@ -258,7 +258,7 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
                                         <div className="w-2 h-2 rounded-full bg-rose-500" />
                                     </div>
                                     <div className="flex-1 min-w-0 pb-1">
-                                        <p className="text-sm font-medium text-gray-900">{event.title}</p>
+                                        <p className="text-sm font-medium text-gray-900 dark:text-white">{event.title}</p>
                                         {event.description && (
                                             <p className="text-xs text-gray-500 mt-0.5">{event.description}</p>
                                         )}
@@ -275,13 +275,13 @@ export default function PartnerLeadShow({ lead, project, commissionRate }: Props
 
             {/* Public Notes */}
             {lead.notes && lead.notes.length > 0 && (
-                <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+                <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
                         Notes
                     </h3>
                     <div className="space-y-3">
                         {lead.notes.map((note: any) => (
-                            <div key={note.id} className="p-4 bg-gray-50 rounded-lg">
+                            <div key={note.id} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                                 <p className="text-sm text-gray-700 whitespace-pre-wrap">{note.content}</p>
                                 <p className="text-xs text-gray-400 mt-2">
                                     {new Date(note.created_at).toLocaleString()}

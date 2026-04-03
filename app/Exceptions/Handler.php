@@ -39,5 +39,20 @@ class Handler extends ExceptionHandler
                 ->toResponse($request)
                 ->setStatusCode(404);
         });
+
+        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, Request $request) {
+            $code = $e->getStatusCode();
+            $pages = [403, 419, 429, 500, 503];
+
+            if (in_array($code, $pages)) {
+                if ($request->wantsJson() || $request->is('api/*')) {
+                    return response()->json(['message' => $e->getMessage() ?: 'Error'], $code);
+                }
+
+                return Inertia::render("Errors/{$code}")
+                    ->toResponse($request)
+                    ->setStatusCode($code);
+            }
+        });
     }
 }
