@@ -144,7 +144,7 @@ export default function SaaS({ products }: Props) {
                             {filtered.map((product, idx) => {
                                 const status = statusConfig[product.status] || statusConfig.in_development;
                                 const isLaunched = product.status === 'launched';
-                                const features = product.features || [];
+                                const features = Array.isArray(product.features) ? product.features : (typeof product.features === 'string' ? JSON.parse(product.features) : []);
                                 const pricingMonthly = product.pricing_monthly ? Number(product.pricing_monthly) : null;
 
                                 return (

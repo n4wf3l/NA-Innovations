@@ -12,6 +12,7 @@ import FooterSection from '@/Components/landing/FooterSection';
 import WhatsAppButton from '@/Components/landing/WhatsAppButton';
 import { ChatModal } from '@/Components/landing/ChatWidget';
 import SectionNav from '@/Components/landing/SectionNav';
+import { useSimulatorVisible } from '@/hooks/useIsEurope';
 import ScrollNextButton from '@/Components/landing/ScrollNextButton';
 
 interface PortfolioProject {
@@ -42,6 +43,7 @@ interface Props {
     publicStats?: { projects_delivered: number; active_clients: number; technologies: number; years_experience: number };
     seo?: { title: string; description: string };
     videoUrl?: string;
+    simulatorMode?: string;
 }
 
 const socialIcons: Record<string, JSX.Element> = {
@@ -208,12 +210,10 @@ function SplashScreen({ branding, onComplete }: { branding: { logo_path: string;
                          transform: phase === 'language' ? 'scale(0.7)' : undefined,
                      }}>
                     <div className="relative" style={{ animation: phase === 'reveal' ? 'floatSlow 3s ease-in-out infinite' : 'none' }}>
-                        {branding.logo_path ? (
-                            <img src={`/storage/${branding.logo_path}`} alt="" className="w-32 h-32 object-contain drop-shadow-[0_0_40px_rgba(94,234,212,0.3)]" />
+                        {true ? (
+                            <img src="/white-logo-small.png" alt="NA Innovations" className="w-32 h-32 object-contain drop-shadow-[0_0_40px_rgba(94,234,212,0.3)]" />
                         ) : (
-                            <div className="w-32 h-32 bg-gradient-to-br from-teal-400 to-teal-500 rounded-[28px] flex items-center justify-center shadow-[0_0_60px_rgba(94,234,212,0.25)]" style={bebas}>
-                                <span className="text-gray-900 text-6xl font-bold tracking-tight">NA</span>
-                            </div>
+                            <div className="w-32 h-32" />
                         )}
                     </div>
                 </div>
@@ -382,9 +382,10 @@ function AIAssistantSection({ onOpenChat }: { onOpenChat: () => void }) {
     );
 }
 
-export default function Welcome({ portfolio, messages, latestPosts, socialLinks = {}, branding = { logo_path: '', company_name: 'NA Innovations', tagline: '' }, services = [], landingSections = {}, testimonials = [], faqs = [], publicStats, seo, videoUrl }: Props) {
+export default function Welcome({ portfolio, messages, latestPosts, socialLinks = {}, branding = { logo_path: '', company_name: 'NA Innovations', tagline: '' }, services = [], landingSections = {}, testimonials = [], faqs = [], publicStats, seo, videoUrl, simulatorMode = 'europe_only' }: Props) {
     const { auth, locale } = usePage<{ auth: { user: { id: number } | null }; locale: string }>().props;
     const { t } = useTranslation();
+    const showSimulator = useSimulatorVisible(simulatorMode);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
     const [showScrollTop, setShowScrollTop] = useState(false);
@@ -484,17 +485,19 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
             <HeroSection heroSection={heroSection} branding={branding} socialLinks={socialLinks} socialIcons={socialIcons} navLinks={navLinks} locale={locale} auth={auth} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
 
             {/* ═══ Second screen: Estimate + Stats + AI ═══ */}
-            <div id="estimate-banner" className="min-h-screen flex flex-col">
-                {/* Free Estimate Banner */}
+            <div id="estimate-banner" className={`flex flex-col ${chatAvailable ? 'min-h-screen' : ''}`}>
+                {/* Free Estimate Banner — Europe only */}
+                {showSimulator && (
                 <div className="bg-gradient-to-r from-gray-100 via-teal-50 to-gray-100 dark:from-gray-900 dark:via-teal-900/40 dark:to-gray-900 border-y border-teal-200 dark:border-teal-500/20 py-3">
                     <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center">
-                        <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">{t('Get a free estimate in 2 minutes')}</span>
-                        <SpinnerLink href="/contact#simulator" className="inline-flex items-center gap-1.5 px-5 py-2 bg-teal-400 text-gray-900 text-sm font-bold rounded-full hover:bg-teal-300 hover:shadow-[0_0_20px_rgba(94,234,212,0.2)] transition-all duration-300 bebas" style={{ letterSpacing: '1px' }}>
+                        <span className="text-base text-gray-600 dark:text-gray-400 font-medium">{t('Get a free estimate in 2 minutes')}</span>
+                        <SpinnerLink href="/contact#simulator" className="inline-flex items-center gap-2 px-6 py-2.5 bg-teal-400 text-gray-900 text-base font-bold rounded-full hover:bg-teal-300 hover:shadow-[0_0_20px_rgba(94,234,212,0.2)] transition-all duration-300 bebas" style={{ letterSpacing: '2px' }}>
                             {t('Try our price simulator').toUpperCase()}
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                         </SpinnerLink>
                     </div>
                 </div>
+                )}
 
                 {/* Scrolling Messages Banner */}
                 {messages.length > 0 && (
@@ -530,9 +533,8 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                 {/* Stats Section */}
                 {publicStats && <StatsSection publicStats={publicStats} sectionRef={statsSection.ref as any} isVisible={statsSection.isVisible} />}
 
-                {/* AI Assistant Section — fills remaining space */}
+                {/* AI Assistant Section — only if chatbot is available */}
                 {chatAvailable && <AIAssistantSection onOpenChat={() => setChatOpen(true)} />}
-                {!chatAvailable && <div className="flex-1 bg-gray-900" />}
             </div>
 
             {/* Client logos band — infinite seamless scroll */}
@@ -550,7 +552,7 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                 return (
                     <section className="py-12 bg-gray-50 dark:bg-gray-800/50 overflow-hidden" data-section-theme="light">
                         <div className="max-w-6xl mx-auto px-4 mb-8">
-                            <p className="text-center text-sm uppercase tracking-[0.3em] text-gray-400 dark:text-gray-500 bebas">{t('They Trust Us')}</p>
+                            <p className="text-center text-lg uppercase tracking-[0.3em] text-gray-400 dark:text-gray-500 bebas">{t('They Trust Us')}</p>
                         </div>
                         <style>{`
                             @keyframes logoScroll {
@@ -613,6 +615,7 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                             </SpinnerLink>
                         </div>
+                        {showSimulator && (
                         <div className="text-center mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
                             <p className="text-gray-500 dark:text-gray-400 text-sm mb-3">{t('Not sure about the cost?')}</p>
                             <a href="/contact#simulator" className="inline-flex items-center gap-2 text-teal-600 font-semibold text-sm hover:text-teal-500 transition-colors">
@@ -620,6 +623,7 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                             </a>
                         </div>
+                        )}
 
                         {/* Scroll arrow handled by fixed global ScrollNextButton */}
                     </div>
@@ -628,19 +632,19 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
 
             {/* Process — compact horizontal stepper */}
             {landingSections?.process?.is_active && (landingSections.process.metadata?.steps || []).length > 0 && (
-                <section className="py-10 bg-gray-900 border-y border-white/5">
-                    <div className="max-w-4xl mx-auto px-4">
-                        <div className="flex flex-col md:flex-row items-center justify-center gap-0">
+                <section className="py-14 bg-gray-900 border-y border-white/5">
+                    <div className="max-w-5xl mx-auto px-4">
+                        <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-0">
                             {(landingSections.process.metadata.steps as { title: string; description: string }[]).map((step, i, arr) => (
                                 <div key={i} className="flex items-center gap-0">
-                                    <div className="flex flex-col items-center text-center px-5 py-2">
-                                        <div className="w-10 h-10 rounded-full bg-teal-400 text-gray-900 flex items-center justify-center text-sm font-bold bebas mb-2">
+                                    <div className="flex flex-col items-center text-center px-6 py-3">
+                                        <div className="w-12 h-12 rounded-full bg-teal-400 text-gray-900 flex items-center justify-center text-lg font-bold bebas mb-3">
                                             {i + 1}
                                         </div>
-                                        <span className="text-xs font-bold text-white bebas" style={{ letterSpacing: '1px' }}>{t(step.title)}</span>
+                                        <span className="text-base font-bold text-white bebas" style={{ letterSpacing: '2px' }}>{t(step.title)}</span>
                                     </div>
                                     {i < arr.length - 1 && (
-                                        <div className="hidden md:block w-16 h-px bg-gradient-to-r from-teal-400/40 to-white/10" />
+                                        <div className="hidden md:block w-20 h-px bg-gradient-to-r from-teal-400/40 to-white/10" />
                                     )}
                                 </div>
                             ))}
@@ -659,7 +663,7 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                         <div className="text-center mb-16">
                             <h2 className="text-7xl md:text-9xl font-semibold text-black dark:text-white bebas" style={{ letterSpacing: '2px' }}>{t('Latest News')}</h2>
                             <hr className="mt-6 border-black/20 dark:border-white/20 max-w-md mx-auto" />
-                            <OriginalLanguageBadge className="mt-4 justify-center" />
+                            <OriginalLanguageBadge contentLang="en" className="mt-4 justify-center" />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             {latestPosts.map((post) => (
@@ -739,19 +743,20 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
             {(!ctaSection || ctaSection.is_active) && (
                 <section id="section-cta" className="py-20 bg-gray-900 relative overflow-hidden">
                     <div className="absolute inset-0 opacity-[0.02] flex items-center justify-center" aria-hidden="true">
-                        <span className="text-[20vw] font-bold text-white bebas whitespace-nowrap">GET STARTED</span>
+                        <span className="text-[20vw] font-bold text-white bebas whitespace-nowrap">{t('GET STARTED')}</span>
                     </div>
                     <div className="max-w-3xl mx-auto text-center px-4 relative z-10">
-                        <OriginalLanguageBadge light className="mb-4 justify-center" />
                         <h2 className="text-5xl md:text-7xl font-bold text-white bebas mb-6" style={{ letterSpacing: '2px' }}>{ctaSection?.title || t('Ready to start your project?')}</h2>
                         <p className="text-lg text-gray-400 mb-10">{ctaSection?.subtitle || t('Tell us about your idea and we\'ll get back to you within 24 hours with a tailored proposal.')}</p>
                         <SpinnerLink href={ctaSection?.button_url || '/contact#quote'} className="inline-flex items-center gap-3 px-12 py-6 bg-teal-400 text-gray-900 text-2xl font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_60px_rgba(94,234,212,0.4)] bebas" style={{ letterSpacing: '3px' }}>
                             <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
                             {(ctaSection?.button_text || t('Request a Quote')).toUpperCase()}
                         </SpinnerLink>
+                        {showSimulator && (
                         <p className="mt-6 text-gray-500 text-sm">
                             <a href="/contact#simulator" className="text-teal-300 hover:text-teal-200 underline underline-offset-2 transition-colors">{t('Try our price simulator')}</a>
                         </p>
+                        )}
                     </div>
                 </section>
             )}
@@ -779,7 +784,7 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
             {/* Section navigator */}
             <ScrollNextButton />
             <SectionNav sections={[
-                { id: 'ai-assistant', label: 'Assistant IA', highlight: true, onClick: () => setChatOpen(true) },
+                ...(chatAvailable ? [{ id: 'ai-assistant', label: 'Assistant IA', highlight: true, onClick: () => setChatOpen(true) }] : []),
                 { id: 'section-services', label: 'Our Services' },
                 { id: 'section-portfolio', label: 'Our Work' },
                 { id: 'section-news', label: 'Latest News' },

@@ -93,6 +93,8 @@ class PortfolioController extends BaseAdminController
             'tags' => 'nullable|array',
             'tags.*' => 'string|max:100',
             'live_url' => 'nullable|url|max:500',
+            'video_url' => 'nullable|url|max:500',
+            'show_video' => 'nullable|boolean',
             'category' => 'nullable|string|max:100',
             'duration_days' => 'nullable|integer|min:1',
             'testimonial_text' => 'nullable|string',

@@ -18,6 +18,7 @@ interface Props {
         tagline: string;
         video_url: string;
     };
+    simulatorMode?: string;
 }
 
 const platformNames: Record<string, string> = {
@@ -68,7 +69,7 @@ const socialIcons: Record<string, JSX.Element> = {
     ),
 };
 
-export default function Branding({ socialLinks, branding }: Props) {
+export default function Branding({ socialLinks, branding, simulatorMode = 'europe_only' }: Props) {
     const { t } = useTranslation();
     const { confirm, ConfirmDialog } = useConfirm();
     const [links, setLinks] = useState(socialLinks);
@@ -312,6 +313,47 @@ export default function Branding({ socialLinks, branding }: Props) {
                     </form>
                 </div>
             </div>
+            {/* Simulator Mode */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden mt-8">
+                <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">{t('Simulateur de prix')}</h2>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('Contrôlez la visibilité du simulateur de prix sur la landing page')}</p>
+                </div>
+                <div className="p-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {[
+                            { value: 'enabled', label: t('Activé pour tous'), desc: t('Le simulateur est visible par tous les visiteurs, peu importe leur localisation.'), icon: 'M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418', color: 'emerald' },
+                            { value: 'europe_only', label: t('Europe uniquement'), desc: t('Visible uniquement pour les visiteurs avec un fuseau horaire européen.'), icon: 'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z', color: 'blue' },
+                            { value: 'disabled', label: t('Désactivé'), desc: t('Le simulateur est masqué pour tout le monde.'), icon: 'M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88', color: 'red' },
+                        ].map(opt => (
+                            <button
+                                key={opt.value}
+                                onClick={() => router.put('/admin/settings/simulator-mode', { mode: opt.value }, { preserveScroll: true })}
+                                className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
+                                    simulatorMode === opt.value
+                                        ? `border-${opt.color}-500 bg-${opt.color}-50 dark:bg-${opt.color}-500/10`
+                                        : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
+                                }`}
+                            >
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${simulatorMode === opt.value ? `bg-${opt.color}-500 text-white` : 'bg-gray-100 dark:bg-gray-700 text-gray-400'}`}>
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={opt.icon} /></svg>
+                                    </div>
+                                    <span className="font-bold text-sm text-gray-900 dark:text-white">{opt.label}</span>
+                                </div>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{opt.desc}</p>
+                                {simulatorMode === opt.value && (
+                                    <div className={`mt-2 flex items-center gap-1 text-xs font-semibold text-${opt.color}-600 dark:text-${opt.color}-400`}>
+                                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                        {t('Mode actif')}
+                                    </div>
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
             <ConfirmDialog />
         </AdminLayout>
     );

@@ -38,7 +38,7 @@ export default function PortfolioSection({ portfolio, featuredProjects, regularP
                 <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'fade-in-up' : 'opacity-0'}`}>
                     <h2 className="text-7xl md:text-9xl font-semibold text-black dark:text-white bebas" style={{ letterSpacing: '2px' }}>{t('Our Work')}</h2>
                     <hr className="mt-6 border-black/20 dark:border-white/20 max-w-md mx-auto" />
-                    <OriginalLanguageBadge className="mt-4 justify-center" />
+                    <OriginalLanguageBadge contentLang="en" className="mt-4 justify-center" />
                 </div>
 
                 {portfolio.length === 0 ? (

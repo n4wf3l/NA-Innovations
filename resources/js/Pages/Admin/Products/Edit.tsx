@@ -18,6 +18,8 @@ interface Product {
     status: string;
     live_url: string | null;
     demo_url: string | null;
+    video_url: string | null;
+    show_video: boolean;
     logo_path: string | null;
     cover_image_path: string | null;
     target_audience: string | null;
@@ -95,6 +97,8 @@ export default function ProductEdit({ product, projects }: Props) {
         status: product.status,
         live_url: product.live_url || '',
         demo_url: product.demo_url || '',
+        video_url: product.video_url || '',
+        show_video: product.show_video || false,
         target_audience: product.target_audience || '',
         project_id: product.project_id ? String(product.project_id) : '',
         is_published: product.is_published,
@@ -272,6 +276,14 @@ export default function ProductEdit({ product, projects }: Props) {
                             <div>
                                 <label className={labelClass}>Demo URL</label>
                                 <input type="url" value={data.demo_url} onChange={e => setData('demo_url', e.target.value)} className={inputClass} placeholder="https://" />
+                            </div>
+                            <div>
+                                <label className={labelClass}>Video YouTube</label>
+                                <input type="url" value={data.video_url} onChange={e => setData('video_url', e.target.value)} className={inputClass} placeholder="https://www.youtube.com/watch?v=..." />
+                            </div>
+                            <div className="flex items-center gap-3 mt-2">
+                                <input type="checkbox" checked={!!data.show_video} onChange={e => setData('show_video', e.target.checked)} className="rounded border-gray-300 dark:border-gray-600 text-teal-500 focus:ring-teal-400" />
+                                <span className="text-sm text-gray-700 dark:text-gray-300">Afficher la vidéo sur la page produit</span>
                             </div>
                             <div>
                                 <label className={labelClass}>{t('Link to Project')}</label>

@@ -62,8 +62,8 @@ export default function InstallPrompt() {
                     <div className="absolute top-2 right-2 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl" />
                     <div className="absolute bottom-0 left-4 w-20 h-20 bg-teal-500/10 rounded-full blur-xl" />
                     <div className="relative">
-                        <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-rose-500/30">
-                            <span className="text-white text-2xl font-black">NA</span>
+                        <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                            <img src="/white-logo-small.png" alt="NA Innovations" className="w-14 h-14 object-contain" />
                         </div>
                         <h3 className="text-white text-lg font-bold">{t('Install NA Innovations')}</h3>
                         <p className="text-gray-400 text-xs mt-1">{t('Add to your home screen for the best experience')}</p>

@@ -83,10 +83,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
             {/* Navbar — Top (static in hero) */}
             <div className={`flex justify-between items-center self-center w-full max-w-[1298px] px-4 py-5 relative z-20 transition-opacity duration-500 ${scrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                 <Link href="/" className="flex items-center gap-3">
-                    {branding.logo_path ? (
-                        <img src={`/storage/${branding.logo_path}`} alt={branding.company_name} className="h-10 w-auto" />
-                    ) : null}
-                    <span className="text-3xl font-bold text-white">{branding.company_name.split(' ').map(w => w[0]).join('')}</span>
+                    <img src="/white-logo-small.png" alt={branding.company_name} className="h-10 w-auto" />
                 </Link>
 
                 <button className="md:hidden block text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -114,9 +111,9 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                     {/* Theme toggle */}
                     <button onClick={toggleTheme} className="w-9 h-9 flex items-center justify-center rounded-full border border-white/10 text-gray-300 hover:text-teal-300 hover:border-teal-300/40 transition-all duration-300" title={isDark ? t('Light mode') : t('Dark mode')}>
                         {isDark ? (
-                            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
                         ) : (
-                            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
                         )}
                     </button>
                     {/* Language */}
@@ -173,19 +170,15 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
             )}
 
             {/* Mini Sidebar — slides in from left on scroll */}
-            <div className={`hidden md:flex fixed left-0 top-1/2 -translate-y-1/2 z-[998] flex-col items-center gap-1 py-4 px-1.5 bg-gray-900/90 dark:bg-gray-950/90 backdrop-blur-xl rounded-r-2xl border border-l-0 border-white/10 shadow-2xl transition-all duration-700 ${
+            <div className={`hidden md:flex fixed left-0 top-1/2 -translate-y-1/2 z-[998] flex-col items-center gap-1.5 py-5 px-2 bg-gray-900/90 dark:bg-gray-950/90 backdrop-blur-xl rounded-r-2xl border border-l-0 border-white/10 shadow-2xl transition-all duration-700 ${
                 scrolled ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
             }`}>
                 {/* Logo */}
                 <Link href="/" className="w-9 h-9 flex items-center justify-center mb-2 group" title={branding.company_name}>
-                    {branding.logo_path ? (
-                        <img src={`/storage/${branding.logo_path}`} alt="" className="w-7 h-7 object-contain" />
-                    ) : (
-                        <span className="text-sm font-bold text-white">{branding.company_name.split(' ').map(w => w[0]).join('')}</span>
-                    )}
+                    <img src="/white-logo-small.png" alt="" className="w-7 h-7 object-contain" />
                 </Link>
 
-                <div className="w-5 h-px bg-white/10 mb-1" />
+                <div className="w-6 h-px bg-white/10 mb-1" />
 
                 {/* Nav links as icons */}
                 {(() => {
@@ -203,19 +196,19 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                         const isActive = link.href === '/' ? currentPath === '/' : currentPath.startsWith(link.href);
                         return (
                             <Link key={link.href} href={link.href}
-                                className={`group relative w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200 ${
+                                className={`group relative w-11 h-11 flex items-center justify-center rounded-xl transition-all duration-200 ${
                                     isActive
                                         ? 'text-teal-300 bg-teal-400/10'
                                         : 'text-gray-500 hover:text-teal-300 hover:bg-white/10'
                                 }`}
                                 title={link.label}>
-                                <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={isActive ? 2 : 1.5}>
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={isActive ? 2 : 1.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
                                 </svg>
                                 {/* Active indicator */}
                                 {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 bg-teal-400 rounded-r-full" />}
                                 {/* Tooltip */}
-                                <span className="absolute left-full ml-3 px-2.5 py-1 bg-gray-900 text-white text-xs font-medium rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-xl bebas" style={{ letterSpacing: '1px' }}>
+                                <span className="absolute left-full ml-3 px-4 py-2 bg-gray-900 text-white text-base font-bold rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-xl bebas" style={{ letterSpacing: '2px' }}>
                                     {link.label}
                                 </span>
                             </Link>
@@ -223,36 +216,36 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                     });
                 })()}
 
-                <div className="w-5 h-px bg-white/10 my-1" />
+                <div className="w-6 h-px bg-white/10 my-1" />
 
                 {/* Free Quote CTA */}
-                <a href="/contact#quote" className="w-9 h-9 flex items-center justify-center rounded-xl border border-teal-400/50 text-teal-400 hover:bg-teal-400 hover:text-gray-900 hover:scale-110 transition-all duration-200 group relative" title={t('Free Quote')}>
-                    <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <a href="/contact#quote" className="w-11 h-11 flex items-center justify-center rounded-xl border border-teal-400/50 text-teal-400 hover:bg-teal-400 hover:text-gray-900 hover:scale-110 transition-all duration-200 group relative" title={t('Free Quote')}>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                     </svg>
-                    <span className="absolute left-full ml-3 px-2.5 py-1 bg-teal-400 text-gray-900 text-xs font-bold rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-xl bebas" style={{ letterSpacing: '1px' }}>
+                    <span className="absolute left-full ml-3 px-4 py-2 bg-teal-400 text-gray-900 text-base font-bold rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-xl bebas" style={{ letterSpacing: '2px' }}>
                         {t('Free Quote')}
                     </span>
                 </a>
 
-                <div className="w-5 h-px bg-white/10 my-1" />
+                <div className="w-6 h-px bg-white/10 my-1" />
 
                 {/* Theme toggle */}
-                <button onClick={toggleTheme} className="group relative w-9 h-9 flex items-center justify-center rounded-xl text-gray-500 hover:text-teal-300 hover:bg-white/10 transition-all duration-200">
+                <button onClick={toggleTheme} className="group relative w-11 h-11 flex items-center justify-center rounded-xl text-gray-500 hover:text-teal-300 hover:bg-white/10 transition-all duration-200">
                     {isDark ? (
-                        <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
                     ) : (
-                        <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
                     )}
-                    <span className="absolute left-full ml-3 px-2.5 py-1 bg-gray-900 text-white text-xs font-medium rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-xl bebas" style={{ letterSpacing: '1px' }}>
+                    <span className="absolute left-full ml-3 px-4 py-2 bg-gray-900 text-white text-base font-bold rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-xl bebas" style={{ letterSpacing: '2px' }}>
                         {isDark ? t('Light mode') : t('Dark mode')}
                     </span>
                 </button>
 
                 {/* Language */}
-                <button onClick={() => setShowLangModal(true)} className="group relative w-9 h-9 flex items-center justify-center rounded-xl text-gray-500 hover:text-teal-300 hover:bg-white/10 transition-all duration-200">
-                    <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802" /></svg>
-                    <span className="absolute left-full ml-3 px-2.5 py-1 bg-gray-900 text-white text-xs font-medium rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-xl bebas" style={{ letterSpacing: '1px' }}>
+                <button onClick={() => setShowLangModal(true)} className="group relative w-11 h-11 flex items-center justify-center rounded-xl text-gray-500 hover:text-teal-300 hover:bg-white/10 transition-all duration-200">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802" /></svg>
+                    <span className="absolute left-full ml-3 px-4 py-2 bg-gray-900 text-white text-base font-bold rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-xl bebas" style={{ letterSpacing: '2px' }}>
                         {locale.toUpperCase()} — {t('Language')}
                     </span>
                 </button>
@@ -277,7 +270,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
             {/* Hero content */}
             <div className="flex-1 flex flex-col items-center justify-center relative px-4 py-12">
                 <div className="w-full max-w-[1100px] border border-white/20 p-8 md:p-14 relative z-10 hero-border-anim">
-                    <OriginalLanguageBadge light className="mb-4" />
+                    {/* No language badge here — hero text is translated via t() */}
                     <div className="text-sm md:text-base lg:text-xl font-medium text-neutral-400 bebas hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d1" style={{ letterSpacing: '2px' }}>
                         {heroSection?.subtitle || t('Web Development, Mobile & Software Solutions')}
                     </div>
@@ -331,9 +324,9 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                                 { code: 'fr', label: 'Français' },
                                 { code: 'nl', label: 'Nederlands' },
                             ].map((lang, i) => (
-                                <a
+                                <button
                                     key={lang.code}
-                                    href={`/locale/${lang.code}`}
+                                    onClick={() => { setShowLangModal(false); window.location.href = `/locale/${lang.code}`; }}
                                     className={`group relative px-16 py-5 text-4xl md:text-5xl font-bold tracking-wide transition-all duration-300 bebas ${
                                         locale === lang.code
                                             ? 'text-teal-300'
@@ -348,7 +341,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                                     <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 h-px bg-teal-400 transition-all duration-300 ${
                                         locale === lang.code ? 'w-16' : 'w-0 group-hover:w-16'
                                     }`} />
-                                </a>
+                                </button>
                             ))}
                         </div>
                         <button

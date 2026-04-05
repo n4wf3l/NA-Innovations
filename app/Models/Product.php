@@ -24,6 +24,8 @@ class Product extends Model
         'status',
         'live_url',
         'demo_url',
+        'video_url',
+        'show_video',
         'logo_path',
         'cover_image_path',
         'target_audience',
@@ -42,6 +44,7 @@ class Product extends Model
         'pricing_custom' => 'boolean',
         'is_published' => 'boolean',
         'is_featured' => 'boolean',
+        'show_video' => 'boolean',
         'launched_at' => 'date',
     ];
 

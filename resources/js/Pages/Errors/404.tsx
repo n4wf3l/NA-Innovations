@@ -62,14 +62,14 @@ export default function NotFound() {
 
                 {/* Animated background words */}
                 <div className="absolute inset-0 pointer-events-none select-none" aria-hidden="true">
-                    <span className="absolute bebas text-white" style={{ fontSize: 'clamp(8rem, 25vw, 20rem)', top: '10%', left: '5%', opacity: 0.03, animation: 'pulse404 4s ease-in-out infinite' }}>ERROR</span>
-                    <span className="absolute bebas text-white" style={{ fontSize: 'clamp(6rem, 18vw, 14rem)', top: '40%', right: '5%', opacity: 0.03, animation: 'pulse404 4s ease-in-out infinite 1s' }}>LOST</span>
+                    <span className="absolute bebas text-white" style={{ fontSize: 'clamp(8rem, 25vw, 20rem)', top: '10%', left: '5%', opacity: 0.03, animation: 'pulse404 4s ease-in-out infinite' }}>{t('ERROR')}</span>
+                    <span className="absolute bebas text-white" style={{ fontSize: 'clamp(6rem, 18vw, 14rem)', top: '40%', right: '5%', opacity: 0.03, animation: 'pulse404 4s ease-in-out infinite 1s' }}>{t('LOST')}</span>
                     <span className="absolute bebas text-white" style={{ fontSize: 'clamp(5rem, 15vw, 12rem)', bottom: '15%', left: '15%', opacity: 0.03, animation: 'pulse404 4s ease-in-out infinite 2s' }}>404</span>
                 </div>
 
                 {/* Navbar */}
                 <div className="relative z-10 flex justify-between items-center w-full max-w-[1298px] mx-auto px-6 py-6">
-                    <a href="/" className="text-3xl font-bold text-white bebas hover:text-teal-300 transition-colors">NA</a>
+                    <a href="/"><img src="/white-logo-small.png" alt="NA Innovations" className="h-10 w-auto" /></a>
                     <a
                         href="/"
                         className="text-sm text-white/50 hover:text-teal-300 transition-colors flex items-center gap-2 bebas"

@@ -13,7 +13,7 @@ class MessageController extends BaseAdminController
      */
     public function index()
     {
-        $messages = Message::all();
+        $messages = Message::latest()->paginate(20);
 
         return Inertia::render('Admin/Messages/Index', [
             'messages' => $messages,

@@ -87,6 +87,8 @@ export default function PortfolioEdit({ project, portfolio }: Props) {
         excerpt: portfolio.excerpt || '',
         category: portfolio.category || '',
         live_url: portfolio.live_url || '',
+        video_url: portfolio.video_url || '',
+        show_video: portfolio.show_video || false,
         duration_days: portfolio.duration_days || autoDuration || '',
         context: portfolio.context || '',
         challenge: portfolio.challenge || '',
@@ -217,6 +219,20 @@ export default function PortfolioEdit({ project, portfolio }: Props) {
                                         <label className={labelClass}>{t('URL live')}</label>
                                         <input type="url" value={data.live_url} onChange={e => setData('live_url', e.target.value)} className={inputClass} placeholder="https://..." />
                                         {errors.live_url && <p className="mt-1 text-sm text-red-600">{errors.live_url}</p>}
+                                    </div>
+                                </div>
+                                {/* Video YouTube */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="md:col-span-2">
+                                        <label className={labelClass}>{t('Vidéo YouTube')}</label>
+                                        <input type="url" value={data.video_url || ''} onChange={e => setData('video_url', e.target.value)} className={inputClass} placeholder="https://www.youtube.com/watch?v=..." />
+                                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t('Collez un lien YouTube. La vidéo sera intégrée sur la page du projet.')}</p>
+                                    </div>
+                                    <div className="flex items-end pb-1">
+                                        <label className="flex items-center gap-3 cursor-pointer">
+                                            <input type="checkbox" checked={!!data.show_video} onChange={e => setData('show_video', e.target.checked)} className="rounded border-gray-300 dark:border-gray-600 text-teal-500 focus:ring-teal-400" />
+                                            <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">{t('Afficher la vidéo')}</span>
+                                        </label>
                                     </div>
                                 </div>
                                 <div>

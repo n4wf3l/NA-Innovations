@@ -97,8 +97,8 @@
         {{-- Logo --}}
         <div class="text-center mb-8 fade-in">
             <a href="{{ url('/') }}" class="inline-flex items-center space-x-3 group">
-                <div class="w-12 h-12 bg-teal-300 rounded-xl flex items-center justify-center shadow-lg shadow-teal-300/20 group-hover:shadow-teal-300/40 transition-shadow">
-                    <span class="font-display text-gray-900 text-2xl font-bold leading-none">NA</span>
+                <div>
+                    <img src="{{ asset('white-logo-small.png') }}" alt="NA Innovations" class="h-12 w-auto">
                 </div>
                 <span class="font-display text-white text-2xl tracking-wide">NA Innovations</span>
             </a>

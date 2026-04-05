@@ -14,6 +14,7 @@ export interface FeatureOption {
     price: number;
     suffix?: string;
     included?: boolean;
+    description?: string;
 }
 
 export interface DesignOption {
@@ -113,50 +114,50 @@ export const projectTypeOptions: ProjectTypeOption[] = [
 ];
 
 export const commonFeatures: FeatureOption[] = [
-    { id: 'responsive', name: 'Responsive design (mobile/tablet/desktop)', price: 0, included: true },
-    { id: 'seo', name: 'SEO optimization', price: 300 },
-    { id: 'contact_form', name: 'Contact form', price: 0, included: true },
-    { id: 'analytics', name: 'Analytics integration (Google Analytics, etc.)', price: 150 },
-    { id: 'gdpr', name: 'Cookie consent / GDPR compliance', price: 200 },
-    { id: 'multilingual', name: 'Multilingual support', price: 500, suffix: 'per additional language' },
-    { id: 'domain_ssl', name: 'Custom domain & SSL', price: 100, suffix: '/year' },
-    { id: 'hosting', name: 'Hosting setup', price: 200 },
-    { id: 'migration', name: 'Content migration from existing site', price: 400 },
+    { id: 'responsive', name: 'Responsive design (mobile/tablet/desktop)', price: 0, included: true, description: 'Your site will look perfect on phones, tablets, and computers.' },
+    { id: 'seo', name: 'SEO optimization', price: 300, description: 'Helps your site appear higher on Google when people search for your services.' },
+    { id: 'contact_form', name: 'Contact form', price: 0, included: true, description: 'A form where visitors can send you a message directly from your website.' },
+    { id: 'analytics', name: 'Analytics integration (Google Analytics, etc.)', price: 150, description: 'See how many people visit your site, where they come from, and what they click.' },
+    { id: 'gdpr', name: 'Cookie consent / GDPR compliance', price: 200, description: 'The cookie banner required by European law to protect visitor privacy.' },
+    { id: 'multilingual', name: 'Multilingual support', price: 500, suffix: 'per additional language', description: 'Your site available in multiple languages (e.g. French, Dutch, English).' },
+    { id: 'domain_ssl', name: 'Custom domain & SSL', price: 100, suffix: '/year', description: 'Your own web address (e.g. yourcompany.be) with a secure padlock icon.' },
+    { id: 'hosting', name: 'Hosting setup', price: 200, description: 'We set up and configure the server where your website lives on the internet.' },
+    { id: 'migration', name: 'Content migration from existing site', price: 400, description: 'We transfer your text, images, and data from your old website to the new one.' },
 ];
 
 export const ecommerceFeatures: FeatureOption[] = [
-    { id: 'payment', name: 'Payment integration (Stripe/Mollie)', price: 500 },
-    { id: 'catalog_50', name: 'Product catalog (up to 50 products)', price: 0, included: true },
-    { id: 'catalog_500', name: 'Product catalog (50-500 products)', price: 400 },
-    { id: 'catalog_plus', name: 'Product catalog (500+ products)', price: 800 },
-    { id: 'inventory', name: 'Inventory management', price: 600 },
-    { id: 'discounts', name: 'Discount codes / promotions', price: 300 },
-    { id: 'shipping', name: 'Shipping calculator', price: 400 },
-    { id: 'multi_currency', name: 'Multi-currency support', price: 300 },
-    { id: 'customer_accounts', name: 'Customer accounts / order tracking', price: 500 },
+    { id: 'payment', name: 'Payment integration (Stripe/Mollie)', price: 500, description: 'Accept credit cards and online payments securely on your store.' },
+    { id: 'catalog_50', name: 'Product catalog (up to 50 products)', price: 0, included: true, description: 'Display and manage up to 50 products with photos and descriptions.' },
+    { id: 'catalog_500', name: 'Product catalog (50-500 products)', price: 400, description: 'Extended catalog for larger inventories with search and filters.' },
+    { id: 'catalog_plus', name: 'Product catalog (500+ products)', price: 800, description: 'Bulk import, advanced search, and performance optimization for large stores.' },
+    { id: 'inventory', name: 'Inventory management', price: 600, description: 'Track stock levels in real-time and get alerts when products run low.' },
+    { id: 'discounts', name: 'Discount codes / promotions', price: 300, description: 'Create promo codes, flash sales, and automatic discounts for your customers.' },
+    { id: 'shipping', name: 'Shipping calculator', price: 400, description: 'Automatically calculate shipping costs based on weight, size, or destination.' },
+    { id: 'multi_currency', name: 'Multi-currency support', price: 300, description: 'Let customers pay in their own currency (EUR, USD, GBP, etc.).' },
+    { id: 'customer_accounts', name: 'Customer accounts / order tracking', price: 500, description: 'Customers can create an account, view past orders, and track deliveries.' },
 ];
 
 export const mobileFeatures: FeatureOption[] = [
-    { id: 'ios_only', name: 'iOS only', price: 0 },
-    { id: 'android_only', name: 'Android only', price: 0 },
-    { id: 'cross_platform', name: 'iOS + Android (cross-platform)', price: 2000 },
-    { id: 'push_notif', name: 'Push notifications', price: 500 },
-    { id: 'in_app_pay', name: 'In-app payments', price: 800 },
-    { id: 'offline', name: 'Offline mode', price: 600 },
-    { id: 'camera_gps', name: 'Camera / GPS integration', price: 400 },
-    { id: 'social_login', name: 'Social login (Google, Apple, Facebook)', price: 300 },
-    { id: 'store_submit', name: 'App Store submission', price: 200 },
+    { id: 'ios_only', name: 'iOS only', price: 0, description: 'Your app available on iPhone and iPad only.' },
+    { id: 'android_only', name: 'Android only', price: 0, description: 'Your app available on Android phones and tablets only.' },
+    { id: 'cross_platform', name: 'iOS + Android (cross-platform)', price: 2000, description: 'One app that works on both iPhone and Android — reach all your users.' },
+    { id: 'push_notif', name: 'Push notifications', price: 500, description: 'Send alerts and messages directly to your users\' phones.' },
+    { id: 'in_app_pay', name: 'In-app payments', price: 800, description: 'Let users pay for products or subscriptions directly inside the app.' },
+    { id: 'offline', name: 'Offline mode', price: 600, description: 'The app works even without internet — data syncs when connection returns.' },
+    { id: 'camera_gps', name: 'Camera / GPS integration', price: 400, description: 'Use the phone\'s camera for photos/scanning or GPS for location features.' },
+    { id: 'social_login', name: 'Social login (Google, Apple, Facebook)', price: 300, description: 'Users can sign in with their existing Google, Apple, or Facebook account.' },
+    { id: 'store_submit', name: 'App Store submission', price: 200, description: 'We handle publishing your app on the App Store and/or Google Play.' },
 ];
 
 export const saasFeatures: FeatureOption[] = [
-    { id: 'auth_roles', name: 'User authentication & roles', price: 0, included: true },
-    { id: 'admin_panel', name: 'Dashboard / admin panel', price: 0, included: true },
-    { id: 'api_integration', name: 'API integration', price: 800 },
-    { id: 'realtime_notif', name: 'Real-time notifications', price: 500 },
-    { id: 'file_upload', name: 'File upload / storage', price: 400 },
-    { id: 'subscription_billing', name: 'Payment / subscription billing', price: 1200 },
-    { id: 'multi_tenancy', name: 'Multi-tenancy', price: 2000 },
-    { id: 'automated_emails', name: 'Automated emails', price: 400 },
+    { id: 'auth_roles', name: 'User authentication & roles', price: 0, included: true, description: 'Login system with different access levels (admin, user, etc.).' },
+    { id: 'admin_panel', name: 'Dashboard / admin panel', price: 0, included: true, description: 'A control panel to manage your data, users, and settings.' },
+    { id: 'api_integration', name: 'API integration', price: 800, description: 'Connect your platform with external services (payment, maps, email, etc.).' },
+    { id: 'realtime_notif', name: 'Real-time notifications', price: 500, description: 'Instant alerts when something happens — no need to refresh the page.' },
+    { id: 'file_upload', name: 'File upload / storage', price: 400, description: 'Let users upload documents, images, or files to the platform.' },
+    { id: 'subscription_billing', name: 'Payment / subscription billing', price: 1200, description: 'Monthly or yearly billing with automatic payments and invoices.' },
+    { id: 'multi_tenancy', name: 'Multi-tenancy', price: 2000, description: 'Each customer gets their own isolated space on the same platform.' },
+    { id: 'automated_emails', name: 'Automated emails', price: 400, description: 'The system sends emails automatically (welcome, reminders, alerts, etc.).' },
     { id: 'data_export', name: 'Data export (CSV/PDF)', price: 300 },
 ];
 

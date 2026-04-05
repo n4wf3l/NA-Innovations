@@ -21,8 +21,8 @@ interface Props {
 export default function ContactForm({ contactForm, setContactForm, onSubmit, processing, errors, turnstileSiteKey, turnstileRef, turnstileToken }: Props) {
     const { t } = useTranslation();
 
-    const inputClasses = "w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 focus:outline-none transition-all duration-200";
-    const labelClasses = "block text-sm font-medium text-gray-700 mb-2";
+    const inputClasses = "w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 focus:outline-none transition-all duration-200";
+    const labelClasses = "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2";
 
     return (
         <div className="max-w-3xl mx-auto">

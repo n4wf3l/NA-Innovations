@@ -31,6 +31,8 @@ class PortfolioProject extends Model
         'testimonial_role',
         'featured_image',
         'live_url',
+        'video_url',
+        'show_video',
         'category',
         'tags',
         'completion_date',
@@ -53,6 +55,7 @@ class PortfolioProject extends Model
         'completion_date' => 'date',
         'is_published' => 'boolean',
         'is_featured' => 'boolean',
+        'show_video' => 'boolean',
     ];
 
     /**

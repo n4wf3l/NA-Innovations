@@ -269,6 +269,7 @@
             <table>
                 <tr>
                     <td style="width: 55%;">
+                        <img src="{{ public_path('dark-logo.png') }}" style="height: 40px; width: auto; margin-bottom: 8px;" alt="NA Innovations">
                         <div class="company-name">{{ $company['name'] ?? 'NA Innovations' }}</div>
                         <div class="company-details">
                             @if(!empty($company['address'])){{ $company['address'] }}<br>@endif

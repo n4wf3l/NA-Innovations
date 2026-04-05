@@ -74,9 +74,18 @@ export default function LandingSections({ sections }: Props) {
     };
 
     const sectionLabels: Record<string, string> = {
-        hero: 'Section Hero (page d\'accueil)',
-        cta: 'Section CTA (appel à l\'action)',
-        about: 'Section À propos',
+        hero: t('Hero (page d\'accueil)'),
+        cta: t('Appel à l\'action (CTA)'),
+        about: t('À propos'),
+        process: t('Notre processus'),
+        terms: t('Conditions générales'),
+        privacy: t('Politique de confidentialité'),
+        services: t('Services'),
+        testimonials: t('Témoignages'),
+        faq: t('FAQ'),
+        contact: t('Contact'),
+        portfolio: t('Portfolio'),
+        blog: t('Blog'),
     };
 
     return (
@@ -199,6 +208,81 @@ export default function LandingSections({ sections }: Props) {
                                         </label>
                                     </div>
                                 </div>
+
+                                {/* Mini Preview */}
+                                <details className="group">
+                                    <summary className="cursor-pointer flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-xl px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                            {t('Aperçu')}
+                                        </span>
+                                        <svg className="w-4 h-4 text-gray-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                                    </summary>
+                                    <div className="mt-3 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-600 shadow-inner">
+                                        {/* Miniature browser chrome */}
+                                        <div className="bg-gray-100 dark:bg-gray-700 px-3 py-1.5 flex items-center gap-1.5 border-b border-gray-200 dark:border-gray-600">
+                                            <div className="w-2 h-2 rounded-full bg-red-400" />
+                                            <div className="w-2 h-2 rounded-full bg-yellow-400" />
+                                            <div className="w-2 h-2 rounded-full bg-green-400" />
+                                            <div className="flex-1 mx-2 bg-white dark:bg-gray-600 rounded px-2 py-0.5 text-[8px] text-gray-400 font-mono">nainnovations.be</div>
+                                        </div>
+                                        {/* Section preview */}
+                                        <div className="relative" style={{ transform: 'scale(1)', transformOrigin: 'top left' }}>
+                                            <div className={`p-6 ${
+                                                section.section_key === 'hero' ? 'bg-gray-900 text-center' :
+                                                section.section_key === 'cta' ? 'bg-gray-900 text-center' :
+                                                section.section_key === 'process' ? 'bg-gray-900' :
+                                                'bg-white dark:bg-gray-800'
+                                            }`} style={{ minHeight: 120 }}>
+                                                {section.background_image && (
+                                                    <div className="absolute inset-0 opacity-20">
+                                                        <img src={`/storage/${section.background_image}`} alt="" className="w-full h-full object-cover" />
+                                                    </div>
+                                                )}
+                                                <div className="relative z-10">
+                                                    {(form.title || section.title) && (
+                                                        <h3 className={`font-bold mb-1 ${
+                                                            ['hero', 'cta'].includes(section.section_key) ? 'text-white text-lg' : 'text-gray-900 dark:text-white text-base'
+                                                        }`}>{form.title || section.title}</h3>
+                                                    )}
+                                                    {(form.subtitle || section.subtitle) && (
+                                                        <p className={`text-xs mb-2 ${
+                                                            ['hero', 'cta'].includes(section.section_key) ? 'text-gray-400' : 'text-gray-500 dark:text-gray-400'
+                                                        }`}>{form.subtitle || section.subtitle}</p>
+                                                    )}
+                                                    {(form.description || section.description) && (
+                                                        <div className={`text-xs leading-relaxed line-clamp-3 ${
+                                                            ['hero', 'cta'].includes(section.section_key) ? 'text-gray-300' : 'text-gray-600 dark:text-gray-300'
+                                                        }`} dangerouslySetInnerHTML={{ __html: (form.description || section.description || '').substring(0, 200) }} />
+                                                    )}
+                                                    {(form.button_text || section.button_text) && (
+                                                        <div className="mt-3">
+                                                            <span className="inline-block px-3 py-1 bg-teal-500 text-white text-[10px] font-bold rounded-full">
+                                                                {form.button_text || section.button_text}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                    {section.section_key === 'process' && section.metadata?.steps && (
+                                                        <div className="flex items-center gap-2 mt-3">
+                                                            {(section.metadata.steps as any[]).map((step: any, i: number) => (
+                                                                <div key={i} className="flex items-center gap-1">
+                                                                    <div className="w-5 h-5 rounded-full bg-teal-500 text-white text-[8px] flex items-center justify-center font-bold">{i + 1}</div>
+                                                                    <span className="text-[8px] text-gray-400">{step.title}</span>
+                                                                    {i < (section.metadata!.steps as any[]).length - 1 && <div className="w-4 h-px bg-gray-600" />}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                {!form.is_active && (
+                                                    <div className="absolute inset-0 bg-gray-900/70 flex items-center justify-center rounded-b-xl">
+                                                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t('Désactivé')}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
 
                                 <div className="flex justify-end pt-2">
                                     <button

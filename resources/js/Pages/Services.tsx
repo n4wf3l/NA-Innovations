@@ -140,7 +140,7 @@ export default function Services({ services }: Props) {
             {/* CTA */}
             <section id="section-cta" className="py-20 bg-gray-900 relative overflow-hidden scroll-mt-20">
                 <div className="absolute inset-0 opacity-[0.02] flex items-center justify-center" aria-hidden="true">
-                    <span className="text-[20vw] font-bold text-white bebas whitespace-nowrap">LET'S BUILD</span>
+                    <span className="text-[20vw] font-bold text-white bebas whitespace-nowrap">{t("LET'S BUILD")}</span>
                 </div>
                 <div className="max-w-3xl mx-auto text-center px-4 relative z-10 reveal">
                     <h2 className="text-5xl md:text-7xl font-bold text-white bebas mb-6" style={{ letterSpacing: '2px' }}>

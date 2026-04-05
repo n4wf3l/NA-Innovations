@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import { useState, useEffect, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import WhatsAppButton from '@/Components/landing/WhatsAppButton';
@@ -182,10 +182,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
             <nav className="bg-gray-900 sticky top-0 z-50">
                 <div className="flex justify-between items-center max-w-[1298px] mx-auto px-4 py-5">
                     <Link href="/" className="flex items-center gap-3">
-                        {branding.logo_path ? (
-                            <img src={`/storage/${branding.logo_path}`} alt={branding.company_name} className="h-10 w-auto" />
-                        ) : null}
-                        <span className="text-3xl font-bold text-white">{branding.company_name.split(' ').map(w => w[0]).join('')}</span>
+                        <img src="/white-logo-small.png" alt={branding.company_name} className="h-10 w-auto" />
                     </Link>
 
                     {/* Hamburger */}
@@ -320,9 +317,9 @@ export default function PublicLayout({ children, title, description, ogImage, js
                                 { code: 'fr', label: 'Français' },
                                 { code: 'nl', label: 'Nederlands' },
                             ].map((lang, i) => (
-                                <a
+                                <button
                                     key={lang.code}
-                                    href={`/locale/${lang.code}`}
+                                    onClick={() => { setShowLangModal(false); router.get(`/locale/${lang.code}`, {}, { preserveScroll: true }); }}
                                     className={`group relative px-16 py-5 text-4xl md:text-5xl font-bold tracking-wide transition-all duration-300 bebas ${
                                         locale === lang.code
                                             ? 'text-teal-300'
@@ -337,7 +334,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
                                     <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 h-px bg-teal-400 transition-all duration-300 ${
                                         locale === lang.code ? 'w-16' : 'w-0 group-hover:w-16'
                                     }`} />
-                                </a>
+                                </button>
                             ))}
                         </div>
                         <button
@@ -360,10 +357,8 @@ export default function PublicLayout({ children, title, description, ogImage, js
                     {/* Logo + social row */}
                     <div className="w-full flex flex-col items-center mb-10">
                         <Link href="/" className="flex items-center gap-3 mb-4">
-                            {branding.logo_path ? (
-                                <img src={`/storage/${branding.logo_path}`} alt={branding.company_name} className="h-8 w-auto" />
-                            ) : null}
-                            <span className="text-xl font-bold text-gray-800 dark:text-gray-200">{branding.company_name}</span>
+                            <img src="/dark-logo-small.png" alt={branding.company_name} className="h-8 w-auto block dark:hidden" />
+                            <img src="/white-logo-small.png" alt={branding.company_name} className="h-8 w-auto hidden dark:block" />
                         </Link>
                         {Object.keys(socialLinks).length > 0 && (
                             <div className="flex items-center gap-3">

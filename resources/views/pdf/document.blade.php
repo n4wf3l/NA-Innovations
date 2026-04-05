@@ -193,7 +193,8 @@
             <table>
                 <tr>
                     <td style="width: 50%;">
-                        <div class="company-name">NA Innovations</div>
+                        <img src="{{ public_path('dark-logo.png') }}" style="height: 40px; width: auto; margin-bottom: 8px;" alt="NA Innovations">
+                        <div class="company-name">{{ $company['name'] ?? 'NA Innovations' }}</div>
                     </td>
                     <td style="width: 50%;">
                         <div class="company-info">

@@ -39,7 +39,7 @@ export default function About({ about, seo }: Props) {
     ];
 
     return (
-        <PublicLayout title={seo?.title || 'About'} description={seo?.description || 'Belgian software company passionate about building digital products that make a difference.'}>
+        <PublicLayout title={seo?.title || t('About')} description={seo?.description || t('Belgian software company passionate about building digital products that make a difference.')}>
             {seo?.description && (
                 <Head>
                     <meta name="description" content={seo.description} />
@@ -58,10 +58,10 @@ export default function About({ about, seo }: Props) {
                 </div>
                 <div className="max-w-4xl mx-auto text-center px-4 relative z-10">
                     <h1 className="text-7xl md:text-9xl font-bold text-white bebas hero-fade" style={{ letterSpacing: '3px' }}>
-                        {about?.title || 'About Us'}
+                        {about?.title || t('About Us')}
                     </h1>
                     <p className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto hero-fade hero-fade-delay-1">
-                        {about?.subtitle || 'We are a Belgian software company passionate about building digital products that make a difference.'}
+                        {about?.subtitle || t('We are a Belgian software company passionate about building digital products that make a difference.')}
                     </p>
                 </div>
             </section>
@@ -81,7 +81,7 @@ export default function About({ about, seo }: Props) {
                                 ) : (
                                     <>
                                         <p>NA Innovations est une agence de développement web et mobile fondée par Nawfel Ajari. Nous créons des solutions digitales sur mesure pour les entreprises de toutes tailles.</p>
-                                        <p>Notre approche combine créativité, expertise technique et accompagnement personnalisé pour transformer vos idées en produits digitaux performants.</p>
+                                        <p>{t('Notre approche combine créativité, expertise technique et accompagnement personnalisé pour transformer vos idées en produits digitaux performants.')}</p>
                                     </>
                                 )}
                             </div>
@@ -179,7 +179,7 @@ export default function About({ about, seo }: Props) {
             {/* CTA */}
             <section id="section-cta" className="py-20 bg-gray-900 relative overflow-hidden scroll-mt-20">
                 <div className="absolute inset-0 opacity-[0.02] flex items-center justify-center" aria-hidden="true">
-                    <span className="text-[20vw] font-bold text-white bebas whitespace-nowrap">LET'S TALK</span>
+                    <span className="text-[20vw] font-bold text-white bebas whitespace-nowrap">{t("LET'S TALK")}</span>
                 </div>
                 <div className="max-w-3xl mx-auto text-center px-4 relative z-10 reveal">
                     <h2 className="text-5xl md:text-7xl font-bold text-white bebas mb-6" style={{ letterSpacing: '2px' }}>

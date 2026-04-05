@@ -55,7 +55,7 @@
         <div class="header">
             <table>
                 <tr>
-                    <td><div class="company-name">NA Innovations</div></td>
+                    <td><img src="{{ public_path('dark-logo.png') }}" style="height: 35px; width: auto; margin-bottom: 4px;"><br><div class="company-name">NA Innovations</div></td>
                     <td>
                         <div class="report-title">Export Leads</div>
                         <div class="report-subtitle">

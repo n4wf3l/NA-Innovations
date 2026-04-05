@@ -5,6 +5,7 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import { useTranslation } from 'react-i18next';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import SectionNav from '@/Components/landing/SectionNav';
+import { useSimulatorVisible } from '@/hooks/useIsEurope';
 
 import {
     projectTypeOptions,
@@ -23,20 +24,22 @@ import ContactForm from './Contact/ContactForm';
 interface Props {
     projectTypes: Record<string, string>;
     turnstileSiteKey?: string;
+    simulatorMode?: string;
 }
 
 // ─── Main Component ─────────────────────────────────────────────
 
-export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
+export default function Contact({ projectTypes, turnstileSiteKey, simulatorMode = 'europe_only' }: Props) {
     const { t } = useTranslation();
     useScrollReveal();
+    const showSimulator = useSimulatorVisible(simulatorMode);
     const { flash, errors } = usePage<{ flash: { success?: string; error?: string }; errors: Record<string, string> }>().props;
     const [activeTab, setActiveTab] = useState<'simulator' | 'quote' | 'contact'>(() => {
         if (typeof window !== 'undefined') {
             const hash = window.location.hash.replace('#', '');
             if (hash === 'simulator' || hash === 'quote' || hash === 'contact') return hash;
         }
-        return 'simulator';
+        return 'quote'; // default to quote — simulator shown only if in Europe
     });
     // Referral code from URL or manual entry
     const [refCode, setRefCode] = useState(() => typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('ref') || '' : '');
@@ -232,7 +235,11 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
         formData.append('service', quoteForm.service); formData.append('budget', quoteForm.budget);
         formData.append('company', quoteForm.company); formData.append('phone', quoteForm.phone);
         formData.append('timeline', quoteForm.timeline); formData.append('message', quoteForm.message);
-        formData.append('type', 'quote'); formData.append('website', '');
+        formData.append('type', 'quote');
+        formData.append('website', ''); // honeypot — must stay empty
+        formData.append('existing_website', (quoteForm as any).website_url || '');
+        formData.append('how_found_us', (quoteForm as any).source || '');
+        formData.append('preferred_lang', (quoteForm as any).preferred_lang || '');
         formData.append('_form_loaded_at', String(formLoadedAt));
         formData.append('cf-turnstile-response', turnstileToken);
         if (refCode) formData.append('ref', refCode);
@@ -358,7 +365,7 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
                     {/* Tab Pills */}
                     <div id="tabs" className="flex justify-center mb-12 scroll-mt-24">
                         <div className="inline-flex bg-gray-100 dark:bg-gray-800 rounded-full p-1 flex-wrap justify-center gap-1">
-                            {(['simulator', 'quote', 'contact'] as const).map((tab) => (
+                            {(['simulator', 'quote', 'contact'] as const).filter(tab => tab !== 'simulator' || showSimulator).map((tab) => (
                                 <button
                                     key={tab}
                                     onClick={() => setActiveTab(tab)}
@@ -373,7 +380,7 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
                     </div>
 
                     {/* Tab content */}
-                    {activeTab === 'simulator' && (
+                    {activeTab === 'simulator' && showSimulator && (
                         <div key={activeTab} className="animate-tab-in">
                         <PriceSimulator
                             selectedType={selectedType} setSelectedType={setSelectedType}
@@ -417,22 +424,22 @@ export default function Contact({ projectTypes, turnstileSiteKey }: Props) {
                             <div className="w-14 h-14 rounded-full bg-teal-50 dark:bg-teal-500/10 text-teal-500 flex items-center justify-center mx-auto mb-4">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
                             </div>
-                            <h3 className="font-bold text-gray-900 dark:text-white mb-1">Email</h3>
+                            <h3 className="font-bold text-gray-900 dark:text-white mb-1">{t('Email')}</h3>
                             <a href="mailto:info@nainnovations.be" className="text-sm text-gray-600 dark:text-gray-300 hover:text-teal-500 transition">info@nainnovations.be</a>
                         </div>
                         <div className="text-center">
                             <div className="w-14 h-14 rounded-full bg-teal-50 dark:bg-teal-500/10 text-teal-500 flex items-center justify-center mx-auto mb-4">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
                             </div>
-                            <h3 className="font-bold text-gray-900 dark:text-white mb-1">Phone</h3>
+                            <h3 className="font-bold text-gray-900 dark:text-white mb-1">{t('Phone')}</h3>
                             <a href="tel:+32490221912" className="text-sm text-gray-600 dark:text-gray-300 hover:text-teal-500 transition">+32 490 22 19 12</a>
                         </div>
                         <div className="text-center">
                             <div className="w-14 h-14 rounded-full bg-teal-50 dark:bg-teal-500/10 text-teal-500 flex items-center justify-center mx-auto mb-4">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
                             </div>
-                            <h3 className="font-bold text-gray-900 dark:text-white mb-1">Location</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">Belgium</p>
+                            <h3 className="font-bold text-gray-900 dark:text-white mb-1">{t('Location')}</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300">{t('Belgium')}</p>
                         </div>
                     </div>
                 </div>

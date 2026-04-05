@@ -287,6 +287,12 @@ Route::prefix('dev')->middleware(['auth', 'developer'])->group(function () {
     Route::post('/projects/{project}/claim', [App\Http\Controllers\Dev\ProjectController::class, 'claim'])->name('dev.projects.claim');
     Route::patch('/projects/{project}/status', [App\Http\Controllers\Dev\ProjectController::class, 'updateStatus'])->name('dev.projects.update-status');
 
+    // Support
+    Route::get('/support', [App\Http\Controllers\Client\SupportController::class, 'index'])->name('dev.support.index');
+    Route::post('/support', [App\Http\Controllers\Client\SupportController::class, 'store'])->name('dev.support.store');
+    Route::get('/support/{ticket}', [App\Http\Controllers\Client\SupportController::class, 'show'])->name('dev.support.show');
+    Route::post('/support/{ticket}/reply', [App\Http\Controllers\Client\SupportController::class, 'reply'])->name('dev.support.reply');
+
     // Dev Profile
     Route::get('/profile', [App\Http\Controllers\Dev\ProfileController::class, 'index'])->name('dev.profile');
     Route::put('/profile', [App\Http\Controllers\Dev\ProfileController::class, 'update'])->name('dev.profile.update');
@@ -331,6 +337,12 @@ Route::prefix('partner')->middleware(['auth', 'referral'])->group(function () {
     Route::put('/prospects/{prospect}', [App\Http\Controllers\Partner\ProspectController::class, 'update'])->name('partner.prospects.update');
     Route::patch('/prospects/{prospect}/status', [App\Http\Controllers\Partner\ProspectController::class, 'updateStatus'])->name('partner.prospects.status');
     Route::delete('/prospects/{prospect}', [App\Http\Controllers\Partner\ProspectController::class, 'destroy'])->name('partner.prospects.destroy');
+
+    // Support
+    Route::get('/support', [App\Http\Controllers\Client\SupportController::class, 'index'])->name('partner.support.index');
+    Route::post('/support', [App\Http\Controllers\Client\SupportController::class, 'store'])->name('partner.support.store');
+    Route::get('/support/{ticket}', [App\Http\Controllers\Client\SupportController::class, 'show'])->name('partner.support.show');
+    Route::post('/support/{ticket}/reply', [App\Http\Controllers\Client\SupportController::class, 'reply'])->name('partner.support.reply');
 
     Route::get('/profile', [App\Http\Controllers\Partner\ProfileController::class, 'edit'])->name('partner.profile');
     Route::put('/profile', [App\Http\Controllers\Partner\ProfileController::class, 'update'])->name('partner.profile.update');
@@ -403,6 +415,19 @@ Route::prefix('client')->middleware(['auth', 'client'])->group(function () {
     Route::post('/support', [App\Http\Controllers\Client\SupportController::class, 'store'])->name('client.support.store');
     Route::get('/support/{ticket}', [App\Http\Controllers\Client\SupportController::class, 'show'])->name('client.support.show');
     Route::post('/support/{ticket}/reply', [App\Http\Controllers\Client\SupportController::class, 'reply'])->name('client.support.reply');
+
+    // Client Testimonial
+    Route::post('/testimonial', function (\Illuminate\Http\Request $request) {
+        $request->validate(['message' => 'required|string|max:1000', 'rating' => 'nullable|integer|min:1|max:5']);
+        $existing = \App\Models\Testimonial::where('user_id', auth()->id())->first();
+        if ($existing) return back()->with('error', 'Vous avez déjà soumis un témoignage.');
+        \App\Models\Testimonial::create(['user_id' => auth()->id(), 'message' => $request->message, 'rating' => $request->rating, 'status' => 'pending']);
+        // Notify admins
+        \App\Models\User::where('role', 'admin')->where('is_active', true)->each(fn($admin) =>
+            \App\Models\NotificationLog::create(['user_id' => $admin->id, 'type' => 'testimonial_submitted', 'title' => 'Nouveau témoignage', 'message' => auth()->user()->name . ' a soumis un témoignage.', 'action_url' => '/admin/settings/testimonials', 'is_read' => false])
+        );
+        return back()->with('success', 'Merci ! Votre témoignage a été soumis pour approbation.');
+    })->name('client.testimonial.store');
 
     // Project Attachments (external documents)
     Route::get('projects/{project}/attachments/{document}/download', [App\Http\Controllers\Client\ProjectController::class, 'downloadAttachment'])->name('client.projects.attachments.download');
@@ -618,6 +643,11 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::put('settings/branding/info', [App\Http\Controllers\Admin\BrandingController::class, 'updateBranding'])->name('admin.branding.info');
     Route::post('settings/branding/logo', [App\Http\Controllers\Admin\BrandingController::class, 'uploadLogo'])->name('admin.branding.logo');
     Route::delete('settings/branding/logo', [App\Http\Controllers\Admin\BrandingController::class, 'deleteLogo'])->name('admin.branding.logo.delete');
+    Route::put('settings/simulator-mode', function (\Illuminate\Http\Request $request) {
+        $request->validate(['mode' => 'required|in:enabled,europe_only,disabled']);
+        \App\Models\Setting::set('simulator.mode', $request->input('mode'));
+        return redirect()->back()->with('success', __('Mode du simulateur mis à jour.'));
+    })->name('admin.simulator-mode');
 
     // Chatbot AI (separate settings page)
     Route::get('settings/chatbot', [App\Http\Controllers\Admin\ChatbotController::class, 'index'])->name('admin.chatbot.index');
@@ -701,6 +731,29 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::patch('team/{user}/toggle', [App\Http\Controllers\Admin\TeamController::class, 'toggleActive'])->name('admin.team.toggle');
 
     // Support Tickets
+    // Testimonials management
+    Route::get('settings/testimonials', function () {
+        return \Inertia\Inertia::render('Admin/Settings/Testimonials', [
+            'testimonials' => \App\Models\Testimonial::with('user:id,name,email,company_name,avatar')->latest()->get(),
+        ]);
+    })->name('admin.testimonials.index');
+    Route::patch('testimonials/{testimonial}/approve', function (\App\Models\Testimonial $testimonial) {
+        $testimonial->update(['status' => 'approved', 'show_on_landing' => true]);
+        return back()->with('success', 'Témoignage approuvé.');
+    })->name('admin.testimonials.approve');
+    Route::patch('testimonials/{testimonial}/reject', function (\App\Models\Testimonial $testimonial) {
+        $testimonial->update(['status' => 'rejected', 'show_on_landing' => false]);
+        return back()->with('success', 'Témoignage rejeté.');
+    })->name('admin.testimonials.reject');
+    Route::patch('testimonials/{testimonial}/toggle-landing', function (\App\Models\Testimonial $testimonial) {
+        $testimonial->update(['show_on_landing' => !$testimonial->show_on_landing]);
+        return back();
+    })->name('admin.testimonials.toggle');
+    Route::delete('testimonials/{testimonial}', function (\App\Models\Testimonial $testimonial) {
+        $testimonial->delete();
+        return back()->with('success', 'Témoignage supprimé.');
+    })->name('admin.testimonials.destroy');
+
     Route::get('support', [App\Http\Controllers\Admin\SupportController::class, 'index'])->name('admin.support.index');
     Route::get('support/{ticket}', [App\Http\Controllers\Admin\SupportController::class, 'show'])->name('admin.support.show');
     Route::post('support/{ticket}/reply', [App\Http\Controllers\Admin\SupportController::class, 'reply'])->name('admin.support.reply');

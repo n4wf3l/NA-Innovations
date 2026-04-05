@@ -27,6 +27,7 @@
     <div class="wrapper">
         <div class="container">
             <div class="header">
+                <img src="{{ asset('white-logo-small.png') }}" alt="NA Innovations" style="height: 36px; width: auto; margin-bottom: 6px;">
                 <div class="header-logo">NA Innovations</div>
                 <div class="header-sub">Web &amp; Mobile Development</div>
             </div>

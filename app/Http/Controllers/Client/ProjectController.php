@@ -114,6 +114,7 @@ class ProjectController extends Controller
             'projectDocuments' => $projectDocuments,
             'attachments' => $attachments,
             'techDocs' => $techDocs,
+            'hasTestimonial' => \App\Models\Testimonial::where('user_id', auth()->id())->exists(),
         ]);
     }
 

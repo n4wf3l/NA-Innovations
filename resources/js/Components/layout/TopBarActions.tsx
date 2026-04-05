@@ -232,18 +232,26 @@ export default function TopBarActions({ notifications: initialNotifications = []
                 </button>
             )}
 
-            {/* Support Tickets (admin only) */}
-            {isAdmin && (
-                <Link
-                    href="/admin/support"
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/30 rounded-full hover:bg-orange-100 dark:hover:bg-orange-500/20 transition-all"
-                >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-                    </svg>
-                    Support
-                </Link>
-            )}
+            {/* Support Tickets — all roles */}
+            {auth.user && (() => {
+                const supportUrl = auth.user.role === 'admin' ? '/admin/support'
+                    : auth.user.role === 'client' ? '/client/support'
+                    : auth.user.role === 'referral_partner' ? '/partner/support'
+                    : auth.user.role === 'developer' ? '/dev/support'
+                    : null;
+                if (!supportUrl) return null;
+                return (
+                    <Link
+                        href={supportUrl}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/30 rounded-full hover:bg-orange-100 dark:hover:bg-orange-500/20 transition-all"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                        </svg>
+                        Support
+                    </Link>
+                );
+            })()}
 
             {/* Notifications Bell */}
             <div className="relative" data-tour="notifications-bell">

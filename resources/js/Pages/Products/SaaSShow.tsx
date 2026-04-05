@@ -17,6 +17,8 @@ interface Product {
     status: string;
     live_url: string | null;
     demo_url: string | null;
+    video_url: string | null;
+    show_video: boolean;
     logo_path: string | null;
     cover_image_path: string | null;
     target_audience: string | null;
@@ -38,8 +40,8 @@ export default function SaaSShow({ product }: Props) {
     const { t } = useTranslation();
     const status = statusConfig[product.status] || statusConfig.in_development;
     const isLaunched = product.status === 'launched';
-    const features = product.features || [];
-    const techStack = product.tech_stack || [];
+    const features = Array.isArray(product.features) ? product.features : (typeof product.features === 'string' ? (() => { try { return JSON.parse(product.features); } catch { return []; } })() : []);
+    const techStack = Array.isArray(product.tech_stack) ? product.tech_stack : (typeof product.tech_stack === 'string' ? (() => { try { return JSON.parse(product.tech_stack); } catch { return []; } })() : []);
     const pricingMonthly = product.pricing_monthly ? Number(product.pricing_monthly) : null;
     const pricingYearly = product.pricing_yearly ? Number(product.pricing_yearly) : null;
 
@@ -153,17 +155,88 @@ export default function SaaSShow({ product }: Props) {
                         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-violet-500 rounded-full blur-[200px]" />
                         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500 rounded-full blur-[150px]" />
                     </div>
-                    <div className="relative max-w-4xl mx-auto px-6 md:px-12 text-center">
-                        <h2 className="text-5xl md:text-6xl font-bold text-white mb-4" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '3px' }}>
+                    <div className="relative max-w-4xl mx-auto px-6 md:px-12">
+                        <h2 className="text-5xl md:text-6xl font-bold text-white mb-4 text-center" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '3px' }}>
                             {t('What is')} {product.name}?
                         </h2>
-                        <div className="h-[3px] w-24 bg-gradient-to-r from-violet-400 to-purple-400 mx-auto mb-10" />
-                        <p className="text-lg md:text-xl text-gray-400 leading-relaxed max-w-3xl mx-auto">
-                            {product.description}
-                        </p>
+                        <div className="h-[3px] w-24 bg-gradient-to-r from-violet-400 to-purple-400 mx-auto mb-12" />
+                        {(() => {
+                            const desc = product.description || '';
+                            const isHtml = /<[a-z][\s\S]*>/i.test(desc);
+
+                            if (isHtml) {
+                                // Extract first visible character from HTML for drop cap
+                                const textOnly = desc.replace(/<[^>]+>/g, '');
+                                const firstChar = textOnly.charAt(0);
+
+                                // Remove first char from the HTML content
+                                let modifiedHtml = desc;
+                                const firstTextMatch = desc.match(/>([^<])/);
+                                if (firstTextMatch) {
+                                    const idx = desc.indexOf(firstTextMatch[0]);
+                                    modifiedHtml = desc.substring(0, idx + 1) + desc.substring(idx + 2);
+                                }
+
+                                // Highlight product name with inline style (Tailwind classes don't work in dangerouslySetInnerHTML)
+                                const highlighted = modifiedHtml.replace(
+                                    new RegExp(`(?<![<\\/a-zA-Z])(${product.name})(?![a-zA-Z>])`, 'gi'),
+                                    '<span style="color:#a78bfa;font-weight:700">$1</span>'
+                                );
+
+                                return (
+                                    <div className="max-w-3xl mx-auto">
+                                        <span className="float-left text-6xl md:text-7xl font-bold text-white leading-[0.8] mr-3 mt-1" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>{firstChar}</span>
+                                        <div
+                                            className="prose prose-lg prose-invert prose-headings:font-bold prose-headings:text-white prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3 prose-h3:text-violet-300 prose-p:text-gray-400 prose-p:leading-relaxed prose-li:text-gray-400 prose-strong:text-white"
+                                            dangerouslySetInnerHTML={{ __html: highlighted }}
+                                        />
+                                        <div className="clear-both" />
+                                    </div>
+                                );
+                            }
+
+                            // Plain text description — drop cap + highlight
+                            const firstChar = desc.charAt(0);
+                            const rest = desc.substring(1);
+                            const parts = rest.split(new RegExp(`(${product.name})`, 'gi'));
+                            return (
+                                <div className="text-lg md:text-xl text-gray-400 leading-relaxed max-w-3xl mx-auto">
+                                    <p>
+                                        <span className="float-left text-6xl md:text-7xl font-bold text-white leading-[0.8] mr-3 mt-1" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>{firstChar}</span>
+                                        {parts.map((part, i) =>
+                                            part.toLowerCase() === product.name.toLowerCase()
+                                                ? <span key={i} className="font-bold text-violet-400">{part}</span>
+                                                : <span key={i}>{part}</span>
+                                        )}
+                                    </p>
+                                    <div className="clear-both" />
+                                </div>
+                            );
+                        })()}
                     </div>
                 </section>
             )}
+
+            {/* Video */}
+            {product.show_video && product.video_url && (() => {
+                const match = product.video_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+                if (!match) return null;
+                return (
+                    <section className="bg-black py-16 sm:py-24">
+                        <div className="max-w-5xl mx-auto px-4">
+                            <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-violet-500/10 border border-white/5" style={{ paddingBottom: '56.25%' }}>
+                                <iframe
+                                    src={`https://www.youtube.com/embed/${match[1]}?rel=0&modestbranding=1`}
+                                    className="absolute inset-0 w-full h-full"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    title={product.name}
+                                />
+                            </div>
+                        </div>
+                    </section>
+                );
+            })()}
 
             {/* Features — alternating layout */}
             {features.length > 0 && (

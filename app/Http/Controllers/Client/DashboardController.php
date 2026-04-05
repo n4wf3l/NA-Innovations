@@ -55,6 +55,7 @@ class DashboardController extends Controller
             'unpaidInvoices' => $unpaidInvoices,
             'sentEmails' => $sentEmails,
             'stats' => $stats,
+            'hasTestimonial' => \App\Models\Testimonial::where('user_id', auth()->id())->exists(),
         ]);
     }
 }

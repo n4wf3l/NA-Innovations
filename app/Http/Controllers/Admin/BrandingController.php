@@ -24,6 +24,7 @@ class BrandingController extends BaseAdminController
         return Inertia::render('Admin/Settings/Branding', [
             'socialLinks' => $socialLinks,
             'branding' => $branding,
+            'simulatorMode' => Setting::get('simulator.mode', 'europe_only'),
         ]);
     }
 

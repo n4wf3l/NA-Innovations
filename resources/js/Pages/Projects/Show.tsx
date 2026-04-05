@@ -30,6 +30,8 @@ interface PortfolioProject {
     tech_stack: string[];
     tags: string[];
     live_url: string | null;
+    video_url: string | null;
+    show_video: boolean;
     is_featured: boolean;
     duration_days: number | null;
     testimonial_text: string | null;
@@ -321,6 +323,30 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                 </div>
             </section>
 
+            {/* Video Section */}
+            {project.show_video && project.video_url && (() => {
+                const url = project.video_url;
+                let embedId = '';
+                const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+                if (match) embedId = match[1];
+                if (!embedId) return null;
+                return (
+                    <section className="bg-gray-950 py-16 md:py-24">
+                        <div className="max-w-5xl mx-auto px-4">
+                            <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-violet-500/10 border border-white/5" style={{ paddingBottom: '56.25%' }}>
+                                <iframe
+                                    src={`https://www.youtube.com/embed/${embedId}?rel=0&modestbranding=1`}
+                                    className="absolute inset-0 w-full h-full"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    title={project.title}
+                                />
+                            </div>
+                        </div>
+                    </section>
+                );
+            })()}
+
             {/* Two-column Layout */}
             <section className="bg-gray-100 dark:bg-gray-800 py-16 md:py-24 reveal" ref={contentSection.ref}>
                 <div className="max-w-7xl mx-auto px-4">
@@ -340,13 +366,13 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                                 })()}
                                 {project.client_name && (
                                     <div>
-                                        <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">Client</span>
+                                        <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">{t('Client')}</span>
                                         <span className="text-gray-900 dark:text-white font-semibold">{project.client_name}</span>
                                     </div>
                                 )}
                                 {project.category && (
                                     <div>
-                                        <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">Category</span>
+                                        <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">{t('Category')}</span>
                                         <span className="text-gray-900 dark:text-white font-semibold">{project.category}</span>
                                     </div>
                                 )}
@@ -358,13 +384,13 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                                 )}
                                 {project.projet?.type_site && (
                                     <div>
-                                        <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">Type</span>
+                                        <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">{t('Type')}</span>
                                         <span className="text-gray-900 dark:text-white font-semibold">{formatProjectType(project.projet.type_site)}</span>
                                     </div>
                                 )}
                                 {project.projet?.lieu && (
                                     <div>
-                                        <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">Location</span>
+                                        <span className="block text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">{t('Location')}</span>
                                         <span className="text-gray-900 dark:text-white font-semibold">{project.projet.lieu}</span>
                                     </div>
                                 )}
@@ -549,7 +575,7 @@ export default function Show({ project, nextProject, previousProject }: Props) {
             {/* CTA — Vous avez un projet similaire ? */}
             <section className="py-16 bg-gray-900 relative overflow-hidden">
                 <div className="absolute inset-0 opacity-[0.03] flex items-center justify-center" aria-hidden="true">
-                    <span className="text-[15vw] font-bold text-white bebas whitespace-nowrap">LET'S TALK</span>
+                    <span className="text-[15vw] font-bold text-white bebas whitespace-nowrap">{t("LET'S TALK")}</span>
                 </div>
                 <div className="max-w-3xl mx-auto text-center px-4 relative z-10">
                     <h2 className="text-4xl md:text-5xl font-bold text-white bebas mb-4" style={{ letterSpacing: '2px' }}>

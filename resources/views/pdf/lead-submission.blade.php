@@ -23,6 +23,7 @@
 </head>
 <body>
     <div class="header">
+        <img src="{{ public_path('dark-logo.png') }}" style="height: 40px; width: auto; margin-bottom: 8px;" alt="NA Innovations">
         <h1>NA Innovations</h1>
         <p>Client Referral — Project Details</p>
     </div>

@@ -87,23 +87,28 @@ export default function PriceSimulator({
                 key={feature.id}
                 className={`flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
                     isSelected
-                        ? 'border-teal-400 bg-teal-50'
+                        ? 'border-teal-400 bg-teal-50 dark:bg-teal-500/10'
                         : feature.included
-                            ? 'border-gray-200 bg-gray-50'
-                            : 'border-gray-200 bg-white hover:border-gray-300'
+                            ? 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50'
+                            : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
                 }`}
             >
-                <div className="flex items-center gap-3">
-                    <input
-                        type="checkbox"
-                        checked={isSelected || !!feature.included}
-                        disabled={!!feature.included}
-                        onChange={() => !feature.included && toggleFeature(feature.id)}
-                        className="w-5 h-5 rounded border-gray-300 text-teal-500 focus:ring-teal-400"
-                    />
-                    <span className={`text-sm ${feature.included ? 'text-gray-500' : 'text-gray-800'}`}>
-                        {feature.name}
-                    </span>
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3">
+                        <input
+                            type="checkbox"
+                            checked={isSelected || !!feature.included}
+                            disabled={!!feature.included}
+                            onChange={() => !feature.included && toggleFeature(feature.id)}
+                            className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-teal-500 focus:ring-teal-400 flex-shrink-0"
+                        />
+                        <span className={`text-sm font-medium ${feature.included ? 'text-gray-500 dark:text-gray-400' : 'text-gray-800 dark:text-white'}`}>
+                            {t(feature.name)}
+                        </span>
+                    </div>
+                    {feature.description && (
+                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 ml-8 leading-relaxed">{t(feature.description)}</p>
+                    )}
                 </div>
                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${
                     feature.included
@@ -112,15 +117,15 @@ export default function PriceSimulator({
                             ? 'bg-gray-100 text-gray-500'
                             : 'bg-gray-100 text-gray-700'
                 }`}>
-                    {feature.included ? t('Included') : feature.price === 0 ? t('Free') : `+${formatEUR(feature.price)}${feature.suffix ? ' ' + feature.suffix : ''}`}
+                    {feature.included ? t('Included') : feature.price === 0 ? t('Free') : `+${formatEUR(feature.price)}${feature.suffix ? ' ' + t(feature.suffix) : ''}`}
                 </span>
             </label>
         );
     };
 
     const PriceCard = ({ className = '' }: { className?: string }) => (
-        <div className={`bg-white rounded-2xl border border-gray-100 shadow-xl p-6 ${className}`}>
-            <h3 className="text-lg font-bold text-gray-900 mb-4 uppercase tracking-wider bebas" style={{ letterSpacing: '2px' }}>{t('Your Estimate')}</h3>
+        <div className={`bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-xl p-6 ${className}`}>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-wider bebas" style={{ letterSpacing: '2px' }}>{t('Your Estimate')}</h3>
 
             {!selectedType ? (
                 <p className="text-sm text-gray-400 text-center py-8">
@@ -130,35 +135,35 @@ export default function PriceSimulator({
                 <>
                     <div className="space-y-3 mb-4">
                         <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">Base</span>
-                            <span className="font-semibold text-gray-900">{formatEUR(priceBreakdown.base)}</span>
+                            <span className="text-gray-600">{t('Base Price')}</span>
+                            <span className="font-semibold text-gray-900 dark:text-white">{formatEUR(priceBreakdown.base)}</span>
                         </div>
                         {priceBreakdown.featuresTotal > 0 && (
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">Features</span>
-                                <span className="font-semibold text-gray-900">+{formatEUR(priceBreakdown.featuresTotal)}</span>
+                                <span className="text-gray-600">{t('Features')}</span>
+                                <span className="font-semibold text-gray-900 dark:text-white">+{formatEUR(priceBreakdown.featuresTotal)}</span>
                             </div>
                         )}
                         {priceBreakdown.designTotal > 0 && (
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">Design</span>
-                                <span className="font-semibold text-gray-900">+{formatEUR(priceBreakdown.designTotal)}</span>
+                                <span className="text-gray-600">{t('Design')}</span>
+                                <span className="font-semibold text-gray-900 dark:text-white">+{formatEUR(priceBreakdown.designTotal)}</span>
                             </div>
                         )}
                         {priceBreakdown.maintenanceTotal > 0 && (
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">Maintenance</span>
-                                <span className="font-semibold text-gray-900">+{formatEUR(priceBreakdown.maintenanceTotal)}</span>
+                                <span className="text-gray-600">{t('Maintenance')}</span>
+                                <span className="font-semibold text-gray-900 dark:text-white">+{formatEUR(priceBreakdown.maintenanceTotal)}</span>
                             </div>
                         )}
                         {priceBreakdown.timelineExtra > 0 && (
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">Timeline</span>
+                                <span className="text-gray-600">{t('Timeline adjustment')}</span>
                                 <span className="font-semibold text-amber-600">+{formatEUR(priceBreakdown.timelineExtra)}</span>
                             </div>
                         )}
                     </div>
-                    <div className="border-t border-gray-200 pt-4 mb-6">
+                    <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mb-6">
                         <div className="flex justify-between items-center">
                             <span className="text-sm font-semibold text-gray-700">{t('Estimated Total')}</span>
                             <span className="text-2xl font-bold text-teal-600">
@@ -168,7 +173,7 @@ export default function PriceSimulator({
                     </div>
                     <button
                         onClick={onGetQuote}
-                        className="w-full py-4 bg-teal-400 text-gray-900 text-lg font-bold rounded-full transition-all duration-300 hover:bg-teal-300 hover:shadow-lg bebas"
+                        className="w-full py-4 bg-teal-400 text-gray-900 dark:text-white text-lg font-bold rounded-full transition-all duration-300 hover:bg-teal-300 hover:shadow-lg bebas"
                         style={{ letterSpacing: '2px' }}
                     >
                         {t('Get Your Free Quote').toUpperCase()}
@@ -191,7 +196,7 @@ export default function PriceSimulator({
                 {/* Step 1: Project Type */}
                 <div>
                     <div className="mb-6">
-                        <h2 className="text-2xl font-bold text-gray-900">1. {t('Project Type')}</h2>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">1. {t('Project Type')}</h2>
                         <p className="text-sm text-gray-500 mt-1">{t('Select the type of project you need.')}</p>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -204,7 +209,7 @@ export default function PriceSimulator({
                                     className={`relative text-left p-5 rounded-2xl border-2 transition-all duration-200 ${
                                         isSelected
                                             ? 'border-teal-400 bg-teal-50 shadow-md'
-                                            : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
+                                            : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm'
                                     }`}
                                 >
                                     {isSelected && (
@@ -217,7 +222,7 @@ export default function PriceSimulator({
                                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${isSelected ? 'bg-teal-400 text-white' : 'bg-gray-100 text-gray-500'}`}>
                                         {type.icon}
                                     </div>
-                                    <h3 className="font-semibold text-gray-900 text-sm mb-1">{t(type.name)}</h3>
+                                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">{t(type.name)}</h3>
                                     <p className="text-xs text-gray-500 mb-2">{t(type.description)}</p>
                                     <span className="text-xs font-bold text-teal-600">from {formatEUR(type.basePrice)}</span>
                                 </button>
@@ -230,7 +235,7 @@ export default function PriceSimulator({
                 {selectedType && selectedType === 'no_idea' && (
                     <div>
                         <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900">2. {t('Describe your project')}</h2>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">2. {t('Describe your project')}</h2>
                             <p className="text-sm text-gray-500 mt-1">{t("No worries! Describe your idea and we'll guide you to the best solution.")}</p>
                         </div>
 
@@ -257,7 +262,7 @@ export default function PriceSimulator({
                                 value={noIdeaDescription}
                                 onChange={e => setNoIdeaDescription(e.target.value)}
                                 rows={6}
-                                className="w-full border border-gray-200 rounded-2xl px-5 py-4 text-sm text-gray-900 placeholder-gray-400 focus:border-teal-400 focus:ring-teal-400 resize-none"
+                                className="w-full border border-gray-200 rounded-2xl px-5 py-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:border-teal-400 focus:ring-teal-400 resize-none"
                                 placeholder="Décrivez ce que vous souhaitez : votre activité, ce que le site ou l'application doit faire, vos clients, etc."
                             />
                             <p className="text-xs text-gray-400">{t('Our team will analyze your need and propose the most suitable solution with a detailed quote.')}</p>
@@ -268,7 +273,7 @@ export default function PriceSimulator({
                 {selectedType && selectedType !== 'no_idea' && (
                     <div>
                         <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900">2. {t('Features')}</h2>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">2. {t('Features')}</h2>
                             <p className="text-sm text-gray-500 mt-1">{t('Select the features you need. Some are included by default.')}</p>
                         </div>
 
@@ -296,8 +301,8 @@ export default function PriceSimulator({
                 {selectedType && selectedType !== 'no_idea' && (
                     <div>
                         <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900">3. {t('Design & Branding')}</h2>
-                            <p className="text-sm text-gray-500 mt-1">Choose the level of design you need.</p>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">3. {t('Design & Branding')}</h2>
+                            <p className="text-sm text-gray-500 mt-1">{t('Choose the level of design you need.')}</p>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {designOptions.map((option) => {
@@ -309,7 +314,7 @@ export default function PriceSimulator({
                                         className={`relative text-left p-5 rounded-2xl border-2 transition-all duration-200 ${
                                             isSelected
                                                 ? 'border-teal-400 bg-teal-50 shadow-md'
-                                                : 'border-gray-200 bg-white hover:border-gray-300'
+                                                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
                                         }`}
                                     >
                                         {isSelected && (
@@ -319,8 +324,8 @@ export default function PriceSimulator({
                                                 </svg>
                                             </div>
                                         )}
-                                        <h3 className="font-semibold text-gray-900 text-sm mb-1 pr-6">{option.name}</h3>
-                                        <p className="text-xs text-gray-500 mb-2">{option.description}</p>
+                                        <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1 pr-6">{t(option.name)}</h3>
+                                        <p className="text-xs text-gray-500 mb-2">{t(option.description)}</p>
                                         <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${option.price === 0 ? 'bg-teal-100 text-teal-700' : 'bg-gray-100 text-gray-700'}`}>
                                             {option.price === 0 ? t('Included') : `+${formatEUR(option.price)}`}
                                         </span>
@@ -335,8 +340,8 @@ export default function PriceSimulator({
                 {selectedType && selectedType !== 'no_idea' && (
                     <div>
                         <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900">4. {t('Maintenance & Support')}</h2>
-                            <p className="text-sm text-gray-500 mt-1">Optional post-launch support and maintenance.</p>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">4. {t('Maintenance & Support')}</h2>
+                            <p className="text-sm text-gray-500 mt-1">{t('Optional post-launch support and maintenance.')}</p>
                         </div>
                         <div className="space-y-2">
                             {maintenanceOptions.map((option) => {
@@ -348,14 +353,14 @@ export default function PriceSimulator({
                                         className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200 text-left ${
                                             isSelected
                                                 ? 'border-teal-400 bg-teal-50'
-                                                : 'border-gray-200 bg-white hover:border-gray-300'
+                                                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
                                         }`}
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-teal-400' : 'border-gray-300'}`}>
                                                 {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-teal-400" />}
                                             </div>
-                                            <span className="text-sm text-gray-800">{option.name}</span>
+                                            <span className="text-sm text-gray-800">{t(option.name)}</span>
                                         </div>
                                         <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${option.price === 0 ? 'bg-gray-100 text-gray-500' : 'bg-gray-100 text-gray-700'}`}>
                                             {option.price === 0 ? t('Free') : `+${formatEUR(option.price)}${option.suffix ? ' ' + option.suffix : ''}`}
@@ -371,8 +376,8 @@ export default function PriceSimulator({
                 {selectedType && selectedType !== 'no_idea' && (
                     <div>
                         <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900">5. {t('Timeline')}</h2>
-                            <p className="text-sm text-gray-500 mt-1">How soon do you need your project delivered?</p>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">5. {t('Timeline')}</h2>
+                            <p className="text-sm text-gray-500 mt-1">{t('How soon do you need your project delivered?')}</p>
                         </div>
                         <div className="space-y-2">
                             {timelineOptions.map((option) => {
@@ -384,7 +389,7 @@ export default function PriceSimulator({
                                         className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200 text-left ${
                                             isSelected
                                                 ? 'border-teal-400 bg-teal-50'
-                                                : 'border-gray-200 bg-white hover:border-gray-300'
+                                                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
                                         }`}
                                     >
                                         <div className="flex items-center gap-3">
@@ -392,8 +397,8 @@ export default function PriceSimulator({
                                                 {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-teal-400" />}
                                             </div>
                                             <div>
-                                                <span className="text-sm text-gray-800 block">{option.name}</span>
-                                                <span className="text-xs text-gray-500">{option.description}</span>
+                                                <span className="text-sm text-gray-800 block">{t(option.name)}</span>
+                                                <span className="text-xs text-gray-500">{t(option.description)}</span>
                                             </div>
                                         </div>
                                         <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${option.multiplier === 0 ? 'bg-gray-100 text-gray-500' : 'bg-amber-100 text-amber-700'}`}>
@@ -408,10 +413,8 @@ export default function PriceSimulator({
 
                 {/* Disclaimer */}
                 {selectedType && (
-                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 text-xs text-gray-500 leading-relaxed">
-                        <strong>Disclaimer:</strong> This estimate is provided for indicative purposes only and does not constitute a binding offer.
-                        The final price may vary depending on the specific requirements, complexity, and scope of your project.
-                        Contact us for a detailed, personalized quote.
+                    <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                        <strong>{t('Disclaimer')} :</strong> {t('This estimate is provided for indicative purposes only and does not constitute a binding offer. The final price may vary depending on the specific requirements, complexity, and scope of your project. Contact us for a detailed, personalized quote.')}
                     </div>
                 )}
 

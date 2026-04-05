@@ -57,23 +57,17 @@ export default function ClientLayout({ children, title }: PropsWithChildren<Clie
 
     const sidebarLogo = (
         <div className="flex items-center space-x-3 mb-1">
-            {auth.user?.avatar ? (
-                <img
-                    src={auth.user.avatar}
-                    alt={auth.user?.company_name || auth.user?.name}
-                    className="w-10 h-10 rounded-xl object-contain bg-white/10 shadow-lg"
-                />
-            ) : (
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
-                    <span className="text-white text-lg font-black">
-                        {(auth.user?.company_name || auth.user?.name || 'NA').substring(0, 2).toUpperCase()}
-                    </span>
-                </div>
-            )}
+            <img src="/white-logo-small.png" alt="NA Innovations" className="h-8 w-auto object-contain flex-shrink-0" />
             <div>
                 <p className="text-white text-sm font-bold tracking-wide">{auth.user?.company_name || t('Client Portal')}</p>
                 <p className="text-gray-500 text-xs">{auth.user?.name}</p>
             </div>
+        </div>
+    );
+
+    const collapsedLogo = (
+        <div className="flex items-center justify-center mb-1">
+            <img src="/white-logo-small.png" alt="NA" className="h-7 w-auto object-contain" />
         </div>
     );
 
@@ -107,6 +101,7 @@ export default function ClientLayout({ children, title }: PropsWithChildren<Clie
                 <Sidebar
                     items={sidebarConfig.visibleItems}
                     logo={sidebarLogo}
+                    collapsedLogo={collapsedLogo}
                     footer={sidebarFooter}
                     accentColor={sidebarConfig.accentColor || 'teal'}
                     currentPath={currentPath}

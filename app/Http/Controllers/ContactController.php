@@ -19,6 +19,7 @@ class ContactController extends Controller
         return Inertia::render('Contact', [
             'projectTypes' => ProjectType::TYPES,
             'turnstileSiteKey' => config('services.turnstile.site_key'),
+            'simulatorMode' => \App\Models\Setting::get('simulator.mode', 'europe_only'),
         ]);
     }
 
@@ -173,6 +174,9 @@ class ContactController extends Controller
             if ($request->phone) $notes .= "Phone: " . strip_tags($request->phone) . "\n";
             if ($request->budget) $notes .= "Budget: " . strip_tags($request->budget) . "\n";
             if ($request->timeline) $notes .= "Timeline: " . strip_tags($request->timeline) . "\n";
+            if ($request->existing_website) $notes .= "Existing website: " . strip_tags($request->existing_website) . "\n";
+            if ($request->how_found_us) $notes .= "How they found us: " . strip_tags($request->how_found_us) . "\n";
+            if ($request->preferred_lang) $notes .= "Preferred language: " . strtoupper(strip_tags($request->preferred_lang)) . "\n";
             if (count($attachmentPaths) > 0) {
                 $notes .= "Attachments: " . count($attachmentPaths) . " file(s)\n";
                 foreach ($attachmentPaths as $att) {

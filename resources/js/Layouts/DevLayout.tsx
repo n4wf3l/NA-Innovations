@@ -49,13 +49,17 @@ export default function DevLayout({ children, title }: PropsWithChildren<DevLayo
 
     const sidebarLogo = (
         <div className="flex items-center space-x-3 mb-1">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                <span className="text-white text-lg font-black">NA</span>
-            </div>
+            <img src="/white-logo-small.png" alt="NA Innovations" className="h-8 w-auto object-contain flex-shrink-0" />
             <div>
                 <p className="text-white text-sm font-bold tracking-wide">{t('Developer Portal')}</p>
                 <p className="text-gray-500 text-xs">{auth.user?.name}</p>
             </div>
+        </div>
+    );
+
+    const collapsedLogo = (
+        <div className="flex items-center justify-center mb-1">
+            <img src="/white-logo-small.png" alt="NA" className="h-7 w-auto object-contain" />
         </div>
     );
 
@@ -91,6 +95,7 @@ export default function DevLayout({ children, title }: PropsWithChildren<DevLayo
                 <Sidebar
                     items={sidebarConfig.visibleItems}
                     logo={sidebarLogo}
+                    collapsedLogo={collapsedLogo}
                     footer={sidebarFooter}
                     accentColor={sidebarConfig.accentColor || 'indigo'}
                     currentPath={currentPath}

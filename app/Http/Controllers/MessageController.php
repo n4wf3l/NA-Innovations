@@ -93,7 +93,7 @@ public function welcomeMessages()
             });
 
         // Testimonials from portfolio projects
-        $testimonials = \App\Models\PortfolioProject::whereNotNull('testimonial_text')
+        $portfolioTestimonials = \App\Models\PortfolioProject::whereNotNull('testimonial_text')
             ->where('testimonial_text', '!=', '')
             ->where('is_published', true)
             ->with('projet')
@@ -105,6 +105,27 @@ public function welcomeMessages()
                 'project' => $p->projet?->nom_societe,
                 'logo' => $p->projet?->image,
             ]);
+
+        // Testimonials from clients (approved + show on landing)
+        $clientTestimonials = \App\Models\Testimonial::onLanding()
+            ->with('user:id,name,company_name,avatar')
+            ->get()
+            ->map(function ($t) {
+                // Try to find project logo for this client
+                $projectLogo = \App\Models\Projet::where('client_id', $t->user_id)
+                    ->whereNotNull('image')
+                    ->value('image');
+
+                return [
+                    'text' => $t->message,
+                    'author' => $t->user->name,
+                    'role' => $t->user->company_name ? 'Client' : 'Client',
+                    'project' => $t->user->company_name,
+                    'logo' => $projectLogo ?: $t->user->avatar,
+                ];
+            });
+
+        $testimonials = $portfolioTestimonials->merge($clientTestimonials);
 
         // FAQs
         $faqs = Faq::where('is_active', true)->orderBy('sort_order')->get();
@@ -143,6 +164,7 @@ public function welcomeMessages()
 
     return Inertia::render('Welcome', array_merge($cachedData, [
         'messages' => $messages->pluck('content'),
+        'simulatorMode' => \App\Models\Setting::get('simulator.mode', 'europe_only'),
     ]));
 }
     }
