@@ -90,8 +90,8 @@ export default function LeadShow({ lead, timeline }: Props) {
                         </div>
                     </div>
 
-                    {/* Notes */}
-                    {lead.notes && (
+                    {/* Admin notes (text field) */}
+                    {typeof lead.notes === 'string' && lead.notes && (
                         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-5 shadow-sm">
                             <h4 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-3">{t("Notes")}</h4>
                             <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{lead.notes}</p>
@@ -99,13 +99,14 @@ export default function LeadShow({ lead, timeline }: Props) {
                     )}
 
                     {lead.lost_reason && (
-                        <div className="bg-red-50 rounded-xl border border-red-200 p-5">
-                            <h4 className="text-sm font-semibold text-red-700 uppercase tracking-wider mb-3">{t("Lost Reason")}</h4>
-                            <p className="text-sm text-red-600">{lead.lost_reason}</p>
+                        <div className="bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-200 dark:border-red-500/20 p-5">
+                            <h4 className="text-sm font-semibold text-red-700 dark:text-red-300 uppercase tracking-wider mb-3">{t("Lost Reason")}</h4>
+                            <p className="text-sm text-red-600 dark:text-red-400">{lead.lost_reason}</p>
                         </div>
                     )}
 
-                    <NotesSection notes={lead.notes || []} notableType="lead" notableId={lead.id} />
+                    {/* Notes section (polymorphic relation) */}
+                    <NotesSection notes={Array.isArray(lead.notes) ? lead.notes : []} notableType="lead" notableId={lead.id} />
                 </div>
 
                 {/* Timeline */}

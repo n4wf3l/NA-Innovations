@@ -106,6 +106,7 @@ class LeadController extends BaseAdminController
 
         return Inertia::render('Admin/Leads/Show', [
             'lead' => $lead,
+            'timeline' => $lead->timelineEvents()->latest()->get(),
         ]);
     }
 
