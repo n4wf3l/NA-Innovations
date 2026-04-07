@@ -32,7 +32,7 @@ export default function TopBar({ title, onMenuClick, right, activityChart: initi
 
     // Fetch chart data on mount and when mode changes from props
     useEffect(() => {
-        if (pageProps.activityChartMode === undefined) return; // not admin
+        if (pageProps.activityChartMode == null) return; // not admin
         fetch('/admin/dashboard/activity-chart')
             .then(r => r.json())
             .then(data => {

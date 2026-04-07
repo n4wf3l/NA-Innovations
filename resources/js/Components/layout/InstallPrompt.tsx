@@ -1,8 +1,26 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
+// Read branding from DOM directly — InstallPrompt is mounted outside the
+// Inertia <App> tree so usePage() is not available here.
+function readBrandingFromDom(): { companyName: string; logoUrl: string | null } {
+    try {
+        const data = document.getElementById('app')?.getAttribute('data-page');
+        if (data) {
+            const parsed = JSON.parse(data);
+            const b = parsed?.props?.branding;
+            return {
+                companyName: b?.company_name || 'NA Innovations',
+                logoUrl: b?.logo_path ? `/storage/${b.logo_path}` : null,
+            };
+        }
+    } catch { /* ignore */ }
+    return { companyName: 'NA Innovations', logoUrl: null };
+}
+
 export default function InstallPrompt() {
     const { t } = useTranslation();
+    const { companyName, logoUrl } = readBrandingFromDom();
     const [show, setShow] = useState(false);
     const [isIOS, setIsIOS] = useState(false);
     const [dontShowAgain, setDontShowAgain] = useState(false);
@@ -63,9 +81,9 @@ export default function InstallPrompt() {
                     <div className="absolute bottom-0 left-4 w-20 h-20 bg-teal-500/10 rounded-full blur-xl" />
                     <div className="relative">
                         <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                            <img src="/white-logo-small.png" alt="NA Innovations" className="w-14 h-14 object-contain" />
+                            <img src={logoUrl || "/white-logo-small.png"} alt={companyName} className="w-14 h-14 object-contain" />
                         </div>
-                        <h3 className="text-white text-lg font-bold">{t('Install NA Innovations')}</h3>
+                        <h3 className="text-white text-lg font-bold">{t('Install')} {companyName}</h3>
                         <p className="text-gray-400 text-xs mt-1">{t('Add to your home screen for the best experience')}</p>
                     </div>
                 </div>

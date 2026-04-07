@@ -55,32 +55,31 @@ interface Props {
 }
 
 // Sortable tile wrapper
-function DashboardTile({ id, title, collapsed, hidden, onToggleCollapse, onToggleHide, children, showSettings }: {
-    id: string; title: string; collapsed: boolean; hidden: boolean; onToggleCollapse: () => void; onToggleHide: () => void; children: React.ReactNode; showSettings: boolean;
+function DashboardTile({ id, title, collapsed, hidden, onToggleCollapse, onToggleHide, children }: {
+    id: string; title: string; collapsed: boolean; hidden: boolean; onToggleCollapse: () => void; onToggleHide: () => void; children: React.ReactNode;
 }) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
     const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 50 : 'auto', opacity: isDragging ? 0.85 : 1 };
 
     if (hidden) return null;
     return (
-        <div ref={setNodeRef} style={style} className={`transition-shadow duration-200 ${isDragging ? 'shadow-2xl ring-2 ring-rose-500/30 rounded-2xl' : ''}`}>
-            {showSettings && (
-                <div className="flex items-center justify-between mb-2 px-2 py-1.5 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 rounded-xl animate-scale-in">
-                    <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing flex items-center gap-2 text-rose-600 dark:text-rose-400 p-1 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" /></svg>
-                        <span className="text-xs font-bold uppercase tracking-wider">{title}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                        <button onClick={onToggleCollapse} className="p-1.5 text-rose-500 hover:text-rose-700 dark:hover:text-rose-300 rounded-lg bg-white dark:bg-gray-800 border border-rose-200 dark:border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/20 transition-colors" title={collapsed ? 'Ouvrir' : 'Fermer'}>
-                            <svg className={`w-4 h-4 transition-transform duration-200 ${collapsed ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" /></svg>
-                        </button>
-                        <button onClick={onToggleHide} className="p-1.5 text-red-500 hover:text-red-700 rounded-lg bg-white dark:bg-gray-800 border border-red-200 dark:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors" title="Masquer">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
-                        </button>
-                    </div>
+        <div ref={setNodeRef} style={style} className={`group/tile transition-shadow duration-200 ${isDragging ? 'shadow-2xl ring-2 ring-rose-500/30 rounded-2xl' : ''}`}>
+            {/* Tile control bar — always visible */}
+            <div className="flex items-center justify-between mb-2 px-2 py-1.5 opacity-60 hover:opacity-100 group-hover/tile:opacity-100 transition-opacity">
+                <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing flex items-center gap-2 text-gray-400 hover:text-rose-500 dark:hover:text-rose-400 p-1 rounded-lg transition-colors" title="Glisser pour réorganiser">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" /></svg>
+                    <span className="text-[10px] font-bold uppercase tracking-wider">{title}</span>
                 </div>
-            )}
-            <div className={`transition-all duration-300 overflow-hidden ${collapsed ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'}`}>
+                <div className="flex items-center gap-1">
+                    <button onClick={onToggleCollapse} className="p-1.5 text-gray-400 hover:text-rose-500 dark:hover:text-rose-400 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors" title={collapsed ? 'Ouvrir' : 'Fermer'}>
+                        <svg className={`w-4 h-4 transition-transform duration-200 ${collapsed ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" /></svg>
+                    </button>
+                    <button onClick={onToggleHide} className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors" title="Masquer">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div className={`relative transition-all duration-300 overflow-hidden ${collapsed ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'}`}>
                 {children}
             </div>
             {collapsed && (
@@ -102,7 +101,6 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
     const tour = useTour('partner_dashboard', partnerDashboardSteps.length);
 
     // Dashboard customization
-    const [showSettings, setShowSettings] = useState(false);
     const [tileOrder, setTileOrder] = useState<string[]>(() => {
         if (typeof window === 'undefined') return TILE_IDS;
         try { const saved = JSON.parse(localStorage.getItem('partner_tile_order') || 'null'); return saved || TILE_IDS; } catch { return TILE_IDS; }
@@ -119,7 +117,7 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
     const saveTileOrder = (order: string[]) => { setTileOrder(order); localStorage.setItem('partner_tile_order', JSON.stringify(order)); };
     const toggleCollapse = (id: string) => { const n = { ...collapsedTiles, [id]: !collapsedTiles[id] }; setCollapsedTiles(n); localStorage.setItem('partner_tile_collapsed', JSON.stringify(n)); };
     const toggleHide = (id: string) => { const n = { ...hiddenTiles, [id]: !hiddenTiles[id] }; setHiddenTiles(n); localStorage.setItem('partner_tile_hidden', JSON.stringify(n)); };
-    const resetLayout = () => { setTileOrder(TILE_IDS); setCollapsedTiles({}); setHiddenTiles({}); localStorage.removeItem('partner_tile_order'); localStorage.removeItem('partner_tile_collapsed'); localStorage.removeItem('partner_tile_hidden'); setShowSettings(false); };
+    const resetLayout = () => { setTileOrder(TILE_IDS); setCollapsedTiles({}); setHiddenTiles({}); localStorage.removeItem('partner_tile_order'); localStorage.removeItem('partner_tile_collapsed'); localStorage.removeItem('partner_tile_hidden'); };
 
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
     const handleDragEnd = (event: DragEndEvent) => {
@@ -167,53 +165,40 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
             />
             <TourTriggerButton onClick={tour.restart} accentColor="rose" />
 
-            {/* Dashboard Settings Toggle */}
-            <div className="flex items-center justify-end gap-2 mb-4">
-                {hiddenCount > 0 && showSettings && (
-                    <button onClick={resetLayout} className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                        {t('Réinitialiser')} ({hiddenCount} {t('masqué')})
+            {/* Hidden tiles bar — appears only when something is hidden */}
+            {hiddenCount > 0 && (
+                <div className="flex items-center justify-end gap-2 mb-4 flex-wrap">
+                    <span className="text-xs text-gray-400">{t('Blocs masqués')} :</span>
+                    {TILE_IDS.filter(id => hiddenTiles[id]).map(id => (
+                        <button key={id} onClick={() => toggleHide(id)} className="px-2.5 py-1 text-[10px] font-semibold bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-lg hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 transition-colors flex items-center gap-1">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            {t(TILE_LABELS[id])}
+                        </button>
+                    ))}
+                    <button onClick={resetLayout} className="text-xs text-gray-400 hover:text-rose-500 transition-colors ml-1">
+                        {t('Tout réinitialiser')}
                     </button>
-                )}
-                {showSettings && hiddenCount > 0 && (
-                    <div className="flex items-center gap-1">
-                        {TILE_IDS.filter(id => hiddenTiles[id]).map(id => (
-                            <button key={id} onClick={() => toggleHide(id)} className="px-2.5 py-1 text-[10px] font-semibold bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-lg hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 transition-colors flex items-center gap-1">
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                {t(TILE_LABELS[id])}
-                            </button>
-                        ))}
-                    </div>
-                )}
-                <button
-                    onClick={() => setShowSettings(!showSettings)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all ${showSettings ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/20' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
-                >
-                    <svg className={`w-4 h-4 transition-transform duration-300 ${showSettings ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    {showSettings ? t('Terminé') : t('Personnaliser')}
-                </button>
-            </div>
+                </div>
+            )}
 
             {/* Notifications */}
             {notifications.length > 0 && (
                 <div className="mb-6 space-y-3">
                     {notifications.map((notification) => (
                         <div key={notification.id} className="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 border border-indigo-200 dark:border-indigo-700 rounded-2xl p-4 flex items-start space-x-3">
-                            <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <svg className="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                            <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-800/50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg className="w-4 h-4 text-indigo-600 dark:text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-bold text-indigo-900">{notification.title}</p>
-                                <p className="text-xs text-indigo-700 mt-0.5">{notification.message}</p>
+                                <p className="text-sm font-bold text-indigo-900 dark:text-indigo-100">{notification.title}</p>
+                                <p className="text-xs text-gray-700 dark:text-gray-300 mt-0.5">{notification.message}</p>
                                 <div className="flex items-center space-x-3 mt-2">
                                     {notification.action_url && (
-                                        <Link href={notification.action_url} className="text-xs font-semibold text-indigo-600 hover:text-indigo-800">
+                                        <Link href={notification.action_url} className="text-xs font-semibold text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200">
                                             {t('View details')} &rarr;
                                         </Link>
                                     )}
-                                    <span className="text-xs text-indigo-400">
+                                    <span className="text-xs text-gray-500 dark:text-gray-400">
                                         {new Date(notification.created_at).toLocaleDateString()}
                                     </span>
                                 </div>
@@ -227,7 +212,7 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={tileOrder} strategy={verticalListSortingStrategy}>
             {tileOrder.map(tileId => {
-                const tileProps = { id: tileId, title: t(TILE_LABELS[tileId] || tileId), collapsed: !!collapsedTiles[tileId], hidden: !!hiddenTiles[tileId], onToggleCollapse: () => toggleCollapse(tileId), onToggleHide: () => toggleHide(tileId), showSettings };
+                const tileProps = { id: tileId, title: t(TILE_LABELS[tileId] || tileId), collapsed: !!collapsedTiles[tileId], hidden: !!hiddenTiles[tileId], onToggleCollapse: () => toggleCollapse(tileId), onToggleHide: () => toggleHide(tileId) };
 
                 if (tileId === 'hero') return (
                 <DashboardTile key={tileId} {...tileProps}>

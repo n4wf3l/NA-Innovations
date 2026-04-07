@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>body{opacity:0}</style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Login - NA Innovations</title>
+    <title>Login - {{ $brandCompanyName }}</title>
     <link rel="icon" href="{{ asset('NAlogo2.png') }}" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=bebas-neue:400|figtree:400,500,600,700&display=swap" rel="stylesheet" />
@@ -83,7 +83,7 @@
 
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center space-x-3 group">
-                <img src="{{ asset('white-logo-small.png') }}" alt="NA Innovations" class="h-12 w-auto">
+                <img src="{{ $brandLogoUrl }}" alt="{{ $brandCompanyName }}" class="h-12 w-auto">
             </a>
 
             {{-- Tagline --}}
@@ -98,7 +98,7 @@
             </div>
 
             {{-- Copyright --}}
-            <p class="text-slate-600 text-sm">&copy; {{ date('Y') }} NA Innovations. All rights reserved.</p>
+            <p class="text-slate-600 text-sm">&copy; {{ date('Y') }} {{ $brandCompanyName }}. All rights reserved.</p>
         </div>
 
         {{-- Right side: login form --}}
@@ -123,7 +123,7 @@
                 {{-- Mobile logo --}}
                 <div class="lg:hidden text-center mb-10">
                     <a href="{{ url('/') }}" class="inline-block">
-                        <img src="{{ asset('white-logo-small.png') }}" alt="NA Innovations" class="h-10 w-auto mx-auto">
+                        <img src="{{ $brandLogoUrl }}" alt="{{ $brandCompanyName }}" class="h-10 w-auto mx-auto">
                     </a>
                 </div>
 
@@ -241,7 +241,7 @@
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
                         <span>{{ __('Back to website') }}</span>
                     </a>
-                    <span class="lg:hidden">&copy; {{ date('Y') }} NA Innovations</span>
+                    <span class="lg:hidden">&copy; {{ date('Y') }} {{ $brandCompanyName }}</span>
                 </div>
 
             </div>

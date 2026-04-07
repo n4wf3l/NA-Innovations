@@ -563,6 +563,13 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::put('settings/email-templates/{emailTemplate}', [App\Http\Controllers\Admin\EmailTemplateController::class, 'update'])->name('admin.email-templates.update');
     Route::patch('settings/email-templates/{emailTemplate}/toggle', [App\Http\Controllers\Admin\EmailTemplateController::class, 'toggleActive'])->name('admin.email-templates.toggle');
 
+    // Prospecting Email Templates (used by partners on /partner/prospecting)
+    Route::get('settings/prospecting-email-templates', [App\Http\Controllers\Admin\ProspectingEmailTemplateController::class, 'index'])->name('admin.prospecting-email-templates.index');
+    Route::post('settings/prospecting-email-templates', [App\Http\Controllers\Admin\ProspectingEmailTemplateController::class, 'store'])->name('admin.prospecting-email-templates.store');
+    Route::put('settings/prospecting-email-templates/{prospectingEmailTemplate}', [App\Http\Controllers\Admin\ProspectingEmailTemplateController::class, 'update'])->name('admin.prospecting-email-templates.update');
+    Route::delete('settings/prospecting-email-templates/{prospectingEmailTemplate}', [App\Http\Controllers\Admin\ProspectingEmailTemplateController::class, 'destroy'])->name('admin.prospecting-email-templates.destroy');
+    Route::patch('settings/prospecting-email-templates/{prospectingEmailTemplate}/toggle', [App\Http\Controllers\Admin\ProspectingEmailTemplateController::class, 'toggleActive'])->name('admin.prospecting-email-templates.toggle');
+
     // Email Signature Settings
     Route::get('settings/email-signature', [App\Http\Controllers\Admin\EmailSignatureController::class, 'index'])->name('admin.email-signature.index');
     Route::put('settings/email-signature', [App\Http\Controllers\Admin\EmailSignatureController::class, 'update'])->name('admin.email-signature.update');
@@ -643,6 +650,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::put('settings/branding/info', [App\Http\Controllers\Admin\BrandingController::class, 'updateBranding'])->name('admin.branding.info');
     Route::post('settings/branding/logo', [App\Http\Controllers\Admin\BrandingController::class, 'uploadLogo'])->name('admin.branding.logo');
     Route::delete('settings/branding/logo', [App\Http\Controllers\Admin\BrandingController::class, 'deleteLogo'])->name('admin.branding.logo.delete');
+    Route::put('settings/branding/cold-call-script', [App\Http\Controllers\Admin\BrandingController::class, 'updateColdCallScript'])->name('admin.branding.cold-call-script');
     Route::put('settings/simulator-mode', function (\Illuminate\Http\Request $request) {
         $request->validate(['mode' => 'required|in:enabled,europe_only,disabled']);
         \App\Models\Setting::set('simulator.mode', $request->input('mode'));

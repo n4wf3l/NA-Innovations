@@ -25,7 +25,19 @@ class BrandingController extends BaseAdminController
             'socialLinks' => $socialLinks,
             'branding' => $branding,
             'simulatorMode' => Setting::get('simulator.mode', 'europe_only'),
+            'coldCallScript' => Setting::get('partner.cold_call_script', "Bonjour, je m'appelle [votre nom]. Je travaille avec NA Innovations, une agence web belge.\n\nJe vous appelle car j'ai vu que votre [restaurant/club/entreprise] n'a pas encore de site web professionnel - et je pense qu'on peut vous aider à attirer plus de clients.\n\nNous avons une solution [site web / plateforme] spécialement conçue pour les [restaurants / clubs de football / entreprises comme la vôtre], déjà utilisée par plusieurs [restaurants / clubs] en Belgique.\n\nEst-ce que je pourrais vous envoyer une courte présentation par e-mail ? Cela ne vous engage à rien."),
         ]);
+    }
+
+    public function updateColdCallScript(Request $request)
+    {
+        $validated = $request->validate([
+            'cold_call_script' => 'required|string|max:5000',
+        ]);
+
+        Setting::set('partner.cold_call_script', $validated['cold_call_script']);
+
+        return redirect()->back()->with('success', "Script d'appel mis à jour.");
     }
 
     public function updateSocial(Request $request)

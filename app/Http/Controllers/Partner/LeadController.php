@@ -92,7 +92,10 @@ class LeadController extends Controller
             'notes' => 'nullable|string',
             'email_subject' => 'required|string|max:255',
             'email_body' => 'required|string',
+            'send_email' => 'nullable|boolean',
         ]);
+
+        $shouldSendEmail = $request->boolean('send_email', true);
 
         // Create the lead with status "brief_pending" (waiting for client response)
         $lead = Lead::create([
@@ -163,7 +166,15 @@ class LeadController extends Controller
             'new_value' => 'brief_pending',
         ]);
 
-        // Send outreach email to the prospect with PDF attachment (respects template toggle)
+        // Send outreach email to the prospect with PDF attachment (respects template toggle + partner choice)
+        if (!$shouldSendEmail) {
+            $lead->timelineEvents()->create([
+                'user_id' => auth()->id(),
+                'event_type' => 'email_skipped',
+                'title' => 'Outreach email skipped',
+                'description' => "Partner chose not to send the automatic outreach email to {$validated['email']}.",
+            ]);
+        } else {
         $outreachTemplate = \App\Models\EmailTemplate::where('slug', 'partner-lead-outreach')->where('is_active', true)->first();
         try {
             if (!$outreachTemplate) {
@@ -189,6 +200,7 @@ class LeadController extends Controller
                 'description' => "Failed to send email to {$validated['email']}: {$e->getMessage()}",
             ]);
         }
+        }
 
         // Notify admin that a new lead was submitted
         \App\Services\NotificationService::sendToAdmins('new-lead-admin', [
@@ -198,7 +210,11 @@ class LeadController extends Controller
             'service' => $validated['service_interest'] ?? 'Non specified',
         ], actionUrl: "/admin/leads/{$lead->id}");
 
+        $successMsg = $shouldSendEmail
+            ? "Lead created for {$validated['first_name']} {$validated['last_name']}. The outreach email has been sent."
+            : "Lead created for {$validated['first_name']} {$validated['last_name']}. No email was sent — our team will contact them.";
+
         return redirect()->route('partner.leads.index')
-            ->with('success', "Lead created for {$validated['first_name']} {$validated['last_name']}. The outreach email has been sent.");
+            ->with('success', $successMsg);
     }
 }

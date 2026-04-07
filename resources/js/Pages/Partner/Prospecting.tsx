@@ -116,15 +116,23 @@ function StepList({ steps }: { steps: string[] }) {
     );
 }
 
+interface ProspectingEmailTemplateItem {
+    id: number;
+    title: string;
+    body: string;
+}
+
 interface Props {
     kbAccessStatus?: string;
     kbNdaSignedAt?: string;
     ndaMode?: 'text' | 'pdf';
     ndaText?: string;
     ndaPdfUrl?: string | null;
+    emailTemplates?: ProspectingEmailTemplateItem[];
+    coldCallScript?: string;
 }
 
-export default function Prospecting({ kbAccessStatus = 'none', kbNdaSignedAt, ndaMode = 'text', ndaText = '', ndaPdfUrl = null }: Props) {
+export default function Prospecting({ kbAccessStatus = 'none', kbNdaSignedAt, ndaMode = 'text', ndaText = '', ndaPdfUrl = null, emailTemplates = [], coldCallScript: coldCallScriptProp }: Props) {
     const { t } = useTranslation();
     const [prospectTab, setProspectTab] = useState('strategies');
     const [ndaFullName, setNdaFullName] = useState('');
@@ -269,71 +277,7 @@ export default function Prospecting({ kbAccessStatus = 'none', kbNdaSignedAt, nd
         );
     }
 
-    const emailRestaurant = t(`Objet : Augmentez vos commandes en ligne - sans commission
-
-Bonjour,
-
-Je me permets de vous contacter car j'ai remarqué que votre restaurant n'a pas encore de site web avec commande en ligne.
-
-Nous avons développé une plateforme spécialement conçue pour les restaurants, qui permet à vos clients de commander directement depuis votre propre site - sans payer de commission à Uber Eats ou Deliveroo (qui prennent jusqu'à 30%).
-
-La plateforme inclut :
-- Menu en ligne avec photos
-- Commande et paiement en ligne
-- Gestion des réservations
-- Tableau de bord pour gérer vos commandes
-
-Puis-je vous envoyer une démonstration ? Cela ne prend que 5 minutes.
-
-Cordialement,
-[Votre nom]
-Partenaire NA Innovations`);
-
-    const emailFootball = t(`Objet : Plateforme de gestion pour votre club de football
-
-Bonjour,
-
-Je vous contacte car nous avons développé une plateforme spécialement conçue pour les clubs de football et futsal en Belgique.
-
-Plusieurs clubs utilisent déjà notre solution pour :
-- L'inscription en ligne des nouveaux membres
-- La planification des tests de sélection
-- La gestion des certificats médicaux et certificats de guérison
-- Les déclarations d'accident
-- Les décharges de responsabilité
-- La gestion des équipes et des matchs
-
-La plateforme est prête à être déployée et s'adapte à la taille de votre club.
-
-Seriez-vous disponible pour une courte présentation de 10 minutes ?
-
-Cordialement,
-[Votre nom]
-Partenaire NA Innovations`);
-
-    const emailGeneral = t(`Objet : Un site web professionnel pour votre entreprise
-
-Bonjour,
-
-J'ai découvert votre entreprise et je remarque que vous n'avez pas encore de site web professionnel (ou que votre site actuel pourrait être amélioré).
-
-Aujourd'hui, plus de 80% des clients recherchent en ligne avant de se déplacer. Sans site web, vous passez à côté de nombreux clients potentiels.
-
-Nous créons des sites web modernes, rapides et optimisés pour le référencement Google, à des tarifs compétitifs.
-
-Nos services incluent :
-- Sites vitrines professionnels
-- Boutiques en ligne
-- Applications web sur mesure
-- Référencement Google (SEO)
-
-Puis-je vous envoyer quelques exemples de nos réalisations ?
-
-Cordialement,
-[Votre nom]
-Partenaire NA Innovations`);
-
-    const coldCallScript = t(`Bonjour, je m'appelle [votre nom]. Je travaille avec NA Innovations, une agence web belge.
+    const coldCallScript = coldCallScriptProp || t(`Bonjour, je m'appelle [votre nom]. Je travaille avec NA Innovations, une agence web belge.
 
 Je vous appelle car j'ai vu que votre [restaurant/club/entreprise] n'a pas encore de site web professionnel - et je pense qu'on peut vous aider à attirer plus de clients.
 
@@ -490,20 +434,18 @@ Est-ce que je pourrais vous envoyer une courte présentation par e-mail ? Cela n
                         {t('Copiez-collez ces modèles pour contacter vos prospects. Personnalisez le nom et les détails avant d\'envoyer.')}
                     </p>
 
-                    <EmailTemplate
-                        title={t('E-mail pour restaurants')}
-                        body={emailRestaurant}
-                    />
-
-                    <EmailTemplate
-                        title={t('E-mail pour clubs de football')}
-                        body={emailFootball}
-                    />
-
-                    <EmailTemplate
-                        title={t('E-mail général - entreprise sans site web')}
-                        body={emailGeneral}
-                    />
+                    {emailTemplates.length === 0 && (
+                        <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                            {t("Aucun modèle d'e-mail disponible pour le moment.")}
+                        </p>
+                    )}
+                    {emailTemplates.map((tpl) => (
+                        <EmailTemplate
+                            key={tpl.id}
+                            title={tpl.title}
+                            body={tpl.body}
+                        />
+                    ))}
                 </StrategyCard>
                 </>)}
 

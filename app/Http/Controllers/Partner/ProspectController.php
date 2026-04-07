@@ -14,7 +14,7 @@ class ProspectController extends Controller
         $this->middleware(['auth', 'referral']);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $prospects = PartnerProspect::forUser(auth()->id())
             ->orderBy('updated_at', 'desc')
@@ -26,6 +26,52 @@ class ProspectController extends Controller
             $kanbanProspects[$col] = $prospects->where('status', $col)->values()->toArray();
         }
 
+        // Optional: include officially-submitted Leads as read-only cards
+        $includeLeads = $request->boolean('include_leads');
+        $submittedLeadsCount = 0;
+        if ($includeLeads) {
+            $partner = auth()->user()->referralPartner;
+            if ($partner) {
+                // Map Lead statuses to prospect kanban columns
+                $statusMap = [
+                    'new' => 'contacte',
+                    'contacted' => 'contacte',
+                    'brief_pending' => 'soumis',
+                    'quote_sent' => 'soumis',
+                    'negotiating' => 'soumis',
+                    'signed' => 'soumis',
+                    'won' => 'soumis',
+                    'lost' => 'pas_maintenant',
+                    'rejected' => 'pas_maintenant',
+                ];
+
+                $leads = \App\Models\Lead::where('referral_partner_id', $partner->id)
+                    ->orderBy('updated_at', 'desc')
+                    ->get();
+                $submittedLeadsCount = $leads->count();
+
+                foreach ($leads as $lead) {
+                    $col = $statusMap[$lead->status] ?? 'soumis';
+                    $kanbanProspects[$col][] = [
+                        'id' => 'lead-' . $lead->id,
+                        'lead_id' => $lead->id,
+                        'name' => trim(($lead->first_name ?? '') . ' ' . ($lead->last_name ?? '')) ?: ($lead->email ?? 'Lead'),
+                        'email' => $lead->email,
+                        'phone' => $lead->phone,
+                        'company_name' => $lead->company_name,
+                        'notes' => $lead->notes,
+                        'status' => $col,
+                        'follow_up_date' => null,
+                        'follow_up_notified' => false,
+                        'send_email_reminder' => false,
+                        'is_submitted_lead' => true,
+                        'lead_status' => $lead->status,
+                        'created_at' => optional($lead->created_at)->toIso8601String(),
+                    ];
+                }
+            }
+        }
+
         $stats = [
             'total' => $prospects->count(),
             'with_follow_up' => $prospects->whereNotNull('follow_up_date')->count(),
@@ -33,11 +79,13 @@ class ProspectController extends Controller
                 $p->follow_up_date && $p->follow_up_date->isPast() && !$p->follow_up_notified && $p->status !== 'soumis'
             )->count(),
             'submitted' => $prospects->where('status', 'soumis')->count(),
+            'submitted_leads' => $submittedLeadsCount,
         ];
 
         return Inertia::render('Partner/Prospects/Index', [
             'kanbanProspects' => $kanbanProspects,
             'stats' => $stats,
+            'includeLeads' => $includeLeads,
         ]);
     }
 

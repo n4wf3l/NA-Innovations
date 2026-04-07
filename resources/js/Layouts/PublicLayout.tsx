@@ -237,32 +237,95 @@ export default function PublicLayout({ children, title, description, ogImage, js
 
                 {/* Mobile menu — Fullscreen overlay */}
                 {mobileMenuOpen && (
-                    <div className="md:hidden fixed inset-0 z-[9998]">
-                        <div className="absolute inset-0 bg-gray-950" onClick={() => setMobileMenuOpen(false)} />
+                    <div className="md:hidden fixed inset-0 z-[9998] overflow-hidden">
+                        <style>{`
+                            @keyframes pmm-bg-in { from { opacity: 0; backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); } to { opacity: 1; backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); } }
+                            @keyframes pmm-item-in { 0% { opacity: 0; transform: translateY(40px) scale(0.92); filter: blur(10px); letter-spacing: 0px; } 100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); letter-spacing: 6px; } }
+                            @keyframes pmm-cta-in { 0% { opacity: 0; transform: translateY(30px) scale(0.85); } 60% { transform: translateY(-4px) scale(1.05); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+                            @keyframes pmm-close-in { from { opacity: 0; transform: rotate(-90deg) scale(0.5); } to { opacity: 1; transform: rotate(0) scale(1); } }
+                            @keyframes pmm-orb { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(60px, -40px) scale(1.2); } }
+                            @keyframes pmm-orb2 { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-50px, 50px) scale(1.15); } }
+                            @keyframes pmm-bottom-in { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+                        `}</style>
+
+                        {/* Backdrop sombre flouté */}
+                        <div
+                            onClick={() => setMobileMenuOpen(false)}
+                            style={{
+                                position: 'absolute',
+                                inset: 0,
+                                background: 'rgba(3, 6, 14, 0.92)',
+                                backdropFilter: 'blur(28px)',
+                                WebkitBackdropFilter: 'blur(28px)',
+                                animation: 'pmm-bg-in 500ms ease-out forwards',
+                            }}
+                        />
+
+                        {/* Orbes lumineuses */}
+                        <div style={{ position: 'absolute', top: '10%', left: '-10%', width: '320px', height: '320px', borderRadius: '50%', background: 'radial-gradient(circle, #14b8a6, transparent 70%)', filter: 'blur(60px)', opacity: 0.35, animation: 'pmm-orb 9s ease-in-out infinite', pointerEvents: 'none' }} />
+                        <div style={{ position: 'absolute', bottom: '5%', right: '-15%', width: '380px', height: '380px', borderRadius: '50%', background: 'radial-gradient(circle, #0d9488, transparent 70%)', filter: 'blur(80px)', opacity: 0.3, animation: 'pmm-orb2 11s ease-in-out infinite', pointerEvents: 'none' }} />
+
                         <div className="relative z-10 flex flex-col items-center justify-center h-full px-8">
                             {/* Close button */}
                             <button
                                 onClick={() => setMobileMenuOpen(false)}
-                                className="absolute top-7 right-7 w-12 h-12 flex items-center justify-center rounded-full border border-white/10 text-gray-500 hover:text-white hover:border-white/30 transition-all"
+                                style={{
+                                    position: 'absolute',
+                                    top: '1.75rem',
+                                    right: '1.75rem',
+                                    width: '48px',
+                                    height: '48px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: '50%',
+                                    border: '1px solid rgba(255,255,255,0.15)',
+                                    background: 'rgba(255,255,255,0.05)',
+                                    backdropFilter: 'blur(10px)',
+                                    WebkitBackdropFilter: 'blur(10px)',
+                                    color: '#ffffff',
+                                    cursor: 'pointer',
+                                    animation: 'pmm-close-in 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+                                }}
                             >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
 
                             {/* Nav links */}
-                            <nav className="flex flex-col items-center gap-8 mb-14">
-                                {navLinks.filter(l => l.href !== '/contact').map((link) => (
+                            <nav className="flex flex-col items-center gap-7 mb-14">
+                                {navLinks.filter(l => l.href !== '/contact').map((link, idx) => (
                                     <Link
                                         key={link.href}
                                         href={link.href}
-                                        className={`text-2xl font-bold tracking-widest transition-all duration-300 bebas ${
-                                            isActive(link.href) ? 'text-teal-300' : 'text-white/25 hover:text-white'
-                                        }`}
-                                        style={{ letterSpacing: '6px' }}
+                                        className="bebas"
                                         onClick={() => setMobileMenuOpen(false)}
+                                        style={{
+                                            fontSize: '1.75rem',
+                                            fontWeight: 700,
+                                            color: '#ffffff',
+                                            opacity: 0,
+                                            textDecoration: 'none',
+                                            letterSpacing: '6px',
+                                            position: 'relative',
+                                            animation: `pmm-item-in 700ms cubic-bezier(0.16, 1, 0.3, 1) ${100 + idx * 90}ms forwards`,
+                                            textShadow: isActive(link.href) ? '0 0 30px rgba(45, 212, 191, 0.6)' : 'none',
+                                        }}
                                     >
                                         {link.label}
+                                        {isActive(link.href) && (
+                                            <span style={{
+                                                position: 'absolute',
+                                                bottom: '-8px',
+                                                left: '50%',
+                                                transform: 'translateX(-50%)',
+                                                width: '24px',
+                                                height: '2px',
+                                                background: 'linear-gradient(90deg, transparent, #2dd4bf, transparent)',
+                                                borderRadius: '2px',
+                                            }} />
+                                        )}
                                     </Link>
                                 ))}
                             </nav>
@@ -271,15 +334,33 @@ export default function PublicLayout({ children, title, description, ogImage, js
                             <a
                                 href="/contact#quote"
                                 onClick={() => setMobileMenuOpen(false)}
-                                className="px-12 py-4 bg-teal-400 text-gray-900 text-base font-bold rounded-full hover:bg-teal-300 transition-all duration-300 bebas"
-                                style={{ letterSpacing: '4px' }}
+                                className="bebas"
+                                style={{
+                                    padding: '1rem 3rem',
+                                    background: 'linear-gradient(135deg, #2dd4bf, #14b8a6)',
+                                    color: '#ffffff',
+                                    fontSize: '1rem',
+                                    fontWeight: 800,
+                                    borderRadius: '9999px',
+                                    textDecoration: 'none',
+                                    letterSpacing: '4px',
+                                    boxShadow: '0 20px 60px rgba(45, 212, 191, 0.4)',
+                                    opacity: 0,
+                                    animation: `pmm-cta-in 700ms cubic-bezier(0.34, 1.56, 0.64, 1) ${100 + navLinks.filter(l => l.href !== '/contact').length * 90 + 100}ms forwards`,
+                                }}
                             >
                                 {navLinks.find(l => l.href === '/contact')?.label || t('Free Quote')}
                             </a>
 
                             {/* Theme + Language */}
-                            <div className="mt-14 flex items-center gap-6">
-                                <button onClick={() => { toggleTheme(); }} className="flex items-center gap-2 text-white/20 hover:text-teal-300 transition-colors">
+                            <div
+                                className="mt-14 flex items-center gap-6"
+                                style={{
+                                    opacity: 0,
+                                    animation: `pmm-bottom-in 600ms ease-out ${100 + navLinks.filter(l => l.href !== '/contact').length * 90 + 350}ms forwards`,
+                                }}
+                            >
+                                <button onClick={() => { toggleTheme(); }} className="flex items-center gap-2 text-white hover:text-teal-300 transition-colors">
                                     {isDark ? (
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
                                     ) : (
@@ -287,10 +368,10 @@ export default function PublicLayout({ children, title, description, ogImage, js
                                     )}
                                     <span className="text-xs font-bold uppercase bebas" style={{ letterSpacing: '3px' }}>{isDark ? t('Light') : t('Dark')}</span>
                                 </button>
-                                <span className="w-px h-4 bg-white/10" />
+                                <span className="w-px h-4 bg-white/20" />
                                 <button
                                     onClick={() => { setMobileMenuOpen(false); setShowLangModal(true); }}
-                                    className="flex items-center gap-2 text-white/20 hover:text-teal-300 transition-colors"
+                                    className="flex items-center gap-2 text-white hover:text-teal-300 transition-colors"
                                 >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802" /></svg>
                                     <span className="text-xs font-bold uppercase bebas" style={{ letterSpacing: '3px' }}>{locale}</span>
@@ -394,7 +475,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
                             <div className="text-sm text-gray-600 dark:text-gray-400">
                                 <p className="mb-2">{t('Email')}: <a href="mailto:info@nainnovations.be" className="hover:underline">info@nainnovations.be</a></p>
                                 <p className="mb-2">{t('Phone')}: <a href="tel:+32490221912" className="hover:underline">+32 490 22 19 12</a></p>
-                                <p className="mb-2 mt-4 font-bold">NA Innovations BV</p>
+                                <p className="mb-2 mt-4 font-bold">{siteName} BV</p>
                                 <p className="mb-2">{t('Company Registration Number')}: 1025.939.504</p>
                                 <p className="mb-2">{t('VAT Number')}: BE1025939504</p>
                             </div>

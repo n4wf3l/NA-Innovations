@@ -31,7 +31,7 @@
             <div class="w-full md:w-1/3 lg:w-1/4 text-center md:text-left">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Company Information</h2>
                 <div class="text-sm text-gray-600">
-                    <p class="mb-2 font-bold">NA Innovations BV</p>
+                    <p class="mb-2 font-bold">{{ $brandCompanyName }} BV</p>
                     <p class="mb-2">Company Registration Number: 1025.939.504</p>
                     <p class="mb-2">VAT Number: BE1025939504</p>
                 </div>

@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -24,7 +24,7 @@ interface KanbanBoardProps<T> {
     items: Record<string, T[]>;
     keyExtractor: (item: T) => string | number;
     renderCard: (item: T, isDragging: boolean) => React.ReactNode;
-    onMove: (itemId: string | number, fromColumn: string, toColumn: string) => void;
+    onMove: (itemId: string | number, fromColumn: string, toColumn: string) => void | boolean;
 }
 
 function DroppableColumn({ id, label, color, count, children }: {
@@ -106,6 +106,85 @@ export default function KanbanBoard<T>({ columns, items, keyExtractor, renderCar
     const [toast, setToast] = useState<string | null>(null);
     const isDraggingGlobal = useRef(false);
     const { t } = useTranslation();
+    const scrollRef = useRef<HTMLDivElement | null>(null);
+    const trackRef = useRef<HTMLDivElement | null>(null);
+    const thumbRef = useRef<HTMLDivElement | null>(null);
+    const [showGhost, setShowGhost] = useState(false);
+
+    // Custom-drawn sticky scrollbar synced with the real kanban container
+    useEffect(() => {
+        const real = scrollRef.current;
+        const track = trackRef.current;
+        const thumb = thumbRef.current;
+        if (!real || !track || !thumb) return;
+
+        const update = () => {
+            const overflow = real.scrollWidth > real.clientWidth + 1;
+            setShowGhost(overflow);
+            if (!overflow) return;
+            const trackW = track.clientWidth;
+            const ratio = real.clientWidth / real.scrollWidth;
+            const thumbW = Math.max(60, trackW * ratio);
+            const maxScroll = real.scrollWidth - real.clientWidth;
+            const maxThumbPos = trackW - thumbW;
+            const pos = maxScroll > 0 ? (real.scrollLeft / maxScroll) * maxThumbPos : 0;
+            thumb.style.width = thumbW + 'px';
+            thumb.style.left = pos + 'px';
+        };
+
+        update();
+        real.addEventListener('scroll', update, { passive: true });
+        const ro = new ResizeObserver(update);
+        ro.observe(real);
+        for (const child of Array.from(real.children)) ro.observe(child);
+        window.addEventListener('resize', update);
+
+        // Drag the thumb
+        let dragging = false;
+        let dragStartX = 0;
+        let scrollStart = 0;
+        const onThumbDown = (e: MouseEvent) => {
+            dragging = true;
+            dragStartX = e.clientX;
+            scrollStart = real.scrollLeft;
+            e.preventDefault();
+        };
+        const onMove = (e: MouseEvent) => {
+            if (!dragging) return;
+            const trackW = track.clientWidth;
+            const thumbW = thumb.clientWidth;
+            const maxScroll = real.scrollWidth - real.clientWidth;
+            const maxThumbPos = trackW - thumbW;
+            const dx = e.clientX - dragStartX;
+            const scrollDelta = (dx / maxThumbPos) * maxScroll;
+            real.scrollLeft = scrollStart + scrollDelta;
+        };
+        const onUp = () => { dragging = false; };
+        thumb.addEventListener('mousedown', onThumbDown);
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+
+        // Click on track jumps
+        const onTrackClick = (e: MouseEvent) => {
+            if (e.target === thumb) return;
+            const rect = track.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const trackW = track.clientWidth;
+            const ratio = clickX / trackW;
+            real.scrollLeft = ratio * (real.scrollWidth - real.clientWidth);
+        };
+        track.addEventListener('click', onTrackClick);
+
+        return () => {
+            real.removeEventListener('scroll', update);
+            ro.disconnect();
+            window.removeEventListener('resize', update);
+            thumb.removeEventListener('mousedown', onThumbDown);
+            window.removeEventListener('mousemove', onMove);
+            window.removeEventListener('mouseup', onUp);
+            track.removeEventListener('click', onTrackClick);
+        };
+    }, [items, columns]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
@@ -139,9 +218,11 @@ export default function KanbanBoard<T>({ columns, items, keyExtractor, renderCar
         }
 
         if (fromColumn && toColumn && fromColumn !== toColumn) {
-            onMove(active.id, fromColumn, toColumn);
-            setToast(t('Moved to {{column}}', { column: getColumnLabel(toColumn) }));
-            setTimeout(() => setToast(null), 3000);
+            const result = onMove(active.id, fromColumn, toColumn);
+            if (result !== false) {
+                setToast(t('Moved to {{column}}', { column: getColumnLabel(toColumn) }));
+                setTimeout(() => setToast(null), 3000);
+            }
         }
     }, [items, columns, onMove]);
 
@@ -153,7 +234,7 @@ export default function KanbanBoard<T>({ columns, items, keyExtractor, renderCar
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
             >
-                <div className="flex overflow-x-auto space-x-4 pb-4">
+                <div ref={scrollRef} className="flex overflow-x-auto space-x-4 pb-2 kanban-scroll-hidden">
                     {columns.map(col => (
                         <DroppableColumn
                             key={col.key}
@@ -174,6 +255,22 @@ export default function KanbanBoard<T>({ columns, items, keyExtractor, renderCar
                     ))}
                 </div>
             </DndContext>
+
+            {/* Sticky ghost scrollbar — rendered via portal to document.body
+                so it escapes any ancestor with transform/filter/will-change that
+                would otherwise break position: fixed. */}
+            {createPortal(
+                <div
+                    className="kanban-ghost-scroll"
+                    style={{ display: showGhost ? 'block' : 'none' }}
+                    aria-hidden="true"
+                >
+                    <div ref={trackRef} className="kanban-ghost-track">
+                        <div ref={thumbRef} className="kanban-ghost-thumb" />
+                    </div>
+                </div>,
+                document.body
+            )}
 
             {toast && <SuccessToast message={toast} onDone={() => setToast(null)} />}
         </>

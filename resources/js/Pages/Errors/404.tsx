@@ -1,9 +1,12 @@
 import { Head, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import AppLogo from '@/Components/ui/AppLogo';
+import { useBranding } from '@/hooks/useBranding';
 
 export default function NotFound() {
     const { auth } = usePage<{ auth: { user: { id: number } | null } }>().props;
+    const { companyName } = useBranding();
     const { t } = useTranslation();
     const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
@@ -69,7 +72,7 @@ export default function NotFound() {
 
                 {/* Navbar */}
                 <div className="relative z-10 flex justify-between items-center w-full max-w-[1298px] mx-auto px-6 py-6">
-                    <a href="/"><img src="/white-logo-small.png" alt="NA Innovations" className="h-10 w-auto" /></a>
+                    <a href="/"><AppLogo variant="dark" size="lg" /></a>
                     <a
                         href="/"
                         className="text-sm text-white/50 hover:text-teal-300 transition-colors flex items-center gap-2 bebas"
@@ -150,7 +153,7 @@ export default function NotFound() {
 
                 {/* Footer line */}
                 <div className="relative z-10 text-center py-6">
-                    <p className="text-gray-600 text-xs">&copy; {new Date().getFullYear()} NA Innovations</p>
+                    <p className="text-gray-600 text-xs">&copy; {new Date().getFullYear()} {companyName}</p>
                 </div>
 
                 {/* Fixed portal icon */}

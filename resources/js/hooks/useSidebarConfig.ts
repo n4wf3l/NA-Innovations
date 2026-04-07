@@ -43,6 +43,7 @@ export function useSidebarConfig(defaultItems: NavItem[]) {
         const used = new Set<string>();
 
         p.order.forEach(label => {
+            if (used.has(label)) return;
             const item = itemMap.get(label);
             if (item) {
                 ordered.push(item);

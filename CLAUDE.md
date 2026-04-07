@@ -20,10 +20,29 @@ Cette règle s'applique à TOUS les fichiers sans exception : `.php`, `.tsx`, `.
 - PDF : Barryvdh DomPDF
 - Pas de Spatie Permission (le champ `role` string sur User est utilisé directement)
 
+## Modals — `position: fixed` cassé par Tailwind
+
+**Problème connu** : la classe Tailwind `fixed inset-0` sur le backdrop d'un modal peut être cassée (élément rendu à `y:844` au lieu de `0,0`), même quand le modal est portal'd dans `document.body` directement. Cause : conflit CSS / purge / ancêtre transformé qui rompt `position:fixed`.
+
+**Règle obligatoire** : pour TOUT backdrop de modal portal'd via `createPortal(..., document.body)`, **forcer le positionnement via inline styles** au lieu des classes Tailwind :
+
+```tsx
+// INTERDIT — peut être cassé silencieusement :
+<div className="fixed inset-0 z-[9999] bg-black/70 ..." />
+
+// CORRECT — inline styles garantissent le viewport :
+<div
+    style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999 }}
+    className="overflow-y-auto bg-black/70 backdrop-blur-md animate-fade-in"
+/>
+```
+
+Les inline styles surchargent toujours les classes et garantissent que `position:fixed` est appliqué. Cette règle s'applique à TOUS les nouveaux modals et à toute correction de modal existant qui ne s'affiche pas.
+
 ## Conventions de code
 
 - Composants React : `bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm`
-- Modals : utiliser `createPortal(...)` vers `document.body`
+- Modals : utiliser `createPortal(...)` vers `document.body` + inline styles `position:fixed` (voir section ci-dessus)
 - Montants : toujours utiliser `formatCurrency()` de `@/lib/utils`
 - Traductions : toujours utiliser `useTranslation()` de react-i18next
 - Controllers admin : étendre `BaseAdminController`

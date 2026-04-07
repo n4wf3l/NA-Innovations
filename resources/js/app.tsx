@@ -4,6 +4,10 @@ import { createRoot } from 'react-dom/client';
 import { createInertiaApp, router } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import InstallPrompt from './Components/layout/InstallPrompt';
+import { installCustomValidation } from './lib/customValidation';
+
+// Replace ugly native browser validation bubbles with our own styled popover
+installCustomValidation();
 
 // Global: detect clicked link/button and add loading state
 let lastClickedEl: HTMLElement | null = null;
@@ -26,8 +30,19 @@ router.on('finish', () => {
     }
 });
 
+// Read company name from initial Inertia page props (set by HandleInertiaRequests)
+const initialDataEl = document.getElementById('app');
+let initialBrandName = 'NA Innovations';
+try {
+    const pageData = initialDataEl?.getAttribute('data-page');
+    if (pageData) {
+        const parsed = JSON.parse(pageData);
+        initialBrandName = parsed?.props?.branding?.company_name || 'NA Innovations';
+    }
+} catch { /* keep default */ }
+
 createInertiaApp({
-    title: (title) => title ? `${title} - NA Innovations` : 'NA Innovations',
+    title: (title) => title ? `${title} - ${initialBrandName}` : initialBrandName,
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.tsx`,

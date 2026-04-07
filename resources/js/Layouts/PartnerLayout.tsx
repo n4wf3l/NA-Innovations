@@ -6,6 +6,7 @@ import TopBar from '@/Components/layout/TopBar';
 import TopBarActions from '@/Components/layout/TopBarActions';
 import FlashMessages from '@/Components/layout/FlashMessages';
 import LoginSplash from '@/Components/ui/LoginSplash';
+import AppLogo from '@/Components/ui/AppLogo';
 import LogoutButton from '@/Components/layout/LogoutButton';
 import { setCurrency } from '@/lib/utils';
 import MobileMenu from '@/Components/layout/MobileMenu';
@@ -65,7 +66,7 @@ export default function PartnerLayout({ children, title }: PropsWithChildren<Par
 
     const sidebarLogo = (
         <div className="flex items-center space-x-3 mb-1">
-            <img src="/white-logo-small.png" alt="NA Innovations" className="h-8 w-auto object-contain flex-shrink-0" />
+            <AppLogo variant="dark" size="md" className="flex-shrink-0" />
             <div>
                 <p className="text-white text-sm font-bold tracking-wide">{t('Partner Portal')}</p>
                 <p className="text-gray-500 text-xs">{auth.user?.name}</p>

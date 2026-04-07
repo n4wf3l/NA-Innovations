@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>body{opacity:0}</style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Pending Approval - NA Innovations</title>
+    <title>Pending Approval - {{ $brandCompanyName }}</title>
     <link rel="icon" href="{{ asset('NAlogo2.png') }}" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=bebas-neue:400|figtree:400,500,600,700&display=swap" rel="stylesheet" />
@@ -38,9 +38,9 @@
         <div class="text-center mb-8">
             <a href="{{ url('/') }}" class="inline-flex items-center space-x-3">
                 <div>
-                    <img src="{{ asset('white-logo-small.png') }}" alt="NA Innovations" class="h-12 w-auto">
+                    <img src="{{ $brandLogoUrl }}" alt="{{ $brandCompanyName }}" class="h-12 w-auto">
                 </div>
-                <span class="font-display text-white text-2xl tracking-wide">NA Innovations</span>
+                <span class="font-display text-white text-2xl tracking-wide">{{ $brandCompanyName }}</span>
             </a>
         </div>
 

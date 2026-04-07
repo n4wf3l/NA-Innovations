@@ -1,7 +1,8 @@
 import { Link } from '@inertiajs/react';
-import { cn } from '@/lib/utils';
 import { NavItem } from './Sidebar';
 import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 interface MobileMenuProps {
     open: boolean;
@@ -16,42 +17,217 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ open, onClose, items, cta, accentColor, currentPath, userName, userInitial }: MobileMenuProps) {
     const { t } = useTranslation();
-    if (!open) return null;
+    const [render, setRender] = useState(false);
+    const [closing, setClosing] = useState(false);
 
-    const accentText = accentColor === 'rose' ? 'text-rose-400' : accentColor === 'indigo' ? 'text-indigo-400' : 'text-teal-400';
-    const accentBg = accentColor === 'rose'
-        ? 'from-rose-500 to-pink-600'
-        : accentColor === 'indigo'
-        ? 'from-indigo-500 to-indigo-600'
-        : 'from-teal-400 to-teal-500';
+    useEffect(() => {
+        if (open) {
+            setClosing(false);
+            setRender(true);
+        } else if (render) {
+            setClosing(true);
+            const to = setTimeout(() => { setRender(false); setClosing(false); }, 450);
+            return () => clearTimeout(to);
+        }
+    }, [open]);
 
-    return (
-        <div className="fixed inset-0 z-[9999] lg:hidden">
-            {/* Backdrop */}
+    useEffect(() => {
+        if (render) {
+            document.body.style.overflow = 'hidden';
+            return () => { document.body.style.overflow = ''; };
+        }
+    }, [render]);
+
+    if (!render || typeof document === 'undefined') return null;
+
+    const accentGradient =
+        accentColor === 'rose' ? 'linear-gradient(135deg, #f43f5e, #db2777)' :
+        accentColor === 'indigo' ? 'linear-gradient(135deg, #6366f1, #4f46e5)' :
+        'linear-gradient(135deg, #14b8a6, #0d9488)';
+
+    const accentGlow =
+        accentColor === 'rose' ? 'rgba(244, 63, 94, 0.45)' :
+        accentColor === 'indigo' ? 'rgba(99, 102, 241, 0.45)' :
+        'rgba(20, 184, 166, 0.45)';
+
+    const navLinks = items.filter(i => i.type === 'link');
+
+    // Each item gets a staggered slide-in (or fast slide-out on close)
+    const itemStyle = (delay: number): React.CSSProperties => ({
+        animation: closing
+            ? `mm-out 280ms cubic-bezier(0.4, 0, 1, 1) forwards`
+            : `mm-in 600ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms forwards`,
+        opacity: 0,
+        willChange: 'transform, opacity',
+    });
+
+    return createPortal((
+        <div
+            style={{
+                position: 'fixed',
+                inset: 0,
+                zIndex: 9999,
+            }}
+            className="lg:hidden"
+        >
+            <style>{`
+                @keyframes mm-backdrop-in {
+                    from { opacity: 0; backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); }
+                    to { opacity: 1; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+                }
+                @keyframes mm-backdrop-out {
+                    from { opacity: 1; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+                    to { opacity: 0; backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); }
+                }
+                @keyframes mm-in {
+                    0% { opacity: 0; transform: translateY(28px) scale(0.96); filter: blur(8px); }
+                    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+                }
+                @keyframes mm-out {
+                    0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+                    100% { opacity: 0; transform: translateY(20px) scale(0.97); filter: blur(6px); }
+                }
+                @keyframes mm-glow-pulse {
+                    0%, 100% { opacity: 0.5; transform: scale(1); }
+                    50% { opacity: 0.8; transform: scale(1.08); }
+                }
+                @keyframes mm-orb-1 {
+                    0%, 100% { transform: translate(0, 0) scale(1); }
+                    50% { transform: translate(40px, -30px) scale(1.15); }
+                }
+                @keyframes mm-orb-2 {
+                    0%, 100% { transform: translate(0, 0) scale(1); }
+                    50% { transform: translate(-50px, 40px) scale(1.2); }
+                }
+            `}</style>
+
+            {/* Backdrop sombre flouté */}
             <div
-                className="absolute inset-0 bg-black/80 backdrop-blur-xl animate-fade-in"
                 onClick={onClose}
+                style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'rgba(5, 8, 16, 0.85)',
+                    backdropFilter: 'blur(24px)',
+                    WebkitBackdropFilter: 'blur(24px)',
+                    animation: closing
+                        ? 'mm-backdrop-out 350ms ease-out forwards'
+                        : 'mm-backdrop-in 400ms ease-out forwards',
+                }}
             />
 
-            {/* Content */}
-            <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8 py-12 animate-scale-in">
+            {/* Orbes lumineuses en arrière-plan (pour l'ambiance) */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: '15%',
+                    left: '10%',
+                    width: '280px',
+                    height: '280px',
+                    borderRadius: '50%',
+                    background: accentGradient,
+                    filter: 'blur(80px)',
+                    opacity: 0.25,
+                    animation: 'mm-orb-1 8s ease-in-out infinite',
+                    pointerEvents: 'none',
+                }}
+            />
+            <div
+                style={{
+                    position: 'absolute',
+                    bottom: '10%',
+                    right: '5%',
+                    width: '320px',
+                    height: '320px',
+                    borderRadius: '50%',
+                    background: accentGradient,
+                    filter: 'blur(100px)',
+                    opacity: 0.2,
+                    animation: 'mm-orb-2 10s ease-in-out infinite',
+                    pointerEvents: 'none',
+                }}
+            />
 
-                {/* Close button */}
+            {/* Contenu */}
+            <div
+                style={{
+                    position: 'relative',
+                    zIndex: 10,
+                    minHeight: '100vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    padding: '4rem 2rem 3rem',
+                    color: '#ffffff',
+                }}
+            >
+                {/* Bouton fermer */}
                 <button
                     onClick={onClose}
-                    className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                    aria-label={t('Fermer')}
+                    style={{
+                        ...itemStyle(0),
+                        position: 'absolute',
+                        top: '1.5rem',
+                        right: '1.5rem',
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: '50%',
+                        background: 'rgba(255, 255, 255, 0.08)',
+                        border: '1px solid rgba(255, 255, 255, 0.15)',
+                        backdropFilter: 'blur(10px)',
+                        WebkitBackdropFilter: 'blur(10px)',
+                        color: '#ffffff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        transition: 'all 200ms',
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.18)'; e.currentTarget.style.transform = 'rotate(90deg)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'rotate(0)'; }}
                 >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
 
-                {/* User avatar */}
-                <div className="mb-8 text-center">
-                    <div className={cn('w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3 bg-gradient-to-br', accentBg)}>
-                        <span className="text-white text-2xl font-black">{userInitial || 'U'}</span>
+                {/* Avatar utilisateur avec halo animé */}
+                <div style={{ ...itemStyle(60), marginBottom: '2.5rem', textAlign: 'center', position: 'relative' }}>
+                    <div style={{ position: 'relative', width: '88px', height: '88px', margin: '0 auto 1rem' }}>
+                        {/* Halo */}
+                        <div
+                            style={{
+                                position: 'absolute',
+                                inset: '-10px',
+                                borderRadius: '50%',
+                                background: accentGradient,
+                                filter: 'blur(20px)',
+                                opacity: 0.6,
+                                animation: 'mm-glow-pulse 3s ease-in-out infinite',
+                            }}
+                        />
+                        <div
+                            style={{
+                                position: 'relative',
+                                width: '88px',
+                                height: '88px',
+                                borderRadius: '24px',
+                                background: accentGradient,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: '#ffffff',
+                                fontSize: '2rem',
+                                fontWeight: 900,
+                                boxShadow: `0 20px 60px ${accentGlow}`,
+                            }}
+                        >
+                            {userInitial || 'U'}
+                        </div>
                     </div>
-                    <p className="text-white text-lg font-semibold">{userName}</p>
+                    <p style={{ color: '#ffffff', fontSize: '1.125rem', fontWeight: 700, margin: 0, letterSpacing: '0.01em' }}>{userName}</p>
+                    <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem', marginTop: '0.25rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t('Connecté')}</p>
                 </div>
 
                 {/* CTA */}
@@ -59,61 +235,121 @@ export default function MobileMenu({ open, onClose, items, cta, accentColor, cur
                     <Link
                         href={cta.href}
                         onClick={onClose}
-                        className={cn(
-                            'w-full max-w-xs py-4 rounded-2xl text-white text-base font-bold text-center shadow-xl mb-8 transition-transform hover:scale-105 bg-gradient-to-r',
-                            accentBg
-                        )}
+                        style={{
+                            ...itemStyle(140),
+                            display: 'block',
+                            width: '100%',
+                            maxWidth: '20rem',
+                            padding: '1rem 1.5rem',
+                            borderRadius: '1rem',
+                            background: accentGradient,
+                            color: '#ffffff',
+                            fontSize: '1rem',
+                            fontWeight: 700,
+                            textAlign: 'center',
+                            boxShadow: `0 12px 40px ${accentGlow}`,
+                            marginBottom: '2rem',
+                            textDecoration: 'none',
+                            letterSpacing: '0.01em',
+                        }}
                     >
-                        + {cta.label}
+                        + {t(cta.label)}
                     </Link>
                 )}
 
-                {/* Nav items */}
-                <nav className="w-full max-w-xs space-y-2">
-                    {items.filter(i => i.type === 'link').map(item => {
+                {/* Liens nav */}
+                <nav style={{ width: '100%', maxWidth: '20rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {navLinks.map((item, idx) => {
                         const isActive = item.match ? currentPath.startsWith(item.match) : currentPath === item.href;
                         return (
                             <Link
                                 key={item.label}
                                 href={item.href || '#'}
                                 onClick={onClose}
-                                className={cn(
-                                    'flex items-center justify-center py-4 rounded-2xl text-lg font-semibold transition-all duration-200',
-                                    isActive
-                                        ? `bg-white/15 text-white`
-                                        : 'text-gray-400 hover:text-white hover:bg-white/5'
-                                )}
+                                style={{
+                                    ...itemStyle(220 + idx * 60),
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.875rem',
+                                    padding: '1rem 1.25rem',
+                                    borderRadius: '1rem',
+                                    fontSize: '1rem',
+                                    fontWeight: 600,
+                                    color: '#ffffff',
+                                    background: isActive ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.04)',
+                                    border: `1px solid ${isActive ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.06)'}`,
+                                    backdropFilter: 'blur(8px)',
+                                    WebkitBackdropFilter: 'blur(8px)',
+                                    textDecoration: 'none',
+                                    transition: 'background 200ms, border-color 200ms, transform 200ms',
+                                }}
                             >
                                 {item.icon && (
-                                    <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
-                                    </svg>
+                                    <div style={{
+                                        width: '40px',
+                                        height: '40px',
+                                        borderRadius: '12px',
+                                        background: isActive ? accentGradient : 'rgba(255,255,255,0.06)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        flexShrink: 0,
+                                    }}>
+                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8} style={{ color: '#ffffff' }}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
+                                        </svg>
+                                    </div>
                                 )}
-                                {t(item.label)}
+                                <span style={{ flex: 1, color: '#ffffff' }}>{t(item.label)}</span>
+                                {isActive && (
+                                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#ffffff', boxShadow: `0 0 12px #ffffff` }} />
+                                )}
                             </Link>
                         );
                     })}
                 </nav>
 
-                {/* Bottom actions */}
-                <div className="mt-10 flex items-center space-x-6">
-                    <a href="/" target="_blank" onClick={onClose} className="text-sm text-gray-500 hover:text-gray-300 transition-colors">
-                        {t('View Site')}
+                {/* Bas - liens secondaires */}
+                <div style={{ ...itemStyle(220 + navLinks.length * 60 + 80), marginTop: '2.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                    <a href="/" target="_blank" onClick={onClose} style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.875rem', textDecoration: 'none' }}>
+                        {t('Voir le site')}
                     </a>
-                    <span className="text-gray-700">|</span>
-                    <form method="POST" action="/logout" className="inline">
+                    <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
+                    <form method="POST" action="/logout" style={{ display: 'inline' }}>
                         <input type="hidden" name="_token" value={typeof document !== 'undefined' ? document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content || '' : ''} />
-                        <button type="submit" className="text-sm text-gray-500 hover:text-red-400 transition-colors">{t('Sign Out')}</button>
+                        <button type="submit" style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.875rem', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                            {t('Déconnexion')}
+                        </button>
                     </form>
                 </div>
 
-                {/* Language */}
-                <div className="mt-6 flex items-center space-x-1 bg-white/10 rounded-xl p-1">
+                {/* Sélecteur langue */}
+                <div style={{
+                    ...itemStyle(220 + navLinks.length * 60 + 140),
+                    marginTop: '1.25rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '0.875rem',
+                    padding: '0.25rem',
+                    backdropFilter: 'blur(8px)',
+                    WebkitBackdropFilter: 'blur(8px)',
+                }}>
                     {['en', 'fr', 'nl'].map(code => (
                         <a
                             key={code}
                             href={`/locale/${code}`}
-                            className="px-4 py-2 text-sm font-bold rounded-lg text-gray-400 hover:text-white transition-colors"
+                            style={{
+                                padding: '0.5rem 1rem',
+                                fontSize: '0.75rem',
+                                fontWeight: 800,
+                                borderRadius: '0.625rem',
+                                color: '#ffffff',
+                                textDecoration: 'none',
+                                letterSpacing: '0.05em',
+                            }}
                         >
                             {code.toUpperCase()}
                         </a>
@@ -121,5 +357,5 @@ export default function MobileMenu({ open, onClose, items, cta, accentColor, cur
                 </div>
             </div>
         </div>
-    );
+    ), document.body);
 }

@@ -111,6 +111,19 @@ export default function PartnerLeadsIndex({ leads, commissionRate }: Props) {
                                         <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-1">{formatProjectType(lead.service_interest)}</p>
                                     )}
 
+                                    {/* "Hands-off" banner — shown only when the client has accepted
+                                        and the project has moved forward (NA handles everything) */}
+                                    {['signed', 'in_progress', 'won', 'paid'].includes(lead.status) && (
+                                        <div className="mb-4 flex items-start gap-2 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl px-3 py-2.5">
+                                            <svg className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                            </svg>
+                                            <p className="text-[11px] text-emerald-700 dark:text-emerald-300 leading-relaxed">
+                                                <strong className="font-bold">{t('Vous n\'avez plus rien à faire.')}</strong> {t('NA Innovations gère tout. Vous serez payé automatiquement à la fin du projet.')}
+                                            </p>
+                                        </div>
+                                    )}
+
                                     {/* Bottom: commission + date */}
                                     <div className="border-t border-gray-50 dark:border-gray-700 pt-3 flex items-end justify-between">
                                         <div>
@@ -165,7 +178,17 @@ export default function PartnerLeadsIndex({ leads, commissionRate }: Props) {
                                                 </td>
                                                 <td className="px-5 py-3.5 text-gray-500">{lead.company_name || '—'}</td>
                                                 <td className="px-5 py-3.5 text-gray-500">{formatProjectType(lead.service_interest)}</td>
-                                                <td className="px-5 py-3.5"><Badge status={lead.status} /></td>
+                                                <td className="px-5 py-3.5">
+                                                    <div className="flex flex-col gap-1">
+                                                        <Badge status={lead.status} />
+                                                        {['signed', 'in_progress', 'won', 'paid'].includes(lead.status) && (
+                                                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400" title={t('Vous n\'avez plus rien à faire. NA Innovations gère tout.')}>
+                                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                                                {t('Géré par NA')}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </td>
                                                 <td className="px-5 py-3.5 text-right">
                                                     {myShare(lead.estimated_budget) ? (
                                                         <span className="font-bold text-gray-900 dark:text-white"><ProtectedAmount amount={myShare(lead.estimated_budget)!} /></span>

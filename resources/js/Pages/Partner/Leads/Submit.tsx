@@ -28,6 +28,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
         notes: '',
         email_subject: emailTemplate.subject,
         email_body: emailTemplate.body,
+        send_email: true as boolean,
     });
 
     const getPreviewBody = () => {
@@ -40,9 +41,22 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
             .replace(/\{\{\s*estimated_budget\s*\}\}/g, data.estimated_budget || '[Budget]');
     };
 
+    const [validationError, setValidationError] = useState<string | null>(null);
     const openModal = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!data.first_name || !data.last_name || !data.email) return;
+        if (!data.first_name?.trim()) {
+            setValidationError(t('Le prénom est obligatoire.'));
+            return;
+        }
+        if (!data.email?.trim()) {
+            setValidationError(t('L\'email est obligatoire.'));
+            return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+            setValidationError(t('L\'email n\'est pas valide.'));
+            return;
+        }
+        setValidationError(null);
         setShowModal(true);
     };
 
@@ -223,6 +237,62 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                 </div>
             </div>
 
+            {/* Explanatory legend — context for the partner */}
+            <div className="mb-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 border border-indigo-200 dark:border-indigo-700/50 rounded-2xl p-5">
+                <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 dark:bg-indigo-400/10 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
+                        </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <h3 className="text-base font-bold text-indigo-900 dark:text-indigo-100 mb-1">
+                            {t('À quoi sert cette page ?')}
+                        </h3>
+                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                            {t('Vous avez identifié un prospect intéressé par nos services ? Soumettez-le ici pour qu\'il soit officiellement rattaché à votre compte partenaire. Une fois validé, vous toucherez automatiquement votre commission sur le projet signé.')}
+                        </p>
+
+                        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div className="bg-white/60 dark:bg-gray-800/40 rounded-xl p-3 border border-indigo-100 dark:border-indigo-800/40">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <h4 className="text-xs font-bold text-indigo-900 dark:text-indigo-200 uppercase tracking-wide">
+                                        {t('Quand soumettre un client ?')}
+                                    </h4>
+                                </div>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                                    {t('Quand vous avez eu une première discussion avec un prospect intéressé et que vous voulez nous le présenter pour qu\'on prenne le relais commercial.')}
+                                </p>
+                            </div>
+
+                            <div className="bg-white/60 dark:bg-gray-800/40 rounded-xl p-3 border border-indigo-100 dark:border-indigo-800/40">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <svg className="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                    <h4 className="text-xs font-bold text-indigo-900 dark:text-indigo-200 uppercase tracking-wide">
+                                        {t('Le client veut un devis tout de suite ?')}
+                                    </h4>
+                                </div>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                                    {t('Soumettez-le quand même ici en indiquant son besoin dans les notes : notre équipe le contactera sous 24h pour préparer le devis. Votre commission reste garantie.')}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="mt-3 flex items-center gap-2 text-xs text-indigo-700 dark:text-indigo-300">
+                            <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>{t('Astuce : plus vos informations sont précises, plus notre équipe pourra réagir vite et efficacement.')}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Quick Mode info banner */}
             {quickMode && (
                 <div className="mb-4 bg-rose-50 dark:bg-rose-500/5 border border-rose-200 dark:border-rose-500/20 rounded-xl px-4 py-3 flex items-center gap-3">
@@ -235,7 +305,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
             {/* ═══ QUICK MODE ═══ */}
             {quickMode && (
                 <div key="quick" className="animate-tab-in">
-                    <form onSubmit={openModal} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+                    <form onSubmit={openModal} noValidate className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
                         <div className="bg-gradient-to-r from-rose-500 to-pink-600 p-5">
                             <h2 className="text-lg font-bold text-white">{t('Soumission rapide')}</h2>
                             <p className="text-rose-200 text-xs mt-0.5">{t('Juste l\'essentiel — 30 secondes')}</p>
@@ -281,6 +351,12 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                                 <textarea value={data.notes} onChange={e => setData('notes', e.target.value)} className={input + ' resize-none'} rows={2} placeholder={t('Ex: Il a un restaurant sans site web, intéressé par une commande en ligne...')} />
                             </div>
                         </div>
+                        {validationError && (
+                            <div className="mx-5 mb-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-xl px-4 py-3 text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+                                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+                                {validationError}
+                            </div>
+                        )}
                         <div className="px-5 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700">
                             <button type="submit" disabled={!data.first_name || !data.email} className="w-full py-3.5 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold rounded-xl shadow-lg shadow-rose-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>
@@ -299,8 +375,14 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{t('New Client')}</h2>
                             <p className="text-xs text-gray-400 dark:text-gray-500 mb-6">{t("Fill in the details. We'll prepare a professional email with a PDF summary.")}</p>
-                            <form onSubmit={openModal} className="space-y-4">
+                            <form onSubmit={openModal} noValidate className="space-y-4">
                                 {renderFormFields(input)}
+                                {validationError && (
+                                    <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-xl px-4 py-3 text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+                                        <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+                                        {validationError}
+                                    </div>
+                                )}
                                 <button type="submit" className="w-full py-3.5 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-sm rounded-xl shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 mt-4">
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
                                     {t('Review & Send')}
@@ -327,8 +409,14 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white">{t('New Client')}</h2>
                         <p className="text-gray-400 text-sm mt-1">{t("Fill in the details. We'll prepare a professional email with a PDF summary.")}</p>
                     </div>
-                    <form onSubmit={openModal} className="space-y-5">
+                    <form onSubmit={openModal} noValidate className="space-y-5">
                         {renderFormFields(inputLg)}
+                        {validationError && (
+                            <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-xl px-4 py-3 text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+                                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+                                {validationError}
+                            </div>
+                        )}
                         <div className="pt-2">
                             <button type="submit" className="w-full py-5 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-black text-lg rounded-2xl shadow-xl shadow-rose-500/30 transition-all active:scale-[0.98] flex items-center justify-center gap-3">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
@@ -339,34 +427,37 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                 </div>
             )}
 
-            {/* Email Modal - true fullscreen sheet on mobile, card on desktop */}
+            {/* Email Modal — single scrollable container with everything inside */}
             {showModal && createPortal(
-                <div className="fixed inset-0 z-[9999] flex flex-col sm:items-center sm:justify-center">
-                    {/* Backdrop - only visible on desktop behind the card */}
-                    <div className="hidden sm:block absolute inset-0 bg-black/70 backdrop-blur-md animate-fade-in" onClick={() => !processing && setShowModal(false)} />
-
-                    {/*
-                        Mobile: full screen, 3-part layout (fixed header, scrollable body, fixed footer)
-                        Desktop: centered card with max-height
-                    */}
-                    <div className="relative z-10 bg-white dark:bg-gray-900 w-full h-full sm:h-auto sm:max-w-2xl sm:max-h-[85vh] sm:rounded-2xl sm:shadow-2xl flex flex-col animate-modal sm:m-4 overflow-hidden">
-
-                        {/* Fixed header */}
-                        <div className="flex-shrink-0 bg-gradient-to-r from-rose-500 to-pink-600 px-8 py-6 flex items-center justify-between safe-top sm:rounded-t-2xl">
-                            <div>
-                                <h3 className="text-lg font-black text-white">{t("Review Email")}</h3>
-                                <p className="text-xs text-rose-200 mt-0.5">To: {data.first_name} {data.last_name}</p>
-                            </div>
-                            <button onClick={() => !processing && setShowModal(false)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,zIndex:9999}} className="overflow-y-auto custom-scroll bg-black/70 backdrop-blur-md animate-fade-in" onClick={() => !processing && setShowModal(false)}>
+                    <div className="min-h-full flex items-center justify-center p-4 sm:p-8">
+                        <div
+                            ref={modalRef}
+                            onClick={e => e.stopPropagation()}
+                            className="relative w-full max-w-2xl bg-white dark:bg-gray-900 rounded-3xl shadow-2xl animate-modal my-auto"
+                        >
+                            {/* Close button — floating top right */}
+                            <button
+                                onClick={() => !processing && setShowModal(false)}
+                                className="absolute top-5 right-5 z-10 w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                             </button>
-                        </div>
 
-                        {/* Scrollable body */}
-                        <div ref={modalRef} className="flex-1 overflow-y-auto overscroll-contain">
-                            <div className="p-6 space-y-5">
+                            {/* Content with generous padding all around */}
+                            <div className="p-10 sm:p-12">
+                                {/* Header */}
+                                <div className="mb-8">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 rounded-full mb-3">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                                        <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">{t("Review Email")}</span>
+                                    </div>
+                                    <h3 className="text-2xl font-black text-gray-900 dark:text-white">{t("Vérifier l'email")}</h3>
+                                    <p className="text-sm text-gray-400 mt-1">To: <span className="font-semibold text-gray-600 dark:text-gray-300">{data.first_name} {data.last_name}</span></p>
+                                </div>
+
                                 {/* Subject */}
-                                <div>
+                                <div className="mb-6">
                                     <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t("Subject")}</label>
                                     <input
                                         type="text"
@@ -377,7 +468,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                                 </div>
 
                                 {/* Email body */}
-                                <div>
+                                <div className="mb-6">
                                     <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
                                         {t('Message')} <span className="font-normal normal-case text-gray-300 dark:text-gray-600 ml-1">({t('editable')})</span>
                                     </label>
@@ -390,55 +481,77 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                                 </div>
 
                                 {/* Preview */}
-                                <details className="group">
+                                <details className="group mb-6">
                                     <summary className="cursor-pointer flex items-center justify-between bg-gray-50 dark:bg-gray-800 rounded-xl px-4 py-3.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                         <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t('Preview with variables replaced')}</span>
                                         <svg className="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                                     </summary>
-                                    <div className="mt-2 bg-gray-50 dark:bg-gray-800 rounded-xl p-4 text-sm text-gray-600 dark:text-gray-300 border border-gray-100 dark:border-gray-700 max-h-60 overflow-y-auto prose prose-sm dark:prose-invert" dangerouslySetInnerHTML={{ __html: getPreviewBody() }} />
+                                    <div className="mt-2 bg-gray-50 dark:bg-gray-800 rounded-xl p-5 text-sm text-gray-600 dark:text-gray-300 border border-gray-100 dark:border-gray-700 max-h-60 overflow-y-auto custom-scroll prose prose-sm dark:prose-invert max-w-none [&>p]:mb-3 [&>p:last-child]:mb-0" dangerouslySetInnerHTML={{ __html: getPreviewBody() }} />
                                 </details>
 
                                 {/* PDF info */}
-                                <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-xl p-4 flex items-center space-x-3">
+                                <div className="mb-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-xl p-4 flex items-center gap-3">
                                     <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
                                     </svg>
                                     <p className="text-sm text-blue-600 dark:text-blue-400">{t("PDF attached automatically")}</p>
                                 </div>
 
-                                {/* Extra padding at bottom so content doesn't hide behind footer */}
-                                <div className="h-4" />
-                            </div>
-                        </div>
+                                {/* Send email toggle — partner can choose not to bother the client */}
+                                <label className={`mb-8 flex items-start gap-3 rounded-xl p-4 border cursor-pointer transition-colors ${
+                                    data.send_email
+                                        ? 'bg-rose-50 dark:bg-rose-500/10 border-rose-200 dark:border-rose-500/30'
+                                        : 'bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30'
+                                }`}>
+                                    <input
+                                        type="checkbox"
+                                        checked={data.send_email}
+                                        onChange={e => setData('send_email', e.target.checked)}
+                                        className="mt-0.5 w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-rose-500 focus:ring-rose-400 cursor-pointer"
+                                    />
+                                    <div className="flex-1">
+                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                                            {t("Envoyer automatiquement l'email au client")}
+                                        </p>
+                                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
+                                            {data.send_email
+                                                ? t("Le client recevra l'email ci-dessus avec le PDF joint dès la soumission.")
+                                                : t("Aucun email ne sera envoyé au client. Notre équipe le contactera directement sous 24h. Idéal si vous préférez ne pas le déranger ou si vous l'avez déjà prévenu.")
+                                            }
+                                        </p>
+                                    </div>
+                                </label>
 
-                        {/* Fixed footer */}
-                        <div className="flex-shrink-0 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 p-8 flex items-center space-x-3 safe-bottom">
-                            <button
-                                type="button"
-                                onClick={() => setShowModal(false)}
-                                disabled={processing}
-                                className="flex-1 py-4 text-base font-semibold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                            >
-                                {t('Cancel')}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={confirmSend}
-                                disabled={processing}
-                                className="flex-[2] py-4 bg-gradient-to-r from-rose-500 to-pink-600 text-white text-base font-black rounded-xl shadow-lg shadow-rose-500/25 transition-all disabled:opacity-50 active:scale-[0.98] flex items-center justify-center"
-                            >
-                                {processing ? (
-                                    <>
-                                        <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
-                                        {t('Sending...')}
-                                    </>
-                                ) : (
-                                    <>
-                                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>
-                                        {t('Send Email')}
-                                    </>
-                                )}
-                            </button>
+                                {/* Action buttons — at the bottom of the content, not sticky */}
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowModal(false)}
+                                        disabled={processing}
+                                        className="flex-1 py-3.5 text-sm font-semibold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                                    >
+                                        {t('Cancel')}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={confirmSend}
+                                        disabled={processing}
+                                        className="flex-[2] py-3.5 bg-gradient-to-r from-rose-500 to-pink-600 text-white text-sm font-black rounded-xl shadow-lg shadow-rose-500/25 transition-all disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2"
+                                    >
+                                        {processing ? (
+                                            <>
+                                                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
+                                                {t('Sending...')}
+                                            </>
+                                        ) : (
+                                            <>
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>
+                                                {data.send_email ? t('Send Email') : t('Soumettre sans email')}
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>,

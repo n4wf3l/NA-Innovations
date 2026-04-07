@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, FormEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { useBranding } from '@/hooks/useBranding';
 
 interface Message {
     id: string;
@@ -93,6 +94,7 @@ interface ChatModalProps {
 
 export function ChatModal({ isOpen, onClose }: ChatModalProps) {
     const { t, i18n } = useTranslation();
+    const { companyName, logoUrl } = useBranding();
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -276,9 +278,9 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 flex-shrink-0">
                     <div className="flex items-center gap-3">
-                        <img src="/white-logo-small.png" alt="NA" className="w-10 h-10 object-contain rounded-xl" />
+                        <img src={logoUrl || "/white-logo-small.png"} alt={companyName} className="w-10 h-10 object-contain rounded-xl" />
                         <div>
-                            <h3 className="text-white font-bold text-sm">NA Innovations</h3>
+                            <h3 className="text-white font-bold text-sm">{companyName}</h3>
                             <p className="text-teal-400 text-xs">{t('Assistant IA')}</p>
                         </div>
                     </div>

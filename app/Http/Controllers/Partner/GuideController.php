@@ -29,12 +29,19 @@ class GuideController extends Controller
     {
         $partner = auth()->user()->referralPartner;
 
+        $emailTemplates = \App\Models\ProspectingEmailTemplate::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get(['id', 'title', 'body']);
+
         return Inertia::render('Partner/Prospecting', [
             'kbAccessStatus' => $partner?->kb_access_status ?? 'none',
             'kbNdaSignedAt' => $partner?->kb_nda_signed_at,
             'ndaMode' => \App\Models\Setting::get('kb.nda_mode', 'text'),
             'ndaText' => \App\Models\Setting::get('kb.nda_text', ''),
             'ndaPdfUrl' => \App\Models\Setting::get('kb.nda_pdf_path') ? '/storage/' . \App\Models\Setting::get('kb.nda_pdf_path') : null,
+            'emailTemplates' => $emailTemplates,
+            'coldCallScript' => \App\Models\Setting::get('partner.cold_call_script', "Bonjour, je m'appelle [votre nom]. Je travaille avec NA Innovations, une agence web belge.\n\nJe vous appelle car j'ai vu que votre [restaurant/club/entreprise] n'a pas encore de site web professionnel - et je pense qu'on peut vous aider à attirer plus de clients.\n\nNous avons une solution [site web / plateforme] spécialement conçue pour les [restaurants / clubs de football / entreprises comme la vôtre], déjà utilisée par plusieurs [restaurants / clubs] en Belgique.\n\nEst-ce que je pourrais vous envoyer une courte présentation par e-mail ? Cela ne vous engage à rien."),
         ]);
     }
 

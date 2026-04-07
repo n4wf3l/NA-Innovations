@@ -211,7 +211,7 @@ function SplashScreen({ branding, onComplete }: { branding: { logo_path: string;
                      }}>
                     <div className="relative" style={{ animation: phase === 'reveal' ? 'floatSlow 3s ease-in-out infinite' : 'none' }}>
                         {true ? (
-                            <img src="/white-logo-small.png" alt="NA Innovations" className="w-32 h-32 object-contain drop-shadow-[0_0_40px_rgba(94,234,212,0.3)]" />
+                            <img src={branding?.logo_path ? `/storage/${branding.logo_path}` : "/white-logo-small.png"} alt={branding?.company_name || "NA Innovations"} className="w-32 h-32 object-contain drop-shadow-[0_0_40px_rgba(94,234,212,0.3)]" />
                         ) : (
                             <div className="w-32 h-32" />
                         )}
@@ -391,12 +391,59 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
     const [showScrollTop, setShowScrollTop] = useState(false);
     const [chatOpen, setChatOpen] = useState(false);
     const [chatAvailable, setChatAvailable] = useState(false);
+    const [atTop, setAtTop] = useState(true);
+    const [autoScrolling, setAutoScrolling] = useState(false);
+    const [scrollSpeed, setScrollSpeed] = useState<'slow' | 'normal' | 'fast'>('normal');
+    const autoScrollRaf = useRef<number | null>(null);
+    const [scrollBtnRender, setScrollBtnRender] = useState(true);
+    const [scrollBtnClosing, setScrollBtnClosing] = useState(false);
 
     useEffect(() => {
-        const handleScroll = () => setShowScrollTop(window.scrollY > 600);
+        const shouldShow = atTop || autoScrolling;
+        if (shouldShow) {
+            setScrollBtnClosing(false);
+            setScrollBtnRender(true);
+        } else if (scrollBtnRender) {
+            setScrollBtnClosing(true);
+            const to = setTimeout(() => { setScrollBtnRender(false); setScrollBtnClosing(false); }, 400);
+            return () => clearTimeout(to);
+        }
+    }, [atTop, autoScrolling]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setShowScrollTop(window.scrollY > 600);
+            setAtTop(window.scrollY < 40);
+        };
+        handleScroll();
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // Auto-scroll loop
+    useEffect(() => {
+        if (!autoScrolling) {
+            if (autoScrollRaf.current) cancelAnimationFrame(autoScrollRaf.current);
+            return;
+        }
+        const SPEED = scrollSpeed === 'slow' ? 2.0 : scrollSpeed === 'fast' ? 7.0 : 3.5; // px per frame
+        const prevBehavior = document.documentElement.style.scrollBehavior;
+        document.documentElement.style.scrollBehavior = 'auto';
+        const tick = () => {
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            if (window.scrollY >= max - 1) {
+                setAutoScrolling(false);
+                return;
+            }
+            window.scrollTo({ top: window.scrollY + SPEED, behavior: 'instant' as ScrollBehavior });
+            autoScrollRaf.current = requestAnimationFrame(tick);
+        };
+        autoScrollRaf.current = requestAnimationFrame(tick);
+        return () => {
+            if (autoScrollRaf.current) cancelAnimationFrame(autoScrollRaf.current);
+            document.documentElement.style.scrollBehavior = prevBehavior;
+        };
+    }, [autoScrolling, scrollSpeed]);
 
     // Check chatbot availability
     useEffect(() => {
@@ -762,6 +809,133 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
             )}
 
             <FooterSection branding={branding} socialLinks={socialLinks} socialIcons={socialIcons} navLinks={navLinks} />
+
+            {/* Auto-scroll control — visible only at top of page, OR while auto-scrolling */}
+            {scrollBtnRender && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        bottom: '1.5rem',
+                        right: '1.5rem',
+                        zIndex: 60,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-end',
+                        gap: '0.5rem',
+                        opacity: 0,
+                        animation: scrollBtnClosing
+                            ? 'asbtn-out 400ms cubic-bezier(0.4, 0, 1, 1) forwards'
+                            : 'asbtn-in 400ms cubic-bezier(0.22, 1, 0.36, 1) forwards',
+                        pointerEvents: scrollBtnClosing ? 'none' : 'auto',
+                    }}
+                >
+                    <style>{`
+                        @keyframes asbtn-in { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+                        @keyframes asbtn-out { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(20px) scale(0.9); } }
+                        @keyframes asbtn-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+                    `}</style>
+
+                    {/* Label */}
+                    {!autoScrolling && (
+                        <span style={{
+                            fontSize: '0.7rem',
+                            fontWeight: 700,
+                            color: 'rgba(255,255,255,0.85)',
+                            background: 'rgba(0,0,0,0.7)',
+                            backdropFilter: 'blur(8px)',
+                            WebkitBackdropFilter: 'blur(8px)',
+                            padding: '0.35rem 0.75rem',
+                            borderRadius: '9999px',
+                            letterSpacing: '0.05em',
+                            textTransform: 'uppercase',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                        }}>
+                            {t('Visite automatique')}
+                        </span>
+                    )}
+
+                    {/* Segmented control */}
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        background: 'rgba(11, 16, 28, 0.85)',
+                        backdropFilter: 'blur(16px)',
+                        WebkitBackdropFilter: 'blur(16px)',
+                        border: '1px solid rgba(255,255,255,0.12)',
+                        borderRadius: '9999px',
+                        padding: '0.35rem',
+                        boxShadow: '0 12px 40px -10px rgba(0,0,0,0.6)',
+                    }}>
+                        {/* Stop / Play button */}
+                        <button
+                            onClick={() => setAutoScrolling(v => !v)}
+                            title={autoScrolling ? t('Arrêter') : t('Démarrer')}
+                            style={{
+                                width: '42px',
+                                height: '42px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: '9999px',
+                                background: autoScrolling
+                                    ? 'linear-gradient(135deg, #f43f5e, #e11d48)'
+                                    : 'linear-gradient(135deg, #2dd4bf, #14b8a6)',
+                                color: '#ffffff',
+                                border: 'none',
+                                cursor: 'pointer',
+                                boxShadow: autoScrolling
+                                    ? '0 6px 20px -6px rgba(244, 63, 94, 0.7)'
+                                    : '0 6px 20px -6px rgba(45, 212, 191, 0.7)',
+                                animation: autoScrolling ? 'asbtn-pulse 1.6s ease-in-out infinite' : 'none',
+                            }}
+                        >
+                            {autoScrolling ? (
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                    <rect x="6" y="5" width="4" height="14" rx="1" />
+                                    <rect x="14" y="5" width="4" height="14" rx="1" />
+                                </svg>
+                            ) : (
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+                                </svg>
+                            )}
+                        </button>
+
+                        <div style={{ width: '1px', height: '24px', background: 'rgba(255,255,255,0.1)', margin: '0 0.35rem' }} />
+
+                        {/* Speed selector */}
+                        {([
+                            { key: 'slow', label: t('Lent'), icon: '«' },
+                            { key: 'normal', label: t('Normal'), icon: '‹›' },
+                            { key: 'fast', label: t('Rapide'), icon: '»' },
+                        ] as const).map(opt => {
+                            const active = scrollSpeed === opt.key;
+                            return (
+                                <button
+                                    key={opt.key}
+                                    onClick={() => setScrollSpeed(opt.key)}
+                                    title={opt.label}
+                                    style={{
+                                        padding: '0.55rem 0.9rem',
+                                        borderRadius: '9999px',
+                                        background: active ? 'rgba(45, 212, 191, 0.2)' : 'transparent',
+                                        color: active ? '#2dd4bf' : 'rgba(255,255,255,0.6)',
+                                        border: active ? '1px solid rgba(45, 212, 191, 0.4)' : '1px solid transparent',
+                                        cursor: 'pointer',
+                                        fontSize: '0.75rem',
+                                        fontWeight: 700,
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.04em',
+                                        transition: 'all 200ms',
+                                    }}
+                                >
+                                    {opt.label}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
 
             {/* Fixed portal access */}
             <a href={auth?.user ? '/dashboard' : '/login'} className="fixed bottom-6 left-6 z-50 w-11 h-11 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-teal-300 hover:border-teal-300/30 hover:bg-gray-900 transition-all duration-300 group" title={auth?.user ? t('Dashboard') : t('Portal')}>

@@ -50,7 +50,7 @@ export default function FooterSection({ branding, socialLinks, socialIcons, navL
                     <div>
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">{t('Company Information')}</h3>
                         <div className="text-sm text-gray-600 dark:text-gray-400">
-                            <p className="mb-2 font-bold">NA Innovations BV</p>
+                            <p className="mb-2 font-bold">{branding.company_name} BV</p>
                             <p className="mb-2">{t('Company Registration Number')}: 1025.939.504</p>
                             <p className="mb-2">{t('VAT Number')}: BE1025939504</p>
                         </div>

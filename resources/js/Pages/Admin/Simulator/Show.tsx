@@ -3,6 +3,7 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, router, Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { formatCurrency } from '@/lib/utils';
+import { useBranding } from '@/hooks/useBranding';
 import SearchableSelect from '@/Components/ui/SearchableSelect';
 
 interface TeamMember { name: string; role: string; monthly_salary: number; }
@@ -43,6 +44,7 @@ function SectionTitle({ title, hint }: { title: string; hint: string }) {
 
 export default function SimulatorShow({ simulation, products }: Props) {
     const { t } = useTranslation();
+    const { companyName } = useBranding();
     const isNew = !simulation;
 
     const [name, setName] = useState(simulation?.name || '');
@@ -222,7 +224,7 @@ export default function SimulatorShow({ simulation, products }: Props) {
                 <p style="color:#6b7280;margin-top:4px">${productName || ''}</p>
             </div>
             <div class="meta">
-                <strong>NA Innovations</strong><br>
+                <strong>${companyName}</strong><br>
                 ${new Date().toLocaleDateString('fr-BE', { day: 'numeric', month: 'long', year: 'numeric' })}<br>
                 ${t('Horizon')}: ${timeHorizon} ${t('mois')}
             </div>
@@ -270,7 +272,7 @@ export default function SimulatorShow({ simulation, products }: Props) {
 
         ${notes ? `<div class="section"><h2>${t('Notes')}</h2><p style="color:#6b7280">${notes}</p></div>` : ''}
 
-        <div class="footer">${t('Simulation financière générée par NA Innovations')} — ${new Date().toLocaleDateString('fr-BE')}</div>
+        <div class="footer">${t('Simulation financière générée par')} ${companyName} — ${new Date().toLocaleDateString('fr-BE')}</div>
         </body></html>`);
         printWindow.document.close();
         setTimeout(() => printWindow.print(), 300);

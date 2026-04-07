@@ -19,6 +19,7 @@ interface Props {
         video_url: string;
     };
     simulatorMode?: string;
+    coldCallScript?: string;
 }
 
 const platformNames: Record<string, string> = {
@@ -69,7 +70,7 @@ const socialIcons: Record<string, JSX.Element> = {
     ),
 };
 
-export default function Branding({ socialLinks, branding, simulatorMode = 'europe_only' }: Props) {
+export default function Branding({ socialLinks, branding, simulatorMode = 'europe_only', coldCallScript = '' }: Props) {
     const { t } = useTranslation();
     const { confirm, ConfirmDialog } = useConfirm();
     const [links, setLinks] = useState(socialLinks);
@@ -79,6 +80,17 @@ export default function Branding({ socialLinks, branding, simulatorMode = 'europ
     const [savingSocial, setSavingSocial] = useState(false);
     const [savingBranding, setSavingBranding] = useState(false);
     const [uploadingLogo, setUploadingLogo] = useState(false);
+    const [scriptText, setScriptText] = useState(coldCallScript);
+    const [savingScript, setSavingScript] = useState(false);
+
+    const handleScriptSave = (e: FormEvent) => {
+        e.preventDefault();
+        setSavingScript(true);
+        router.put('/admin/settings/branding/cold-call-script', { cold_call_script: scriptText }, {
+            preserveScroll: true,
+            onFinish: () => setSavingScript(false),
+        });
+    };
 
     const handleSocialSave = (e: FormEvent) => {
         e.preventDefault();
@@ -352,6 +364,39 @@ export default function Branding({ socialLinks, branding, simulatorMode = 'europ
                         ))}
                     </div>
                 </div>
+            </div>
+
+            {/* Partner cold-call script */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden mt-8">
+                <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
+                    </div>
+                    <div>
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-white">{t('Script d\'appel — Partenaires')}</h2>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('Ce script est affiché aux partenaires sur la page Prospection > Scripts d\'appel.')}</p>
+                    </div>
+                </div>
+                <form onSubmit={handleScriptSave} className="p-6 space-y-4">
+                    <textarea
+                        value={scriptText}
+                        onChange={e => setScriptText(e.target.value)}
+                        rows={10}
+                        placeholder={t('Bonjour, je m\'appelle...')}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-mono leading-relaxed focus:ring-2 focus:ring-rose-500 focus:border-transparent transition"
+                    />
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {t('Astuce : utilisez des placeholders comme [votre nom], [restaurant/club/entreprise] pour que le partenaire personnalise son discours. Les retours à la ligne sont conservés.')}
+                    </p>
+                    <button
+                        type="submit"
+                        disabled={savingScript}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-medium text-sm transition-colors disabled:opacity-50"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                        {savingScript ? t('Enregistrement...') : t('Enregistrer le script')}
+                    </button>
+                </form>
             </div>
 
             <ConfirmDialog />
