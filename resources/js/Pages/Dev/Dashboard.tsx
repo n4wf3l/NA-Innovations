@@ -25,9 +25,14 @@ interface Props {
     };
     monthlyCompleted?: MonthlyCompleted[];
     totalBudgetManaged?: number;
+    devSettings?: { showEarnings: boolean; requireApproval: boolean; showSkillsMatching: boolean };
+    earningsThisMonth?: number;
+    earningsLast6Months?: { month: string; amount: number }[];
+    pendingApprovalHours?: number;
+    skillsMatchedProjects?: any[];
 }
 
-export default function DevDashboard({ myProjects, pendingProjects, stats, monthlyCompleted = [], totalBudgetManaged = 0 }: Props) {
+export default function DevDashboard({ myProjects, pendingProjects, stats, monthlyCompleted = [], totalBudgetManaged = 0, devSettings, earningsThisMonth = 0, earningsLast6Months = [], pendingApprovalHours = 0, skillsMatchedProjects = [] }: Props) {
     const { t } = useTranslation();
     const tour = useTour('dev_dashboard', devDashboardSteps.length);
 
@@ -57,6 +62,44 @@ export default function DevDashboard({ myProjects, pendingProjects, stats, month
                     <p className="text-gray-400 text-sm mt-2">{t('Browse pending projects and claim the ones you want to work on.')}</p>
                 </div>
             </div>
+
+            {/* Dev portal extra cards */}
+            {(devSettings?.showEarnings || devSettings?.requireApproval || devSettings?.showSkillsMatching) && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    {devSettings?.showEarnings && (
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm">
+                            <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">{t('Revenus du mois')}</p>
+                            <p className="text-2xl font-black text-gray-900 dark:text-white mt-2">{earningsThisMonth.toLocaleString()} €</p>
+                            <div className="flex items-end gap-1 mt-3 h-8">
+                                {earningsLast6Months.map((m, i) => {
+                                    const max = Math.max(...earningsLast6Months.map(x => x.amount), 1);
+                                    const h = Math.max(4, Math.round((m.amount / max) * 100));
+                                    return <div key={i} title={`${m.month}: ${m.amount}€`} className="flex-1 bg-indigo-400 rounded-sm" style={{ height: `${h}%` }} />;
+                                })}
+                            </div>
+                        </div>
+                    )}
+                    {devSettings?.requireApproval && (
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm">
+                            <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">{t('Heures en attente de validation')}</p>
+                            <p className="text-2xl font-black text-gray-900 dark:text-white mt-2">{pendingApprovalHours} h</p>
+                        </div>
+                    )}
+                    {devSettings?.showSkillsMatching && (
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm">
+                            <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">{t('Projets correspondant à vos compétences')}</p>
+                            <p className="text-2xl font-black text-gray-900 dark:text-white mt-2">{skillsMatchedProjects.length}</p>
+                            <ul className="mt-2 space-y-1">
+                                {skillsMatchedProjects.slice(0, 3).map((p: any) => (
+                                    <li key={p.id} className="text-xs">
+                                        <Link href={`/dev/projects/${p.id}`} className="text-indigo-500 hover:underline">{p.nom_societe}</Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+            )}
 
             {/* Stats grid */}
             <div data-tour="stats-grid" className="stagger-children grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

@@ -4,11 +4,14 @@ import Badge from '@/Components/ui/Badge';
 import { formatCurrency, formatDate, formatStatus, formatProjectType } from '@/lib/utils';
 import UnifiedTimeline from '@/Components/ui/UnifiedTimeline';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useConfirm } from '@/hooks/useConfirm';
 import SearchableSelect from '@/Components/ui/SearchableSelect';
 import RichTextEditor from '@/Components/ui/RichTextEditor';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface TimeEntryData {
     id: number;
@@ -40,6 +43,34 @@ interface DocData {
     author?: { id: number; name: string };
 }
 
+interface MilestoneData {
+    id: number;
+    label: string;
+    description: string | null;
+    due_date: string | null;
+    status: string;
+    sort_order: number;
+}
+
+interface DevMessageData {
+    id: number;
+    sender_id: number;
+    recipient_role: string;
+    content: string;
+    created_at: string;
+    sender?: { id: number; name: string; role?: string };
+}
+
+interface DevSettings {
+    showMilestones: boolean;
+    showCredentials: boolean;
+    showMessaging: boolean;
+    allowBlockedStatus: boolean;
+    showUsefulLinks: boolean;
+    decloisonedNotes: boolean;
+    allowRelease: boolean;
+}
+
 interface Props {
     project: any;
     myTimeEntries: TimeEntryData[];
@@ -47,6 +78,9 @@ interface Props {
     myNotes: NoteData[];
     authUserId: number;
     projectDocs: DocData[];
+    milestones?: MilestoneData[];
+    devMessages?: DevMessageData[];
+    devSettings?: DevSettings;
 }
 
 const card = 'bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden';
@@ -95,7 +129,54 @@ const allowedTransitions: Record<string, string[]> = {
     review: ['in_progress'],
 };
 
-export default function ProjectShow({ project, myTimeEntries, totalHours, myNotes, authUserId, projectDocs = [] }: Props) {
+function SortableMilestoneRow({ m, t, children }: { m: MilestoneData; t: any; children: React.ReactNode }) {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: m.id });
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+    };
+    return (
+        <div ref={setNodeRef} style={style} className="flex items-center justify-between gap-2 p-3 bg-gray-50 dark:bg-gray-700/40 rounded-xl">
+            <button type="button" {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" aria-label={t('Déplacer')}>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+                </svg>
+            </button>
+            {children}
+        </div>
+    );
+}
+
+export default function ProjectShow({ project, myTimeEntries, totalHours, myNotes, authUserId, projectDocs = [], milestones = [], devMessages = [], devSettings }: Props) {
+    const ds: DevSettings = devSettings || { showMilestones: false, showCredentials: false, showMessaging: false, allowBlockedStatus: false, showUsefulLinks: false, decloisonedNotes: false, allowRelease: false };
+    const milestoneForm = useForm({ label: '', description: '', due_date: '', status: 'pending' });
+    const [orderedMilestones, setOrderedMilestones] = useState<MilestoneData[]>(milestones);
+    useEffect(() => {
+        setOrderedMilestones(milestones);
+    }, [milestones.map(m => m.id).join(',')]);
+    const milestoneSensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+    const handleMilestoneDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+        const oldIndex = orderedMilestones.findIndex(m => m.id === active.id);
+        const newIndex = orderedMilestones.findIndex(m => m.id === over.id);
+        if (oldIndex < 0 || newIndex < 0) return;
+        const next = arrayMove(orderedMilestones, oldIndex, newIndex);
+        setOrderedMilestones(next);
+        router.post(`/dev/projects/${project.id}/milestones/reorder`, { ids: next.map(m => m.id) }, { preserveScroll: true, preserveState: true });
+    };
+    const messageForm = useForm({ content: '', recipient_role: 'admin' });
+    const credForm = useForm({ project_credentials: project.project_credentials || '', project_env: project.project_env || '' });
+    const blockedForm = useForm({ status: '' });
+    const usefulLinks = Array.isArray(project.useful_links)
+        ? project.useful_links
+        : (typeof project.useful_links === 'string'
+            ? (() => { try { return JSON.parse(project.useful_links); } catch { return []; } })()
+            : []);
+    const estimated = parseFloat(project.estimated_hours || 0);
+    const loggedPct = estimated > 0 ? Math.min(100, Math.round((totalHours / estimated) * 100)) : 0;
+    const loggedColor = loggedPct < 70 ? 'bg-emerald-500' : loggedPct < 100 ? 'bg-amber-500' : 'bg-rose-500';
     const { t } = useTranslation();
     const { confirm, ConfirmDialog } = useConfirm();
     const { post, processing } = useForm({});
@@ -875,6 +956,185 @@ export default function ProjectShow({ project, myTimeEntries, totalHours, myNote
                     </div>
                 </div>
             </div>
+            {/* Dev portal feature sections */}
+            <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {estimated > 0 && (
+                    <div className={card}>
+                        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+                            <h3 className="font-bold text-gray-900 dark:text-white text-sm">{t('Heures estimées vs réalisées')}</h3>
+                        </div>
+                        <div className="p-6">
+                            <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
+                                <span>{totalHours} / {estimated} h</span>
+                                <span>{loggedPct}%</span>
+                            </div>
+                            <div className="w-full h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div className={`h-full ${loggedColor}`} style={{ width: `${loggedPct}%` }} />
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {ds.showMilestones && isAssigned && (
+                    <div className={card}>
+                        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+                            <h3 className="font-bold text-gray-900 dark:text-white text-sm">{t('Étapes du projet')}</h3>
+                        </div>
+                        <div className="p-6 space-y-3">
+                            {orderedMilestones.length === 0 && <p className="text-xs text-gray-400">{t('Aucune étape')}</p>}
+                            <DndContext sensors={milestoneSensors} collisionDetection={closestCenter} onDragEnd={handleMilestoneDragEnd}>
+                                <SortableContext items={orderedMilestones.map(m => m.id)} strategy={verticalListSortingStrategy}>
+                                    {orderedMilestones.map(m => (
+                                        <SortableMilestoneRow key={m.id} m={m} t={t}>
+                                            <div className="flex-1">
+                                                <p className="text-sm font-medium text-gray-900 dark:text-white">{m.label}</p>
+                                                {m.due_date && <p className="text-xs text-gray-400">{formatDate(m.due_date)}</p>}
+                                            </div>
+                                            <span className={`text-xs px-2 py-1 rounded-lg ${m.status === 'done' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : m.status === 'in_progress' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : m.status === 'blocked' ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'}`}>
+                                                {t(m.status)}
+                                            </span>
+                                            <button
+                                                onClick={() => router.delete(`/dev/milestones/${m.id}`, { preserveScroll: true })}
+                                                className="text-xs text-rose-500 hover:text-rose-700"
+                                            >{t('Supprimer')}</button>
+                                        </SortableMilestoneRow>
+                                    ))}
+                                </SortableContext>
+                            </DndContext>
+                            <form
+                                onSubmit={(e) => { e.preventDefault(); milestoneForm.post(`/dev/projects/${project.id}/milestones`, { preserveScroll: true, onSuccess: () => milestoneForm.reset() }); }}
+                                className="space-y-2 pt-2"
+                            >
+                                <input className={input} placeholder={t('Nouvelle étape')} value={milestoneForm.data.label} onChange={e => milestoneForm.setData('label', e.target.value)} />
+                                <div className="flex gap-2">
+                                    <input type="date" className={input} value={milestoneForm.data.due_date} onChange={e => milestoneForm.setData('due_date', e.target.value)} />
+                                    <select className={input} value={milestoneForm.data.status} onChange={e => milestoneForm.setData('status', e.target.value)}>
+                                        <option value="pending">{t('pending')}</option>
+                                        <option value="in_progress">{t('in_progress')}</option>
+                                        <option value="done">{t('done')}</option>
+                                        <option value="blocked">{t('blocked')}</option>
+                                    </select>
+                                </div>
+                                <button className="w-full px-4 py-2 rounded-xl bg-indigo-500 text-white text-sm font-bold hover:bg-indigo-600">{t('Ajouter une étape')}</button>
+                            </form>
+                        </div>
+                    </div>
+                )}
+
+                {ds.showCredentials && isAssigned && (
+                    <div className={card}>
+                        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+                            <h3 className="font-bold text-gray-900 dark:text-white text-sm">{t('Identifiants & variables d\'environnement')}</h3>
+                            <p className="text-xs text-gray-400 mt-1">{t('Chiffré au repos')}</p>
+                        </div>
+                        <form
+                            onSubmit={(e) => { e.preventDefault(); credForm.put(`/dev/projects/${project.id}/credentials`, { preserveScroll: true }); }}
+                            className="p-6 space-y-3"
+                        >
+                            <div>
+                                <label className={labelCls}>{t('Identifiants')}</label>
+                                <textarea className={input} rows={4} value={credForm.data.project_credentials} onChange={e => credForm.setData('project_credentials', e.target.value)} />
+                            </div>
+                            <div>
+                                <label className={labelCls}>{t('Variables d\'environnement')}</label>
+                                <textarea className={input} rows={6} value={credForm.data.project_env} onChange={e => credForm.setData('project_env', e.target.value)} />
+                            </div>
+                            <button className="px-4 py-2 rounded-xl bg-indigo-500 text-white text-sm font-bold hover:bg-indigo-600">{t('Enregistrer')}</button>
+                        </form>
+                    </div>
+                )}
+
+                {ds.showUsefulLinks && (
+                    <div className={card}>
+                        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+                            <h3 className="font-bold text-gray-900 dark:text-white text-sm">{t('Liens utiles')}</h3>
+                        </div>
+                        <div className="p-6 space-y-2 text-sm">
+                            {project.staging_url && <a href={project.staging_url} target="_blank" rel="noreferrer" className="block text-indigo-500 hover:underline">Staging: {project.staging_url}</a>}
+                            {project.preview_url && <a href={project.preview_url} target="_blank" rel="noreferrer" className="block text-indigo-500 hover:underline">Preview: {project.preview_url}</a>}
+                            {project.github_repo && <a href={project.github_repo} target="_blank" rel="noreferrer" className="block text-indigo-500 hover:underline">GitHub: {project.github_repo}</a>}
+                            {usefulLinks.map((l: any, i: number) => (
+                                <a key={i} href={typeof l === 'string' ? l : l.url} target="_blank" rel="noreferrer" className="block text-indigo-500 hover:underline">
+                                    {typeof l === 'string' ? l : (l.label || l.url)}
+                                </a>
+                            ))}
+                            {!project.staging_url && !project.preview_url && !project.github_repo && usefulLinks.length === 0 && (
+                                <p className="text-xs text-gray-400">{t('Aucun lien')}</p>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {ds.showMessaging && isAssigned && (
+                    <div className={card}>
+                        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+                            <h3 className="font-bold text-gray-900 dark:text-white text-sm">{t('Messagerie')}</h3>
+                        </div>
+                        <div className="p-6 space-y-3">
+                            <div className="max-h-64 overflow-y-auto space-y-2">
+                                {devMessages.length === 0 && <p className="text-xs text-gray-400">{t('Aucun message')}</p>}
+                                {devMessages.map(m => (
+                                    <div key={m.id} className="p-3 bg-gray-50 dark:bg-gray-700/40 rounded-xl">
+                                        <div className="flex items-center justify-between mb-1">
+                                            <span className="text-xs font-bold text-gray-700 dark:text-gray-200">{m.sender?.name || t('Utilisateur')}</span>
+                                            <span className="text-[10px] text-gray-400">{new Date(m.created_at).toLocaleString()}</span>
+                                        </div>
+                                        <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{m.content}</p>
+                                    </div>
+                                ))}
+                            </div>
+                            <form
+                                onSubmit={(e) => { e.preventDefault(); messageForm.post(`/dev/projects/${project.id}/messages`, { preserveScroll: true, onSuccess: () => messageForm.reset('content') }); }}
+                                className="space-y-2"
+                            >
+                                <select className={input} value={messageForm.data.recipient_role} onChange={e => messageForm.setData('recipient_role', e.target.value)}>
+                                    <option value="admin">{t('Admin')}</option>
+                                    <option value="client">{t('Client')}</option>
+                                    <option value="dev">{t('Développeur')}</option>
+                                </select>
+                                <textarea className={input} rows={3} placeholder={t('Votre message...')} value={messageForm.data.content} onChange={e => messageForm.setData('content', e.target.value)} />
+                                <button className="px-4 py-2 rounded-xl bg-indigo-500 text-white text-sm font-bold hover:bg-indigo-600">{t('Envoyer')}</button>
+                            </form>
+                        </div>
+                    </div>
+                )}
+
+                {ds.allowBlockedStatus && isAssigned && (
+                    <div className={card}>
+                        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+                            <h3 className="font-bold text-gray-900 dark:text-white text-sm">{t('Statut bloqué / en attente')}</h3>
+                        </div>
+                        <div className="p-6 flex flex-wrap gap-2">
+                            {['blocked', 'waiting_client', 'on_hold', 'in_progress'].map(s => (
+                                <button
+                                    key={s}
+                                    onClick={() => router.patch(`/dev/projects/${project.id}/blocked-status`, { status: s }, { preserveScroll: true })}
+                                    className="px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 text-xs font-bold text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
+                                >{t(s)}</button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {ds.allowRelease && isAssigned && (
+                    <div className={card}>
+                        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+                            <h3 className="font-bold text-gray-900 dark:text-white text-sm">{t('Libérer le projet')}</h3>
+                        </div>
+                        <div className="p-6">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">{t('Vous pouvez libérer ce projet pour qu\'un autre développeur le reprenne.')}</p>
+                            <button
+                                onClick={async () => {
+                                    const ok = await confirm({ title: t('Libérer le projet'), message: t('Êtes-vous sûr ?'), confirmText: t('Libérer'), variant: 'danger' });
+                                    if (ok) router.post(`/dev/projects/${project.id}/release`);
+                                }}
+                                className="px-4 py-2 rounded-xl bg-rose-500 text-white text-sm font-bold hover:bg-rose-600"
+                            >{t('Libérer le projet')}</button>
+                        </div>
+                    </div>
+                )}
+            </div>
+
             <ConfirmDialog />
         </DevLayout>
     );

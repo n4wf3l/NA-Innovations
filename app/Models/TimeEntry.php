@@ -17,13 +17,23 @@ class TimeEntry extends Model
         'description',
         'task_category',
         'is_billable',
+        'approval_status',
+        'approved_at',
+        'approved_by',
+        'rejection_reason',
     ];
 
     protected $casts = [
         'date' => 'date',
         'hours' => 'decimal:2',
         'is_billable' => 'boolean',
+        'approved_at' => 'datetime',
     ];
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
 
     // ──────────────────────────────────────────────
     // Relationships

@@ -1,10 +1,13 @@
 <?php
 namespace App\Http\Controllers\Dev;
 
+use App\Models\DevMessage;
 use App\Models\Note;
 use App\Models\ProjectDoc;
+use App\Models\ProjectMilestone;
 use App\Models\Projet;
 use App\Models\NotificationLog;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Inertia\Inertia;
@@ -41,7 +44,18 @@ class ProjectController extends Controller
         $user = auth()->user();
         if (!in_array($user->role, ['developer', 'admin'])) abort(403);
 
-        $project->load('client', 'developer', 'lead.referralPartner.user', 'timelineEvents', 'quotes', 'invoices', 'timeEntries.user', 'notes.user', 'briefs', 'projectDocs.author');
+        $project->load('client', 'developer', 'lead.referralPartner.user', 'timelineEvents', 'quotes', 'invoices', 'timeEntries.user', 'notes.user', 'briefs', 'projectDocs.author', 'milestones', 'devMessages.sender');
+
+        // Settings
+        $settings = [
+            'showMilestones' => Setting::get('dev.show_milestones', '1') === '1',
+            'showCredentials' => Setting::get('dev.show_credentials', '1') === '1',
+            'showMessaging' => Setting::get('dev.show_messaging', '1') === '1',
+            'allowBlockedStatus' => Setting::get('dev.allow_blocked_status', '1') === '1',
+            'showUsefulLinks' => Setting::get('dev.show_useful_links', '1') === '1',
+            'decloisonedNotes' => Setting::get('dev.decloisoned_notes', '1') === '1',
+            'allowRelease' => Setting::get('dev.allow_release', '1') === '1',
+        ];
 
         // Filter time entries for this dev
         $myTimeEntries = $project->timeEntries
@@ -51,11 +65,11 @@ class ProjectController extends Controller
 
         $totalHours = $myTimeEntries->sum('hours');
 
-        // Filter notes for this dev
-        $myNotes = $project->notes
-            ->where('user_id', $user->id)
-            ->sortByDesc('created_at')
-            ->values();
+        // Notes — decloisoned or own only
+        $notesCollection = $settings['decloisonedNotes']
+            ? $project->notes
+            : $project->notes->where('user_id', $user->id);
+        $myNotes = $notesCollection->sortByDesc('created_at')->values();
 
         $projectDocs = $project->projectDocs
             ->sortBy('sort_order')
@@ -69,7 +83,143 @@ class ProjectController extends Controller
             'myNotes' => $myNotes,
             'authUserId' => $user->id,
             'projectDocs' => $projectDocs,
+            'milestones' => $project->milestones,
+            'devMessages' => $project->devMessages,
+            'devSettings' => $settings,
         ]);
+    }
+
+    public function release(Projet $project)
+    {
+        if (Setting::get('dev.allow_release', '1') !== '1') abort(403);
+        $user = auth()->user();
+        if ($project->developer_id !== $user->id) abort(403);
+
+        $project->update([
+            'developer_id' => null,
+            'status' => 'planning',
+        ]);
+
+        $project->timelineEvents()->create([
+            'user_id' => $user->id,
+            'event_type' => 'developer_released',
+            'title' => 'Project released',
+            'description' => "{$user->name} released this project",
+        ]);
+
+        return redirect()->route('dev.projects.index')->with('success', __('Projet libéré.'));
+    }
+
+    public function storeMilestone(Request $request, Projet $project)
+    {
+        $user = auth()->user();
+        if ($project->developer_id !== $user->id) abort(403);
+        $validated = $request->validate([
+            'label' => 'required|string|max:255',
+            'description' => 'nullable|string|max:2000',
+            'due_date' => 'nullable|date',
+            'status' => 'nullable|in:pending,in_progress,done,blocked',
+        ]);
+        $validated['project_id'] = $project->id;
+        $validated['sort_order'] = $project->milestones()->count();
+        ProjectMilestone::create($validated);
+        return redirect()->back()->with('success', __('Étape ajoutée.'));
+    }
+
+    public function updateMilestone(Request $request, ProjectMilestone $milestone)
+    {
+        $user = auth()->user();
+        if ($milestone->project->developer_id !== $user->id) abort(403);
+        $validated = $request->validate([
+            'label' => 'required|string|max:255',
+            'description' => 'nullable|string|max:2000',
+            'due_date' => 'nullable|date',
+            'status' => 'nullable|in:pending,in_progress,done,blocked',
+        ]);
+        $milestone->update($validated);
+        return redirect()->back()->with('success', __('Étape mise à jour.'));
+    }
+
+    public function reorderMilestones(Request $request, Projet $project)
+    {
+        $user = auth()->user();
+        if ($project->developer_id !== $user->id) abort(403);
+        $validated = $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:project_milestones,id',
+        ]);
+        foreach ($validated['ids'] as $index => $id) {
+            ProjectMilestone::where('id', $id)
+                ->where('project_id', $project->id)
+                ->update(['sort_order' => $index]);
+        }
+        return redirect()->back()->with('success', __('Ordre des étapes mis à jour.'));
+    }
+
+    public function deleteMilestone(ProjectMilestone $milestone)
+    {
+        $user = auth()->user();
+        if ($milestone->project->developer_id !== $user->id) abort(403);
+        $milestone->delete();
+        return redirect()->back()->with('success', __('Étape supprimée.'));
+    }
+
+    public function storeMessage(Request $request, Projet $project)
+    {
+        if (Setting::get('dev.show_messaging', '1') !== '1') abort(403);
+        $user = auth()->user();
+        if ($project->developer_id !== $user->id && $user->role !== 'admin') abort(403);
+
+        $validated = $request->validate([
+            'content' => 'required|string|max:5000',
+            'recipient_role' => 'required|in:admin,client,dev',
+        ]);
+
+        DevMessage::create([
+            'project_id' => $project->id,
+            'sender_id' => $user->id,
+            'recipient_role' => $validated['recipient_role'],
+            'content' => $validated['content'],
+        ]);
+
+        return redirect()->back()->with('success', __('Message envoyé.'));
+    }
+
+    public function updateBlockedStatus(Request $request, Projet $project)
+    {
+        if (Setting::get('dev.allow_blocked_status', '1') !== '1') abort(403);
+        $user = auth()->user();
+        if ($project->developer_id !== $user->id) abort(403);
+
+        $validated = $request->validate([
+            'status' => 'required|in:blocked,waiting_client,on_hold,in_progress',
+        ]);
+
+        $oldStatus = $project->status;
+        $project->update(['status' => $validated['status']]);
+
+        $project->timelineEvents()->create([
+            'user_id' => $user->id,
+            'event_type' => 'status_change',
+            'title' => 'Status updated',
+            'old_value' => $oldStatus,
+            'new_value' => $validated['status'],
+        ]);
+
+        return redirect()->back()->with('success', __('Statut mis à jour.'));
+    }
+
+    public function updateCredentials(Request $request, Projet $project)
+    {
+        if (Setting::get('dev.show_credentials', '1') !== '1') abort(403);
+        $user = auth()->user();
+        if ($project->developer_id !== $user->id) abort(403);
+        $validated = $request->validate([
+            'project_credentials' => 'nullable|string|max:10000',
+            'project_env' => 'nullable|string|max:20000',
+        ]);
+        $project->update($validated);
+        return redirect()->back()->with('success', __('Identifiants mis à jour.'));
     }
 
     public function claim(Projet $project)

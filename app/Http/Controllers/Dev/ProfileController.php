@@ -17,8 +17,12 @@ class ProfileController extends Controller
 
     public function index()
     {
+        $user = auth()->user();
         return Inertia::render('Dev/Profile', [
-            'user' => auth()->user(),
+            'user' => $user,
+            'devSettings' => [
+                'showHourlyRate' => \App\Models\Setting::get('dev.show_hourly_rate', '1') === '1',
+            ],
         ]);
     }
 
@@ -29,10 +33,15 @@ class ProfileController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:50',
+            'bio' => 'nullable|string|max:2000',
+            'skills' => 'nullable|array',
+            'skills.*' => 'string|max:50',
+            'specialties' => 'nullable|array',
+            'specialties.*' => 'string|max:50',
         ]);
 
         $user->update($validated);
-        return redirect()->back()->with('success', 'Profile updated.');
+        return redirect()->back()->with('success', __('Profil mis à jour.'));
     }
 
     public function updatePassword(Request $request)

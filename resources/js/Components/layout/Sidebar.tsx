@@ -11,6 +11,7 @@ export interface NavItem {
     icon?: string;
     match?: string;
     tourId?: string;
+    badge?: number;
 }
 
 interface SidebarProps {
@@ -154,7 +155,7 @@ export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedF
                             href={item.href || '#'}
                             {...(item.tourId ? { 'data-tour': item.tourId } : {})}
                             className={cn(
-                                'flex items-center rounded-lg font-medium transition-all duration-150',
+                                'relative flex items-center rounded-lg font-medium transition-all duration-150',
                                 textSize,
                                 linkPadding,
                                 isActive ? activeClasses : inactiveClasses
@@ -167,7 +168,15 @@ export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedF
                                     <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
                                 </svg>
                             )}
-                            {!isSmall && t(item.label)}
+                            {!isSmall && <span className="flex-1">{t(item.label)}</span>}
+                            {item.badge !== undefined && item.badge > 0 && (
+                                <span className={cn(
+                                    'inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold',
+                                    isSmall && 'absolute top-1 right-1 min-w-[14px] h-[14px] text-[9px]'
+                                )}>
+                                    {item.badge > 99 ? '99+' : item.badge}
+                                </span>
+                            )}
                         </Link>
                     );
                 })}

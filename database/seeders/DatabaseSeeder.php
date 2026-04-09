@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             RealDataSeeder::class,
             PostSeeder::class,
             PortfolioSeeder::class,
+            DevPortalDummySeeder::class,
         ]);
     }
 }

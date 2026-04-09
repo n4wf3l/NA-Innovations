@@ -92,6 +92,40 @@ class HandleInertiaRequests extends Middleware
                 'tagline' => \App\Models\Setting::get('branding.tagline', ''),
             ],
             'appUrl' => config('app.url', 'https://nainnovations.be'),
+            'devSettings' => (function () use ($request) {
+                if (!$request->user() || !in_array($request->user()->role, ['developer', 'admin'])) {
+                    return null;
+                }
+                $keys = [
+                    'dev.show_earnings',
+                    'dev.show_hourly_rate',
+                    'dev.require_time_approval',
+                    'dev.allow_release',
+                    'dev.show_skills_matching',
+                    'dev.show_team_contacts',
+                    'dev.show_milestones',
+                    'dev.show_credentials',
+                    'dev.show_messaging',
+                    'dev.allow_blocked_status',
+                    'dev.show_useful_links',
+                    'dev.decloisoned_notes',
+                ];
+                $out = [];
+                foreach ($keys as $k) {
+                    $short = str_replace('dev.', '', $k);
+                    $out[$short] = \App\Models\Setting::get($k, '1') === '1';
+                }
+                return $out;
+            })(),
+            'pendingTimeApprovals' => (function () use ($request) {
+                if (!$request->user() || $request->user()->role !== 'admin') return 0;
+                if (!\Illuminate\Support\Facades\Schema::hasTable('time_entries')) return 0;
+                try {
+                    return \App\Models\TimeEntry::where('approval_status', 'pending')->count();
+                } catch (\Throwable $e) {
+                    return 0;
+                }
+            })(),
         ];
     }
 }

@@ -29,6 +29,7 @@ class ProjectController extends Controller
             ->with('developer')
             ->latest('updated_at')
             ->get();
+        $projects->each->makeHidden(['project_credentials', 'project_env', 'estimated_hours', 'github_repo']);
 
         return Inertia::render('Client/Projects/Index', [
             'projects' => $projects,
@@ -48,6 +49,9 @@ class ProjectController extends Controller
             'developer',
             'timelineEvents' => fn($q) => $q->latest()->take(30),
         ]);
+
+        // SECURITY: never expose internal/sensitive fields to the client
+        $project->makeHidden(['project_credentials', 'project_env', 'estimated_hours', 'github_repo']);
 
         // Documents: quotes linked to this project or lead
         $quotes = Quote::where(function ($q) use ($project) {
@@ -182,6 +186,8 @@ class ProjectController extends Controller
             ->orderBy('sort_order')
             ->orderBy('title')
             ->get();
+
+        $project->makeHidden(['project_credentials', 'project_env', 'estimated_hours', 'github_repo']);
 
         return Inertia::render('Client/Projects/Docs', [
             'project' => $project,

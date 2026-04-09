@@ -149,7 +149,7 @@ export default function KanbanBoard<T>({ columns, items, keyExtractor, renderCar
             scrollStart = real.scrollLeft;
             e.preventDefault();
         };
-        const onMove = (e: MouseEvent) => {
+        const onThumbMove = (e: MouseEvent) => {
             if (!dragging) return;
             const trackW = track.clientWidth;
             const thumbW = thumb.clientWidth;
@@ -161,7 +161,7 @@ export default function KanbanBoard<T>({ columns, items, keyExtractor, renderCar
         };
         const onUp = () => { dragging = false; };
         thumb.addEventListener('mousedown', onThumbDown);
-        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mousemove', onThumbMove);
         window.addEventListener('mouseup', onUp);
 
         // Click on track jumps
@@ -180,7 +180,7 @@ export default function KanbanBoard<T>({ columns, items, keyExtractor, renderCar
             ro.disconnect();
             window.removeEventListener('resize', update);
             thumb.removeEventListener('mousedown', onThumbDown);
-            window.removeEventListener('mousemove', onMove);
+            window.removeEventListener('mousemove', onThumbMove);
             window.removeEventListener('mouseup', onUp);
             track.removeEventListener('click', onTrackClick);
         };

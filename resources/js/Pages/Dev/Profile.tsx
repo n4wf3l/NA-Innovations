@@ -9,20 +9,28 @@ interface Props {
         email: string;
         phone: string | null;
         github_username: string | null;
+        bio?: string | null;
+        skills?: string[] | null;
+        specialties?: string[] | null;
+        hourly_rate?: number | string | null;
     };
+    devSettings?: { showHourlyRate: boolean };
 }
 
 const input = 'w-full bg-gray-50 dark:bg-gray-700/50 border-0 rounded-xl px-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-400 focus:bg-white dark:focus:bg-gray-700 transition-all';
 const label = 'block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2';
 const card = 'bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden';
 
-export default function DevProfile({ user }: Props) {
+export default function DevProfile({ user, devSettings }: Props) {
     const { t } = useTranslation();
 
     const profileForm = useForm({
         name: user.name || '',
         email: user.email || '',
         phone: user.phone || '',
+        bio: user.bio || '',
+        skills: Array.isArray(user.skills) ? user.skills : [],
+        specialties: Array.isArray(user.specialties) ? user.specialties : [],
     });
 
     const passwordForm = useForm({
@@ -86,6 +94,42 @@ export default function DevProfile({ user }: Props) {
                             />
                             {profileForm.errors.phone && <p className="text-xs text-red-500 mt-1">{profileForm.errors.phone}</p>}
                         </div>
+                        <div>
+                            <label className={label}>{t('Bio')}</label>
+                            <textarea
+                                rows={3}
+                                className={input}
+                                value={profileForm.data.bio}
+                                onChange={e => profileForm.setData('bio', e.target.value)}
+                                placeholder={t('Présentez-vous en quelques mots')}
+                            />
+                        </div>
+                        <div>
+                            <label className={label}>{t('Compétences')} ({t('séparées par des virgules')})</label>
+                            <input
+                                type="text"
+                                className={input}
+                                value={profileForm.data.skills.join(', ')}
+                                onChange={e => profileForm.setData('skills', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+                                placeholder="Laravel, React, TypeScript"
+                            />
+                        </div>
+                        <div>
+                            <label className={label}>{t('Spécialités')} ({t('séparées par des virgules')})</label>
+                            <input
+                                type="text"
+                                className={input}
+                                value={profileForm.data.specialties.join(', ')}
+                                onChange={e => profileForm.setData('specialties', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+                                placeholder="SaaS, Dashboards"
+                            />
+                        </div>
+                        {devSettings?.showHourlyRate && user.hourly_rate != null && (
+                            <div className="flex items-center gap-2 px-4 py-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl">
+                                <span className="text-xs text-indigo-700 dark:text-indigo-300">{t('Tarif horaire défini par l\'admin')} :</span>
+                                <span className="text-sm font-bold text-indigo-700 dark:text-indigo-300">{user.hourly_rate} €/h</span>
+                            </div>
+                        )}
                         <div className="flex justify-end pt-2">
                             <button
                                 type="submit"

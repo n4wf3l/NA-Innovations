@@ -66,4 +66,39 @@ class TimeEntryController extends BaseAdminController
             ],
         ]);
     }
+
+    public function pending()
+    {
+        $entries = TimeEntry::with(['project', 'user'])
+            ->where('approval_status', 'pending')
+            ->orderByDesc('date')
+            ->paginate(50);
+
+        return Inertia::render('Admin/TimeEntries/Pending', [
+            'entries' => $entries,
+        ]);
+    }
+
+    public function approve(TimeEntry $entry)
+    {
+        $entry->update([
+            'approval_status' => 'approved',
+            'approved_at' => now(),
+            'approved_by' => auth()->id(),
+            'rejection_reason' => null,
+        ]);
+        return redirect()->back()->with('success', __('Entrée approuvée.'));
+    }
+
+    public function reject(Request $request, TimeEntry $entry)
+    {
+        $request->validate(['reason' => 'nullable|string|max:500']);
+        $entry->update([
+            'approval_status' => 'rejected',
+            'approved_at' => now(),
+            'approved_by' => auth()->id(),
+            'rejection_reason' => $request->input('reason'),
+        ]);
+        return redirect()->back()->with('success', __('Entrée rejetée.'));
+    }
 }

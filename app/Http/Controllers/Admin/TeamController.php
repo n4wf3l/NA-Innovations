@@ -175,6 +175,24 @@ class TeamController extends BaseAdminController
     /**
      * Toggle a user's active status.
      */
+    /**
+     * Update the hourly rate for a developer user.
+     */
+    public function updateHourlyRate(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'hourly_rate' => 'nullable|numeric|min:0',
+        ]);
+
+        if ($user->role !== 'developer') {
+            return redirect()->back()->with('error', __('Le taux horaire ne s\'applique qu\'aux développeurs.'));
+        }
+
+        $user->update(['hourly_rate' => $validated['hourly_rate']]);
+
+        return redirect()->back()->with('success', __('Taux horaire mis à jour.'));
+    }
+
     public function toggleActive(User $user)
     {
         $newActive = !$user->is_active;

@@ -310,6 +310,18 @@ Route::prefix('dev')->middleware(['auth', 'developer'])->group(function () {
     // Dev Documentation
     Route::post('/projects/{project}/docs', [App\Http\Controllers\Dev\ProjectController::class, 'storeDocs'])->name('dev.projects.docs.store');
     Route::put('/project-docs/{doc}', [App\Http\Controllers\Dev\ProjectController::class, 'updateDocs'])->name('dev.projects.docs.update');
+
+    // Dev portal advanced features
+    Route::post('/projects/{project}/release', [App\Http\Controllers\Dev\ProjectController::class, 'release'])->name('dev.projects.release');
+    Route::post('/projects/{project}/milestones', [App\Http\Controllers\Dev\ProjectController::class, 'storeMilestone'])->name('dev.milestones.store');
+    Route::post('/projects/{project}/milestones/reorder', [App\Http\Controllers\Dev\ProjectController::class, 'reorderMilestones'])->name('dev.milestones.reorder');
+    Route::put('/milestones/{milestone}', [App\Http\Controllers\Dev\ProjectController::class, 'updateMilestone'])->name('dev.milestones.update');
+    Route::delete('/milestones/{milestone}', [App\Http\Controllers\Dev\ProjectController::class, 'deleteMilestone'])->name('dev.milestones.destroy');
+    Route::post('/projects/{project}/messages', [App\Http\Controllers\Dev\ProjectController::class, 'storeMessage'])->name('dev.messages.store');
+    Route::patch('/projects/{project}/blocked-status', [App\Http\Controllers\Dev\ProjectController::class, 'updateBlockedStatus'])->name('dev.projects.blocked-status');
+    Route::put('/projects/{project}/credentials', [App\Http\Controllers\Dev\ProjectController::class, 'updateCredentials'])->name('dev.projects.credentials');
+    Route::get('/earnings', [App\Http\Controllers\Dev\EarningsController::class, 'index'])->name('dev.earnings');
+    Route::get('/team', [App\Http\Controllers\Dev\TeamController::class, 'index'])->name('dev.team');
 });
 
 // Partner portal routes
@@ -328,6 +340,7 @@ Route::prefix('partner')->middleware(['auth', 'referral'])->group(function () {
     Route::get('/help', function () {
         return \Inertia\Inertia::render('Partner/Help', [
             'faqs' => \App\Models\PartnerFaq::where('is_active', true)->orderBy('sort_order')->orderBy('id')->get(['id', 'question', 'answer', 'category']),
+            'contactEmail' => \App\Models\Setting::get('partner.contact_email', \App\Models\Setting::get('email_signature.email', 'info@nainnovations.be')),
         ]);
     })->name('partner.help');
     Route::post('/prospecting/request-access', [App\Http\Controllers\Partner\GuideController::class, 'requestKbAccess'])->name('partner.kb.request');
@@ -511,6 +524,13 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     // Timesheets
     Route::get('timesheets', [App\Http\Controllers\Admin\TimeEntryController::class, 'index'])->name('admin.timesheets');
+    Route::get('time-entries/pending', [App\Http\Controllers\Admin\TimeEntryController::class, 'pending'])->name('admin.time-entries.pending');
+    Route::post('time-entries/{entry}/approve', [App\Http\Controllers\Admin\TimeEntryController::class, 'approve'])->name('admin.time-entries.approve');
+    Route::post('time-entries/{entry}/reject', [App\Http\Controllers\Admin\TimeEntryController::class, 'reject'])->name('admin.time-entries.reject');
+
+    // Dev portal settings
+    Route::get('settings/dev-portal', [App\Http\Controllers\Admin\DevPortalSettingsController::class, 'index'])->name('admin.settings.dev-portal');
+    Route::put('settings/dev-portal', [App\Http\Controllers\Admin\DevPortalSettingsController::class, 'update'])->name('admin.settings.dev-portal.update');
 
     // Bulk actions (MUST be before resource routes)
     Route::patch('leads/bulk-status', [App\Http\Controllers\Admin\LeadController::class, 'bulkUpdateStatus'])->name('admin.leads.bulk-status');
@@ -749,6 +769,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::patch('team/{user}/kb-approve', [App\Http\Controllers\Admin\TeamController::class, 'approveKbAccess'])->name('admin.team.kb-approve');
     Route::patch('team/{user}/kb-reject', [App\Http\Controllers\Admin\TeamController::class, 'rejectKbAccess'])->name('admin.team.kb-reject');
     Route::patch('team/{user}/toggle', [App\Http\Controllers\Admin\TeamController::class, 'toggleActive'])->name('admin.team.toggle');
+    Route::patch('team/{user}/hourly-rate', [App\Http\Controllers\Admin\TeamController::class, 'updateHourlyRate'])->name('admin.team.hourly-rate');
 
     // Support Tickets
     // Testimonials management

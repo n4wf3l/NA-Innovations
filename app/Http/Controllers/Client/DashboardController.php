@@ -20,6 +20,8 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $projects = $user->clientProjects()->latest('updated_at')->get();
+        // SECURITY: hide internal fields from client
+        $projects->each->makeHidden(['project_credentials', 'project_env', 'estimated_hours', 'github_repo']);
 
         // If client has exactly 1 project, redirect straight to it (preserve flash for splash)
         if ($projects->count() === 1) {

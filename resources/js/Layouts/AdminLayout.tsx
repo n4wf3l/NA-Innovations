@@ -40,6 +40,7 @@ const leftNavItems: NavItem[] = [
     { type: 'link', label: 'Services', href: '/admin/services', match: '/admin/services', icon: 'M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3' },
     { type: 'link', label: 'Taux de commission', href: '/admin/settings/commission-rates', match: '/admin/settings/commission-rates', icon: 'M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0l-4.725 2.885a.562.562 0 01-.84-.61l1.285-5.385a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z' },
     { type: 'link', label: 'Audit Log', href: '/admin/audit-log', match: '/admin/audit-log', icon: 'M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z' },
+    { type: 'link', label: 'Dev Portal', href: '/admin/settings/dev-portal', match: '/admin/settings/dev-portal', icon: 'M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5' },
     { type: 'link', label: 'Modèles documents', href: '/admin/settings/document-templates', match: '/admin/settings/document-templates', icon: 'M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5A3.375 3.375 0 006.375 7.5H6a2.25 2.25 0 00-2.25 2.25v7.5a2.25 2.25 0 002.25 2.25h9.75zM8.25 6.108V8.25m0 0H5.625c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V15M12 10.5h3' },
     { type: 'link', label: 'Emails', href: '/admin/settings/email-templates', match: '/admin/settings/email-templates', icon: 'M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75' },
     { type: 'link', label: 'Templates prospection partenaires', href: '/admin/settings/prospecting-email-templates', match: '/admin/settings/prospecting-email-templates', icon: 'M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z' },
@@ -83,8 +84,14 @@ export default function AdminLayout({ children, title, header }: PropsWithChildr
     const [customizerSide, setCustomizerSide] = useState<'left' | 'right'>('left');
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
 
+    const pendingTimeApprovals = (pageProps as any).pendingTimeApprovals as number | undefined;
     const leftConfig = useSidebarConfig(leftNavItems);
     const rightConfig = useSidebarConfig(rightNavItems);
+    const leftVisibleWithBadges: NavItem[] = leftConfig.visibleItems.map(it =>
+        it.type === 'link' && it.href === '/admin/timesheets'
+            ? { ...it, badge: pendingTimeApprovals || 0 }
+            : it
+    );
 
     // Lock body scroll for dashboard layout
     useEffect(() => {
@@ -218,7 +225,7 @@ export default function AdminLayout({ children, title, header }: PropsWithChildr
                 onMouseLeave={() => setLeftHovered(false)}
             >
                 <Sidebar
-                    items={leftConfig.visibleItems}
+                    items={leftVisibleWithBadges}
                     logo={sidebarLogo}
                     collapsedLogo={collapsedLogo}
                     footer={sidebarFooter}

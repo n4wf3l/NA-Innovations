@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dev;
 
 use App\Models\Projet;
+use App\Models\Setting;
 use App\Models\TimeEntry;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -34,6 +35,11 @@ class TimeEntryController extends Controller
 
         $validated['user_id'] = $user->id;
         $validated['project_id'] = $project->id;
+        $requireApproval = Setting::get('dev.require_time_approval', '1') === '1';
+        $validated['approval_status'] = $requireApproval ? 'pending' : 'approved';
+        if (!$requireApproval) {
+            $validated['approved_at'] = now();
+        }
 
         TimeEntry::create($validated);
 

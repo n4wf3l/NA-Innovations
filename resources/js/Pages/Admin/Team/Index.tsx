@@ -12,6 +12,7 @@ interface TeamUser {
     role: string;
     is_active: boolean;
     created_at: string;
+    hourly_rate?: number | string | null;
     referral_partner?: {
         id: number;
         referral_code: string;
@@ -110,12 +111,17 @@ export default function TeamIndex({ partners, developers, admins, pending, kbPen
 
     const UserCard = ({ user }: { user: TeamUser }) => {
         const inactive = !user.is_active;
+        const [rate, setRate] = useState<string>(user.hourly_rate != null ? String(user.hourly_rate) : '');
+        const saveRate = () => {
+            router.patch(`/admin/team/${user.id}/hourly-rate`, { hourly_rate: rate === '' ? null : rate }, { preserveScroll: true });
+        };
         return (
-            <div className={`flex items-center justify-between p-3 rounded-xl border transition-colors group ${
+            <div className={`p-3 rounded-xl border transition-colors group ${
                 inactive
                     ? 'bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 opacity-50'
                     : 'bg-white dark:bg-gray-800/50 border-gray-200 dark:border-gray-700/50 hover:border-gray-300 dark:hover:border-gray-600'
             }`}>
+                <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3 min-w-0">
                     <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
                         inactive
@@ -154,6 +160,23 @@ export default function TeamIndex({ partners, developers, admins, pending, kbPen
                         </>
                     )}
                 </div>
+                </div>
+                {user.role === 'developer' && !inactive && (
+                    <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700/50 flex items-center gap-2">
+                        <label className="text-[11px] font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">{t('Taux horaire')} (€/h)</label>
+                        <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={rate}
+                            onChange={(e) => setRate(e.target.value)}
+                            onBlur={saveRate}
+                            onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.blur(); } }}
+                            placeholder="0.00"
+                            className="flex-1 px-2 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        />
+                    </div>
+                )}
             </div>
         );
     };

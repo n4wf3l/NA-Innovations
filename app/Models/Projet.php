@@ -43,6 +43,9 @@ class Projet extends Model
         'current_phase',
         'next_milestone_date',
         'next_milestone_label',
+        'estimated_hours',
+        'project_credentials',
+        'project_env',
     ];
 
     /**
@@ -61,6 +64,9 @@ class Projet extends Model
         'useful_links' => 'array',
         'client_action_required' => 'boolean',
         'next_milestone_date' => 'date',
+        'estimated_hours' => 'decimal:2',
+        'project_credentials' => 'encrypted',
+        'project_env' => 'encrypted',
     ];
 
     // ──────────────────────────────────────────────
@@ -172,5 +178,15 @@ class Projet extends Model
     public function projectDocs()
     {
         return $this->hasMany(ProjectDoc::class, 'project_id');
+    }
+
+    public function milestones()
+    {
+        return $this->hasMany(ProjectMilestone::class, 'project_id')->orderBy('sort_order');
+    }
+
+    public function devMessages()
+    {
+        return $this->hasMany(DevMessage::class, 'project_id')->orderBy('created_at');
     }
 }

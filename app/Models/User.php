@@ -39,6 +39,10 @@ class User extends Authenticatable
         'signature',
         'github_token',
         'github_username',
+        'hourly_rate',
+        'skills',
+        'specialties',
+        'bio',
     ];
 
     /**
@@ -67,6 +71,9 @@ class User extends Authenticatable
         'approved_at' => 'datetime',
         'preferences' => 'array',
         'github_token' => 'encrypted',
+        'skills' => 'array',
+        'specialties' => 'array',
+        'hourly_rate' => 'decimal:2',
     ];
 
     // ──────────────────────────────────────────────

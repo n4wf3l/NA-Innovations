@@ -12,6 +12,7 @@ interface Faq {
 
 interface Props {
     faqs: Faq[];
+    contactEmail?: string;
 }
 
 const categoryMeta: Record<string, { label: string; color: string; icon: string }> = {
@@ -59,7 +60,7 @@ function renderInline(s: string): string {
     return escaped.replace(/\*\*(.+?)\*\*/g, '<strong class="text-gray-900 dark:text-white font-semibold">$1</strong>');
 }
 
-export default function PartnerHelp({ faqs }: Props) {
+export default function PartnerHelp({ faqs, contactEmail = 'info@nainnovations.be' }: Props) {
     const { t } = useTranslation();
     const [openId, setOpenId] = useState<number | null>(faqs[0]?.id ?? null);
     const [search, setSearch] = useState('');
@@ -162,7 +163,7 @@ export default function PartnerHelp({ faqs }: Props) {
                     <h3 className="text-lg font-bold mb-1">{t("Vous n'avez pas trouvé votre réponse ?")}</h3>
                     <p className="text-gray-400 text-sm mb-4">{t("Contactez l'équipe NA Innovations directement, on vous répond sous 24h.")}</p>
                     <a
-                        href="mailto:partenaires@nainnovations.be"
+                        href={`mailto:${contactEmail}`}
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-semibold transition-colors"
                     >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
