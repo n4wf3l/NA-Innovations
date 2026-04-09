@@ -134,6 +134,9 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
     const pendingQuotes = quotes.filter((q: any) => ['sent', 'viewed'].includes(q.status));
     const unpaidInvoices = invoices.filter((i: any) => ['sent', 'overdue', 'partially_paid'].includes(i.status));
     const totalDue = unpaidInvoices.reduce((s: number, i: any) => s + (i.amount_due || 0), 0);
+    const totalBilled = invoices.reduce((s: number, i: any) => s + (Number(i.total) || 0), 0);
+    const totalPaid = invoices.reduce((s: number, i: any) => s + ((Number(i.total) || 0) - (Number(i.amount_due) || 0)), 0);
+    const usefulLinks: { label: string; url: string }[] = Array.isArray(project.useful_links) ? project.useful_links : [];
 
     return (
         <ClientLayout title={project.nom_societe}>
@@ -168,7 +171,16 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                             <h1 className="text-2xl font-black text-white">{project.nom_societe}</h1>
                             <p className="text-teal-200 text-sm mt-1">{formatProjectType(project.type_site) !== '--' ? formatProjectType(project.type_site) : project.description?.substring(0, 100)}</p>
                         </div>
-                        <Badge status={project.status} className="text-sm" />
+                        <div className="flex items-center gap-2">
+                            <Link
+                                href={`/client/support?subject=${encodeURIComponent('Question sur le projet ' + project.nom_societe)}&project_id=${project.id}`}
+                                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-xl transition-colors backdrop-blur"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" /></svg>
+                                {t('Question rapide')}
+                            </Link>
+                            <Badge status={project.status} className="text-sm" />
+                        </div>
                     </div>
                 </div>
 
@@ -221,6 +233,110 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                     )}
                 </div>
             </div>
+
+            {/* Admin-set "Action required" banner — top priority */}
+            {project.client_action_required && (
+                <div className="mb-6 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-500/10 dark:to-red-500/10 border-2 border-orange-300 dark:border-orange-500/40 rounded-2xl p-5 animate-fade-in">
+                    <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-orange-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-orange-500/30">
+                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <h3 className="text-base font-black text-orange-900 dark:text-orange-200">{t('Action attendue de votre part')}</h3>
+                            <p className="text-sm text-orange-800 dark:text-orange-300/90 mt-1 leading-relaxed whitespace-pre-line">
+                                {project.client_action_message || t('Notre équipe attend un retour de votre part pour avancer.')}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Current phase + Next milestone */}
+            {(project.current_phase || project.next_milestone_label) && (
+                <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {project.current_phase && (
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5 flex items-center gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-500/10 flex items-center justify-center flex-shrink-0">
+                                <svg className="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            </div>
+                            <div className="min-w-0">
+                                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t('Phase actuelle')}</p>
+                                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{project.current_phase}</p>
+                            </div>
+                        </div>
+                    )}
+                    {project.next_milestone_label && (
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5 flex items-center gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-violet-50 dark:bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                                <svg className="w-5 h-5 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" /></svg>
+                            </div>
+                            <div className="min-w-0">
+                                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t('Prochaine étape')}</p>
+                                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{project.next_milestone_label}</p>
+                                {project.next_milestone_date && (
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">{formatDate(project.next_milestone_date)}</p>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Financial summary */}
+            {invoices.length > 0 && (
+                <div className="mb-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
+                            {t('Vue financière')}
+                        </h3>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                        <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-4">
+                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t('Facturé')}</p>
+                            <p className="text-lg font-black text-gray-900 dark:text-white mt-1">{formatCurrency(totalBilled)}</p>
+                        </div>
+                        <div className="bg-emerald-50 dark:bg-emerald-500/10 rounded-xl p-4">
+                            <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">{t('Payé')}</p>
+                            <p className="text-lg font-black text-emerald-600 dark:text-emerald-400 mt-1">{formatCurrency(totalPaid)}</p>
+                        </div>
+                        <div className={`${totalDue > 0 ? 'bg-red-50 dark:bg-red-500/10' : 'bg-gray-50 dark:bg-gray-700/30'} rounded-xl p-4`}>
+                            <p className={`text-[10px] font-semibold uppercase tracking-wider ${totalDue > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-400'}`}>{t('Restant dû')}</p>
+                            <p className={`text-lg font-black mt-1 ${totalDue > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white'}`}>{formatCurrency(totalDue)}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Useful links */}
+            {(usefulLinks.length > 0 || project.preview_url || project.staging_url) && (
+                <div className="mb-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                        <svg className="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
+                        {t('Liens utiles')}
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {project.preview_url && (
+                            <a href={project.preview_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-teal-50 dark:bg-teal-500/10 hover:bg-teal-100 dark:hover:bg-teal-500/20 border border-teal-200 dark:border-teal-500/30 rounded-xl px-3 py-2.5 transition-colors group">
+                                <svg className="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                <span className="text-xs font-semibold text-teal-700 dark:text-teal-300 truncate">{t('Aperçu en ligne')}</span>
+                            </a>
+                        )}
+                        {project.staging_url && (
+                            <a href={project.staging_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-violet-50 dark:bg-violet-500/10 hover:bg-violet-100 dark:hover:bg-violet-500/20 border border-violet-200 dark:border-violet-500/30 rounded-xl px-3 py-2.5 transition-colors">
+                                <svg className="w-4 h-4 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" /></svg>
+                                <span className="text-xs font-semibold text-violet-700 dark:text-violet-300 truncate">{t('Environnement de test')}</span>
+                            </a>
+                        )}
+                        {usefulLinks.map((link, i) => (
+                            <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2.5 transition-colors">
+                                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757" /></svg>
+                                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate">{link.label}</span>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Pending quotes alert */}
             {pendingQuotes.length > 0 && (

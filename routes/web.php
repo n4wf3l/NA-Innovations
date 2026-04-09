@@ -325,6 +325,11 @@ Route::prefix('partner')->middleware(['auth', 'referral'])->group(function () {
     Route::get('/resources/{slug}', [App\Http\Controllers\Partner\PageController::class, 'show'])->name('partner.pages.show');
     Route::get('/guide', [App\Http\Controllers\Partner\GuideController::class, 'index'])->name('partner.guide');
     Route::get('/prospecting', [App\Http\Controllers\Partner\GuideController::class, 'prospecting'])->name('partner.prospecting');
+    Route::get('/help', function () {
+        return \Inertia\Inertia::render('Partner/Help', [
+            'faqs' => \App\Models\PartnerFaq::where('is_active', true)->orderBy('sort_order')->orderBy('id')->get(['id', 'question', 'answer', 'category']),
+        ]);
+    })->name('partner.help');
     Route::post('/prospecting/request-access', [App\Http\Controllers\Partner\GuideController::class, 'requestKbAccess'])->name('partner.kb.request');
     Route::get('/reminders', [App\Http\Controllers\Partner\ReminderController::class, 'index'])->name('partner.reminders');
     Route::post('/reminders', [App\Http\Controllers\Partner\ReminderController::class, 'store'])->name('partner.reminders.store');
@@ -569,6 +574,13 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::put('settings/prospecting-email-templates/{prospectingEmailTemplate}', [App\Http\Controllers\Admin\ProspectingEmailTemplateController::class, 'update'])->name('admin.prospecting-email-templates.update');
     Route::delete('settings/prospecting-email-templates/{prospectingEmailTemplate}', [App\Http\Controllers\Admin\ProspectingEmailTemplateController::class, 'destroy'])->name('admin.prospecting-email-templates.destroy');
     Route::patch('settings/prospecting-email-templates/{prospectingEmailTemplate}/toggle', [App\Http\Controllers\Admin\ProspectingEmailTemplateController::class, 'toggleActive'])->name('admin.prospecting-email-templates.toggle');
+
+    // Partner FAQs (visibles côté partenaire dans /partner/help)
+    Route::get('settings/partner-faqs', [App\Http\Controllers\Admin\PartnerFaqController::class, 'index'])->name('admin.partner-faqs.index');
+    Route::post('settings/partner-faqs', [App\Http\Controllers\Admin\PartnerFaqController::class, 'store'])->name('admin.partner-faqs.store');
+    Route::put('settings/partner-faqs/{partnerFaq}', [App\Http\Controllers\Admin\PartnerFaqController::class, 'update'])->name('admin.partner-faqs.update');
+    Route::delete('settings/partner-faqs/{partnerFaq}', [App\Http\Controllers\Admin\PartnerFaqController::class, 'destroy'])->name('admin.partner-faqs.destroy');
+    Route::patch('settings/partner-faqs/{partnerFaq}/toggle', [App\Http\Controllers\Admin\PartnerFaqController::class, 'toggleActive'])->name('admin.partner-faqs.toggle');
 
     // Email Signature Settings
     Route::get('settings/email-signature', [App\Http\Controllers\Admin\EmailSignatureController::class, 'index'])->name('admin.email-signature.index');

@@ -35,6 +35,14 @@ class Projet extends Model
         'is_portfolio',
         'developer_id',
         'lead_id',
+        'preview_url',
+        'staging_url',
+        'useful_links',
+        'client_action_required',
+        'client_action_message',
+        'current_phase',
+        'next_milestone_date',
+        'next_milestone_label',
     ];
 
     /**
@@ -50,6 +58,9 @@ class Projet extends Model
         'show_commits_to_client' => 'boolean',
         'deadline' => 'date',
         'is_portfolio' => 'boolean',
+        'useful_links' => 'array',
+        'client_action_required' => 'boolean',
+        'next_milestone_date' => 'date',
     ];
 
     // ──────────────────────────────────────────────

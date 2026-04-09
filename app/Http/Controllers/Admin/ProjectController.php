@@ -275,10 +275,25 @@ class ProjectController extends BaseAdminController
             'github_repo' => 'nullable|string|max:255',
             'show_commits_to_client' => 'nullable',
             'image' => 'nullable|file|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
+            'preview_url' => 'nullable|string|max:500',
+            'staging_url' => 'nullable|string|max:500',
+            'useful_links' => 'nullable',
+            'client_action_required' => 'nullable',
+            'client_action_message' => 'nullable|string|max:2000',
+            'current_phase' => 'nullable|string|max:255',
+            'next_milestone_label' => 'nullable|string|max:255',
+            'next_milestone_date' => 'nullable|date',
         ]);
 
         // Normalize boolean from FormData string
         $validated['show_commits_to_client'] = filter_var($validated['show_commits_to_client'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $validated['client_action_required'] = filter_var($validated['client_action_required'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+        // Decode useful_links JSON string sent via FormData
+        if (isset($validated['useful_links']) && is_string($validated['useful_links'])) {
+            $decoded = json_decode($validated['useful_links'], true);
+            $validated['useful_links'] = is_array($decoded) ? $decoded : null;
+        }
 
         // Handle project logo upload
         if ($request->hasFile('image')) {

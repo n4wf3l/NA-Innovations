@@ -56,6 +56,64 @@ export default function ClientDashboard({ projects, quotes, invoices, sentEmails
                 </div>
             </div>
 
+            {/* Action required banner — aggregates projects needing client input */}
+            {projects.some((p: any) => p.client_action_required) && (
+                <div className="mb-6 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-500/10 dark:to-red-500/10 border-2 border-orange-300 dark:border-orange-500/40 rounded-2xl p-5">
+                    <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-orange-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-orange-500/30">
+                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <h3 className="text-base font-black text-orange-900 dark:text-orange-200">{t('Action attendue de votre part')}</h3>
+                            <p className="text-xs text-orange-800 dark:text-orange-300/90 mt-1">{t('Notre équipe attend un retour pour avancer sur ces projets :')}</p>
+                            <div className="mt-3 space-y-2">
+                                {projects.filter((p: any) => p.client_action_required).map((p: any) => (
+                                    <Link key={p.id} href={`/client/projects/${p.id}`} className="flex items-start justify-between gap-3 bg-white/80 dark:bg-gray-800/60 hover:bg-white dark:hover:bg-gray-800 rounded-xl p-3 border border-orange-200 dark:border-orange-500/30 transition-colors">
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{p.nom_societe}</p>
+                                            {p.client_action_message && (
+                                                <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5 line-clamp-2">{p.client_action_message}</p>
+                                            )}
+                                        </div>
+                                        <svg className="w-4 h-4 text-orange-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Financial summary */}
+            {(stats.totalDue > 0 || invoices.length > 0) && (
+                <div className="mb-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
+                        {t('Vue financière globale')}
+                    </h3>
+                    {(() => {
+                        const totalBilled = invoices.reduce((s: number, i: any) => s + (Number(i.total) || 0), 0);
+                        const totalPaid = totalBilled - stats.totalDue;
+                        return (
+                            <div className="grid grid-cols-3 gap-3">
+                                <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-4">
+                                    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t('Facturé')}</p>
+                                    <p className="text-lg font-black text-gray-900 dark:text-white mt-1">{formatCurrency(totalBilled)}</p>
+                                </div>
+                                <div className="bg-emerald-50 dark:bg-emerald-500/10 rounded-xl p-4">
+                                    <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">{t('Payé')}</p>
+                                    <p className="text-lg font-black text-emerald-600 dark:text-emerald-400 mt-1">{formatCurrency(totalPaid)}</p>
+                                </div>
+                                <div className={`${stats.totalDue > 0 ? 'bg-red-50 dark:bg-red-500/10' : 'bg-gray-50 dark:bg-gray-700/30'} rounded-xl p-4`}>
+                                    <p className={`text-[10px] font-semibold uppercase tracking-wider ${stats.totalDue > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-400'}`}>{t('Restant dû')}</p>
+                                    <p className={`text-lg font-black mt-1 ${stats.totalDue > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white'}`}>{formatCurrency(stats.totalDue)}</p>
+                                </div>
+                            </div>
+                        );
+                    })()}
+                </div>
+            )}
+
             {/* Stats */}
             <div data-tour="stats-grid" className="stagger-children grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <StatBox icon="folder" label={t('Active Projects')} value={stats.activeProjects} color="emerald" />

@@ -50,7 +50,30 @@ export default function ProjectEdit({ project, clients, developers, leads, proje
         github_repo: project.github_repo || '',
         show_commits_to_client: project.show_commits_to_client || false,
         image: null as File | null,
+        // Client-facing info (visible on /client/projects/{id})
+        preview_url: project.preview_url || '',
+        staging_url: project.staging_url || '',
+        useful_links: JSON.stringify(Array.isArray(project.useful_links) ? project.useful_links : []),
+        client_action_required: !!project.client_action_required,
+        client_action_message: project.client_action_message || '',
+        current_phase: project.current_phase || '',
+        next_milestone_label: project.next_milestone_label || '',
+        next_milestone_date: toDateInput(project.next_milestone_date),
     });
+
+    // Useful links editor state — array of {label,url}
+    const [linksList, setLinksList] = useState<{ label: string; url: string }[]>(
+        Array.isArray(project.useful_links) ? project.useful_links : []
+    );
+    const updateLinks = (next: { label: string; url: string }[]) => {
+        setLinksList(next);
+        setData('useful_links', JSON.stringify(next));
+    };
+    const addLink = () => updateLinks([...linksList, { label: '', url: '' }]);
+    const removeLink = (i: number) => updateLinks(linksList.filter((_, idx) => idx !== i));
+    const setLink = (i: number, field: 'label' | 'url', value: string) => {
+        updateLinks(linksList.map((l, idx) => idx === i ? { ...l, [field]: value } : l));
+    };
 
     const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -236,6 +259,92 @@ export default function ProjectEdit({ project, clients, developers, leads, proje
                             </a>
                         </div>
                     )}
+                </div>
+
+                {/* === Client-facing info === */}
+                <div className={cardClass}>
+                    <h3 className={headingClass}>
+                        <span className="inline-flex items-center gap-2">
+                            <svg className="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                            {t('Infos visibles par le client')}
+                        </span>
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-5">{t('Tout ce que vous renseignez ici sera affiché au client sur sa page projet.')}</p>
+
+                    {/* Action required toggle */}
+                    <div className="mb-5 p-4 rounded-xl border-2 border-orange-200 dark:border-orange-500/30 bg-orange-50 dark:bg-orange-500/5">
+                        <label className="flex items-start gap-3 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={data.client_action_required}
+                                onChange={e => setData('client_action_required', e.target.checked)}
+                                className="mt-0.5 w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-orange-500 focus:ring-orange-400"
+                            />
+                            <div className="flex-1">
+                                <p className="text-sm font-bold text-gray-900 dark:text-white">{t('Action attendue de la part du client')}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('Affiche un bandeau orange en haut de la page projet du client.')}</p>
+                            </div>
+                        </label>
+                        {data.client_action_required && (
+                            <textarea
+                                value={data.client_action_message}
+                                onChange={e => setData('client_action_message', e.target.value)}
+                                rows={3}
+                                placeholder={t('Ex : Merci de valider les maquettes envoyées par e-mail pour qu\'on puisse continuer le développement.')}
+                                className={`${inputClass} mt-3`}
+                            />
+                        )}
+                    </div>
+
+                    {/* Phase + milestone */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">{t('Phase actuelle')}</label>
+                            <input type="text" value={data.current_phase} onChange={e => setData('current_phase', e.target.value)} placeholder={t('Ex : Maquettes en cours')} className={inputClass} />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">{t('Prochaine étape')}</label>
+                            <input type="text" value={data.next_milestone_label} onChange={e => setData('next_milestone_label', e.target.value)} placeholder={t('Ex : Validation des maquettes')} className={inputClass} />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">{t('Date prévue')}</label>
+                            <input type="date" value={data.next_milestone_date} onChange={e => setData('next_milestone_date', e.target.value)} className={inputClass} />
+                        </div>
+                    </div>
+
+                    {/* Preview + staging */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">{t('URL aperçu (preview)')}</label>
+                            <input type="text" value={data.preview_url} onChange={e => setData('preview_url', e.target.value)} placeholder="https://preview.example.com" className={inputClass} />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">{t('URL staging / test')}</label>
+                            <input type="text" value={data.staging_url} onChange={e => setData('staging_url', e.target.value)} placeholder="https://staging.example.com" className={inputClass} />
+                        </div>
+                    </div>
+
+                    {/* Useful links repeater */}
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="text-xs font-semibold text-gray-500 dark:text-gray-400">{t('Liens utiles supplémentaires')}</label>
+                            <button type="button" onClick={addLink} className="text-xs font-semibold text-teal-600 hover:text-teal-700 dark:text-teal-400">+ {t('Ajouter un lien')}</button>
+                        </div>
+                        <div className="space-y-2">
+                            {linksList.length === 0 && (
+                                <p className="text-xs text-gray-400 italic">{t('Aucun lien ajouté.')}</p>
+                            )}
+                            {linksList.map((link, i) => (
+                                <div key={i} className="flex gap-2">
+                                    <input type="text" value={link.label} onChange={e => setLink(i, 'label', e.target.value)} placeholder={t('Libellé (ex : Trello)')} className={`${inputClass} flex-1`} />
+                                    <input type="text" value={link.url} onChange={e => setLink(i, 'url', e.target.value)} placeholder="https://..." className={`${inputClass} flex-[2]`} />
+                                    <button type="button" onClick={() => removeLink(i)} className="px-3 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors" title={t('Supprimer')}>
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
 
                 {/* Actions */}
