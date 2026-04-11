@@ -87,6 +87,7 @@ class TimeEntryController extends BaseAdminController
             'approved_by' => auth()->id(),
             'rejection_reason' => null,
         ]);
+        \Illuminate\Support\Facades\Cache::forget('pending_time_approvals_count');
         return redirect()->back()->with('success', __('Entrée approuvée.'));
     }
 
@@ -99,6 +100,7 @@ class TimeEntryController extends BaseAdminController
             'approved_by' => auth()->id(),
             'rejection_reason' => $request->input('reason'),
         ]);
+        \Illuminate\Support\Facades\Cache::forget('pending_time_approvals_count');
         return redirect()->back()->with('success', __('Entrée rejetée.'));
     }
 }

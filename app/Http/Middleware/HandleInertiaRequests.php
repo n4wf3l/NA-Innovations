@@ -119,12 +119,13 @@ class HandleInertiaRequests extends Middleware
             })(),
             'pendingTimeApprovals' => (function () use ($request) {
                 if (!$request->user() || $request->user()->role !== 'admin') return 0;
-                if (!\Illuminate\Support\Facades\Schema::hasTable('time_entries')) return 0;
-                try {
-                    return \App\Models\TimeEntry::where('approval_status', 'pending')->count();
-                } catch (\Throwable $e) {
-                    return 0;
-                }
+                return \Illuminate\Support\Facades\Cache::remember('pending_time_approvals_count', 60, function () {
+                    try {
+                        return \App\Models\TimeEntry::where('approval_status', 'pending')->count();
+                    } catch (\Throwable $e) {
+                        return 0;
+                    }
+                });
             })(),
         ];
     }

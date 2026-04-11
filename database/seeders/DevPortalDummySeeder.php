@@ -51,11 +51,11 @@ class DevPortalDummySeeder extends Seeder
         $admin = User::where('role', 'admin')->first();
 
         foreach ($projects as $project) {
-            $project->update([
-                'estimated_hours' => 80,
-                'project_credentials' => "Admin: admin@example.com\nMot de passe: ChangeMe!2026\nFTP: ftp.example.com",
-                'project_env' => "APP_ENV=production\nDB_HOST=127.0.0.1\nDB_DATABASE=" . strtolower(str_replace(' ', '_', $project->nom_societe)) . "\nMAIL_DRIVER=smtp",
-            ]);
+            // Use Eloquent setAttribute to trigger the 'encrypted' cast properly
+            $project->estimated_hours = 80;
+            $project->project_credentials = "Admin: admin@example.com\nMot de passe: ChangeMe!2026\nFTP: ftp.example.com";
+            $project->project_env = "APP_ENV=production\nDB_HOST=127.0.0.1\nDB_DATABASE=" . strtolower(str_replace(' ', '_', $project->nom_societe)) . "\nMAIL_DRIVER=smtp";
+            $project->save();
 
             // Milestones
             $milestones = [

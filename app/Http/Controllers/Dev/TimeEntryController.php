@@ -43,6 +43,10 @@ class TimeEntryController extends Controller
 
         TimeEntry::create($validated);
 
+        if ($requireApproval) {
+            \Illuminate\Support\Facades\Cache::forget('pending_time_approvals_count');
+        }
+
         return redirect()->back()->with('success', 'Time entry added.');
     }
 

@@ -222,19 +222,52 @@ export default function PortfolioEdit({ project, portfolio }: Props) {
                                     </div>
                                 </div>
                                 {/* Video YouTube */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div className="md:col-span-2">
-                                        <label className={labelClass}>{t('Vidéo YouTube')}</label>
-                                        <input type="url" value={data.video_url || ''} onChange={e => setData('video_url', e.target.value)} className={inputClass} placeholder="https://www.youtube.com/watch?v=..." />
-                                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t('Collez un lien YouTube. La vidéo sera intégrée sur la page du projet.')}</p>
-                                    </div>
-                                    <div className="flex items-end pb-1">
-                                        <label className="flex items-center gap-3 cursor-pointer">
-                                            <input type="checkbox" checked={!!data.show_video} onChange={e => setData('show_video', e.target.checked)} className="rounded border-gray-300 dark:border-gray-600 text-teal-500 focus:ring-teal-400" />
-                                            <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">{t('Afficher la vidéo')}</span>
-                                        </label>
-                                    </div>
-                                </div>
+                                {(() => {
+                                    const url = (data.video_url || '').trim();
+                                    const isYouTube = !url || /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)[a-zA-Z0-9_-]{11}/.test(url);
+                                    return (
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div className="md:col-span-2">
+                                                <label className={labelClass}>
+                                                    {t('Vidéo YouTube')}
+                                                    <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 dark:bg-red-500/10 text-[10px] font-bold text-red-500 dark:text-red-400 uppercase tracking-wide">
+                                                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><path d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z" fill="white"/></svg>
+                                                        YouTube
+                                                    </span>
+                                                </label>
+                                                <input
+                                                    type="url"
+                                                    value={data.video_url || ''}
+                                                    onChange={e => setData('video_url', e.target.value)}
+                                                    className={`${inputClass} ${url && !isYouTube ? 'border-red-400 dark:border-red-500 focus:ring-red-400' : ''}`}
+                                                    placeholder="https://www.youtube.com/watch?v=..."
+                                                />
+                                                {url && !isYouTube ? (
+                                                    <div className="mt-2 flex items-start gap-2 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-xl px-3 py-2">
+                                                        <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+                                                        <div className="text-xs text-red-600 dark:text-red-400">
+                                                            <p className="font-bold">{t('URL non reconnue')}</p>
+                                                            <p className="mt-0.5">{t('Seules les vidéos YouTube sont supportées. Formats acceptés :')}</p>
+                                                            <ul className="mt-1 space-y-0.5 text-red-500 dark:text-red-400/80">
+                                                                <li>• https://www.youtube.com/watch?v=abc123</li>
+                                                                <li>• https://youtu.be/abc123</li>
+                                                                <li>• https://www.youtube.com/embed/abc123</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t('Collez un lien YouTube. La vidéo sera intégrée sur la page du projet.')}</p>
+                                                )}
+                                            </div>
+                                            <div className="flex items-start pt-7">
+                                                <label className={`flex items-center gap-3 cursor-pointer ${url && !isYouTube ? 'opacity-40 pointer-events-none' : ''}`}>
+                                                    <input type="checkbox" checked={!!data.show_video && isYouTube} onChange={e => setData('show_video', e.target.checked)} className="rounded border-gray-300 dark:border-gray-600 text-teal-500 focus:ring-teal-400" disabled={url ? !isYouTube : false} />
+                                                    <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">{t('Afficher la vidéo')}</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
                                 <div>
                                     <label className={labelClass}>{t('Durée (jours)')}</label>
                                     <input
