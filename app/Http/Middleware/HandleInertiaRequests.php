@@ -54,6 +54,7 @@ class HandleInertiaRequests extends Middleware
                         'currency' => 'EUR',
                         'privacy_full_name' => true,
                     ],
+                    'two_factor_enabled' => (bool) $request->user()->two_factor_enabled,
                 ] : null,
             ],
             'locale' => app()->getLocale(),

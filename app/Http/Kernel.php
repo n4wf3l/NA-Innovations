@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\SetLocale::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
+            \App\Http\Middleware\EnsureTwoFactorVerified::class,
             \App\Http\Middleware\LogActivity::class,
         ],
 
@@ -72,6 +73,7 @@ class Kernel extends HttpKernel
         'client' => \App\Http\Middleware\EnsureUserIsClient::class,
         'developer' => \App\Http\Middleware\EnsureUserIsDeveloper::class,
         'referral' => \App\Http\Middleware\EnsureUserIsReferralPartner::class,
+        '2fa' => \App\Http\Middleware\EnsureTwoFactorVerified::class,
         'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
     ];

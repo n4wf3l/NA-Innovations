@@ -56,6 +56,8 @@ class User extends Authenticatable
         'financial_pin',
         'signature',
         'github_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
     ];
 
     /**
@@ -74,6 +76,10 @@ class User extends Authenticatable
         'skills' => 'array',
         'specialties' => 'array',
         'hourly_rate' => 'decimal:2',
+        'two_factor_enabled' => 'boolean',
+        'two_factor_secret' => 'encrypted',
+        'two_factor_recovery_codes' => 'encrypted:array',
+        'two_factor_confirmed_at' => 'datetime',
     ];
 
     // ──────────────────────────────────────────────

@@ -37,7 +37,15 @@ Route::delete('/projets/{projet}', [ProjetController::class, 'destroy'])->name('
 Route::delete('/academic_projets/{academic_projet}', [AcademicProjetController::class, 'destroy'])->name('academic_projets.destroy');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile', function () {
+        return redirect(match (auth()->user()->role) {
+            'admin' => '/admin/settings/branding',
+            'developer' => '/dev/profile',
+            'referral_partner' => '/partner/profile',
+            'client' => '/client/profile',
+            default => '/',
+        });
+    })->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });

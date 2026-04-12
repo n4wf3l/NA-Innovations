@@ -28,10 +28,26 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        $user = $request->user();
+
+        // 2FA check — if enabled, logout and redirect to 2FA challenge
+        if ($user->two_factor_enabled && $user->two_factor_secret) {
+            $userId = $user->id;
+            $remember = $request->boolean('remember');
+
+            Auth::guard('web')->logout();
+            $request->session()->regenerate();
+
+            $request->session()->put('2fa:user_id', $userId);
+            $request->session()->put('2fa:remember', $remember);
+
+            return redirect()->route('two-factor.challenge');
+        }
+
         $request->session()->regenerate();
+        session()->put('2fa_verified', true);
 
         // Track login
-        $user = $request->user();
         $user->update(['last_login_at' => now()]);
 
         ActivityLog::create([

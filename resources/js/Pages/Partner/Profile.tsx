@@ -1,8 +1,9 @@
 import PartnerLayout from '@/Layouts/PartnerLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SearchableSelect from '@/Components/ui/SearchableSelect';
+import TwoFactorSetup from '@/Components/ui/TwoFactorSetup';
 
 interface Props {
     user: {
@@ -44,6 +45,7 @@ const toggleDot = (active: boolean) =>
 
 export default function PartnerProfile({ user, partner }: Props) {
     const { t } = useTranslation();
+    const { auth } = usePage().props as any;
     const [copied, setCopied] = useState(false);
 
     const { data, setData, put, processing, errors } = useForm({
@@ -352,6 +354,9 @@ export default function PartnerProfile({ user, partner }: Props) {
                         </div>
                     </div>
                 </form>
+
+                {/* 2FA */}
+                <TwoFactorSetup enabled={auth.user?.two_factor_enabled || false} />
 
                 {/* Guided Tour Reset */}
                 <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">

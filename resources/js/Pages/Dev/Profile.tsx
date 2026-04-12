@@ -1,6 +1,7 @@
 import DevLayout from '@/Layouts/DevLayout';
-import { Head, useForm, Link } from '@inertiajs/react';
+import { Head, useForm, Link, usePage } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
+import TwoFactorSetup from '@/Components/ui/TwoFactorSetup';
 
 interface Props {
     user: {
@@ -23,6 +24,7 @@ const card = 'bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:
 
 export default function DevProfile({ user, devSettings }: Props) {
     const { t } = useTranslation();
+    const { auth } = usePage().props as any;
 
     const profileForm = useForm({
         name: user.name || '',
@@ -231,6 +233,9 @@ export default function DevProfile({ user, devSettings }: Props) {
                         )}
                     </div>
                 </div>
+                {/* 2FA */}
+                <TwoFactorSetup enabled={auth.user?.two_factor_enabled || false} />
+
                 {/* Guided Tour Reset */}
                 <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700 flex items-center gap-2">

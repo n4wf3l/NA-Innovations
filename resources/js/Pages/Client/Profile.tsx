@@ -1,7 +1,8 @@
 import ClientLayout from '@/Layouts/ClientLayout';
-import { Head, useForm, router } from '@inertiajs/react';
+import { Head, useForm, router, usePage } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { useState, useRef } from 'react';
+import TwoFactorSetup from '@/Components/ui/TwoFactorSetup';
 
 interface Props {
     user: {
@@ -28,6 +29,7 @@ const card = 'bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:
 
 export default function ClientProfile({ user, completion, lastLogin, memberSince }: Props) {
     const { t } = useTranslation();
+    const { auth } = usePage().props as any;
     const avatarInput = useRef<HTMLInputElement>(null);
     const [deleteConfirm, setDeleteConfirm] = useState('');
     const [showDanger, setShowDanger] = useState(false);
@@ -284,6 +286,9 @@ export default function ClientProfile({ user, completion, lastLogin, memberSince
                             </div>
                         </div>
                     </form>
+
+                    {/* 2FA */}
+                    <TwoFactorSetup enabled={auth.user?.two_factor_enabled || false} />
 
                     {/* Guided Tour Reset */}
                     <div className={card}>
