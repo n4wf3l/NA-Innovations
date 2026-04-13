@@ -206,7 +206,7 @@ export default function AdminLayout({ children, title, header }: PropsWithChildr
     );
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-200">
+        <div className="min-h-screen bg-[#F8F9FB] dark:bg-gray-950 transition-colors duration-200">
             {/* Mobile fullscreen menu (shows ALL items) */}
             <MobileMenu
                 open={mobileOpen}

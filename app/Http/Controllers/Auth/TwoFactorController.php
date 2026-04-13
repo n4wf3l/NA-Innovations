@@ -202,6 +202,7 @@ class TwoFactorController extends Controller
             'referral_partner' => '/partner/dashboard',
         ];
 
-        return redirect()->intended($redirectMap[$user->role] ?? '/dashboard');
+        return redirect()->intended($redirectMap[$user->role] ?? '/dashboard')
+            ->with('success', "Bienvenue, {$user->name} !");
     }
 }

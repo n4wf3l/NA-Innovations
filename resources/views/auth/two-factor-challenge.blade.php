@@ -10,21 +10,40 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
     @vite('resources/js/public.ts')
     <style>
-        body { font-family: 'Figtree', sans-serif; margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #050812; color: #fff; }
-        .card { width: 100%; max-width: 440px; margin: 1rem; padding: 2.5rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; backdrop-filter: blur(20px); }
+        @keyframes bg-orb1 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(80px, -60px) scale(1.15); } }
+        @keyframes bg-orb2 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-70px, 50px) scale(1.2); } }
+        @keyframes bg-orb3 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(40px, 70px) scale(1.1); } }
+        @keyframes card-in { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes icon-in { from { opacity: 0; transform: scale(0.5) rotate(-15deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+        @keyframes box-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes glow-pulse { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.08); } }
+
+        body { font-family: 'Figtree', sans-serif; margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #050812; color: #fff; overflow: hidden; position: relative; }
+        .bg-orb { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+        .bg-orb-1 { top: 10%; left: -5%; width: 350px; height: 350px; background: radial-gradient(circle, #14b8a6, transparent 70%); opacity: 0.3; animation: bg-orb1 12s ease-in-out infinite; }
+        .bg-orb-2 { bottom: 5%; right: -10%; width: 400px; height: 400px; background: radial-gradient(circle, #0d9488, transparent 70%); opacity: 0.25; animation: bg-orb2 15s ease-in-out infinite; }
+        .bg-orb-3 { top: 50%; left: 60%; width: 250px; height: 250px; background: radial-gradient(circle, #06b6d4, transparent 70%); opacity: 0.15; animation: bg-orb3 10s ease-in-out infinite; }
+        .card { position: relative; z-index: 1; width: 100%; max-width: 440px; margin: 1rem; padding: 2.5rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); opacity: 0; animation: card-in 700ms cubic-bezier(0.22, 1, 0.36, 1) 100ms forwards; }
         h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 0.5rem; text-align: center; }
         .subtitle { font-size: 0.875rem; color: rgba(255,255,255,0.6); text-align: center; margin-bottom: 2rem; line-height: 1.5; }
-        .icon-wrap { width: 64px; height: 64px; margin: 0 auto 1.5rem; border-radius: 18px; background: linear-gradient(135deg, #14b8a6, #0d9488); display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 40px -12px rgba(20, 184, 166, 0.5); }
+        .icon-wrap { width: 64px; height: 64px; margin: 0 auto 1.5rem; border-radius: 18px; background: linear-gradient(135deg, #14b8a6, #0d9488); display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 40px -12px rgba(20, 184, 166, 0.5); position: relative; opacity: 0; animation: icon-in 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 300ms forwards; }
+        .icon-glow { position: absolute; inset: -14px; border-radius: 50%; background: linear-gradient(135deg, #14b8a6, #0d9488); filter: blur(22px); opacity: 0.4; animation: glow-pulse 3s ease-in-out infinite; z-index: -1; }
         label { display: block; font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; text-align: center; }
         .code-boxes { display: flex; gap: 0.5rem; justify-content: center; }
-        .code-box { width: 52px; height: 64px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: #fff; font-size: 1.75rem; font-weight: 800; text-align: center; outline: none; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; font-family: 'Figtree', monospace; caret-color: #14b8a6; }
+        .code-box { width: 52px; height: 64px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: #fff; font-size: 1.75rem; font-weight: 800; text-align: center; outline: none; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; font-family: 'Figtree', monospace; caret-color: #14b8a6; opacity: 0; animation: box-in 400ms ease-out forwards; }
+        .code-box:nth-child(1) { animation-delay: 500ms; }
+        .code-box:nth-child(2) { animation-delay: 560ms; }
+        .code-box:nth-child(3) { animation-delay: 620ms; }
+        .code-box:nth-child(4) { animation-delay: 680ms; }
+        .code-box:nth-child(5) { animation-delay: 740ms; }
+        .code-box:nth-child(6) { animation-delay: 800ms; }
         .code-box:focus { border-color: #14b8a6; background: rgba(20,184,166,0.08); box-shadow: 0 0 0 3px rgba(20,184,166,0.2); }
         .code-box.filled { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); }
         .code-input-hidden { position: absolute; opacity: 0; pointer-events: none; }
         .recovery-input { width: 100%; padding: 1rem 1.25rem; font-size: 1.1rem; font-weight: 700; text-align: center; letter-spacing: 0.1em; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: #fff; outline: none; transition: border-color 0.2s; font-family: 'Figtree', monospace; }
         .recovery-input:focus { border-color: #14b8a6; box-shadow: 0 0 0 3px rgba(20,184,166,0.2); }
         .recovery-input::placeholder { color: rgba(255,255,255,0.2); }
-        .btn { width: 100%; padding: 1rem; margin-top: 1.5rem; border: none; border-radius: 14px; background: linear-gradient(135deg, #14b8a6, #0d9488); color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; transition: box-shadow 0.2s, transform 0.1s; box-shadow: 0 8px 30px -8px rgba(20,184,166,0.5); }
+        .btn { width: 100%; padding: 1rem; margin-top: 1.5rem; border: none; border-radius: 14px; background: linear-gradient(135deg, #14b8a6, #0d9488); color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; transition: box-shadow 0.2s, transform 0.1s; box-shadow: 0 8px 30px -8px rgba(20,184,166,0.5); opacity: 0; animation: box-in 400ms ease-out 900ms forwards; }
         .btn:hover { box-shadow: 0 12px 40px -8px rgba(20,184,166,0.7); }
         .btn:active { transform: scale(0.98); }
         .error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 1.5rem; color: #fca5a5; font-size: 0.85rem; text-align: center; }
@@ -35,8 +54,13 @@
     </style>
 </head>
 <body>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
     <div class="card">
         <div class="icon-wrap">
+            <div class="icon-glow"></div>
             <svg width="28" height="28" fill="none" stroke="#fff" viewBox="0 0 24 24" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
             </svg>

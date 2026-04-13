@@ -8,14 +8,14 @@ interface ProtectedAmountProps {
     className?: string;
 }
 
-/** Locked placeholder with lock icon */
+/** Locked placeholder with lock icon + blurred fake amount */
 export function LockedPlaceholder({ className = '' }: { className?: string }) {
     return (
-        <span className={`inline-flex items-center space-x-1.5 select-none ${className}`}>
-            <svg className="w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+        <span className={`inline-flex items-center gap-2 select-none ${className}`}>
+            <svg className="w-3.5 h-3.5 text-gray-300 dark:text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
             </svg>
-            <span className="text-gray-300 dark:text-gray-600 tracking-widest font-medium">••••</span>
+            <span className="text-gray-400 dark:text-gray-500 font-black" style={{ filter: 'blur(8px)', userSelect: 'none' }} aria-hidden="true">12 450 €</span>
         </span>
     );
 }
