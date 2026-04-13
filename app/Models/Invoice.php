@@ -47,6 +47,7 @@ class Invoice extends Model
         'pdf_path',
         'payment_instructions',
         'is_external',
+        'credit_note_for',
     ];
 
     /**
@@ -113,5 +114,15 @@ class Invoice extends Model
     public function reminders()
     {
         return $this->hasMany(InvoiceReminder::class);
+    }
+
+    public function originalInvoice()
+    {
+        return $this->belongsTo(Invoice::class, 'credit_note_for');
+    }
+
+    public function creditNotes()
+    {
+        return $this->hasMany(Invoice::class, 'credit_note_for');
     }
 }

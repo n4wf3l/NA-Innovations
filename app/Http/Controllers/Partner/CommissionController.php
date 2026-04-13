@@ -2,6 +2,8 @@
 namespace App\Http\Controllers\Partner;
 
 use App\Models\Commission;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Inertia\Inertia;
 
@@ -76,5 +78,37 @@ class CommissionController extends Controller
             'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => 'attachment; filename="commissions-' . now()->format('Y-m-d') . '.csv"',
         ]);
+    }
+
+    /**
+     * Exporter un relevé de commissions en PDF.
+     */
+    public function exportPdf(Request $request)
+    {
+        $partner = auth()->user()->referralPartner;
+        if (!$partner) abort(403);
+
+        $commissions = Commission::where('referral_partner_id', $partner->id)
+            ->with('invoice')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $totalEstimated = $commissions->where('status', 'estimated')->sum('commission_amount');
+        $totalConfirmed = $commissions->where('status', 'confirmed')->sum('commission_amount');
+        $totalScheduled = $commissions->where('status', 'scheduled')->sum('commission_amount');
+        $totalPaidCommissions = $commissions->where('status', 'paid')->sum('commission_amount');
+
+        $partner->load('user');
+
+        $pdf = Pdf::loadView('pdf.partner-commissions', [
+            'partner' => $partner,
+            'commissions' => $commissions,
+            'totalEstimated' => $totalEstimated,
+            'totalConfirmed' => $totalConfirmed,
+            'totalScheduled' => $totalScheduled,
+            'totalPaidCommissions' => $totalPaidCommissions,
+        ])->setPaper('a4');
+
+        return $pdf->download('commissions-' . now()->format('Y-m-d') . '.pdf');
     }
 }

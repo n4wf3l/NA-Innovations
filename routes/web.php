@@ -330,6 +330,10 @@ Route::prefix('dev')->middleware(['auth', 'developer'])->group(function () {
     Route::put('/projects/{project}/credentials', [App\Http\Controllers\Dev\ProjectController::class, 'updateCredentials'])->name('dev.projects.credentials');
     Route::get('/earnings', [App\Http\Controllers\Dev\EarningsController::class, 'index'])->name('dev.earnings');
     Route::get('/team', [App\Http\Controllers\Dev\TeamController::class, 'index'])->name('dev.team');
+
+    // Dev Exports
+    Route::get('/exports/timesheet', [App\Http\Controllers\Dev\ExportController::class, 'timesheetPdf'])->name('dev.exports.timesheet');
+    Route::get('/exports/statement', [App\Http\Controllers\Dev\ExportController::class, 'monthlyStatement'])->name('dev.exports.statement');
 });
 
 // Partner portal routes
@@ -341,6 +345,7 @@ Route::prefix('partner')->middleware(['auth', 'referral'])->group(function () {
     Route::get('/leads/{lead}', [App\Http\Controllers\Partner\LeadController::class, 'show'])->name('partner.leads.show');
     Route::get('/commissions', [App\Http\Controllers\Partner\CommissionController::class, 'index'])->name('partner.commissions.index');
     Route::get('/commissions/export', [App\Http\Controllers\Partner\CommissionController::class, 'exportCsv'])->name('partner.commissions.export');
+    Route::get('/commissions/export-pdf', [App\Http\Controllers\Partner\CommissionController::class, 'exportPdf'])->name('partner.commissions.export-pdf');
     Route::get('/resources', [App\Http\Controllers\Partner\PageController::class, 'index'])->name('partner.pages.index');
     Route::get('/resources/{slug}', [App\Http\Controllers\Partner\PageController::class, 'show'])->name('partner.pages.show');
     Route::get('/guide', [App\Http\Controllers\Partner\GuideController::class, 'index'])->name('partner.guide');
@@ -460,6 +465,13 @@ Route::prefix('client')->middleware(['auth', 'client'])->group(function () {
 
     // Technical Documentation (read-only)
     Route::get('projects/{project}/docs', [App\Http\Controllers\Client\ProjectController::class, 'docs'])->name('client.projects.docs');
+
+    // Purchase Orders
+    Route::get('purchase-orders', [App\Http\Controllers\Client\PurchaseOrderController::class, 'index'])->name('client.purchase-orders.index');
+    Route::get('purchase-orders/{po}/pdf', [App\Http\Controllers\Client\PurchaseOrderController::class, 'downloadPdf'])->name('client.purchase-orders.pdf');
+
+    // Annual Summary Export
+    Route::get('exports/annual-summary', [App\Http\Controllers\Client\ExportController::class, 'annualSummary'])->name('client.exports.annual-summary');
 
     // Documents
     Route::get('documents/{document}', [App\Http\Controllers\Client\DocumentController::class, 'show'])->name('client.documents.show');
@@ -640,6 +652,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('invoices/{invoice}/record-payment', [App\Http\Controllers\Admin\InvoiceController::class, 'recordPayment'])->name('admin.invoices.record-payment');
     Route::get('invoices/{invoice}/pdf', [App\Http\Controllers\Admin\InvoiceController::class, 'downloadPdf'])->name('admin.invoices.pdf');
     Route::get('invoices/{invoice}/pdf/preview', [App\Http\Controllers\Admin\InvoiceController::class, 'previewPdf'])->name('admin.invoices.pdf.preview');
+    Route::post('invoices/{invoice}/credit-note', [App\Http\Controllers\Admin\InvoiceController::class, 'createCreditNote'])->name('admin.invoices.credit-note');
 
     // Commissions
     Route::get('commissions', [App\Http\Controllers\Admin\CommissionController::class, 'index'])->name('admin.commissions.index');
@@ -768,6 +781,11 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('exports/quotes/csv', [App\Http\Controllers\Admin\ExportController::class, 'quotesCsv'])->name('admin.exports.quotes.csv');
     Route::get('exports/payments/csv', [App\Http\Controllers\Admin\ExportController::class, 'paymentsCsv'])->name('admin.exports.payments.csv');
     Route::get('exports/payments/pdf', [App\Http\Controllers\Admin\ExportController::class, 'paymentsPdf'])->name('admin.exports.payments.pdf');
+    Route::get('exports/monthly-report', [App\Http\Controllers\Admin\ExportController::class, 'monthlyReport'])->name('admin.exports.monthly-report');
+
+    // Purchase Orders
+    Route::get('purchase-orders/{po}/pdf', [App\Http\Controllers\Admin\PurchaseOrderController::class, 'downloadPdf'])->name('admin.purchase-orders.pdf');
+    Route::get('purchase-orders/{po}/pdf/preview', [App\Http\Controllers\Admin\PurchaseOrderController::class, 'previewPdf'])->name('admin.purchase-orders.pdf.preview');
 
     // Team Management
     Route::get('team', [App\Http\Controllers\Admin\TeamController::class, 'index'])->name('admin.team');

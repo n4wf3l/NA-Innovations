@@ -119,4 +119,9 @@ class Quote extends Model
     {
         return $this->morphMany(Document::class, 'documentable');
     }
+
+    public function purchaseOrder()
+    {
+        return $this->hasOne(PurchaseOrder::class);
+    }
 }

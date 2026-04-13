@@ -510,4 +510,69 @@ class InvoiceController extends BaseAdminController
             'Content-Disposition' => 'inline',
         ]);
     }
+
+    /**
+     * Créer un avoir (credit note) à partir d'une facture existante.
+     */
+    public function createCreditNote(Invoice $invoice)
+    {
+        if (!in_array($invoice->status, ['paid', 'sent', 'overdue', 'partially_paid'])) {
+            return redirect()->back()->with('error', __('Un avoir ne peut être créé que pour une facture envoyée ou payée.'));
+        }
+
+        // Generate CN number
+        $year = now()->format('Y');
+        $count = Invoice::where('type', 'credit_note')
+            ->whereYear('created_at', $year)
+            ->count() + 1;
+        $cnNumber = sprintf('CN-%s-%03d', $year, $count);
+
+        $creditNote = Invoice::create([
+            'invoice_number' => $cnNumber,
+            'quote_id' => $invoice->quote_id,
+            'client_id' => $invoice->client_id,
+            'projet_id' => $invoice->projet_id,
+            'client_name' => $invoice->client_name,
+            'client_email' => $invoice->client_email,
+            'client_company' => $invoice->client_company,
+            'client_address' => $invoice->client_address,
+            'client_vat' => $invoice->client_vat,
+            'title' => __('Avoir') . ' — ' . $invoice->invoice_number,
+            'type' => 'credit_note',
+            'credit_note_for' => $invoice->id,
+            'subtotal' => -abs($invoice->subtotal),
+            'discount_amount' => 0,
+            'tax_rate' => $invoice->tax_rate,
+            'tax_amount' => -abs($invoice->tax_amount),
+            'total' => -abs($invoice->total),
+            'amount_paid' => 0,
+            'amount_due' => -abs($invoice->total),
+            'currency' => $invoice->currency ?? 'EUR',
+            'locale' => $invoice->locale ?? 'fr',
+            'issue_date' => now()->toDateString(),
+            'due_date' => now()->toDateString(),
+            'view_token' => Str::random(64),
+            'status' => 'draft',
+            'notes' => __('Avoir pour la facture :number', ['number' => $invoice->invoice_number]),
+        ]);
+
+        // Copy items with negative amounts
+        foreach ($invoice->items as $item) {
+            $creditNote->items()->create([
+                'description' => $item->description,
+                'details' => $item->details,
+                'quantity' => $item->quantity,
+                'unit' => $item->unit,
+                'unit_price' => -abs($item->unit_price),
+                'total' => -abs($item->total),
+                'sort_order' => $item->sort_order,
+            ]);
+        }
+
+        // Generate PDF
+        PdfService::generateInvoicePdf($creditNote);
+
+        return redirect()->route('admin.invoices.show', $creditNote)
+            ->with('success', __('Avoir :number créé avec succès.', ['number' => $cnNumber]));
+    }
 }

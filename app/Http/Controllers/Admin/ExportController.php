@@ -232,6 +232,61 @@ class ExportController extends BaseAdminController
 
     // ─── HELPERS ───
 
+    // ─── MONTHLY FINANCIAL REPORT ───
+
+    public function monthlyReport(Request $request)
+    {
+        $month = $request->input('month', now()->month);
+        $year = $request->input('year', now()->year);
+
+        $start = \Carbon\Carbon::create($year, $month, 1)->startOfMonth();
+        $end = $start->copy()->endOfMonth();
+        $monthLabel = $start->translatedFormat('F Y');
+
+        // Revenue
+        $invoices = Invoice::whereBetween('issue_date', [$start, $end])->get();
+        $totalInvoiced = $invoices->sum('total');
+        $totalPaid = $invoices->where('status', 'paid')->sum('total');
+        $totalOutstanding = $invoices->sum('amount_due');
+
+        // Revenue by service type (from quote service_interest)
+        $revenueByService = [];
+        foreach ($invoices as $inv) {
+            if ($inv->quote_id) {
+                $quote = Quote::find($inv->quote_id);
+                $service = $quote?->title ?? __('Divers');
+            } else {
+                $service = __('Facturation directe');
+            }
+            $revenueByService[$service] = ($revenueByService[$service] ?? 0) + $inv->total;
+        }
+
+        // Leads
+        $leads = Lead::whereBetween('created_at', [$start, $end])->get();
+        $newLeads = $leads->count();
+        $wonLeads = $leads->where('status', 'won')->count();
+        $lostLeads = $leads->where('status', 'lost')->count();
+        $conversionRate = $newLeads > 0 ? round($wonLeads / $newLeads * 100, 1) : 0;
+
+        // Commissions
+        $totalCommissions = \App\Models\Commission::whereBetween('created_at', [$start, $end])->sum('commission_amount');
+
+        $pdf = Pdf::loadView('pdf.monthly-report', [
+            'monthLabel' => $monthLabel,
+            'totalInvoiced' => $totalInvoiced,
+            'totalPaid' => $totalPaid,
+            'totalOutstanding' => $totalOutstanding,
+            'revenueByService' => $revenueByService,
+            'newLeads' => $newLeads,
+            'wonLeads' => $wonLeads,
+            'lostLeads' => $lostLeads,
+            'conversionRate' => $conversionRate,
+            'totalCommissions' => $totalCommissions,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->download("rapport-mensuel-{$start->format('Y-m')}.pdf");
+    }
+
     private function applyInvoiceFilters($query, Request $request)
     {
         if ($request->filled('status')) $query->where('status', $request->status);

@@ -8,7 +8,10 @@ use App\Models\Quote;
 use App\Models\Invoice;
 use App\Models\InvoiceReminder;
 use App\Models\Projet;
+use App\Models\PurchaseOrder;
 use App\Models\Commission;
+use App\Models\DocumentTemplate;
+use App\Models\ProjectDocument;
 use App\Models\NotificationLog;
 use App\Models\RecurringService;
 use App\Models\ServiceRenewal;
@@ -141,6 +144,43 @@ class WorkflowService
                 $invoice = QuoteService::convertToInvoice($quote, 'deposit');
                 $invoice->update(['locale' => $quote->locale ?? 'fr']);
                 $actions[] = 'deposit_invoice_created';
+            }
+
+            // 5. Auto-generate Purchase Order from quote
+            try {
+                $quote->load('items');
+                $items = $quote->items->where('is_optional', false)->map(fn($item) => [
+                    'description' => $item->description,
+                    'details' => $item->details,
+                    'quantity' => $item->quantity,
+                    'unit' => $item->unit,
+                    'unit_price' => $item->unit_price,
+                    'total' => $item->total,
+                ])->values()->toArray();
+
+                $po = PurchaseOrder::create([
+                    'quote_id' => $quote->id,
+                    'client_id' => $client?->id,
+                    'projet_id' => $project?->id,
+                    'client_name' => $quote->client_name,
+                    'client_email' => $quote->client_email,
+                    'client_company' => $quote->client_company,
+                    'client_address' => $quote->client_address,
+                    'client_vat' => $quote->client_vat,
+                    'items' => $items,
+                    'subtotal' => $quote->subtotal,
+                    'tax_rate' => $quote->tax_rate,
+                    'tax_amount' => $quote->tax_amount,
+                    'total' => $quote->total,
+                    'currency' => $quote->currency ?? 'EUR',
+                    'status' => 'confirmed',
+                    'issue_date' => now()->toDateString(),
+                    'locale' => $quote->locale ?? 'fr',
+                ]);
+                PdfService::generatePurchaseOrderPdf($po);
+                $actions[] = 'purchase_order_created';
+            } catch (\Exception $e) {
+                Log::warning("Failed to generate purchase order: {$e->getMessage()}");
             }
 
             // Regenerate PDF with accepted status
@@ -328,6 +368,41 @@ class WorkflowService
             if (!$hasFinalInvoice && $quote->total > ($quote->deposit_amount ?? 0)) {
                 $actions[] = 'final_invoice_suggested';
             }
+        }
+
+        // Auto-generate delivery report (PV de réception)
+        try {
+            $template = DocumentTemplate::where('slug', 'delivery-report')->where('is_active', true)->first();
+            if ($template) {
+                $client = $project->client;
+                $clientName = $client?->name ?? '';
+                $clientCompany = $client?->company_name ?? '';
+
+                $content = str_replace(
+                    ['{{ client_name }}', '{{ client_company }}', '{{ project_name }}', '{{ delivery_date }}', '{{ deliverables }}', '{{ remarks }}'],
+                    [$clientName, $clientCompany, $project->nom_societe, now()->format('d/m/Y'), __('Ensemble des livrables du projet'), __('Aucune réserve formulée')],
+                    $template->body
+                );
+
+                $doc = $project->projectDocuments()->create([
+                    'document_template_id' => $template->id,
+                    'title' => __('Procès-verbal de réception') . ' — ' . $project->nom_societe,
+                    'content' => $content,
+                    'status' => 'draft',
+                    'locale' => 'fr',
+                ]);
+
+                $project->timelineEvents()->create([
+                    'user_id' => auth()->id(),
+                    'event_type' => 'document_created',
+                    'title' => __('Procès-verbal de réception généré'),
+                    'description' => __('Le procès-verbal de réception a été généré automatiquement suite à la complétion du projet.'),
+                ]);
+
+                $actions[] = 'delivery_report_generated';
+            }
+        } catch (\Exception $e) {
+            Log::warning("Failed to generate delivery report: {$e->getMessage()}");
         }
 
         return $actions;

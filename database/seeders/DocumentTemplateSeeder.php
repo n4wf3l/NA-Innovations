@@ -119,7 +119,7 @@ HTML,
         );
 
         // ═══════════════════════════════════════════════════════
-        // Template 2 — Contrat de prestation de services
+        // Template 2 — Contrat de prestation de services (CGV intégrées)
         // ═══════════════════════════════════════════════════════
 
         DocumentTemplate::updateOrCreate(
@@ -134,13 +134,11 @@ HTML,
                 'available_variables' => [
                     'client_name',
                     'client_company',
-                    'agency_name',
+                    'company_name',
                     'project_name',
-                    'scope',
-                    'budget',
-                    'timeline',
+                    'start_date',
+                    'total',
                     'payment_terms',
-                    'date',
                 ],
                 'body' => <<<'HTML'
 <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 40px; color: #1a1a1a; line-height: 1.7;">
@@ -149,11 +147,11 @@ HTML,
     <p style="text-align: center; font-size: 14px; color: #666; margin-bottom: 40px;">Service Agreement</p>
 
     <p style="margin-bottom: 20px;">
-        Établi le <strong>{{ date }}</strong>, entre les parties suivantes :
+        Établi le <strong>{{ start_date }}</strong>, entre les parties suivantes :
     </p>
 
     <p style="margin-bottom: 10px;">
-        <strong>Le prestataire :</strong> {{ agency_name }}, ci-après dénommé « le Prestataire »,
+        <strong>Le prestataire :</strong> {{ company_name }}, ci-après dénommé « le Prestataire »,
     </p>
     <p style="margin-bottom: 30px;">
         <strong>Le client :</strong> {{ client_name }}, agissant pour le compte de {{ client_company }}, ci-après dénommé « le Client ».
@@ -164,68 +162,102 @@ HTML,
     <h3 style="font-size: 16px; margin-bottom: 12px;">Article 1 — Objet du contrat</h3>
     <p style="margin-bottom: 20px;">
         Le présent contrat a pour objet de définir les conditions dans lesquelles le Prestataire s'engage
-        à réaliser pour le Client les prestations de services suivantes dans le cadre du projet
-        <strong>{{ project_name }}</strong> :
+        à réaliser pour le Client les prestations de services numériques dans le cadre du projet
+        <strong>« {{ project_name }} »</strong>. Les prestations comprennent la conception, le développement,
+        les tests et la livraison des éléments décrits dans le devis accepté par le Client.
     </p>
-    <div style="background: #f9f9f9; border-left: 3px solid #3b82f6; padding: 16px; margin-bottom: 20px; border-radius: 4px;">
-        {{ scope }}
-    </div>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 2 — Livrables et délais</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 2 — Durée et calendrier</h3>
     <p style="margin-bottom: 20px;">
-        Le Prestataire s'engage à livrer les résultats des prestations conformément au calendrier suivant :
-    </p>
-    <div style="background: #f9f9f9; border-left: 3px solid #3b82f6; padding: 16px; margin-bottom: 20px; border-radius: 4px;">
-        {{ timeline }}
-    </div>
-    <p style="margin-bottom: 20px;">
-        Tout retard dans la livraison devra être notifié par le Prestataire dans les meilleurs délais.
-        Les parties conviendront alors d'un nouveau calendrier de livraison par accord mutuel.
+        Le contrat entre en vigueur à la date de sa signature par les deux parties. Le calendrier
+        de réalisation des prestations est défini d'un commun accord entre les parties. Tout retard
+        imputable au Client (retard de validation, absence de retour, indisponibilité des contenus)
+        entraîne un décalage proportionnel du calendrier de livraison.
     </p>
 
     <h3 style="font-size: 16px; margin-bottom: 12px;">Article 3 — Prix et modalités de paiement</h3>
     <p style="margin-bottom: 10px;">
-        En contrepartie des prestations réalisées, le Client s'engage à verser au Prestataire la somme de :
+        En contrepartie des prestations réalisées, le Client s'engage à verser au Prestataire la somme totale de :
     </p>
     <p style="font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 10px; color: #111;">
-        {{ budget }}
+        {{ total }} EUR TTC
     </p>
     <p style="margin-bottom: 10px;">Les modalités de paiement sont les suivantes :</p>
     <div style="background: #f9f9f9; border-left: 3px solid #3b82f6; padding: 16px; margin-bottom: 20px; border-radius: 4px;">
         {{ payment_terms }}
     </div>
     <p style="margin-bottom: 20px;">
-        En cas de retard de paiement, des intérêts de retard seront appliqués au taux légal en vigueur,
-        sans qu'un rappel préalable ne soit nécessaire. Le Prestataire se réserve le droit de suspendre
-        les prestations en cas de non-paiement supérieur à 30 jours.
+        En cas de retard de paiement, des intérêts de retard seront appliqués au taux légal en vigueur
+        majoré de 10 points, sans qu'un rappel préalable ne soit nécessaire, conformément à la loi du
+        2 août 2002 concernant la lutte contre le retard de paiement dans les transactions commerciales.
+        Une indemnité forfaitaire de 40 € pour frais de recouvrement sera également due.
+        Le Prestataire se réserve le droit de suspendre toute prestation en cas de non-paiement
+        supérieur à 15 jours après échéance.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 4 — Propriété intellectuelle</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 4 — Obligations du Prestataire</h3>
+    <ul style="margin-bottom: 20px; padding-left: 20px;">
+        <li style="margin-bottom: 8px;">Exécuter les prestations avec diligence et professionnalisme, conformément aux règles de l'art ;</li>
+        <li style="margin-bottom: 8px;">Informer le Client de l'avancement des travaux et de toute difficulté rencontrée ;</li>
+        <li style="margin-bottom: 8px;">Respecter la confidentialité des informations communiquées par le Client ;</li>
+        <li style="margin-bottom: 8px;">Livrer les prestations conformément aux spécifications convenues dans le devis accepté.</li>
+    </ul>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 5 — Obligations du Client</h3>
+    <ul style="margin-bottom: 20px; padding-left: 20px;">
+        <li style="margin-bottom: 8px;">Fournir en temps utile tous les éléments nécessaires à la réalisation des prestations (contenus, accès, validations) ;</li>
+        <li style="margin-bottom: 8px;">Désigner un interlocuteur unique habilité à prendre des décisions ;</li>
+        <li style="margin-bottom: 8px;">Procéder aux validations dans un délai raisonnable (5 jours ouvrables sauf accord contraire) ;</li>
+        <li style="margin-bottom: 8px;">Régler les factures aux échéances prévues.</li>
+    </ul>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 6 — Propriété intellectuelle</h3>
     <p style="margin-bottom: 20px;">
-        Tous les droits de propriété intellectuelle relatifs aux livrables développés dans le cadre du
-        présent contrat seront transférés au Client après paiement intégral de l'ensemble des sommes dues.
-        Jusqu'au paiement complet, le Prestataire conserve l'intégralité des droits de propriété
-        intellectuelle sur les livrables. Le Prestataire se réserve le droit d'utiliser les techniques,
-        méthodologies et savoir-faire généraux acquis ou développés lors de l'exécution du contrat.
+        Tous les droits de propriété intellectuelle relatifs aux livrables développés spécifiquement
+        pour le Client dans le cadre du présent contrat seront transférés au Client après paiement
+        intégral de l'ensemble des sommes dues. Jusqu'au paiement complet, le Prestataire conserve
+        l'intégralité des droits. Le Prestataire conserve en tout état de cause le droit d'utiliser
+        les techniques, méthodologies, savoir-faire et composants génériques développés ou utilisés
+        lors de l'exécution du contrat.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 5 — Résiliation</h3>
-    <p style="margin-bottom: 10px;">Le présent contrat peut être résilié dans les cas suivants :</p>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 7 — Garantie et maintenance</h3>
+    <p style="margin-bottom: 20px;">
+        Le Prestataire garantit le bon fonctionnement des livrables pendant une période de 30 jours
+        suivant la réception définitive. Cette garantie couvre la correction des anomalies bloquantes
+        et majeures. Les évolutions fonctionnelles, modifications de périmètre et adaptations à de
+        nouveaux environnements ne sont pas couvertes par cette garantie et feront l'objet de devis
+        complémentaires.
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 8 — Responsabilité</h3>
+    <p style="margin-bottom: 20px;">
+        La responsabilité totale du Prestataire au titre du présent contrat ne saurait excéder le
+        montant total des sommes effectivement perçues. Le Prestataire ne pourra en aucun cas être
+        tenu responsable des dommages indirects tels que perte de chiffre d'affaires, perte de
+        clientèle, perte de données ou atteinte à l'image de marque.
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 9 — Résiliation</h3>
+    <p style="margin-bottom: 10px;">Le présent contrat peut être résilié :</p>
     <ul style="margin-bottom: 20px; padding-left: 20px;">
         <li style="margin-bottom: 8px;">Par accord mutuel des parties, à tout moment, par notification écrite ;</li>
-        <li style="margin-bottom: 8px;">Par l'une des parties en cas de manquement grave de l'autre partie à ses obligations contractuelles, après mise en demeure restée infructueuse pendant 15 jours ;</li>
-        <li style="margin-bottom: 8px;">Par le Client, avec un préavis de 30 jours, sous réserve du paiement des prestations déjà réalisées et des frais engagés par le Prestataire.</li>
+        <li style="margin-bottom: 8px;">Par l'une des parties en cas de manquement grave de l'autre partie à ses obligations, après mise en demeure par lettre recommandée restée sans effet pendant 15 jours ;</li>
+        <li style="margin-bottom: 8px;">Par le Client, avec un préavis de 30 jours, sous réserve du paiement intégral des prestations déjà réalisées et des frais engagés.</li>
     </ul>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 10 — Force majeure</h3>
     <p style="margin-bottom: 20px;">
-        En cas de résiliation anticipée, les sommes correspondant aux prestations déjà exécutées
-        restent acquises au Prestataire.
+        Aucune partie ne sera tenue responsable d'un manquement à ses obligations contractuelles
+        résultant d'un événement de force majeure tel que défini par l'article 1148 du Code civil.
+        La partie invoquant la force majeure devra en informer l'autre partie dans les 48 heures.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 6 — Juridiction et droit applicable</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 11 — Droit applicable et juridiction</h3>
     <p style="margin-bottom: 30px;">
         Le présent contrat est régi par le droit belge. Tout litige relatif à l'interprétation,
         l'exécution ou la résiliation du présent contrat sera soumis aux tribunaux compétents
-        de Bruxelles, Belgique.
+        de Bruxelles, Belgique, après tentative de résolution amiable.
     </p>
 
     <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 30px 0;">
@@ -236,7 +268,7 @@ HTML,
 
     <div style="display: flex; justify-content: space-between; margin-top: 40px;">
         <div style="width: 45%;">
-            <p style="font-weight: bold; margin-bottom: 8px;">Le Prestataire — {{ agency_name }}</p>
+            <p style="font-weight: bold; margin-bottom: 8px;">Le Prestataire — {{ company_name }}</p>
             <p style="margin-bottom: 4px;">Nom : ___________________________</p>
             <p style="margin-bottom: 4px;">Fonction : ___________________________</p>
             <p style="margin-bottom: 4px;">Date : ___________________________</p>
@@ -378,7 +410,7 @@ HTML,
                     'architecture',
                     'date',
                 ],
-                'body' => <<<'HTML'
+                'body' => <<<'HTML_TECHSPEC'
 <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 40px; color: #1a1a1a; line-height: 1.7;">
 
     <h2 style="text-align: center; font-size: 24px; margin-bottom: 8px; color: #111;">Spécification technique</h2>
@@ -466,7 +498,190 @@ HTML,
     </p>
 
 </div>
-HTML,
+HTML_TECHSPEC,
+            ]
+        );
+
+        // ═══════════════════════════════════════════════════════
+        // Template 5 — Conditions Générales de Vente (CGV)
+        // ═══════════════════════════════════════════════════════
+
+        DocumentTemplate::updateOrCreate(
+            ['slug' => 'cgv'],
+            [
+                'name' => 'Conditions Générales de Vente (CGV)',
+                'category' => 'legal',
+                'requires_signature' => true,
+                'is_active' => true,
+                'sort_order' => 5,
+                'default_locale' => 'fr',
+                'available_variables' => [
+                    'client_name',
+                    'client_company',
+                    'company_name',
+                    'project_name',
+                    'start_date',
+                    'total',
+                    'payment_terms',
+                ],
+                'body' => <<<'HTML_CGV'
+<div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 40px; color: #1a1a1a; line-height: 1.7;">
+
+    <h2 style="text-align: center; font-size: 24px; margin-bottom: 8px; color: #111;">Conditions Générales de Vente</h2>
+    <p style="text-align: center; font-size: 14px; color: #666; margin-bottom: 40px;">Applicables à compter du {{ start_date }}</p>
+
+    <p style="margin-bottom: 20px;">
+        Les présentes Conditions Générales de Vente (ci-après « CGV ») s'appliquent à toutes les prestations
+        de services numériques fournies par <strong>{{ company_name }}</strong> (ci-après « le Prestataire »)
+        au client <strong>{{ client_name }}</strong>, agissant pour le compte de <strong>{{ client_company }}</strong>
+        (ci-après « le Client »).
+    </p>
+
+    <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 30px 0;">
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 1 — Champ d'application</h3>
+    <p style="margin-bottom: 20px;">
+        Les présentes CGV s'appliquent à l'ensemble des prestations conclues par le Prestataire auprès
+        du Client. Le Client déclare avoir pris connaissance des présentes CGV et les avoir acceptées
+        avant la passation de toute commande. Toute commande implique l'adhésion sans réserve du Client
+        aux présentes CGV, à l'exclusion de tout autre document.
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 2 — Devis et commandes</h3>
+    <p style="margin-bottom: 20px;">
+        Toute prestation fait l'objet d'un devis préalable détaillé. Le devis est valable pour la durée
+        qui y est mentionnée. La commande n'est considérée comme ferme et définitive qu'après acceptation
+        écrite du devis par le Client et réception de l'acompte prévu. Toute modification de la commande
+        demandée par le Client après acceptation du devis pourra donner lieu à un avenant et à une
+        facturation complémentaire.
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 3 — Tarifs et paiement</h3>
+    <p style="margin-bottom: 10px;">
+        Les prix sont indiqués en euros et sont, sauf mention contraire, hors taxes. La TVA applicable
+        sera ajoutée au taux en vigueur. Les modalités de paiement applicables au projet
+        <strong>« {{ project_name }} »</strong> sont :
+    </p>
+    <div style="background: #f9f9f9; border-left: 3px solid #3b82f6; padding: 16px; margin-bottom: 20px; border-radius: 4px;">
+        {{ payment_terms }}
+    </div>
+    <p style="margin-bottom: 20px;">
+        <strong>Retard de paiement :</strong> Conformément à la loi du 2 août 2002 concernant la lutte
+        contre le retard de paiement dans les transactions commerciales, tout retard de paiement
+        entraînera de plein droit et sans mise en demeure préalable : (a) l'application d'intérêts
+        de retard au taux directeur de la BCE majoré de 8 points ; (b) une indemnité forfaitaire
+        de 40 € pour frais de recouvrement ; (c) le droit pour le Prestataire de suspendre
+        immédiatement toute prestation en cours.
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 4 — Exécution des prestations</h3>
+    <p style="margin-bottom: 20px;">
+        Le Prestataire s'engage à exécuter les prestations avec tout le soin et la diligence requis,
+        conformément aux règles de l'art de la profession. Le Prestataire est soumis à une obligation
+        de moyens et non de résultat. Les délais de livraison sont donnés à titre indicatif et ne
+        constituent pas un engagement ferme, sauf stipulation contraire expresse. Le Client s'engage
+        à fournir tous les éléments nécessaires dans les délais convenus ; tout retard du Client
+        entraîne un report proportionnel du calendrier.
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 5 — Réception et validation</h3>
+    <p style="margin-bottom: 20px;">
+        À la livraison de chaque phase ou livrable, le Client dispose d'un délai de 5 jours ouvrables
+        pour formuler ses observations. Passé ce délai, les livrables sont réputés acceptés. Un
+        procès-verbal de réception sera établi pour formaliser l'acceptation définitive du projet.
+        Les corrections mineures ne constituent pas un motif de refus de réception.
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 6 — Propriété intellectuelle</h3>
+    <p style="margin-bottom: 20px;">
+        Le transfert des droits de propriété intellectuelle sur les livrables n'intervient qu'après
+        paiement intégral du prix convenu. Jusqu'au paiement complet, le Prestataire conserve
+        l'intégralité des droits de propriété intellectuelle. Le Prestataire conserve en tout état
+        de cause le droit de mentionner la réalisation dans ses références commerciales et de réutiliser
+        les composants génériques, frameworks et méthodologies développés ou utilisés dans le cadre
+        du projet.
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 7 — Garantie</h3>
+    <p style="margin-bottom: 20px;">
+        Le Prestataire garantit la conformité des livrables aux spécifications convenues pendant une
+        durée de 30 jours à compter de la réception définitive. Cette garantie est limitée à la
+        correction des dysfonctionnements reproductibles. Les évolutions, ajouts de fonctionnalités
+        et adaptations ne sont pas couverts par cette garantie.
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 8 — Limitation de responsabilité</h3>
+    <p style="margin-bottom: 20px;">
+        La responsabilité totale du Prestataire, toutes causes confondues, est limitée au montant
+        total des sommes effectivement versées par le Client au titre du contrat concerné. En aucun
+        cas le Prestataire ne pourra être tenu responsable des dommages indirects, notamment la perte
+        de chiffre d'affaires, la perte de clientèle, la perte de données, l'atteinte à l'image
+        de marque ou le manque à gagner.
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 9 — Confidentialité</h3>
+    <p style="margin-bottom: 20px;">
+        Chaque partie s'engage à traiter comme confidentielles toutes les informations reçues de
+        l'autre partie dans le cadre de l'exécution du contrat. Cette obligation de confidentialité
+        subsiste pendant une durée de 2 ans après la fin du contrat.
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 10 — Protection des données</h3>
+    <p style="margin-bottom: 20px;">
+        Le Prestataire s'engage à traiter les données personnelles conformément au Règlement Général
+        sur la Protection des Données (RGPD — Règlement UE 2016/679). Les données personnelles
+        collectées dans le cadre du contrat ne sont utilisées qu'aux fins de l'exécution des prestations
+        et ne sont en aucun cas cédées à des tiers sans le consentement préalable du Client.
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 11 — Résiliation</h3>
+    <p style="margin-bottom: 20px;">
+        En cas de manquement grave par l'une des parties à l'une de ses obligations, le contrat
+        pourra être résilié de plein droit 15 jours après mise en demeure par lettre recommandée
+        restée sans effet. Le Client peut résilier le contrat à tout moment avec un préavis de
+        30 jours, sous réserve du paiement des prestations déjà réalisées et engagées.
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 12 — Force majeure</h3>
+    <p style="margin-bottom: 20px;">
+        Aucune partie ne sera tenue responsable de l'inexécution de ses obligations si cette
+        inexécution résulte d'un cas de force majeure au sens de la jurisprudence belge
+        (événement imprévisible, irrésistible et extérieur aux parties).
+    </p>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 13 — Droit applicable et juridiction</h3>
+    <p style="margin-bottom: 30px;">
+        Les présentes CGV sont soumises au droit belge. En cas de litige, les parties s'engagent
+        à rechercher une solution amiable. À défaut d'accord, les tribunaux de l'arrondissement
+        judiciaire de Bruxelles seront seuls compétents.
+    </p>
+
+    <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 30px 0;">
+
+    <p style="text-align: center; font-style: italic; color: #666; margin-bottom: 20px;">
+        Le Client déclare avoir pris connaissance des présentes Conditions Générales de Vente
+        et les accepter sans réserve.
+    </p>
+
+    <div style="display: flex; justify-content: space-between; margin-top: 40px;">
+        <div style="width: 45%;">
+            <p style="font-weight: bold; margin-bottom: 8px;">Le Prestataire — {{ company_name }}</p>
+            <p style="margin-bottom: 4px;">Nom : ___________________________</p>
+            <p style="margin-bottom: 4px;">Date : ___________________________</p>
+            <p>Signature :</p>
+            <div style="height: 80px; border-bottom: 1px solid #333;"></div>
+        </div>
+        <div style="width: 45%;">
+            <p style="font-weight: bold; margin-bottom: 8px;">Le Client — {{ client_company }}</p>
+            <p style="margin-bottom: 4px;">Nom : {{ client_name }}</p>
+            <p style="margin-bottom: 4px;">Date : ___________________________</p>
+            <p>Signature (précédée de la mention « Lu et approuvé ») :</p>
+            <div style="height: 80px; border-bottom: 1px solid #333;"></div>
+        </div>
+    </div>
+
+</div>
+HTML_CGV,
             ]
         );
     }

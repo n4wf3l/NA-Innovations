@@ -263,6 +263,11 @@
     </style>
 </head>
 <body>
+    @if($quote->status === 'draft')
+        <div style="position: fixed; top: 35%; left: 10%; z-index: 0; transform: rotate(-45deg); opacity: 0.08; font-size: 120px; color: #999; font-weight: bold; letter-spacing: 10px; pointer-events: none;">
+            BROUILLON
+        </div>
+    @endif
     <div class="page">
         {{-- Header --}}
         <div class="header">

@@ -48,6 +48,21 @@ export default function DevEarnings({ months, totalYtd, hourlyRate, pendingEntri
                     </div>
                 </div>
 
+                <div className="flex flex-wrap gap-3">
+                    <a
+                        href={`/dev/exports/statement?month=${new Date().getMonth() + 1}&year=${new Date().getFullYear()}`}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-500 text-white text-sm font-semibold hover:bg-teal-600 transition-colors"
+                    >
+                        {t('Exporter relevé mensuel (PDF)')}
+                    </a>
+                    <a
+                        href="/dev/exports/timesheet"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                    >
+                        {t('Exporter feuille de temps (PDF)')}
+                    </a>
+                </div>
+
                 <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
                         <h2 className="text-sm font-bold text-gray-900 dark:text-white">{t('Détail mensuel')}</h2>

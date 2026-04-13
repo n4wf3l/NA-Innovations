@@ -112,10 +112,10 @@ export default function PriceSimulator({
                 </div>
                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${
                     feature.included
-                        ? 'bg-teal-100 text-teal-700'
+                        ? 'bg-teal-100 dark:bg-teal-500/20 text-teal-700 dark:text-teal-300'
                         : feature.price === 0
-                            ? 'bg-gray-100 text-gray-500'
-                            : 'bg-gray-100 text-gray-700'
+                            ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                 }`}>
                     {feature.included ? t('Included') : feature.price === 0 ? t('Free') : `+${formatEUR(feature.price)}${feature.suffix ? ' ' + t(feature.suffix) : ''}`}
                 </span>
@@ -135,37 +135,37 @@ export default function PriceSimulator({
                 <>
                     <div className="space-y-3 mb-4">
                         <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">{t('Base Price')}</span>
+                            <span className="text-gray-600 dark:text-gray-400">{t('Base Price')}</span>
                             <span className="font-semibold text-gray-900 dark:text-white">{formatEUR(priceBreakdown.base)}</span>
                         </div>
                         {priceBreakdown.featuresTotal > 0 && (
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">{t('Features')}</span>
+                                <span className="text-gray-600 dark:text-gray-400">{t('Features')}</span>
                                 <span className="font-semibold text-gray-900 dark:text-white">+{formatEUR(priceBreakdown.featuresTotal)}</span>
                             </div>
                         )}
                         {priceBreakdown.designTotal > 0 && (
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">{t('Design')}</span>
+                                <span className="text-gray-600 dark:text-gray-400">{t('Design')}</span>
                                 <span className="font-semibold text-gray-900 dark:text-white">+{formatEUR(priceBreakdown.designTotal)}</span>
                             </div>
                         )}
                         {priceBreakdown.maintenanceTotal > 0 && (
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">{t('Maintenance')}</span>
+                                <span className="text-gray-600 dark:text-gray-400">{t('Maintenance')}</span>
                                 <span className="font-semibold text-gray-900 dark:text-white">+{formatEUR(priceBreakdown.maintenanceTotal)}</span>
                             </div>
                         )}
                         {priceBreakdown.timelineExtra > 0 && (
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">{t('Timeline adjustment')}</span>
+                                <span className="text-gray-600 dark:text-gray-400">{t('Timeline adjustment')}</span>
                                 <span className="font-semibold text-amber-600">+{formatEUR(priceBreakdown.timelineExtra)}</span>
                             </div>
                         )}
                     </div>
                     <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mb-6">
                         <div className="flex justify-between items-center">
-                            <span className="text-sm font-semibold text-gray-700">{t('Estimated Total')}</span>
+                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t('Estimated Total')}</span>
                             <span className="text-2xl font-bold text-teal-600">
                                 <AnimatedNumber value={priceBreakdown.total} />
                             </span>
@@ -208,7 +208,7 @@ export default function PriceSimulator({
                                     onClick={() => setSelectedType(type.id)}
                                     className={`relative text-left p-5 rounded-2xl border-2 transition-all duration-200 ${
                                         isSelected
-                                            ? 'border-teal-400 bg-teal-50 shadow-md'
+                                            ? 'border-teal-400 bg-teal-50 dark:bg-teal-500/10 shadow-md'
                                             : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm'
                                     }`}
                                 >
@@ -219,7 +219,7 @@ export default function PriceSimulator({
                                             </svg>
                                         </div>
                                     )}
-                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${isSelected ? 'bg-teal-400 text-white' : 'bg-gray-100 text-gray-500'}`}>
+                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${isSelected ? 'bg-teal-400 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'}`}>
                                         {type.icon}
                                     </div>
                                     <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">{t(type.name)}</h3>
@@ -240,14 +240,14 @@ export default function PriceSimulator({
                         </div>
 
                         <div className="space-y-4">
-                            <div className="bg-teal-50 border border-teal-200 rounded-2xl p-5">
+                            <div className="bg-teal-50 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/20 rounded-2xl p-5">
                                 <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center flex-shrink-0">
-                                        <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" /></svg>
+                                    <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-500/20 flex items-center justify-center flex-shrink-0">
+                                        <svg className="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" /></svg>
                                     </div>
                                     <div>
-                                        <h4 className="text-sm font-bold text-teal-900">{t('Some examples to inspire you:')}</h4>
-                                        <ul className="mt-2 text-xs text-teal-700 space-y-1">
+                                        <h4 className="text-sm font-bold text-teal-900 dark:text-teal-300">{t('Some examples to inspire you:')}</h4>
+                                        <ul className="mt-2 text-xs text-teal-700 dark:text-teal-400 space-y-1">
                                             <li>• "Je veux un site pour mon restaurant où les clients peuvent réserver une table"</li>
                                             <li>• "J'ai besoin d'une application pour gérer les rendez-vous de mon salon de coiffure"</li>
                                             <li>• "Je veux vendre mes produits en ligne avec livraison en Belgique"</li>
@@ -262,7 +262,7 @@ export default function PriceSimulator({
                                 value={noIdeaDescription}
                                 onChange={e => setNoIdeaDescription(e.target.value)}
                                 rows={6}
-                                className="w-full border border-gray-200 rounded-2xl px-5 py-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:border-teal-400 focus:ring-teal-400 resize-none"
+                                className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-2xl px-5 py-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-teal-400 focus:ring-teal-400 resize-none"
                                 placeholder="Décrivez ce que vous souhaitez : votre activité, ce que le site ou l'application doit faire, vos clients, etc."
                             />
                             <p className="text-xs text-gray-400">{t('Our team will analyze your need and propose the most suitable solution with a detailed quote.')}</p>
@@ -313,7 +313,7 @@ export default function PriceSimulator({
                                         onClick={() => setSelectedDesign(option.id)}
                                         className={`relative text-left p-5 rounded-2xl border-2 transition-all duration-200 ${
                                             isSelected
-                                                ? 'border-teal-400 bg-teal-50 shadow-md'
+                                                ? 'border-teal-400 bg-teal-50 dark:bg-teal-500/10 shadow-md'
                                                 : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
                                         }`}
                                     >
@@ -326,7 +326,7 @@ export default function PriceSimulator({
                                         )}
                                         <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1 pr-6">{t(option.name)}</h3>
                                         <p className="text-xs text-gray-500 mb-2">{t(option.description)}</p>
-                                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${option.price === 0 ? 'bg-teal-100 text-teal-700' : 'bg-gray-100 text-gray-700'}`}>
+                                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${option.price === 0 ? 'bg-teal-100 dark:bg-teal-500/20 text-teal-700 dark:text-teal-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}>
                                             {option.price === 0 ? t('Included') : `+${formatEUR(option.price)}`}
                                         </span>
                                     </button>
@@ -352,7 +352,7 @@ export default function PriceSimulator({
                                         onClick={() => setSelectedMaintenance(option.id)}
                                         className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200 text-left ${
                                             isSelected
-                                                ? 'border-teal-400 bg-teal-50'
+                                                ? 'border-teal-400 bg-teal-50 dark:bg-teal-500/10'
                                                 : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
                                         }`}
                                     >
@@ -360,9 +360,9 @@ export default function PriceSimulator({
                                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-teal-400' : 'border-gray-300'}`}>
                                                 {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-teal-400" />}
                                             </div>
-                                            <span className="text-sm text-gray-800">{t(option.name)}</span>
+                                            <span className="text-sm text-gray-800 dark:text-gray-200">{t(option.name)}</span>
                                         </div>
-                                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${option.price === 0 ? 'bg-gray-100 text-gray-500' : 'bg-gray-100 text-gray-700'}`}>
+                                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${option.price === 0 ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}>
                                             {option.price === 0 ? t('Free') : `+${formatEUR(option.price)}${option.suffix ? ' ' + option.suffix : ''}`}
                                         </span>
                                     </button>
@@ -388,7 +388,7 @@ export default function PriceSimulator({
                                         onClick={() => setSelectedTimeline(option.id)}
                                         className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200 text-left ${
                                             isSelected
-                                                ? 'border-teal-400 bg-teal-50'
+                                                ? 'border-teal-400 bg-teal-50 dark:bg-teal-500/10'
                                                 : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
                                         }`}
                                     >
@@ -401,7 +401,7 @@ export default function PriceSimulator({
                                                 <span className="text-xs text-gray-500">{t(option.description)}</span>
                                             </div>
                                         </div>
-                                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${option.multiplier === 0 ? 'bg-gray-100 text-gray-500' : 'bg-amber-100 text-amber-700'}`}>
+                                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${option.multiplier === 0 ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400' : 'bg-amber-100 text-amber-700'}`}>
                                             {option.multiplier === 0 ? t('No extra') : `+${option.multiplier * 100}%`}
                                         </span>
                                     </button>

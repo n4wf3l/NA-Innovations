@@ -259,6 +259,9 @@
                                 @endif
                                 <div class="signature-name">{{ $document->adminSigner->name }}</div>
                                 <div class="signature-date">Signé le {{ $document->admin_signed_at->format('d/m/Y à H:i') }}</div>
+                                @if($document->admin_signature_hash)
+                                    <div style="font-size: 7pt; color: #888; margin-top: 4px; word-break: break-all;">Hash: {{ substr($document->admin_signature_hash, 0, 16) }}...</div>
+                                @endif
                             @else
                                 <div class="signature-pending">En attente de signature</div>
                             @endif
@@ -273,6 +276,9 @@
                                 @endif
                                 <div class="signature-name">{{ $document->clientSigner->name }}</div>
                                 <div class="signature-date">Signé le {{ $document->client_signed_at->format('d/m/Y à H:i') }}</div>
+                                @if($document->client_signature_hash)
+                                    <div style="font-size: 7pt; color: #888; margin-top: 4px; word-break: break-all;">Hash: {{ substr($document->client_signature_hash, 0, 16) }}...</div>
+                                @endif
                             @else
                                 <div class="signature-pending">En attente de signature</div>
                             @endif
@@ -313,6 +319,19 @@
                 <tr>
                     <td colspan="2" style="padding-top: 4px;">
                         <strong>Empreinte SHA-256 :</strong> {{ $document->pdf_hash }}
+                    </td>
+                </tr>
+                @endif
+                @if($document->admin_signature_hash || $document->client_signature_hash)
+                <tr>
+                    <td colspan="2" style="padding-top: 4px;">
+                        <strong>Certificats de signature :</strong><br>
+                        @if($document->admin_signature_hash)
+                            Signature certifiée (admin) — Hash: {{ $document->admin_signature_hash }} — Horodatage: {{ $document->admin_signed_at?->toIso8601String() }}<br>
+                        @endif
+                        @if($document->client_signature_hash)
+                            Signature certifiée (client) — Hash: {{ $document->client_signature_hash }} — Horodatage: {{ $document->client_signed_at?->toIso8601String() }}<br>
+                        @endif
                     </td>
                 </tr>
                 @endif

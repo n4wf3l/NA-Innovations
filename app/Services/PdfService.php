@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\ProjectDocument;
+use App\Models\PurchaseOrder;
 use App\Models\Quote;
 use App\Models\Invoice;
 use App\Models\Setting;
@@ -75,6 +76,27 @@ class PdfService
             'pdf_path' => $path,
             'pdf_hash' => $pdfHash,
         ]);
+
+        return $path;
+    }
+
+    public static function generatePurchaseOrderPdf(PurchaseOrder $po): string
+    {
+        $po->load('quote');
+        $company = self::getCompanyInfo();
+
+        $previousLocale = app()->getLocale();
+        app()->setLocale($po->locale ?? 'fr');
+
+        $pdf = Pdf::loadView('pdf.purchase-order', compact('po', 'company'));
+        $pdf->setPaper('a4');
+
+        $path = "purchase-orders/{$po->po_number}.pdf";
+        Storage::disk('local')->put($path, $pdf->output());
+
+        app()->setLocale($previousLocale);
+
+        $po->update(['pdf_path' => $path]);
 
         return $path;
     }

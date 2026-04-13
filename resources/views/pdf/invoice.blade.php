@@ -316,7 +316,13 @@
                         </div>
                     </td>
                     <td style="width: 45%;">
-                        <div class="invoice-title">{{ __('pdf.invoice') }}</div>
+                        <div class="invoice-title">
+                            @if($invoice->type === 'credit_note')
+                                {{ __('pdf.credit_note') }}
+                            @else
+                                {{ __('pdf.invoice') }}
+                            @endif
+                        </div>
                         <div class="invoice-meta">
                             <strong>{{ __('pdf.invoice_number') }}</strong> {{ $invoice->invoice_number }}<br>
                             <strong>{{ __('pdf.issue_date') }}</strong> {{ $invoice->issue_date ? $invoice->issue_date->format('d/m/Y') : '-' }}<br>
@@ -347,6 +353,19 @@
                 @if($invoice->client_email){{ $invoice->client_email }}@endif
             </div>
         </div>
+
+        {{-- Credit Note Reference --}}
+        @if($invoice->type === 'credit_note' && $invoice->credit_note_for)
+            @php $originalInvoice = \App\Models\Invoice::find($invoice->credit_note_for); @endphp
+            @if($originalInvoice)
+                <div style="background-color: #fef2f2; border: 1px solid #fca5a5; border-radius: 4px; padding: 10px 15px; margin-bottom: 15px; font-size: 11px; color: #991b1b;">
+                    <strong>{{ __('pdf.credit_note_for_invoice') }}:</strong> {{ $originalInvoice->invoice_number }}
+                    @if($originalInvoice->issue_date)
+                        ({{ $originalInvoice->issue_date->format('d/m/Y') }})
+                    @endif
+                </div>
+            @endif
+        @endif
 
         {{-- Invoice Title --}}
         @if($invoice->title)

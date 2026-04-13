@@ -110,11 +110,16 @@ class ProjectDocumentController extends BaseAdminController
             return redirect()->back()->with('error', 'Ce document ne peut pas être signé dans son état actuel.');
         }
 
+        // Compute signature hash (eIDAS-lite)
+        $signTimestamp = now()->toIso8601String();
+        $signatureHash = hash('sha256', ($document->content ?? '') . auth()->user()->email . $signTimestamp . $document->document_reference);
+
         $document->update([
             'admin_signed_by' => auth()->id(),
             'admin_signature_data' => $validated['signature_data'],
-            'admin_signed_at' => now(),
+            'admin_signed_at' => $signTimestamp,
             'admin_signed_ip' => $request->ip(),
+            'admin_signature_hash' => $signatureHash,
             'content_locked_at' => now(),
             'status' => 'pending_client',
         ]);

@@ -67,11 +67,16 @@ class DocumentController extends Controller
             return redirect()->back()->with('error', 'Ce document ne peut pas être signé dans son état actuel.');
         }
 
+        // Compute client signature hash (eIDAS-lite)
+        $signTimestamp = now()->toIso8601String();
+        $signatureHash = hash('sha256', ($document->content ?? '') . Auth::user()->email . $signTimestamp . $document->document_reference);
+
         $document->update([
             'client_signed_by' => Auth::id(),
             'client_signature_data' => $validated['signature_data'],
-            'client_signed_at' => now(),
+            'client_signed_at' => $signTimestamp,
             'client_signed_ip' => $request->ip(),
+            'client_signature_hash' => $signatureHash,
             'status' => 'countersigned',
         ]);
 
