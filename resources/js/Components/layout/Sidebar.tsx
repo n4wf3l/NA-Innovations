@@ -9,7 +9,7 @@ export interface NavItem {
     label: string;
     href?: string;
     icon?: string;
-    match?: string;
+    match?: string | string[];
     tourId?: string;
     badge?: number;
 }
@@ -140,7 +140,11 @@ export default function Sidebar({ items, logo, collapsedLogo, footer, collapsedF
                             </div>
                         );
                     }
-                    const isActive = item.match ? currentPath.startsWith(item.match) : currentPath === item.href;
+                    const isActive = item.match
+                        ? (Array.isArray(item.match)
+                            ? item.match.some(m => currentPath.startsWith(m))
+                            : currentPath.startsWith(item.match))
+                        : currentPath === item.href;
                     const linkPadding = isSmall ? 'justify-center w-10 h-10 mx-auto p-0'
                         : sidebarStyle === 'compact' ? 'px-2.5 py-1.5'
                         : sidebarStyle === 'minimal' ? 'px-2.5 py-1'

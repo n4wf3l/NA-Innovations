@@ -33,7 +33,7 @@ export default function Contact({ projectTypes, turnstileSiteKey, simulatorMode 
     const { t } = useTranslation();
     useScrollReveal();
     const showSimulator = useSimulatorVisible(simulatorMode);
-    const { flash, errors } = usePage<{ flash: { success?: string; error?: string }; errors: Record<string, string> }>().props;
+    const { flash, errors, brochure } = usePage<{ flash: { success?: string; error?: string }; errors: Record<string, string>; brochure?: { url: string; updated_at: string } }>().props;
     const [activeTab, setActiveTab] = useState<'simulator' | 'quote' | 'contact'>(() => {
         if (typeof window !== 'undefined') {
             const hash = window.location.hash.replace('#', '');
@@ -360,6 +360,34 @@ export default function Contact({ projectTypes, turnstileSiteKey, simulatorMode 
                     )}
                     {errors?.captcha && (
                         <div className="mb-8 p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl text-red-700 dark:text-red-300 text-sm max-w-3xl mx-auto">{errors.captcha}</div>
+                    )}
+
+                    {brochure?.url && (
+                        <div className="max-w-3xl mx-auto mb-10">
+                            <a
+                                href={brochure.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                download
+                                className="group flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all"
+                            >
+                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                    </svg>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-bold">{t('Découvrez notre brochure')}</p>
+                                    <p className="text-xs text-indigo-100 mt-0.5">{t('Téléchargez une présentation complète de nos services (PDF).')}</p>
+                                </div>
+                                <div className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/15 group-hover:bg-white/25 text-xs font-semibold transition-colors">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                    </svg>
+                                    <span>{t('Télécharger')}</span>
+                                </div>
+                            </a>
+                        </div>
                     )}
 
                     {/* Tab Pills */}

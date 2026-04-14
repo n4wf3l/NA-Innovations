@@ -92,6 +92,14 @@ class HandleInertiaRequests extends Middleware
                 'company_name' => \App\Models\Setting::get('branding.company_name', 'NA Innovations'),
                 'tagline' => \App\Models\Setting::get('branding.tagline', ''),
             ],
+            'brochure' => (function () {
+                $path = \App\Models\Setting::get('brochure.file_path', '');
+                $exists = $path && \Illuminate\Support\Facades\Storage::disk('public')->exists($path);
+                return [
+                    'url' => $exists ? route('public.brochure') : '',
+                    'updated_at' => \App\Models\Setting::get('brochure.updated_at', ''),
+                ];
+            })(),
             'appUrl' => config('app.url', 'https://nainnovations.be'),
             'devSettings' => (function () use ($request) {
                 if (!$request->user() || !in_array($request->user()->role, ['developer', 'admin'])) {

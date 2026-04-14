@@ -26,6 +26,18 @@ use Inertia\Inertia;
 
 // Landing page is handled by MessageController::welcomeMessages below
 
+Route::get('/brochure', function () {
+    $path = \App\Models\Setting::get('brochure.file_path', '');
+    if (!$path || !\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+        abort(404);
+    }
+    $companyName = \App\Models\Setting::get('branding.company_name', 'NA Innovations');
+    $downloadName = preg_replace('/[^A-Za-z0-9-]/', '-', $companyName) . '-Brochure.pdf';
+    return \Illuminate\Support\Facades\Storage::disk('public')->response($path, $downloadName, [
+        'Content-Type' => 'application/pdf',
+    ]);
+})->name('public.brochure');
+
 
 Route::get('/dashboard/ajouter-projet', [ProjetController::class, 'create'])->name('projets.create');
 Route::post('/projets', [ProjetController::class, 'store'])->name('projets.store');
@@ -454,7 +466,7 @@ Route::prefix('client')->middleware(['auth', 'client'])->group(function () {
         if ($existing) return back()->with('error', 'Vous avez déjà soumis un témoignage.');
         \App\Models\Testimonial::create(['user_id' => auth()->id(), 'message' => $request->message, 'rating' => $request->rating, 'status' => 'pending']);
         // Notify admins
-        \App\Models\User::where('role', 'admin')->where('is_active', true)->each(fn($admin) =>
+        \App\Models\User::withoutGlobalScope(\App\Models\Scopes\UserAdminTenantScope::class)->where('role', 'admin')->where('is_active', true)->each(fn($admin) =>
             \App\Models\NotificationLog::create(['user_id' => $admin->id, 'type' => 'testimonial_submitted', 'title' => 'Nouveau témoignage', 'message' => auth()->user()->name . ' a soumis un témoignage.', 'action_url' => '/admin/settings/testimonials', 'is_read' => false])
         );
         return back()->with('success', 'Merci ! Votre témoignage a été soumis pour approbation.');
@@ -487,7 +499,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin routes
-Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+Route::prefix('admin')->middleware(['auth', 'admin', 'admin.tenant'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
     Route::put('dashboard/preferences', [App\Http\Controllers\Admin\DashboardController::class, 'updatePreferences'])->name('admin.dashboard.preferences');
     Route::put('dashboard/activity-mode', function (\Illuminate\Http\Request $request) {
@@ -573,6 +585,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::patch('projects/{project}/status', [App\Http\Controllers\Admin\ProjectController::class, 'updateStatus'])->name('admin.projects.update-status');
     Route::patch('projects/{project}/github', [App\Http\Controllers\Admin\ProjectController::class, 'updateGithub'])->name('admin.projects.update-github');
     Route::post('projects/{project}/send-email', [App\Http\Controllers\Admin\ProjectController::class, 'sendEmail'])->name('admin.projects.send-email');
+    Route::post('projects/{project}/co-owners', [App\Http\Controllers\Admin\ProjectController::class, 'addCoOwner'])->name('admin.projects.co-owners.store');
+    Route::delete('projects/{project}/co-owners/{userId}', [App\Http\Controllers\Admin\ProjectController::class, 'removeCoOwner'])->whereNumber('userId')->name('admin.projects.co-owners.destroy');
     Route::post('projects/{project}/payouts', [App\Http\Controllers\Admin\ProjectController::class, 'storePayout'])->name('admin.projects.payouts.store');
     Route::patch('payouts/{payout}', [App\Http\Controllers\Admin\ProjectController::class, 'updatePayout'])->name('admin.payouts.update');
     Route::delete('payouts/{payout}', [App\Http\Controllers\Admin\ProjectController::class, 'destroyPayout'])->name('admin.payouts.destroy');
@@ -704,6 +718,11 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('settings/branding/logo', [App\Http\Controllers\Admin\BrandingController::class, 'uploadLogo'])->name('admin.branding.logo');
     Route::delete('settings/branding/logo', [App\Http\Controllers\Admin\BrandingController::class, 'deleteLogo'])->name('admin.branding.logo.delete');
     Route::put('settings/branding/cold-call-script', [App\Http\Controllers\Admin\BrandingController::class, 'updateColdCallScript'])->name('admin.branding.cold-call-script');
+
+    // Brochure
+    Route::get('settings/brochure', [App\Http\Controllers\Admin\BrochureController::class, 'index'])->name('admin.brochure.index');
+    Route::post('settings/brochure', [App\Http\Controllers\Admin\BrochureController::class, 'upload'])->name('admin.brochure.upload');
+    Route::delete('settings/brochure', [App\Http\Controllers\Admin\BrochureController::class, 'destroy'])->name('admin.brochure.destroy');
     Route::put('settings/simulator-mode', function (\Illuminate\Http\Request $request) {
         $request->validate(['mode' => 'required|in:enabled,europe_only,disabled']);
         \App\Models\Setting::set('simulator.mode', $request->input('mode'));
@@ -795,6 +814,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::patch('team/{user}/kb-approve', [App\Http\Controllers\Admin\TeamController::class, 'approveKbAccess'])->name('admin.team.kb-approve');
     Route::patch('team/{user}/kb-reject', [App\Http\Controllers\Admin\TeamController::class, 'rejectKbAccess'])->name('admin.team.kb-reject');
     Route::patch('team/{user}/toggle', [App\Http\Controllers\Admin\TeamController::class, 'toggleActive'])->name('admin.team.toggle');
+    Route::post('team/{user}/send-credentials', [App\Http\Controllers\Admin\TeamController::class, 'sendCredentials'])->name('admin.team.send-credentials');
     Route::patch('team/{user}/hourly-rate', [App\Http\Controllers\Admin\TeamController::class, 'updateHourlyRate'])->name('admin.team.hourly-rate');
 
     // Support Tickets

@@ -16,6 +16,12 @@ export default function TwoFactorSetup({ enabled: initialEnabled }: Props) {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [copiedCodes, setCopiedCodes] = useState(false);
+    const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+    const showToast = (type: 'success' | 'error', message: string) => {
+        setToast({ type, message });
+        setTimeout(() => setToast(null), 3000);
+    };
 
     const csrf = () => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content || '';
 
@@ -54,6 +60,7 @@ export default function TwoFactorSetup({ enabled: initialEnabled }: Props) {
                 setRecoveryCodes(data.recovery_codes);
                 setStep('recovery');
                 setCode('');
+                showToast('success', t('2FA activée avec succès.'));
             } else if (data.errors?.code) {
                 setError(data.errors.code[0]);
             }
@@ -79,6 +86,7 @@ export default function TwoFactorSetup({ enabled: initialEnabled }: Props) {
                 setEnabled(false);
                 setStep('idle');
                 setCode('');
+                showToast('success', t('2FA désactivée avec succès.'));
             } else if (data.errors?.code) {
                 setError(data.errors.code[0]);
             }
@@ -96,6 +104,25 @@ export default function TwoFactorSetup({ enabled: initialEnabled }: Props) {
     };
 
     return (
+        <>
+        {toast && (
+            <div
+                style={{ position: 'fixed', top: 24, right: 24, zIndex: 9999 }}
+                className={`px-5 py-3 rounded-xl shadow-2xl border animate-fade-in flex items-center gap-3 ${
+                    toast.type === 'success'
+                        ? 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700/50 text-emerald-800 dark:text-emerald-200'
+                        : 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-700/50 text-red-800 dark:text-red-200'
+                }`}
+            >
+                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    {toast.type === 'success'
+                        ? <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        : <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                    }
+                </svg>
+                <span className="text-sm font-medium">{toast.message}</span>
+            </div>
+        )}
         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
             <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-700">
                 <div className="flex items-center justify-between">
@@ -282,5 +309,6 @@ export default function TwoFactorSetup({ enabled: initialEnabled }: Props) {
                 )}
             </div>
         </div>
+        </>
     );
 }

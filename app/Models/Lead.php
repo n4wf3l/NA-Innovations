@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\AdminIdTenantScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,7 +11,13 @@ class Lead extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new AdminIdTenantScope());
+    }
+
     protected $fillable = [
+        'admin_id',
         'first_name',
         'last_name',
         'email',

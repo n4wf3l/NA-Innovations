@@ -238,8 +238,28 @@ class ProjectController extends BaseAdminController
     public function edit(Projet $project)
     {
         $clients = User::where('role', 'client')->orderBy('name')->get();
-        $developers = User::whereIn('role', ['admin', 'developer'])->orderBy('name')->get();
+        $developers = User::withoutGlobalScope(\App\Models\Scopes\UserAdminTenantScope::class)
+            ->whereIn('role', ['admin', 'developer'])
+            ->orderBy('name')->get();
         $leads = Lead::whereNotNull('referral_partner_id')->orderBy('created_at', 'desc')->get();
+
+        $project->load(['admins' => fn ($q) => $q->orderBy('name')]);
+
+        $coOwners = $project->admins->map(fn ($u) => [
+            'id' => $u->id,
+            'name' => $u->name,
+            'email' => $u->email,
+            'avatar' => $u->avatar,
+            'role' => $u->pivot->role,
+            'is_current_user' => $u->id === auth()->id(),
+        ])->values();
+
+        $existingIds = $project->admins->pluck('id')->all();
+        $otherAdmins = User::withoutGlobalScope(\App\Models\Scopes\UserAdminTenantScope::class)
+            ->where('role', 'admin')
+            ->whereNotIn('id', $existingIds)
+            ->orderBy('name')
+            ->get(['id', 'name', 'email', 'avatar']);
 
         return Inertia::render('Admin/Projects/Edit', [
             'project' => $project,
@@ -247,7 +267,47 @@ class ProjectController extends BaseAdminController
             'developers' => $developers,
             'leads' => $leads,
             'projectTypes' => \App\Enums\ProjectType::allWithRates(),
+            'coOwners' => $coOwners,
+            'otherAdmins' => $otherAdmins,
         ]);
+    }
+
+    /**
+     * Add an admin as co-owner of this project.
+     */
+    public function addCoOwner(Request $request, Projet $project)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+        ]);
+
+        $target = User::withoutGlobalScope(\App\Models\Scopes\UserAdminTenantScope::class)
+            ->where('id', $validated['user_id'])
+            ->where('role', 'admin')
+            ->firstOrFail();
+
+        $project->admins()->syncWithoutDetaching([
+            $target->id => ['role' => 'owner'],
+        ]);
+
+        return redirect()->back()->with('success', __('Co-propriétaire ajouté.'));
+    }
+
+    /**
+     * Remove a co-owner. Refuses to remove the last remaining owner.
+     */
+    public function removeCoOwner(Request $request, Projet $project, string $userId)
+    {
+        $userId = (int) $userId;
+
+        $ownerCount = $project->owners()->count();
+        if ($ownerCount <= 1) {
+            return redirect()->back()->with('error', __('Impossible de retirer le dernier propriétaire.'));
+        }
+
+        $project->admins()->detach($userId);
+
+        return redirect()->back()->with('success', __('Co-propriétaire retiré.'));
     }
 
     /**

@@ -80,8 +80,15 @@ export default function About({ about, seo }: Props) {
                                     about.description.split('\n').filter(Boolean).map((p, i) => <p key={i}>{p}</p>)
                                 ) : (
                                     <>
-                                        <p>NA Innovations est une agence de développement web et mobile fondée par Nawfel Ajari. Nous créons des solutions digitales sur mesure pour les entreprises de toutes tailles.</p>
-                                        <p>{t('Notre approche combine créativité, expertise technique et accompagnement personnalisé pour transformer vos idées en produits digitaux performants.')}</p>
+                                        <p>
+                                            <strong className="text-gray-900 dark:text-white">{t('NA Innovations conçoit des produits digitaux sur mesure')}</strong> {t('pour les entreprises qui veulent transformer une idée en réalité — site web, application mobile, SaaS ou logiciel métier.')}
+                                        </p>
+                                        <p>
+                                            <strong className="text-gray-900 dark:text-white">{t('Notre promesse :')}</strong> {t('des solutions optimisées, sécurisées et maintenables, pensées pour générer du résultat business — pas juste « faire un site ».')}
+                                        </p>
+                                        <p>
+                                            <strong className="text-gray-900 dark:text-white">{t('Ce qui nous rend différents :')}</strong> {t('un espace client intégré. Dès la signature, vous ouvrez un compte sur notre plateforme et suivez en direct l\'avancement de votre projet, les livrables, les échanges et la facturation — de A à Z. Zéro zone d\'ombre.')}
+                                        </p>
                                     </>
                                 )}
                             </div>

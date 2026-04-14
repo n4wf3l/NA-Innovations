@@ -94,3 +94,14 @@ export function formatProjectType(type: string | null | undefined): string {
     if (!type) return '--';
     return PROJECT_TYPES[type] || type;
 }
+
+export function normalizeRichHtml(content: string | null | undefined): string {
+    if (!content) return '';
+    if (!/&lt;\s*\/?\s*\w+[^&]*&gt;/i.test(content)) return content;
+    return content
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#0?39;/g, "'")
+        .replace(/&amp;/g, '&');
+}

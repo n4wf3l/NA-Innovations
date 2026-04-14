@@ -1,4 +1,5 @@
 import AdminLayout from '@/Layouts/AdminLayout';
+import AdminManagementTabs from '@/Components/Admin/AdminManagementTabs';
 import { Head, router } from '@inertiajs/react';
 import { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
@@ -156,6 +157,8 @@ export default function EmailTemplates({ templates, signature }: Props) {
     return (
         <AdminLayout title={t('Settings')} header={t('Settings')}>
             <Head title={t('Email Templates')} />
+
+            <AdminManagementTabs active="emails" />
 
             {/* Banner */}
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 p-6 sm:p-8 mb-6">

@@ -151,7 +151,8 @@ class NotificationService
         bool $transactional = false,
         ?string $actionUrl = null,
     ): void {
-        $admins = User::where('role', 'admin')->where('is_active', true)->get();
+        $admins = User::withoutGlobalScope(\App\Models\Scopes\UserAdminTenantScope::class)
+            ->where('role', 'admin')->where('is_active', true)->get();
         foreach ($admins as $admin) {
             self::send($admin, $templateSlug, $variables, null, $transactional, $actionUrl);
         }

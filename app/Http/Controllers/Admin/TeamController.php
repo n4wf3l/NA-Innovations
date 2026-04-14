@@ -20,6 +20,7 @@ class TeamController extends BaseAdminController
         $partners = User::where('role', 'referral_partner')->with('referralPartner')->orderByDesc('is_active')->get();
         $developers = User::where('role', 'developer')->orderByDesc('is_active')->get();
         $admins = User::where('role', 'admin')->orderByDesc('is_active')->get();
+        $clients = User::where('role', 'client')->orderByDesc('is_active')->get();
 
         // Pending = inactive + never approved
         $pending = User::where('is_active', false)->whereNull('approved_at')->latest()->get();
@@ -30,7 +31,26 @@ class TeamController extends BaseAdminController
             ->with('referralPartner')
             ->get();
 
-        return Inertia::render('Admin/Team/Index', compact('partners', 'developers', 'admins', 'pending', 'kbPending'));
+        return Inertia::render('Admin/Team/Index', compact('partners', 'developers', 'admins', 'clients', 'pending', 'kbPending'));
+    }
+
+    /**
+     * Send a password setup / reset link by email so the user can (re)set their credentials.
+     */
+    public function sendCredentials(User $user)
+    {
+        try {
+            $status = Password::sendResetLink(['email' => $user->email]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('sendCredentials failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', __('Échec de l\'envoi de l\'email. Vérifier la configuration SMTP.'));
+        }
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return redirect()->back()->with('success', __('Lien de connexion envoyé à :email', ['email' => $user->email]));
+        }
+
+        return redirect()->back()->with('error', __('Impossible d\'envoyer le lien (:status).', ['status' => $status]));
     }
 
     /**

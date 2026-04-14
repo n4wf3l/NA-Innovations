@@ -61,8 +61,12 @@ class LogActivity
         }
 
         try {
+            $actor = $request->user();
+            $adminId = $actor->isAdmin() ? $actor->id : $actor->admin_id;
+
             ActivityLog::create([
-                'user_id' => $request->user()->id,
+                'user_id' => $actor->id,
+                'admin_id' => $adminId,
                 'action' => $action,
                 'subject_type' => $subjectType,
                 'subject_id' => $subjectId,

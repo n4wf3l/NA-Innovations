@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\ProjetAdminTenantScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,6 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Projet extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ProjetAdminTenantScope());
+    }
 
     protected $fillable = [
         'nom_societe',
@@ -188,5 +194,17 @@ class Projet extends Model
     public function devMessages()
     {
         return $this->hasMany(DevMessage::class, 'project_id')->orderBy('created_at');
+    }
+
+    public function admins()
+    {
+        return $this->belongsToMany(User::class, 'projet_admins', 'projet_id', 'user_id')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    public function owners()
+    {
+        return $this->admins()->wherePivot('role', 'owner');
     }
 }

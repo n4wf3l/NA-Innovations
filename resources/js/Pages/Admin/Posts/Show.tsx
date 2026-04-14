@@ -2,7 +2,7 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatDate } from '@/lib/utils';
+import { formatDate, normalizeRichHtml } from '@/lib/utils';
 
 interface Post {
     id: number;
@@ -156,12 +156,25 @@ export default function PostShow({ post }: Props) {
                                 prose-blockquote:border-l-teal-500 prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-gray-700/50 prose-blockquote:rounded-r-xl prose-blockquote:py-2 prose-blockquote:px-4
                                 prose-code:bg-gray-100 dark:prose-code:bg-gray-700 prose-code:rounded prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm prose-code:font-mono
                                 prose-ul:my-4 prose-ol:my-4 prose-li:my-1"
-                            dangerouslySetInnerHTML={{ __html: post.content }}
+                            dangerouslySetInnerHTML={{ __html: normalizeRichHtml(post.content) }}
                         />
                     ) : post.description ? (
-                        <div className="text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
-                            {post.description}
-                        </div>
+                        /<\/?[a-z][^>]*>/i.test(post.description) ? (
+                            <div
+                                className="prose prose-lg dark:prose-invert max-w-none
+                                    prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white
+                                    prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-4
+                                    prose-li:text-gray-600 dark:prose-li:text-gray-300
+                                    prose-strong:text-gray-900 dark:prose-strong:text-white
+                                    prose-a:text-teal-500 prose-a:no-underline hover:prose-a:underline
+                                    prose-ul:my-4 prose-ol:my-4 prose-li:my-1"
+                                dangerouslySetInnerHTML={{ __html: normalizeRichHtml(post.description) }}
+                            />
+                        ) : (
+                            <div className="text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+                                {post.description}
+                            </div>
+                        )
                     ) : (
                         <p className="text-gray-400 italic">{t('No content yet.')}</p>
                     )}

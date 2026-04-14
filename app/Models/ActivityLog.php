@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\AdminIdTenantScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,7 +17,13 @@ class ActivityLog extends Model
      */
     protected $table = 'activity_log';
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new AdminIdTenantScope());
+    }
+
     protected $fillable = [
+        'admin_id',
         'user_id',
         'action',
         'subject_id',

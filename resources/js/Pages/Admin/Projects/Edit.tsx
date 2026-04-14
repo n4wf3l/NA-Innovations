@@ -6,12 +6,30 @@ import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import SearchableSelect from '@/Components/ui/SearchableSelect';
 
+interface CoOwner {
+    id: number;
+    name: string;
+    email: string;
+    avatar: string | null;
+    role: string;
+    is_current_user: boolean;
+}
+
+interface AdminPicker {
+    id: number;
+    name: string;
+    email: string;
+    avatar: string | null;
+}
+
 interface Props {
     project: Project;
     clients: User[];
     developers: User[];
     leads: Lead[];
     projectTypes: { value: string; label: string; commission_rate: number }[];
+    coOwners: CoOwner[];
+    otherAdmins: AdminPicker[];
 }
 
 const inputClass = 'w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400';
@@ -25,13 +43,33 @@ function toDateInput(val: string | null | undefined): string {
     return val.substring(0, 10);
 }
 
-export default function ProjectEdit({ project, clients, developers, leads, projectTypes }: Props) {
+export default function ProjectEdit({ project, clients, developers, leads, projectTypes, coOwners, otherAdmins }: Props) {
     const { t } = useTranslation();
     const { auth } = usePage<PageProps>().props;
     const [logoPreview, setLogoPreview] = useState<string | null>(
         project.image ? (project.image.startsWith('http') ? project.image : `/storage/${project.image}`) : null
     );
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [coOwnerPick, setCoOwnerPick] = useState<string>('');
+    const [coOwnerBusy, setCoOwnerBusy] = useState(false);
+
+    const addCoOwner = () => {
+        if (!coOwnerPick) return;
+        setCoOwnerBusy(true);
+        router.post(`/admin/projects/${project.id}/co-owners`, { user_id: Number(coOwnerPick) }, {
+            preserveScroll: true,
+            onFinish: () => { setCoOwnerBusy(false); setCoOwnerPick(''); },
+        });
+    };
+
+    const removeCoOwner = (userId: number) => {
+        if (!confirm(t('Retirer ce co-propriétaire du projet ?'))) return;
+        setCoOwnerBusy(true);
+        router.delete(`/admin/projects/${project.id}/co-owners/${userId}`, {
+            preserveScroll: true,
+            onFinish: () => setCoOwnerBusy(false),
+        });
+    };
     const { data, setData, post, processing, errors } = useForm<Record<string, any>>({
         _method: 'PUT',
         nom_societe: project.nom_societe || '',
@@ -345,6 +383,83 @@ export default function ProjectEdit({ project, clients, developers, leads, proje
                             ))}
                         </div>
                     </div>
+                </div>
+
+                {/* Co-owners */}
+                <div className={cardClass}>
+                    <div className="flex items-start justify-between mb-4 gap-4">
+                        <div>
+                            <h2 className={headingClass + ' mb-1'}>{t('Co-propriétaires')}</h2>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{t('Les admins listés ici voient ce projet dans leur propre espace et peuvent le gérer au même titre que toi.')}</p>
+                        </div>
+                        {coOwners.length > 1 && (
+                            <span className="shrink-0 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                                </svg>
+                                {t('Projet partagé')}
+                            </span>
+                        )}
+                    </div>
+
+                    <div className="space-y-2 mb-4">
+                        {coOwners.length === 0 && (
+                            <p className="text-xs text-gray-400 italic">{t('Aucun propriétaire — situation anormale.')}</p>
+                        )}
+                        {coOwners.map(owner => (
+                            <div key={owner.id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-700">
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 text-white flex items-center justify-center text-sm font-semibold flex-shrink-0 overflow-hidden">
+                                        {owner.avatar ? <img src={owner.avatar.startsWith('http') ? owner.avatar : `/storage/${owner.avatar}`} alt={owner.name} className="w-full h-full object-cover" /> : owner.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{owner.name}</p>
+                                            {owner.is_current_user && (
+                                                <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400">{t('Vous')}</span>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{owner.email}</p>
+                                    </div>
+                                </div>
+                                {coOwners.length > 1 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => removeCoOwner(owner.id)}
+                                        disabled={coOwnerBusy}
+                                        className="px-3 py-1.5 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
+                                    >
+                                        {t('Retirer')}
+                                    </button>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    {otherAdmins.length > 0 ? (
+                        <div className="flex gap-2">
+                            <select
+                                value={coOwnerPick}
+                                onChange={e => setCoOwnerPick(e.target.value)}
+                                className={inputClass + ' flex-1'}
+                            >
+                                <option value="">{t('— Sélectionner un admin à ajouter —')}</option>
+                                {otherAdmins.map(a => (
+                                    <option key={a.id} value={a.id}>{a.name} ({a.email})</option>
+                                ))}
+                            </select>
+                            <button
+                                type="button"
+                                onClick={addCoOwner}
+                                disabled={!coOwnerPick || coOwnerBusy}
+                                className="px-4 py-2 text-sm font-semibold bg-teal-300 text-gray-900 rounded-xl hover:bg-teal-400 disabled:opacity-50 transition-colors"
+                            >
+                                {t('Ajouter')}
+                            </button>
+                        </div>
+                    ) : (
+                        <p className="text-xs text-gray-400 italic">{t('Aucun autre admin à ajouter.')}</p>
+                    )}
                 </div>
 
                 {/* Actions */}

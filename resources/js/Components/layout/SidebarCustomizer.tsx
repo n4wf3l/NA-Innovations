@@ -24,7 +24,7 @@ interface NavItem {
     label: string;
     href?: string;
     icon?: string;
-    match?: string;
+    match?: string | string[];
 }
 
 interface Props {

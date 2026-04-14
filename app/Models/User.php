@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Scopes\UserAdminTenantScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,6 +12,11 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new UserAdminTenantScope());
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -43,6 +49,7 @@ class User extends Authenticatable
         'skills',
         'specialties',
         'bio',
+        'admin_id',
     ];
 
     /**
@@ -168,5 +175,26 @@ class User extends Authenticatable
     public function notes()
     {
         return $this->morphMany(Note::class, 'notable');
+    }
+
+    // ──────────────────────────────────────────────
+    // Multi-tenant relations
+    // ──────────────────────────────────────────────
+
+    public function owningAdmin()
+    {
+        return $this->belongsTo(User::class, 'admin_id');
+    }
+
+    public function tenantUsers()
+    {
+        return $this->hasMany(User::class, 'admin_id');
+    }
+
+    public function ownedProjets()
+    {
+        return $this->belongsToMany(Projet::class, 'projet_admins', 'user_id', 'projet_id')
+            ->withPivot('role')
+            ->withTimestamps();
     }
 }

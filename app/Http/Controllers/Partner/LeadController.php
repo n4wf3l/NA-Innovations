@@ -98,7 +98,12 @@ class LeadController extends Controller
         $shouldSendEmail = $request->boolean('send_email', true);
 
         // Create the lead with status "brief_pending" (waiting for client response)
+        $partnerAdminId = $partner->user?->admin_id
+            ?? \App\Models\User::withoutGlobalScope(\App\Models\Scopes\UserAdminTenantScope::class)
+                ->where('role', 'admin')->orderBy('id')->value('id');
+
         $lead = Lead::create([
+            'admin_id' => $partnerAdminId,
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Head, useForm, router } from '@inertiajs/react';
+import { Head, useForm, router, usePage } from '@inertiajs/react';
 import { useConfirm } from '@/hooks/useConfirm';
 
 interface TeamUser {
@@ -24,6 +24,7 @@ interface Props {
     partners: TeamUser[];
     developers: TeamUser[];
     admins: TeamUser[];
+    clients: TeamUser[];
     pending: TeamUser[];
     kbPending: TeamUser[];
 }
@@ -35,6 +36,7 @@ function roleBadge(role: string, t: (key: string) => string) {
         case 'developer': return t('Developer');
         case 'referral_partner': return t('Partner');
         case 'admin': return t('Admin');
+        case 'client': return t('Client');
         default: return role;
     }
 }
@@ -44,6 +46,7 @@ function roleColor(role: string) {
         case 'developer': return 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300';
         case 'referral_partner': return 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300';
         case 'admin': return 'bg-teal-100 text-teal-700 dark:bg-teal-500/20 dark:text-teal-300';
+        case 'client': return 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300';
         default: return 'bg-gray-100 text-gray-700 dark:bg-gray-500/20 dark:text-gray-300';
     }
 }
@@ -56,9 +59,11 @@ function formatDate(dateStr: string) {
     return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-export default function TeamIndex({ partners, developers, admins, pending, kbPending = [] }: Props) {
+export default function TeamIndex({ partners, developers, admins, clients = [], pending, kbPending = [] }: Props) {
     const { t } = useTranslation();
     const { confirm, ConfirmDialog } = useConfirm();
+    const devSettings = (usePage().props as any).devSettings as { show_hourly_rate?: boolean } | null;
+    const showHourlyRate = devSettings?.show_hourly_rate !== false;
     const [showModal, setShowModal] = useState(false);
     const [modalRole, setModalRole] = useState<ModalRole>('developer');
 
@@ -109,6 +114,17 @@ export default function TeamIndex({ partners, developers, admins, pending, kbPen
         router.patch(`/admin/team/${userId}/toggle`, {}, { preserveScroll: true });
     };
 
+    const handleSendCredentials = async (user: TeamUser) => {
+        const ok = await confirm({
+            title: t('Envoyer les identifiants ?'),
+            message: t('Un email avec un lien de connexion et de réinitialisation du mot de passe sera envoyé à :email.', { email: user.email } as any),
+            confirmText: t('Envoyer'),
+            variant: 'default' as any,
+        });
+        if (!ok) return;
+        router.post(`/admin/team/${user.id}/send-credentials`, {}, { preserveScroll: true });
+    };
+
     const UserCard = ({ user }: { user: TeamUser }) => {
         const inactive = !user.is_active;
         const [rate, setRate] = useState<string>(user.hourly_rate != null ? String(user.hourly_rate) : '');
@@ -149,6 +165,15 @@ export default function TeamIndex({ partners, developers, admins, pending, kbPen
                                 {t('Active')}
                             </span>
                             <button
+                                onClick={() => handleSendCredentials(user)}
+                                className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-500/10 text-gray-400 hover:text-teal-600 transition-all"
+                                title={t('Envoyer les identifiants par email')}
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                </svg>
+                            </button>
+                            <button
                                 onClick={() => handleToggle(user.id)}
                                 className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400 hover:text-red-500 transition-all"
                                 title={t("Deactivate")}
@@ -161,7 +186,7 @@ export default function TeamIndex({ partners, developers, admins, pending, kbPen
                     )}
                 </div>
                 </div>
-                {user.role === 'developer' && !inactive && (
+                {user.role === 'developer' && !inactive && showHourlyRate && (
                     <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700/50 flex items-center gap-2">
                         <label className="text-[11px] font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">{t('Taux horaire')} (€/h)</label>
                         <input
@@ -318,8 +343,29 @@ export default function TeamIndex({ partners, developers, admins, pending, kbPen
                 </div>
             )}
 
-            {/* 3-Column Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Columns Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                {/* Clients Column */}
+                <div className="space-y-3">
+                    <ColumnHeader title={t('Clients')} count={clients.length} color="blue" gradient="from-blue-500 to-cyan-500" />
+                    <div className="space-y-2">
+                        {clients.length === 0 ? (
+                            <div className="text-center py-8 text-sm text-gray-400 dark:text-gray-500">{t('Aucun client pour le moment')}</div>
+                        ) : (
+                            clients.map(user => <UserCard key={user.id} user={user} />)
+                        )}
+                    </div>
+                    <a
+                        href="/admin/clients/create"
+                        className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-blue-300 dark:border-blue-500/30 text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/5 text-sm font-medium transition-colors"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        <span>{t('Ajouter un client')}</span>
+                    </a>
+                </div>
+
                 {/* Partners Column */}
                 <div className="space-y-3">
                     <ColumnHeader title={t('Partners')} count={partners.length} color="rose" gradient="from-rose-500 to-pink-500" />

@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import OriginalLanguageBadge from '@/Components/ui/OriginalLanguageBadge';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { normalizeRichHtml } from '@/lib/utils';
 
 interface Post {
     id: number;
@@ -268,12 +269,19 @@ export default function BlogShow({ post, relatedPosts }: Props) {
                     {post.content ? (
                         <div
                             className="article-content"
-                            dangerouslySetInnerHTML={{ __html: post.content }}
+                            dangerouslySetInnerHTML={{ __html: normalizeRichHtml(post.content) }}
                         />
                     ) : post.description ? (
-                        <div className="text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-wrap text-lg">
-                            {post.description}
-                        </div>
+                        /<\/?[a-z][^>]*>/i.test(post.description) ? (
+                            <div
+                                className="article-content"
+                                dangerouslySetInnerHTML={{ __html: normalizeRichHtml(post.description) }}
+                            />
+                        ) : (
+                            <div className="text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-wrap text-lg">
+                                {post.description}
+                            </div>
+                        )
                     ) : null}
 
                     {/* Tags */}

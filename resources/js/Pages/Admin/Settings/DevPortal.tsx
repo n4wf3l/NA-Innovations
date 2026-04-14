@@ -42,27 +42,29 @@ export default function DevPortalSettings({ settings }: Props) {
         <AdminLayout title={t('Paramètres portail développeur')} header={t('Paramètres portail développeur')}>
             <Head title={t('Paramètres portail développeur')} />
 
-            <form onSubmit={handleSave} className="max-w-4xl mx-auto space-y-4">
+            <form onSubmit={handleSave} className="max-w-6xl mx-auto space-y-4">
                 <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
                     <h1 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{t('Fonctionnalités du portail développeur')}</h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400">{t('Activez ou désactivez chaque fonctionnalité du portail développeur.')}</p>
                 </div>
 
-                {FEATURES.map(f => (
-                    <div key={f.key} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 flex items-center justify-between gap-4">
-                        <div className="flex-1">
-                            <h3 className="text-sm font-bold text-gray-900 dark:text-white">{t(f.titleKey)}</h3>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t(f.descKey)}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {FEATURES.map(f => (
+                        <div key={f.key} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 flex items-center justify-between gap-4">
+                            <div className="flex-1">
+                                <h3 className="text-sm font-bold text-gray-900 dark:text-white">{t(f.titleKey)}</h3>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t(f.descKey)}</p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => toggle(f.key)}
+                                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors duration-300 shrink-0 ${state[f.key] ? 'bg-teal-500' : 'bg-gray-300 dark:bg-gray-600'}`}
+                            >
+                                <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform duration-300 ${state[f.key] ? 'translate-x-7' : 'translate-x-1'}`} />
+                            </button>
                         </div>
-                        <button
-                            type="button"
-                            onClick={() => toggle(f.key)}
-                            className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors duration-300 ${state[f.key] ? 'bg-teal-500' : 'bg-gray-300 dark:bg-gray-600'}`}
-                        >
-                            <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform duration-300 ${state[f.key] ? 'translate-x-7' : 'translate-x-1'}`} />
-                        </button>
-                    </div>
-                ))}
+                    ))}
+                </div>
 
                 <div className="flex justify-end">
                     <button

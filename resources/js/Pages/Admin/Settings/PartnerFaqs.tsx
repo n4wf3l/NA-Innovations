@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import PartnerSettingsTabs from '@/Components/Admin/PartnerSettingsTabs';
 
 interface PartnerFaq {
     id: number;
@@ -68,10 +69,12 @@ export default function PartnerFaqs({ faqs }: Props) {
     };
 
     return (
-        <AdminLayout>
+        <AdminLayout title={t('Gestion partenaires')} header={t('Gestion partenaires')}>
             <Head title={t('FAQ Partenaires')} />
 
-            <div className="max-w-6xl mx-auto p-6 space-y-6">
+            <div className="p-6 space-y-6">
+                <PartnerSettingsTabs active="partner-faqs" />
+            <div className="max-w-6xl mx-auto space-y-6">
                 <div className="bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl p-6 text-white shadow-lg shadow-rose-500/20">
                     <div className="flex items-start gap-4">
                         <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
@@ -145,6 +148,7 @@ export default function PartnerFaqs({ faqs }: Props) {
                         </div>
                     ))}
                 </div>
+            </div>
             </div>
 
             {(editing || creating) && createPortal(

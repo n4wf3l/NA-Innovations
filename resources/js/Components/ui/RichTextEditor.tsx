@@ -81,11 +81,17 @@ export default function RichTextEditor({ value, onChange, placeholder, minHeight
         setActiveFormats(formats);
     }, []);
 
-    // Paste as clean text — strip external styles/backgrounds
+    // Paste as clean text — strip external styles/backgrounds.
+    // If the pasted content is raw HTML source code, insert as HTML so tags render.
     const handlePaste = useCallback((e: React.ClipboardEvent) => {
         e.preventDefault();
         const text = e.clipboardData.getData('text/plain');
-        document.execCommand('insertText', false, text);
+        const looksLikeHtml = /^\s*<\/?[a-z][\s\S]*>\s*$/i.test(text) && /<\/?[a-z]+[^>]*>/i.test(text);
+        if (looksLikeHtml) {
+            document.execCommand('insertHTML', false, text);
+        } else {
+            document.execCommand('insertText', false, text);
+        }
     }, []);
 
     const exec = useCallback((command: string, val?: string) => {

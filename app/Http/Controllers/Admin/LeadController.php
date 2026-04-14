@@ -82,6 +82,7 @@ class LeadController extends BaseAdminController
             'notes' => 'nullable|string',
         ]);
 
+        $validated['admin_id'] = auth()->id();
         Lead::create($validated);
 
         return redirect()->route('admin.leads.index')->with('success', 'Lead created successfully.');

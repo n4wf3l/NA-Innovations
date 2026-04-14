@@ -79,6 +79,28 @@ export default function PriceSimulator({
 }: Props) {
     const { t } = useTranslation();
     const featuresForCurrentType = getFeaturesForType(selectedType);
+    const step2AnchorRef = useRef<HTMLDivElement | null>(null);
+    const prevTypeRef = useRef<string>(selectedType);
+
+    useEffect(() => {
+        if (!selectedType) return;
+        if (prevTypeRef.current === selectedType) return;
+        prevTypeRef.current = selectedType;
+
+        const prefersReducedMotion = typeof window !== 'undefined'
+            && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) return;
+
+        const timer = setTimeout(() => {
+            const el = step2AnchorRef.current;
+            if (!el) return;
+            const rect = el.getBoundingClientRect();
+            const top = window.scrollY + rect.top - 80;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }, 250);
+
+        return () => clearTimeout(timer);
+    }, [selectedType]);
 
     const renderFeatureCheckbox = (feature: FeatureOption) => {
         const isSelected = selectedFeatures.has(feature.id);
@@ -230,6 +252,9 @@ export default function PriceSimulator({
                         })}
                     </div>
                 </div>
+
+                {/* Step 2 anchor — used for auto-scroll after project type selection */}
+                <div ref={step2AnchorRef} aria-hidden="true" />
 
                 {/* Step 2: Features or Free description */}
                 {selectedType && selectedType === 'no_idea' && (

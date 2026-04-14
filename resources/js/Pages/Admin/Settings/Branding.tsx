@@ -432,7 +432,7 @@ export default function Branding({ socialLinks, branding, simulatorMode = 'europ
             </div>
 
             {/* 2FA */}
-            <div className="max-w-5xl mx-auto mt-8">
+            <div className="mt-8">
                 <TwoFactorSetup enabled={auth.user?.two_factor_enabled || false} />
             </div>
 

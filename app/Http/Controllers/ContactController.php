@@ -188,8 +188,12 @@ class ContactController extends Controller
             $notes .= "Subject: " . strip_tags($request->input('service')) . "\n\nMessage:\n{$cleanMessage}";
         }
 
-        // 7. Create Lead
+        // 7. Create Lead — assign to primary admin (public contact form has no tenant context)
+        $defaultAdminId = \App\Models\User::withoutGlobalScope(\App\Models\Scopes\UserAdminTenantScope::class)
+            ->where('role', 'admin')->orderBy('id')->value('id');
+
         $lead = \App\Models\Lead::create([
+            'admin_id' => $defaultAdminId,
             'first_name' => strip_tags($firstName),
             'last_name' => strip_tags($lastName),
             'email' => $request->email,

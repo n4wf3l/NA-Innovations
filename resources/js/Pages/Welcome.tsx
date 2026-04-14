@@ -397,6 +397,17 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
     const autoScrollRaf = useRef<number | null>(null);
     const [scrollBtnRender, setScrollBtnRender] = useState(true);
     const [scrollBtnClosing, setScrollBtnClosing] = useState(false);
+    const [isMobile, setIsMobile] = useState(() =>
+        typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
+    );
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const mq = window.matchMedia('(max-width: 767px)');
+        const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+        mq.addEventListener('change', handler);
+        return () => mq.removeEventListener('change', handler);
+    }, []);
 
     useEffect(() => {
         const shouldShow = atTop || autoScrolling;
@@ -810,8 +821,8 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
 
             <FooterSection branding={branding} socialLinks={socialLinks} socialIcons={socialIcons} navLinks={navLinks} />
 
-            {/* Auto-scroll control — visible only at top of page, OR while auto-scrolling */}
-            {scrollBtnRender && (
+            {/* Auto-scroll control — visible only at top of page, OR while auto-scrolling; hidden on mobile */}
+            {scrollBtnRender && !isMobile && (
                 <div
                     style={{
                         position: 'fixed',

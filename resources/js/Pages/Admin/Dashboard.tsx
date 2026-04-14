@@ -54,8 +54,9 @@ function MiniSparkline({ data, color = '#10b981', height = 32 }: { data: number[
     if (data.length < 2) return null;
     const max = Math.max(...data, 1);
     const w = 100;
-    const pts = data.map((v, i) => `${(i / (data.length - 1)) * w},${height - (v / max) * (height * 0.85) - 2}`).join(' L');
-    const area = `M0,${height} L${pts} L${w},${height} Z`;
+    const coords = data.map((v, i) => `${(i / (data.length - 1)) * w},${height - (v / max) * (height * 0.85) - 2}`);
+    const polyPoints = coords.join(' ');
+    const area = `M0,${height} L${coords.join(' L')} L${w},${height} Z`;
     return (
         <svg viewBox={`0 0 ${w} ${height}`} preserveAspectRatio="none" className="w-full" style={{ height }}>
             <defs>
@@ -65,7 +66,7 @@ function MiniSparkline({ data, color = '#10b981', height = 32 }: { data: number[
                 </linearGradient>
             </defs>
             <path d={area} fill={`url(#spark-${color.replace('#', '')})`} />
-            <polyline points={pts} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <polyline points={polyPoints} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
     );
 }

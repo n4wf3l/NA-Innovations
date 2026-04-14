@@ -2,6 +2,7 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import PartnerSettingsTabs from '@/Components/Admin/PartnerSettingsTabs';
 
 interface RateItem {
     value: string;
@@ -41,9 +42,11 @@ export default function CommissionRates({ rates: initialRates }: Props) {
     };
 
     return (
-        <AdminLayout title={t('Taux de commission')} header={t('Taux de commission')}>
+        <AdminLayout title={t('Gestion partenaires')} header={t('Gestion partenaires')}>
             <Head title={t('Taux de commission')} />
 
+            <div className="space-y-6">
+                <PartnerSettingsTabs active="commission-rates" />
             <div className="max-w-4xl mx-auto space-y-8">
 
                 {/* Banner */}
@@ -134,6 +137,7 @@ export default function CommissionRates({ rates: initialRates }: Props) {
                     </div>
                 </form>
 
+            </div>
             </div>
         </AdminLayout>
     );
