@@ -163,6 +163,7 @@ class ProjectController extends BaseAdminController
                 $query->latest();
             },
             'documents.uploader',
+            'deliverables.completer:id,name',
         ]);
 
         $locale = $project->client?->locale ?? app()->getLocale();

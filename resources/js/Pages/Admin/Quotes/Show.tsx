@@ -12,6 +12,16 @@ import { useConfirm } from '@/hooks/useConfirm';
 import PdfPreviewCard from '@/Components/ui/PdfPreviewCard';
 import NotesSection from '@/Components/ui/NotesSection';
 
+interface QuoteVersion {
+    id: number;
+    quote_number: string;
+    version: number;
+    status: string;
+    total: number;
+    amendment_reason: string | null;
+    created_at: string;
+}
+
 interface Props {
     quote: Quote & {
         client_address?: string;
@@ -32,11 +42,15 @@ interface Props {
         lead?: Lead;
         client?: User;
         timeline_events?: TimelineEvent[];
+        version?: number;
+        parent_quote_id?: number | null;
+        amendment_reason?: string | null;
     };
     emailTemplates: Record<string, { subject: string; body: string }>;
+    versions?: QuoteVersion[];
 }
 
-export default function QuoteShow({ quote, emailTemplates }: Props) {
+export default function QuoteShow({ quote, emailTemplates, versions = [] }: Props) {
     const { t } = useTranslation();
     const { confirm, ConfirmDialog } = useConfirm();
     const [invoiceTypeOpen, setInvoiceTypeOpen] = useState(false);
@@ -114,6 +128,12 @@ export default function QuoteShow({ quote, emailTemplates }: Props) {
         router.post(`/admin/quotes/${quote.id}/duplicate`);
     };
 
+    const handleAmend = () => {
+        const reason = window.prompt(t('Motif du changement de scope (obligatoire) :'));
+        if (!reason || !reason.trim()) return;
+        router.post(`/admin/quotes/${quote.id}/amend`, { reason: reason.trim() });
+    };
+
     const handleCreateInvoice = (type: string) => {
         router.post(`/admin/quotes/${quote.id}/create-invoice`, { type });
         setInvoiceTypeOpen(false);
@@ -149,6 +169,12 @@ export default function QuoteShow({ quote, emailTemplates }: Props) {
                         </>
                     )}
                     <button onClick={handleDuplicate} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">{t('Duplicate')}</button>
+                    {quote.status !== 'draft' && (
+                        <button onClick={handleAmend} className="px-4 py-2 text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600 flex items-center gap-1.5" title={t('Créer une nouvelle version pour un changement de scope')}>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
+                            {t('Amender')}
+                        </button>
+                    )}
                     <div className="relative">
                         <button onClick={() => setInvoiceTypeOpen(!invoiceTypeOpen)} className="px-4 py-2 text-sm font-medium text-white bg-emerald-500 rounded-lg hover:bg-emerald-600">{t('Create Invoice')}</button>
                         {invoiceTypeOpen && (
@@ -162,6 +188,34 @@ export default function QuoteShow({ quote, emailTemplates }: Props) {
                     <button onClick={handleDelete} className="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 border border-red-200 dark:border-red-500/30 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10">{t('Delete')}</button>
                 </div>
             </div>
+
+            {versions.length > 1 && (
+                <div className="mb-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3">{t('Historique des versions')}</h3>
+                    <div className="flex flex-wrap items-center gap-2">
+                        {versions.map((v, i) => (
+                            <div key={v.id} className="flex items-center gap-2">
+                                <Link
+                                    href={`/admin/quotes/${v.id}`}
+                                    title={v.amendment_reason || undefined}
+                                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${v.id === quote.id ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 ring-2 ring-amber-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
+                                >
+                                    <span className="font-bold">v{v.version}</span>
+                                    <span>{v.quote_number}</span>
+                                    <Badge status={v.status} />
+                                </Link>
+                                {i < versions.length - 1 && <span className="text-gray-300 dark:text-gray-600">→</span>}
+                            </div>
+                        ))}
+                    </div>
+                    {quote.amendment_reason && (
+                        <div className="mt-3 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40">
+                            <p className="text-xs font-semibold text-amber-900 dark:text-amber-200">{t('Motif de cette version :')}</p>
+                            <p className="text-xs text-amber-800 dark:text-amber-300 mt-1">{quote.amendment_reason}</p>
+                        </div>
+                    )}
+                </div>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Left Column */}

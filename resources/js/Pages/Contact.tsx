@@ -461,6 +461,10 @@ export default function Contact({ projectTypes, turnstileSiteKey, simulatorMode 
                             </div>
                             <h3 className="font-bold text-gray-900 dark:text-white mb-1">{t('Phone')}</h3>
                             <a href="tel:+32490221912" className="text-sm text-gray-600 dark:text-gray-300 hover:text-teal-500 transition">+32 490 22 19 12</a>
+                            <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1.5 flex items-center justify-center gap-1.5">
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.178 10.21 8.28 14.453 4.5 17.166m5.138-6.291c.94 1.153 2.067 2.152 3.346 2.97m1.48 5.075c-.684-.315-1.377-.687-2.05-1.127" /></svg>
+                                {t('Disponible en FR · NL · EN')}
+                            </p>
                         </div>
                         <div className="text-center">
                             <div className="w-14 h-14 rounded-full bg-teal-50 dark:bg-teal-500/10 text-teal-500 flex items-center justify-center mx-auto mb-4">

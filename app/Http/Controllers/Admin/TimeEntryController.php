@@ -42,9 +42,12 @@ class TimeEntryController extends BaseAdminController
         $allFiltered = $summaryQuery->get();
         $totalHours = $allFiltered->sum('hours');
         $totalBillable = $allFiltered->where('is_billable', true)->sum('hours');
+        $totalCost = $allFiltered->sum(fn ($e) => (float) ($e->cost ?? 0));
 
         $hoursByProject = $allFiltered->groupBy('project_id')->map(fn($g) => round($g->sum('hours'), 2));
         $hoursByDev = $allFiltered->groupBy('user_id')->map(fn($g) => round($g->sum('hours'), 2));
+        $costByProject = $allFiltered->groupBy('project_id')->map(fn($g) => round($g->sum(fn ($e) => (float) ($e->cost ?? 0)), 2));
+        $costByDev = $allFiltered->groupBy('user_id')->map(fn($g) => round($g->sum(fn ($e) => (float) ($e->cost ?? 0)), 2));
 
         // Load names for breakdown
         $projects = Projet::whereIn('id', $hoursByProject->keys())->pluck('nom_societe', 'id');
@@ -52,6 +55,8 @@ class TimeEntryController extends BaseAdminController
 
         $projectBreakdown = $hoursByProject->mapWithKeys(fn($h, $id) => [($projects[$id] ?? "Projet #$id") => $h]);
         $devBreakdown = $hoursByDev->mapWithKeys(fn($h, $id) => [($developers[$id] ?? "Dev #$id") => $h]);
+        $projectCostBreakdown = $costByProject->mapWithKeys(fn($c, $id) => [($projects[$id] ?? "Projet #$id") => $c]);
+        $devCostBreakdown = $costByDev->mapWithKeys(fn($c, $id) => [($developers[$id] ?? "Dev #$id") => $c]);
 
         return Inertia::render('Admin/Timesheets/Index', [
             'entries' => $entries,
@@ -61,8 +66,11 @@ class TimeEntryController extends BaseAdminController
             'summary' => [
                 'total_hours' => round($totalHours, 2),
                 'total_billable' => round($totalBillable, 2),
+                'total_cost' => round($totalCost, 2),
                 'by_project' => $projectBreakdown,
                 'by_developer' => $devBreakdown,
+                'cost_by_project' => $projectCostBreakdown,
+                'cost_by_developer' => $devCostBreakdown,
             ],
         ]);
     }
@@ -86,6 +94,7 @@ class TimeEntryController extends BaseAdminController
             'approved_at' => now(),
             'approved_by' => auth()->id(),
             'rejection_reason' => null,
+            'hourly_rate_snapshot' => $entry->user?->hourly_rate,
         ]);
         \Illuminate\Support\Facades\Cache::forget('pending_time_approvals_count');
         return redirect()->back()->with('success', __('Entrée approuvée.'));

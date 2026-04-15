@@ -22,6 +22,9 @@ class Quote extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'parent_quote_id',
+        'version',
+        'amendment_reason',
         'quote_number',
         'lead_id',
         'client_id',
@@ -104,6 +107,36 @@ class Quote extends Model
     public function items()
     {
         return $this->hasMany(QuoteItem::class);
+    }
+
+    public function parentQuote()
+    {
+        return $this->belongsTo(Quote::class, 'parent_quote_id');
+    }
+
+    public function childVersions()
+    {
+        return $this->hasMany(Quote::class, 'parent_quote_id');
+    }
+
+    public function rootQuote(): Quote
+    {
+        $current = $this;
+        while ($current->parent_quote_id) {
+            $current = $current->parentQuote;
+        }
+        return $current;
+    }
+
+    public function allVersions()
+    {
+        $root = $this->rootQuote();
+        return Quote::where('id', $root->id)
+            ->orWhere(function ($q) use ($root) {
+                $q->where('parent_quote_id', $root->id);
+            })
+            ->orWhereIn('parent_quote_id', Quote::where('parent_quote_id', $root->id)->pluck('id'))
+            ->orderBy('version');
     }
 
     public function invoices()

@@ -195,6 +195,12 @@ class QuoteController extends BaseAdminController
             },
         ]);
 
+        $root = $quote->rootQuote();
+        $versions = Quote::where('id', $root->id)
+            ->orWhere('parent_quote_id', $root->id)
+            ->orderBy('version')
+            ->get(['id', 'quote_number', 'version', 'status', 'total', 'amendment_reason', 'created_at']);
+
         $emailTemplates = [];
         foreach (['fr', 'en', 'nl'] as $loc) {
             $tpl = EmailTemplate::where('slug', 'quote-sent')->where('locale', $loc)->first();
@@ -207,6 +213,7 @@ class QuoteController extends BaseAdminController
         return Inertia::render('Admin/Quotes/Show', [
             'quote' => $quote,
             'emailTemplates' => $emailTemplates,
+            'versions' => $versions,
         ]);
     }
 
@@ -369,6 +376,15 @@ class QuoteController extends BaseAdminController
             return redirect()->back()->with('error', 'This quote has already been accepted.');
         }
 
+        // If this is a newer version of a previously-accepted quote, mark ancestors as superseded
+        if ($quote->parent_quote_id) {
+            Quote::where('id', $quote->parent_quote_id)
+                ->orWhere('parent_quote_id', $quote->parent_quote_id)
+                ->where('id', '!=', $quote->id)
+                ->whereIn('status', ['accepted', 'sent', 'viewed'])
+                ->update(['status' => 'superseded']);
+        }
+
         $actions = WorkflowService::onQuoteAccepted($quote);
 
         $message = 'Quote accepted.';
@@ -405,6 +421,21 @@ class QuoteController extends BaseAdminController
         $newQuote = QuoteService::duplicate($quote);
 
         return redirect()->route('admin.quotes.edit', $newQuote)->with('success', 'Quote duplicated successfully.');
+    }
+
+    /**
+     * Create a new version of a quote for a scope change.
+     */
+    public function amend(Request $request, Quote $quote)
+    {
+        $data = $request->validate([
+            'reason' => 'required|string|max:2000',
+        ]);
+
+        $newQuote = QuoteService::amend($quote, $data['reason']);
+
+        return redirect()->route('admin.quotes.edit', $newQuote)
+            ->with('success', __('Nouvelle version du devis créée (v:version). Ajustez le scope puis envoyez-la au client.', ['version' => $newQuote->version]));
     }
 
     /**

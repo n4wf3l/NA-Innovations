@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import Badge from '@/Components/ui/Badge';
 import { formatDate, formatCurrency } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import WhatsAppButton from '@/Components/ui/WhatsAppButton';
 
 interface Props {
     partner: any;
@@ -47,9 +48,12 @@ export default function PartnerShow({ partner, totalLeads, wonLeads, conversionR
                         </div>
                         <div className="p-5 space-y-3">
                             {user?.phone && (
-                                <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center justify-between gap-2 text-sm">
                                     <span className="text-gray-500 dark:text-gray-400">{t('Téléphone')}</span>
-                                    <span className="font-medium text-gray-900 dark:text-white">{user.phone}</span>
+                                    <div className="flex items-center gap-2">
+                                        <a href={`tel:${user.phone}`} className="font-medium text-gray-900 dark:text-white hover:text-teal-600">{user.phone}</a>
+                                        <WhatsAppButton phone={user.phone} message={t('Bonjour {{name}}, j\'espère que tu vas bien.', { name: user.name } as any)} />
+                                    </div>
                                 </div>
                             )}
                             <div className="flex items-center justify-between text-sm">

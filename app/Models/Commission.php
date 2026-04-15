@@ -35,6 +35,9 @@ class Commission extends Model
         'paid_date',
         'payment_reference',
         'notes',
+        'blocked_reason',
+        'blocked_at',
+        'blocked_by',
     ];
 
     /**
@@ -48,7 +51,13 @@ class Commission extends Model
         'commission_amount' => 'decimal:2',
         'scheduled_payment_date' => 'date',
         'paid_date' => 'date',
+        'blocked_at' => 'datetime',
     ];
+
+    public function blockedBy()
+    {
+        return $this->belongsTo(User::class, 'blocked_by');
+    }
 
     public function referralPartner()
     {

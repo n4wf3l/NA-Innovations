@@ -13,6 +13,7 @@ interface TeamUser {
     is_active: boolean;
     created_at: string;
     hourly_rate?: number | string | null;
+    deliverables_checklist_enabled?: boolean;
     referral_partner?: {
         id: number;
         referral_code: string;
@@ -200,6 +201,19 @@ export default function TeamIndex({ partners, developers, admins, clients = [], 
                             placeholder="0.00"
                             className="flex-1 px-2 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
+                    </div>
+                )}
+                {user.role === 'developer' && !inactive && (
+                    <div className="mt-2 flex items-center justify-between gap-2">
+                        <label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t('Checklist livrables')}</label>
+                        <button
+                            type="button"
+                            onClick={() => router.patch(`/admin/team/${user.id}/deliverables-checklist`, {}, { preserveScroll: true })}
+                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${user.deliverables_checklist_enabled ? 'bg-teal-500' : 'bg-gray-300 dark:bg-gray-600'}`}
+                            title={user.deliverables_checklist_enabled ? t('Désactiver') : t('Activer')}
+                        >
+                            <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${user.deliverables_checklist_enabled ? 'translate-x-5' : 'translate-x-1'}`} />
+                        </button>
                     </div>
                 )}
             </div>

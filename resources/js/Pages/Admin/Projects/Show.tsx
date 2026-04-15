@@ -3,6 +3,7 @@ import { Head, Link, router, usePage, useForm } from '@inertiajs/react';
 import { Project, User, Lead, Quote, Invoice, RecurringService, TimelineEvent, PageProps } from '@/types';
 import { formatDate } from '@/lib/utils';
 import UnifiedTimeline from '@/Components/ui/UnifiedTimeline';
+import DeliverablesChecklist from '@/Components/project/DeliverablesChecklist';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -401,6 +402,12 @@ export default function ProjectShow({ project, emailTemplate, sentEmails = [] }:
                         projectId={project.id}
                         githubRepo={project.github_repo}
                         showCommits={true}
+                    />
+
+                    <DeliverablesChecklist
+                        projectId={project.id}
+                        deliverables={project.deliverables || []}
+                        mode="admin"
                     />
                 </div>
             </div>

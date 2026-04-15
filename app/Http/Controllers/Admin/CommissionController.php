@@ -46,6 +46,7 @@ class CommissionController extends BaseAdminController
         $totalCommissions = Commission::count();
         $totalPending = Commission::whereIn('status', ['estimated', 'confirmed', 'scheduled'])->sum('commission_amount');
         $totalPaid = Commission::where('status', 'paid')->sum('commission_amount');
+        $totalBlocked = Commission::where('status', 'blocked')->sum('commission_amount');
         $totalAmount = Commission::sum('commission_amount');
 
         return Inertia::render('Admin/Commissions/Index', [
@@ -54,6 +55,7 @@ class CommissionController extends BaseAdminController
             'totalCommissions' => $totalCommissions,
             'totalPending' => $totalPending,
             'totalPaid' => $totalPaid,
+            'totalBlocked' => $totalBlocked,
             'totalAmount' => $totalAmount,
         ]);
     }
@@ -69,6 +71,7 @@ class CommissionController extends BaseAdminController
             'client',
             'projet',
             'invoice',
+            'blockedBy:id,name',
         ]);
 
         return Inertia::render('Admin/Commissions/Show', [
@@ -112,6 +115,10 @@ class CommissionController extends BaseAdminController
      */
     public function pay(Request $request, Commission $commission)
     {
+        if ($commission->status === 'blocked') {
+            return redirect()->back()->with('error', __('Cette commission est bloquée. Débloquez-la avant de la payer.'));
+        }
+
         if (!in_array($commission->status, ['scheduled', 'confirmed'])) {
             return redirect()->back()->with('error', $commission->status === 'paid'
                 ? 'This commission has already been paid.'
@@ -152,6 +159,48 @@ class CommissionController extends BaseAdminController
         }
 
         return redirect()->back()->with('success', 'Commission marquée comme payée.');
+    }
+
+    /**
+     * Block the commission (prevent payment until unblocked).
+     */
+    public function block(Request $request, Commission $commission)
+    {
+        if ($commission->status === 'paid') {
+            return redirect()->back()->with('error', __('Impossible de bloquer une commission déjà payée.'));
+        }
+
+        $validated = $request->validate([
+            'reason' => 'required|string|max:1000',
+        ]);
+
+        $commission->update([
+            'status' => 'blocked',
+            'blocked_reason' => $validated['reason'],
+            'blocked_at' => now(),
+            'blocked_by' => auth()->id(),
+        ]);
+
+        return redirect()->back()->with('success', __('Commission bloquée.'));
+    }
+
+    /**
+     * Unblock the commission — returns to 'confirmed' status.
+     */
+    public function unblock(Commission $commission)
+    {
+        if ($commission->status !== 'blocked') {
+            return redirect()->back()->with('error', __('Cette commission n\'est pas bloquée.'));
+        }
+
+        $commission->update([
+            'status' => 'confirmed',
+            'blocked_reason' => null,
+            'blocked_at' => null,
+            'blocked_by' => null,
+        ]);
+
+        return redirect()->back()->with('success', __('Commission débloquée.'));
     }
 
     /**

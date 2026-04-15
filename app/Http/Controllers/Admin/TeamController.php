@@ -213,6 +213,22 @@ class TeamController extends BaseAdminController
         return redirect()->back()->with('success', __('Taux horaire mis à jour.'));
     }
 
+    /**
+     * Toggle whether the developer can see and use the deliverables checklist.
+     */
+    public function toggleDeliverablesChecklist(User $user)
+    {
+        if ($user->role !== 'developer') {
+            return redirect()->back()->with('error', __('La checklist livrables ne s\'applique qu\'aux développeurs.'));
+        }
+
+        $user->update(['deliverables_checklist_enabled' => !$user->deliverables_checklist_enabled]);
+
+        return redirect()->back()->with('success', $user->deliverables_checklist_enabled
+            ? __('Checklist livrables activée pour :name.', ['name' => $user->name])
+            : __('Checklist livrables désactivée pour :name.', ['name' => $user->name]));
+    }
+
     public function toggleActive(User $user)
     {
         $newActive = !$user->is_active;

@@ -119,6 +119,12 @@ export default function Documents({ project, documents, templates }: Props) {
         router.post(`/admin/projects/${project.id}/documents/${doc.id}/send`, {}, { preserveScroll: true });
     };
 
+    const handleRequestResign = (doc: ProjectDocument) => {
+        const reason = window.prompt(t('Motif de la re-signature (obligatoire) :'));
+        if (!reason || !reason.trim()) return;
+        router.post(`/admin/projects/${project.id}/documents/${doc.id}/request-resign`, { reason: reason.trim() }, { preserveScroll: true });
+    };
+
     return (
         <AdminLayout title={project.nom_societe || t('Projet')} header={t('Documents du projet')}>
             <Head title={`${t('Documents')} - ${project.nom_societe || t('Projet')}`} />
@@ -168,6 +174,7 @@ export default function Documents({ project, documents, templates }: Props) {
                             onEdit={openEditModal}
                             onSend={handleSendToClient}
                             onDelete={handleDelete}
+                            onRequestResign={handleRequestResign}
                         />
                     ))}
                 </div>

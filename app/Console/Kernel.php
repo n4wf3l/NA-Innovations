@@ -66,6 +66,49 @@ class Kernel extends ConsoleKernel
             \App\Services\WorkflowService::sendInvoiceDueReminders();
         })->dailyAt('09:30')->name('invoice-due-reminders');
 
+        // Backups quotidiens (03:00 UTC ~ 04-05h Belgique) + monitoring santé + cleanup
+        $schedule->command('backup:clean')->dailyAt('02:30')->name('backup-clean')->onOneServer();
+        $schedule->command('backup:run')->dailyAt('03:00')->name('backup-run')->onOneServer();
+        $schedule->command('backup:monitor')->dailyAt('10:00')->name('backup-monitor')->onOneServer();
+
+        // Rappel aux devs qui n'ont pas encodé de temps depuis >=7 jours sur un projet actif
+        // Daily at 09:15 Europe/Brussels — in-app notif uniquement
+        $schedule->call(function () {
+            $threshold = now()->subDays(7);
+            $devsWithActiveProjects = \App\Models\User::where('role', 'developer')
+                ->where('is_active', true)
+                ->whereHas('assignedProjects', fn ($q) => $q->whereIn('status', ['in_progress', 'review']))
+                ->get();
+
+            foreach ($devsWithActiveProjects as $dev) {
+                $lastEntry = \App\Models\TimeEntry::where('user_id', $dev->id)
+                    ->orderByDesc('date')
+                    ->first();
+
+                if ($lastEntry && $lastEntry->date->greaterThanOrEqualTo($threshold)) {
+                    continue;
+                }
+
+                // Skip if we already notified in the last 3 days
+                $recent = \App\Models\NotificationLog::where('user_id', $dev->id)
+                    ->where('type', 'time_entry_reminder')
+                    ->where('created_at', '>=', now()->subDays(3))
+                    ->exists();
+                if ($recent) continue;
+
+                $daysSince = $lastEntry ? (int) $lastEntry->date->diffInDays(now()) : 7;
+
+                \App\Models\NotificationLog::create([
+                    'user_id' => $dev->id,
+                    'type' => 'time_entry_reminder',
+                    'title' => __('Rappel : encodez vos heures'),
+                    'message' => __('Vous n\'avez pas encodé de temps depuis :days jours. Pensez à ajouter vos heures pour ne pas retarder votre validation.', ['days' => $daysSince]),
+                    'action_url' => '/dev/time-entries',
+                    'is_read' => false,
+                ]);
+            }
+        })->dailyAt('09:15')->timezone('Europe/Brussels')->name('dev-time-entry-reminder');
+
         // Notify developers when their shared GitHub repo has been inactive for >=3 days
         // Runs daily at 09:00 Europe/Brussels (handles DST automatically)
         $schedule->call(function () {

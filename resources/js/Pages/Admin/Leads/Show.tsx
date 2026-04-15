@@ -5,6 +5,7 @@ import { Lead, TimelineEvent } from '@/types';
 import { formatCurrency, formatDate, formatStatus, formatProjectType } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import NotesSection from '@/Components/ui/NotesSection';
+import WhatsAppButton from '@/Components/ui/WhatsAppButton';
 import { useConfirm } from '@/hooks/useConfirm';
 
 interface Props {
@@ -56,9 +57,12 @@ export default function LeadShow({ lead, timeline }: Props) {
                                 <a href={`mailto:${lead.email}`} className="text-sm text-teal-600 hover:text-teal-700">{lead.email}</a>
                             </div>
                             {lead.phone && (
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between gap-2">
                                     <span className="text-sm text-gray-500">{t("Phone")}</span>
-                                    <a href={`tel:${lead.phone}`} className="text-sm text-teal-600 hover:text-teal-700">{lead.phone}</a>
+                                    <div className="flex items-center gap-2">
+                                        <a href={`tel:${lead.phone}`} className="text-sm text-teal-600 hover:text-teal-700">{lead.phone}</a>
+                                        <WhatsAppButton phone={lead.phone} message={t('Bonjour {{name}}, je reviens vers vous concernant votre demande.', { name: lead.first_name } as any)} />
+                                    </div>
                                 </div>
                             )}
                             <div className="flex items-center justify-between">

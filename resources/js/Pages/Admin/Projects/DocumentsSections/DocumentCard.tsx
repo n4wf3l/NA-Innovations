@@ -21,6 +21,15 @@ interface ProjectDocument {
     admin_signer_name?: string | null;
     client_signer_name?: string | null;
     created_at: string;
+    signature_history?: {
+        id: number;
+        signer_role: 'admin' | 'client';
+        signed_at: string;
+        revoked_at: string | null;
+        revocation_reason: string | null;
+        signer?: { id: number; name: string } | null;
+        revoker?: { id: number; name: string } | null;
+    }[];
 }
 
 interface Project {
@@ -55,9 +64,10 @@ interface Props {
     onEdit: (doc: ProjectDocument) => void;
     onSend: (doc: ProjectDocument) => void;
     onDelete: (doc: ProjectDocument) => void;
+    onRequestResign?: (doc: ProjectDocument) => void;
 }
 
-export default function DocumentCard({ document: doc, project, onSign, onEdit, onSend, onDelete }: Props) {
+export default function DocumentCard({ document: doc, project, onSign, onEdit, onSend, onDelete, onRequestResign }: Props) {
     const { t } = useTranslation();
     const status = statusConfig[doc.status] || statusConfig.draft;
     const cat = doc.category || 'project';
@@ -272,7 +282,36 @@ export default function DocumentCard({ document: doc, project, onSign, onEdit, o
                                 {t('Télécharger PDF')}
                             </a>
                         )}
+
+                        {onRequestResign && (doc.admin_signed_at || doc.client_signed_at) && (
+                            <button
+                                type="button"
+                                onClick={() => onRequestResign(doc)}
+                                className="px-3 py-1.5 text-xs font-semibold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-500/10 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-500/20 transition-colors flex items-center gap-1.5"
+                                title={t('Révoquer les signatures et demander une nouvelle signature')}
+                            >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                                {t('Demander re-signature')}
+                            </button>
+                        )}
                     </div>
+
+                    {/* Signature history (revoked signatures) */}
+                    {doc.signature_history && doc.signature_history.filter(h => h.revoked_at).length > 0 && (
+                        <div className="mt-4 bg-orange-50/50 dark:bg-orange-900/10 rounded-xl p-4 border border-orange-200 dark:border-orange-800/40">
+                            <p className="text-xs font-bold text-orange-900 dark:text-orange-200 mb-2">{t('Historique des signatures révoquées')}</p>
+                            <ul className="space-y-2">
+                                {doc.signature_history.filter(h => h.revoked_at).map(h => (
+                                    <li key={h.id} className="text-xs text-orange-800 dark:text-orange-300">
+                                        <strong>{h.signer_role === 'admin' ? t('Admin') : t('Client')}</strong> {h.signer?.name ? `(${h.signer.name})` : ''} — {t('Signée le')} {formatDate(h.signed_at)} — {t('Révoquée le')} {formatDate(h.revoked_at!)} {h.revoker?.name ? t('par {{name}}', { name: h.revoker.name }) : ''}
+                                        {h.revocation_reason && <span className="block italic opacity-80 mt-0.5">{h.revocation_reason}</span>}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

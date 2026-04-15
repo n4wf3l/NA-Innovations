@@ -27,7 +27,9 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
+            if (app()->bound('sentry') && config('sentry.dsn')) {
+                \Sentry\Laravel\Integration::captureUnhandledException($e);
+            }
         });
 
         $this->renderable(function (NotFoundHttpException $e, Request $request) {

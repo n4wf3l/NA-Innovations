@@ -55,6 +55,7 @@ class HandleInertiaRequests extends Middleware
                         'privacy_full_name' => true,
                     ],
                     'two_factor_enabled' => (bool) $request->user()->two_factor_enabled,
+                    'deliverables_checklist_enabled' => (bool) $request->user()->deliverables_checklist_enabled,
                 ] : null,
             ],
             'locale' => app()->getLocale(),

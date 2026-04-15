@@ -14,6 +14,7 @@ class TimeEntry extends Model
         'user_id',
         'date',
         'hours',
+        'hourly_rate_snapshot',
         'description',
         'task_category',
         'is_billable',
@@ -26,9 +27,20 @@ class TimeEntry extends Model
     protected $casts = [
         'date' => 'date',
         'hours' => 'decimal:2',
+        'hourly_rate_snapshot' => 'decimal:2',
         'is_billable' => 'boolean',
         'approved_at' => 'datetime',
     ];
+
+    protected $appends = ['cost'];
+
+    public function getCostAttribute(): ?float
+    {
+        if ($this->hourly_rate_snapshot === null) {
+            return null;
+        }
+        return round((float) $this->hours * (float) $this->hourly_rate_snapshot, 2);
+    }
 
     public function approver()
     {

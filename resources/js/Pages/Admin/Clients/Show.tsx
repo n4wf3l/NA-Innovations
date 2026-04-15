@@ -5,6 +5,7 @@ import ProtectedAmount from '@/Components/ui/ProtectedAmount';
 import { formatDate, formatProjectType } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import NotesSection from '@/Components/ui/NotesSection';
+import WhatsAppButton from '@/Components/ui/WhatsAppButton';
 
 interface Props {
     client: any;
@@ -49,7 +50,10 @@ export default function ClientShow({ client }: Props) {
                             </div>
                             {client.phone && <div>
                                 <span className="text-gray-500 dark:text-gray-400 block">{t('Phone')}</span>
-                                <span className="font-medium text-gray-900 dark:text-white">{client.phone}</span>
+                                <div className="flex items-center gap-2">
+                                    <a href={`tel:${client.phone}`} className="font-medium text-gray-900 dark:text-white hover:text-teal-600">{client.phone}</a>
+                                    <WhatsAppButton phone={client.phone} message={t('Bonjour {{name}}, je reviens vers vous concernant votre projet.', { name: client.name } as any)} />
+                                </div>
                             </div>}
                             {client.vat_number && <div>
                                 <span className="text-gray-500 dark:text-gray-400 block">{t('VAT')}</span>

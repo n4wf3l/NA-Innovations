@@ -193,6 +193,11 @@ class Projet extends Model
         return $this->hasMany(ProjectMilestone::class, 'project_id')->orderBy('sort_order');
     }
 
+    public function deliverables()
+    {
+        return $this->hasMany(ProjectDeliverable::class, 'project_id')->orderBy('sort_order');
+    }
+
     public function devMessages()
     {
         return $this->hasMany(DevMessage::class, 'project_id')->orderBy('created_at');

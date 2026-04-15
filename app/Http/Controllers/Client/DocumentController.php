@@ -80,6 +80,16 @@ class DocumentController extends Controller
             'status' => 'countersigned',
         ]);
 
+        \App\Models\DocumentSignatureHistory::create([
+            'project_document_id' => $document->id,
+            'signer_role' => 'client',
+            'signer_user_id' => Auth::id(),
+            'signature_data' => $validated['signature_data'],
+            'signature_hash' => $signatureHash,
+            'signed_ip' => $request->ip(),
+            'signed_at' => $signTimestamp,
+        ]);
+
         // Régénérer le PDF avec la signature du client
         PdfService::generateDocumentPdf($document);
         $document->refresh();

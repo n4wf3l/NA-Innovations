@@ -306,6 +306,7 @@ Route::prefix('dev')->middleware(['auth', 'developer'])->group(function () {
     Route::get('/projects/{project}', [App\Http\Controllers\Dev\ProjectController::class, 'show'])->name('dev.projects.show');
     Route::post('/projects/{project}/claim', [App\Http\Controllers\Dev\ProjectController::class, 'claim'])->name('dev.projects.claim');
     Route::patch('/projects/{project}/status', [App\Http\Controllers\Dev\ProjectController::class, 'updateStatus'])->name('dev.projects.update-status');
+    Route::patch('/deliverables/{deliverable}/toggle', [App\Http\Controllers\Admin\ProjectDeliverableController::class, 'toggle'])->name('dev.deliverables.toggle');
 
     // Support
     Route::get('/support', [App\Http\Controllers\Client\SupportController::class, 'index'])->name('dev.support.index');
@@ -674,6 +675,8 @@ Route::prefix('admin')->middleware(['auth', 'admin', 'admin.tenant'])->group(fun
     Route::patch('commissions/{commission}/confirm', [App\Http\Controllers\Admin\CommissionController::class, 'confirm'])->name('admin.commissions.confirm');
     Route::patch('commissions/{commission}/schedule', [App\Http\Controllers\Admin\CommissionController::class, 'schedule'])->name('admin.commissions.schedule');
     Route::patch('commissions/{commission}/pay', [App\Http\Controllers\Admin\CommissionController::class, 'pay'])->name('admin.commissions.pay');
+    Route::patch('commissions/{commission}/block', [App\Http\Controllers\Admin\CommissionController::class, 'block'])->name('admin.commissions.block');
+    Route::patch('commissions/{commission}/unblock', [App\Http\Controllers\Admin\CommissionController::class, 'unblock'])->name('admin.commissions.unblock');
     Route::delete('commissions/{commission}', [App\Http\Controllers\Admin\CommissionController::class, 'destroy'])->name('admin.commissions.destroy');
 
     // Recurring Services
@@ -718,6 +721,22 @@ Route::prefix('admin')->middleware(['auth', 'admin', 'admin.tenant'])->group(fun
     Route::post('settings/branding/logo', [App\Http\Controllers\Admin\BrandingController::class, 'uploadLogo'])->name('admin.branding.logo');
     Route::delete('settings/branding/logo', [App\Http\Controllers\Admin\BrandingController::class, 'deleteLogo'])->name('admin.branding.logo.delete');
     Route::put('settings/branding/cold-call-script', [App\Http\Controllers\Admin\BrandingController::class, 'updateColdCallScript'])->name('admin.branding.cold-call-script');
+
+    // Profitability dashboard
+    Route::get('profitability', [App\Http\Controllers\Admin\ProfitabilityController::class, 'index'])->name('admin.profitability');
+
+    // Quote versioning (scope change / amendment)
+    Route::post('quotes/{quote}/amend', [App\Http\Controllers\Admin\QuoteController::class, 'amend'])->name('admin.quotes.amend');
+
+    // Project deliverables (admin CRUD)
+    Route::post('projects/{project}/deliverables', [App\Http\Controllers\Admin\ProjectDeliverableController::class, 'store'])->name('admin.deliverables.store');
+    Route::patch('projects/{project}/deliverables/reorder', [App\Http\Controllers\Admin\ProjectDeliverableController::class, 'reorder'])->name('admin.deliverables.reorder');
+    Route::patch('deliverables/{deliverable}', [App\Http\Controllers\Admin\ProjectDeliverableController::class, 'update'])->name('admin.deliverables.update');
+    Route::patch('deliverables/{deliverable}/toggle', [App\Http\Controllers\Admin\ProjectDeliverableController::class, 'toggle'])->name('admin.deliverables.toggle');
+    Route::delete('deliverables/{deliverable}', [App\Http\Controllers\Admin\ProjectDeliverableController::class, 'destroy'])->name('admin.deliverables.destroy');
+
+    // Per-dev deliverables checklist toggle
+    Route::patch('team/{user}/deliverables-checklist', [App\Http\Controllers\Admin\TeamController::class, 'toggleDeliverablesChecklist'])->name('admin.team.deliverables-checklist');
 
     // Brochure
     Route::get('settings/brochure', [App\Http\Controllers\Admin\BrochureController::class, 'index'])->name('admin.brochure.index');
@@ -796,6 +815,7 @@ Route::prefix('admin')->middleware(['auth', 'admin', 'admin.tenant'])->group(fun
     Route::post('projects/{project}/documents/{document}/send', [App\Http\Controllers\Admin\ProjectDocumentController::class, 'sendToClient'])->name('admin.projects.documents.send');
     Route::get('projects/{project}/documents/{document}/pdf', [App\Http\Controllers\Admin\ProjectDocumentController::class, 'downloadPdf'])->name('admin.projects.documents.pdf');
     Route::get('projects/{project}/documents/{document}/pdf/preview', [App\Http\Controllers\Admin\ProjectDocumentController::class, 'previewPdf'])->name('admin.projects.documents.pdf.preview');
+    Route::post('projects/{project}/documents/{document}/request-resign', [App\Http\Controllers\Admin\ProjectDocumentController::class, 'requestResign'])->name('admin.projects.documents.request-resign');
     Route::delete('projects/{project}/documents/{document}', [App\Http\Controllers\Admin\ProjectDocumentController::class, 'destroy'])->name('admin.projects.documents.destroy');
 
     // Exports

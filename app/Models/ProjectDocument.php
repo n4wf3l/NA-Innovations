@@ -114,4 +114,9 @@ class ProjectDocument extends Model
     {
         return $this->content_locked_at !== null;
     }
+
+    public function signatureHistory()
+    {
+        return $this->hasMany(DocumentSignatureHistory::class)->orderByDesc('signed_at');
+    }
 }

@@ -9,6 +9,8 @@ import { createPortal } from 'react-dom';
 import { useConfirm } from '@/hooks/useConfirm';
 import SearchableSelect from '@/Components/ui/SearchableSelect';
 import RichTextEditor from '@/Components/ui/RichTextEditor';
+import DeliverablesChecklist from '@/Components/project/DeliverablesChecklist';
+import { usePage } from '@inertiajs/react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -1133,10 +1135,28 @@ export default function ProjectShow({ project, myTimeEntries, totalHours, myNote
                         </div>
                     </div>
                 )}
+
+                <DeliverablesChecklistSection project={project} />
             </div>
 
             <ConfirmDialog />
         </DevLayout>
+    );
+}
+
+function DeliverablesChecklistSection({ project }: { project: any }) {
+    const page = usePage<any>();
+    const enabled = page.props?.auth?.user?.deliverables_checklist_enabled;
+    const deliverables = project.deliverables || [];
+    if (!enabled && deliverables.length === 0) return null;
+    return (
+        <div className="mt-6">
+            <DeliverablesChecklist
+                projectId={project.id}
+                deliverables={deliverables}
+                mode={enabled ? 'dev' : 'dev-disabled'}
+            />
+        </div>
     );
 }
 

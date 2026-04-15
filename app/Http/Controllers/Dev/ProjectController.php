@@ -44,7 +44,7 @@ class ProjectController extends Controller
         $user = auth()->user();
         if (!in_array($user->role, ['developer', 'admin'])) abort(403);
 
-        $project->load('client', 'developer', 'lead.referralPartner.user', 'timelineEvents', 'quotes', 'invoices', 'timeEntries.user', 'notes.user', 'briefs', 'projectDocs.author', 'milestones', 'devMessages.sender');
+        $project->load('client', 'developer', 'lead.referralPartner.user', 'timelineEvents', 'quotes', 'invoices', 'timeEntries.user', 'notes.user', 'briefs', 'projectDocs.author', 'milestones', 'devMessages.sender', 'deliverables.completer:id,name');
 
         // Settings
         $settings = [

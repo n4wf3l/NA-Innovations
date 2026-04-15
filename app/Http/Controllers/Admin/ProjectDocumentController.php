@@ -20,7 +20,13 @@ class ProjectDocumentController extends BaseAdminController
     public function index(Projet $project)
     {
         $documents = $project->projectDocuments()
-            ->with(['template', 'adminSigner', 'clientSigner'])
+            ->with([
+                'template',
+                'adminSigner',
+                'clientSigner',
+                'signatureHistory.signer:id,name',
+                'signatureHistory.revoker:id,name',
+            ])
             ->latest()
             ->get();
 
@@ -124,6 +130,16 @@ class ProjectDocumentController extends BaseAdminController
             'status' => 'pending_client',
         ]);
 
+        \App\Models\DocumentSignatureHistory::create([
+            'project_document_id' => $document->id,
+            'signer_role' => 'admin',
+            'signer_user_id' => auth()->id(),
+            'signature_data' => $validated['signature_data'],
+            'signature_hash' => $signatureHash,
+            'signed_ip' => $request->ip(),
+            'signed_at' => $signTimestamp,
+        ]);
+
         // Générer le PDF après signature
         PdfService::generateDocumentPdf($document);
         $document->refresh();
@@ -143,6 +159,75 @@ class ProjectDocumentController extends BaseAdminController
         ]);
 
         return redirect()->back()->with('success', 'Document signé avec succès.');
+    }
+
+    /**
+     * Demande une re-signature : archive les signatures actuelles et réinitialise le document.
+     */
+    public function requestResign(Request $request, Projet $project, ProjectDocument $document)
+    {
+        if ($document->project_id !== $project->id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'reason' => 'required|string|max:1000',
+        ]);
+
+        $now = now();
+        $userId = auth()->id();
+
+        // Archive et révoque la signature admin actuelle (si existante)
+        if ($document->admin_signed_at) {
+            \App\Models\DocumentSignatureHistory::where('project_document_id', $document->id)
+                ->where('signer_role', 'admin')
+                ->whereNull('revoked_at')
+                ->update([
+                    'revoked_at' => $now,
+                    'revoked_by' => $userId,
+                    'revocation_reason' => $validated['reason'],
+                ]);
+        }
+
+        // Archive et révoque la signature client actuelle (si existante)
+        if ($document->client_signed_at) {
+            \App\Models\DocumentSignatureHistory::where('project_document_id', $document->id)
+                ->where('signer_role', 'client')
+                ->whereNull('revoked_at')
+                ->update([
+                    'revoked_at' => $now,
+                    'revoked_by' => $userId,
+                    'revocation_reason' => $validated['reason'],
+                ]);
+        }
+
+        // Réinitialise les champs de signature sur le document
+        $document->update([
+            'admin_signed_by' => null,
+            'admin_signature_data' => null,
+            'admin_signed_at' => null,
+            'admin_signed_ip' => null,
+            'admin_signature_hash' => null,
+            'client_signed_by' => null,
+            'client_signature_data' => null,
+            'client_signed_at' => null,
+            'client_signed_ip' => null,
+            'client_signature_hash' => null,
+            'content_locked_at' => null,
+            'pdf_path' => null,
+            'pdf_hash' => null,
+            'status' => 'draft',
+            'rejection_reason' => null,
+        ]);
+
+        $project->timelineEvents()->create([
+            'user_id' => $userId,
+            'event_type' => 'document_resign_requested',
+            'title' => __('Re-signature demandée'),
+            'description' => __('Les signatures du document « :title » ont été révoquées. Motif : :reason', ['title' => $document->title, 'reason' => $validated['reason']]),
+        ]);
+
+        return redirect()->back()->with('success', __('Signatures révoquées. Le document peut être modifié puis re-signé.'));
     }
 
     /**

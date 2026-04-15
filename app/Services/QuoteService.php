@@ -90,7 +90,46 @@ class QuoteService
         $newQuote = $quote->replicate([
             'quote_number', 'status', 'view_token', 'sent_at', 'viewed_at',
             'accepted_at', 'rejected_at', 'rejection_reason', 'pdf_path',
+            'parent_quote_id', 'version', 'amendment_reason',
         ]);
+        $newQuote->quote_number = NumberGenerator::generateQuoteNumber();
+        $newQuote->view_token = Str::random(64);
+        $newQuote->status = 'draft';
+        $newQuote->issue_date = now()->toDateString();
+        $newQuote->valid_until = now()->addDays(
+            (int) Setting::get('quote.default_validity_days', 30)
+        )->toDateString();
+        $newQuote->version = 1;
+        $newQuote->save();
+
+        foreach ($quote->items as $item) {
+            $newItem = $item->replicate();
+            $newItem->quote_id = $newQuote->id;
+            $newItem->save();
+        }
+
+        return $newQuote;
+    }
+
+    /**
+     * Create a new version of a quote (scope change / amendment).
+     * Links the new quote to the original via parent_quote_id.
+     */
+    public static function amend(Quote $quote, string $reason): Quote
+    {
+        $root = $quote->rootQuote();
+        $maxVersion = \App\Models\Quote::where('id', $root->id)
+            ->orWhere('parent_quote_id', $root->id)
+            ->max('version') ?? 1;
+
+        $newQuote = $quote->replicate([
+            'quote_number', 'status', 'view_token', 'sent_at', 'viewed_at',
+            'accepted_at', 'rejected_at', 'rejection_reason', 'pdf_path',
+            'signature_data',
+        ]);
+        $newQuote->parent_quote_id = $root->id;
+        $newQuote->version = $maxVersion + 1;
+        $newQuote->amendment_reason = $reason;
         $newQuote->quote_number = NumberGenerator::generateQuoteNumber();
         $newQuote->view_token = Str::random(64);
         $newQuote->status = 'draft';

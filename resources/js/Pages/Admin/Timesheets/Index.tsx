@@ -34,8 +34,11 @@ interface Props {
     summary: {
         total_hours: number;
         total_billable: number;
+        total_cost: number;
         by_project: Record<string, number>;
         by_developer: Record<string, number>;
+        cost_by_project: Record<string, number>;
+        cost_by_developer: Record<string, number>;
     };
 }
 
@@ -94,7 +97,7 @@ export default function TimesheetsIndex({ entries, filters, projects, developers
             </div>
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                 <div className={card}>
                     <div className="p-5">
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t('Total Hours')}</p>
@@ -111,6 +114,12 @@ export default function TimesheetsIndex({ entries, filters, projects, developers
                     <div className="p-5">
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t('Non-Billable')}</p>
                         <p className="text-2xl font-black text-gray-500 mt-1">{(summary.total_hours - summary.total_billable).toFixed(2)}h</p>
+                    </div>
+                </div>
+                <div className={card}>
+                    <div className="p-5">
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t('Coût dev réel')}</p>
+                        <p className="text-2xl font-black text-rose-600 dark:text-rose-400 mt-1">{summary.total_cost.toLocaleString('fr-BE', { style: 'currency', currency: 'EUR' })}</p>
                     </div>
                 </div>
                 <div className={card}>

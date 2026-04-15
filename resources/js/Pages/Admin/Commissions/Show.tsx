@@ -16,6 +16,9 @@ interface Props {
         scheduled_payment_date?: string;
         paid_date?: string;
         payment_reference?: string;
+        blocked_reason?: string | null;
+        blocked_at?: string | null;
+        blocked_by?: { id: number; name: string } | null;
         created_at: string;
         referral_partner?: { id: number; referral_code: string; user?: { id: number; name: string; email: string } };
         lead?: { id: number; first_name: string; last_name: string; email: string; company_name?: string };
@@ -33,6 +36,15 @@ export default function CommissionShow({ commission }: Props) {
     const handleConfirm = () => router.patch(`/admin/commissions/${c.id}/confirm`, {}, { preserveScroll: true });
     const handleSchedule = () => router.patch(`/admin/commissions/${c.id}/schedule`, {}, { preserveScroll: true });
     const handlePay = () => router.patch(`/admin/commissions/${c.id}/pay`, {}, { preserveScroll: true });
+    const handleBlock = async () => {
+        const reason = window.prompt(t('Motif du blocage (obligatoire) :'));
+        if (!reason || !reason.trim()) return;
+        router.patch(`/admin/commissions/${c.id}/block`, { reason: reason.trim() }, { preserveScroll: true });
+    };
+    const handleUnblock = async () => {
+        const ok = await confirm({ title: t('Débloquer'), message: t('Débloquer cette commission ? Elle repassera en statut « confirmée ».'), confirmText: t('Débloquer'), variant: 'info' });
+        if (ok) router.patch(`/admin/commissions/${c.id}/unblock`, {}, { preserveScroll: true });
+    };
     const handleDelete = async () => {
         const ok = await confirm({ title: t('Supprimer'), message: t('Supprimer cette commission ?'), confirmText: t('Supprimer'), variant: 'danger' });
         if (ok) router.delete(`/admin/commissions/${c.id}`);
@@ -58,9 +70,32 @@ export default function CommissionShow({ commission }: Props) {
                     {(c.status === 'confirmed' || c.status === 'scheduled') && (
                         <button onClick={handlePay} className="px-4 py-2 text-sm font-medium text-white bg-emerald-500 rounded-lg hover:bg-emerald-600 transition-colors">{t('Marquer payé')}</button>
                     )}
+                    {c.status !== 'paid' && c.status !== 'blocked' && c.status !== 'cancelled' && (
+                        <button onClick={handleBlock} className="px-4 py-2 text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors">{t('Bloquer')}</button>
+                    )}
+                    {c.status === 'blocked' && (
+                        <button onClick={handleUnblock} className="px-4 py-2 text-sm font-medium text-white bg-indigo-500 rounded-lg hover:bg-indigo-600 transition-colors">{t('Débloquer')}</button>
+                    )}
                     <button onClick={handleDelete} className="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 border border-red-200 dark:border-red-500/30 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">{t('Supprimer')}</button>
                 </div>
             </div>
+
+            {c.status === 'blocked' && c.blocked_reason && (
+                <div className="mb-6 p-4 rounded-2xl border border-orange-200 dark:border-orange-900/40 bg-orange-50 dark:bg-orange-900/20">
+                    <div className="flex items-start gap-3">
+                        <svg className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0 3.75h.007v.008H12v-.008zM3.75 19.5h16.5a1.5 1.5 0 001.299-2.25L13.299 3.75a1.5 1.5 0 00-2.598 0L2.451 17.25A1.5 1.5 0 003.75 19.5z" />
+                        </svg>
+                        <div className="flex-1">
+                            <p className="text-sm font-bold text-orange-900 dark:text-orange-200">{t('Commission bloquée')}</p>
+                            <p className="text-sm text-orange-800 dark:text-orange-300 mt-1">{c.blocked_reason}</p>
+                            {c.blocked_by && c.blocked_at && (
+                                <p className="text-xs text-orange-700 dark:text-orange-400 mt-2">{t('Bloquée par')} <strong>{c.blocked_by.name}</strong> {t('le')} {formatDate(c.blocked_at)}</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Main info */}
