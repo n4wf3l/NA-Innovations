@@ -53,9 +53,67 @@ class EmailSignatureController extends BaseAdminController
         }
 
         $path = $request->file('logo')->store('email-signature', 'public');
+        $this->optimizeLogo($path);
         Setting::set('email_signature.logo_path', $path);
 
         return back()->with('success', 'Logo de signature mis à jour.');
+    }
+
+    private function optimizeLogo(string $path): void
+    {
+        if (!function_exists('imagecreatefromstring')) {
+            return;
+        }
+
+        $fullPath = Storage::disk('public')->path($path);
+        if (!file_exists($fullPath)) {
+            return;
+        }
+
+        $info = @getimagesize($fullPath);
+        if (!$info) {
+            return;
+        }
+
+        $src = @imagecreatefromstring(file_get_contents($fullPath));
+        if (!$src) {
+            return;
+        }
+
+        $srcW = imagesx($src);
+        $srcH = imagesy($src);
+        $maxW = 240;
+        $dest = $src;
+
+        if ($srcW > $maxW) {
+            $newH = (int) round($srcH * ($maxW / $srcW));
+            $resized = imagecreatetruecolor($maxW, $newH);
+
+            if ($info[2] === IMAGETYPE_PNG) {
+                imagealphablending($resized, false);
+                imagesavealpha($resized, true);
+                $transparent = imagecolorallocatealpha($resized, 0, 0, 0, 127);
+                imagefilledrectangle($resized, 0, 0, $maxW, $newH, $transparent);
+            }
+
+            imagecopyresampled($resized, $src, 0, 0, 0, 0, $maxW, $newH, $srcW, $srcH);
+            imagedestroy($src);
+            $dest = $resized;
+        }
+
+        switch ($info[2]) {
+            case IMAGETYPE_JPEG:
+                imagejpeg($dest, $fullPath, 85);
+                break;
+            case IMAGETYPE_PNG:
+                imagepng($dest, $fullPath, 9);
+                break;
+            case IMAGETYPE_GIF:
+                imagegif($dest, $fullPath);
+                break;
+        }
+
+        imagedestroy($dest);
     }
 
     public function deleteLogo()

@@ -21,6 +21,7 @@ class DevPortalSettingsController extends BaseAdminController
         'dev.allow_blocked_status',
         'dev.show_useful_links',
         'dev.decloisoned_notes',
+        'dev.notify_github_inactivity',
     ];
 
     public function index()

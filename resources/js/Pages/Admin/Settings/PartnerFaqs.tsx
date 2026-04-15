@@ -74,7 +74,7 @@ export default function PartnerFaqs({ faqs }: Props) {
 
             <div className="p-6 space-y-6">
                 <PartnerSettingsTabs active="partner-faqs" />
-            <div className="max-w-6xl mx-auto space-y-6">
+            <div className="space-y-6">
                 <div className="bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl p-6 text-white shadow-lg shadow-rose-500/20">
                     <div className="flex items-start gap-4">
                         <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">

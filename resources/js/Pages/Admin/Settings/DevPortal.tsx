@@ -20,6 +20,7 @@ const FEATURES: { key: string; titleKey: string; descKey: string }[] = [
     { key: 'dev.allow_blocked_status', titleKey: 'Statuts bloqué / en attente', descKey: 'Autoriser les statuts bloqué, en attente client, en pause' },
     { key: 'dev.show_useful_links', titleKey: 'Liens utiles', descKey: 'Afficher les URL de staging, preview, GitHub et liens utiles' },
     { key: 'dev.decloisoned_notes', titleKey: 'Notes décloisonnées', descKey: 'Les développeurs voient toutes les notes (pas seulement les leurs)' },
+    { key: 'dev.notify_github_inactivity', titleKey: 'Notification inactivité GitHub', descKey: 'Notifier le développeur chaque matin (9h, heure belge) si aucun commit n\'a été poussé depuis 3 jours sur un projet partagé avec le client' },
 ];
 
 export default function DevPortalSettings({ settings }: Props) {
@@ -42,7 +43,7 @@ export default function DevPortalSettings({ settings }: Props) {
         <AdminLayout title={t('Paramètres portail développeur')} header={t('Paramètres portail développeur')}>
             <Head title={t('Paramètres portail développeur')} />
 
-            <form onSubmit={handleSave} className="max-w-6xl mx-auto space-y-4">
+            <form onSubmit={handleSave} className="space-y-4">
                 <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
                     <h1 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{t('Fonctionnalités du portail développeur')}</h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400">{t('Activez ou désactivez chaque fonctionnalité du portail développeur.')}</p>

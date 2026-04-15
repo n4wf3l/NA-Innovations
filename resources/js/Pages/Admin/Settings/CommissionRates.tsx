@@ -47,7 +47,7 @@ export default function CommissionRates({ rates: initialRates }: Props) {
 
             <div className="space-y-6">
                 <PartnerSettingsTabs active="commission-rates" />
-            <div className="max-w-4xl mx-auto space-y-8">
+            <div className="space-y-8">
 
                 {/* Banner */}
                 <div className="bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl p-8 sm:p-10 text-white shadow-lg">

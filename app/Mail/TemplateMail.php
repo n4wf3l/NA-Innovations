@@ -17,6 +17,7 @@ class TemplateMail extends Mailable
         public string $emailSubject,
         public string $emailBody,
         public ?string $attachmentPath = null,
+        public ?string $attachmentName = null,
     ) {}
 
     public function envelope(): Envelope
@@ -37,7 +38,7 @@ class TemplateMail extends Mailable
         if ($this->attachmentPath && Storage::disk('local')->exists($this->attachmentPath)) {
             return [
                 \Illuminate\Mail\Mailables\Attachment::fromStorage($this->attachmentPath)
-                    ->as(basename($this->attachmentPath))
+                    ->as($this->attachmentName ?: basename($this->attachmentPath))
                     ->withMime('application/pdf'),
             ];
         }

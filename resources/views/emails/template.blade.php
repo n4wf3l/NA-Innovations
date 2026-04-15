@@ -27,7 +27,10 @@
     <div class="wrapper">
         <div class="container">
             <div class="header">
-                <img src="{{ asset('white-logo-small.png') }}" alt="NA Innovations" style="height: 36px; width: auto; margin-bottom: 6px;">
+                @php $headerLogoPath = public_path('white-logo-small.png'); @endphp
+                @if(file_exists($headerLogoPath))
+                    <img src="{{ $message->embed($headerLogoPath) }}" alt="NA Innovations" style="height: 36px; width: auto; margin-bottom: 6px;">
+                @endif
                 <div class="header-logo">NA Innovations</div>
                 <div class="header-sub">Web &amp; Mobile Development</div>
             </div>
@@ -49,9 +52,12 @@
                     $sigLinkedin = \App\Models\Setting::get('email_signature.linkedin', '');
                     $sigInstagram = \App\Models\Setting::get('email_signature.instagram', '');
                     $sigGithub = \App\Models\Setting::get('email_signature.github', '');
-                    $sigLogoUrl = $sigLogo ? asset('storage/' . $sigLogo) : '';
                 @endphp
                 @if($sigName)
+                @php
+                    $sigLogoFullPath = $sigLogo ? storage_path('app/public/' . $sigLogo) : '';
+                    $sigLogoUrl = ($sigLogoFullPath && file_exists($sigLogoFullPath)) ? $message->embed($sigLogoFullPath) : '';
+                @endphp
                 <div style="border-top: 2px solid {{ $sigColor }}; padding-top: 16px; margin-top: 24px;">
                     <table cellpadding="0" cellspacing="0" style="font-family: Arial, sans-serif;">
                         <tr>

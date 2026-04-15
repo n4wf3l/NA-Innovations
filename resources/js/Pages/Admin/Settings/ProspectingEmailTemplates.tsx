@@ -67,7 +67,7 @@ export default function ProspectingEmailTemplates({ templates }: Props) {
 
             <div className="p-6 space-y-6">
                 <PartnerSettingsTabs active="prospecting-email-templates" />
-            <div className="max-w-6xl mx-auto space-y-6">
+            <div className="space-y-6">
                 {/* Header explicatif */}
                 <div className="bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl p-6 text-white shadow-lg shadow-rose-500/20">
                     <div className="flex items-start gap-4">

@@ -412,7 +412,7 @@ export default function Contact({ projectTypes, turnstileSiteKey, simulatorMode 
                         <div key={activeTab} className="animate-tab-in">
                         <PriceSimulator
                             selectedType={selectedType} setSelectedType={setSelectedType}
-                            selectedFeatures={selectedFeatures} toggleFeature={toggleFeature}
+                            selectedFeatures={selectedFeatures} setSelectedFeatures={setSelectedFeatures} toggleFeature={toggleFeature}
                             selectedDesign={selectedDesign} setSelectedDesign={setSelectedDesign}
                             selectedMaintenance={selectedMaintenance} setSelectedMaintenance={setSelectedMaintenance}
                             selectedTimeline={selectedTimeline} setSelectedTimeline={setSelectedTimeline}

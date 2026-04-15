@@ -53,7 +53,7 @@ export default function BrochureSettings({ brochure }: Props) {
 
             <AdminManagementTabs active="brochure" />
 
-            <div className="max-w-3xl mx-auto space-y-6">
+            <div className="space-y-6">
                 <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg shadow-indigo-500/20">
                     <div className="flex items-start gap-4">
                         <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">

@@ -723,6 +723,14 @@ Route::prefix('admin')->middleware(['auth', 'admin', 'admin.tenant'])->group(fun
     Route::get('settings/brochure', [App\Http\Controllers\Admin\BrochureController::class, 'index'])->name('admin.brochure.index');
     Route::post('settings/brochure', [App\Http\Controllers\Admin\BrochureController::class, 'upload'])->name('admin.brochure.upload');
     Route::delete('settings/brochure', [App\Http\Controllers\Admin\BrochureController::class, 'destroy'])->name('admin.brochure.destroy');
+
+    // CV sender
+    Route::get('settings/cv-sender', [App\Http\Controllers\Admin\CvSenderController::class, 'index'])->name('admin.cv-sender.index');
+    Route::post('settings/cv-sender/upload', [App\Http\Controllers\Admin\CvSenderController::class, 'upload'])->name('admin.cv-sender.upload');
+    Route::delete('settings/cv-sender/{cv}', [App\Http\Controllers\Admin\CvSenderController::class, 'destroy'])->name('admin.cv-sender.destroy');
+    Route::get('settings/cv-sender/{cv}/download', [App\Http\Controllers\Admin\CvSenderController::class, 'download'])->name('admin.cv-sender.download');
+    Route::put('settings/cv-sender/template', [App\Http\Controllers\Admin\CvSenderController::class, 'updateTemplate'])->name('admin.cv-sender.template');
+    Route::post('settings/cv-sender/send', [App\Http\Controllers\Admin\CvSenderController::class, 'send'])->name('admin.cv-sender.send');
     Route::put('settings/simulator-mode', function (\Illuminate\Http\Request $request) {
         $request->validate(['mode' => 'required|in:enabled,europe_only,disabled']);
         \App\Models\Setting::set('simulator.mode', $request->input('mode'));

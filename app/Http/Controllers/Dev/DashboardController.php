@@ -19,6 +19,11 @@ class DashboardController extends Controller
             ->latest()
             ->get();
 
+        $githubInactivityEnabled = \App\Services\GithubActivityService::isEnabled();
+        $sharedGithubProjectsCount = $githubInactivityEnabled
+            ? $myProjects->filter(fn ($p) => $p->github_repo && $p->show_commits_to_client)->count()
+            : 0;
+
         $pendingProjects = Projet::whereNull('developer_id')
             ->where('status', 'planning')
             ->with('client', 'lead.referralPartner.user')
@@ -114,6 +119,8 @@ class DashboardController extends Controller
             'earningsLast6Months' => $earningsLast6Months,
             'pendingApprovalHours' => round((float) $pendingApprovalHours, 2),
             'skillsMatchedProjects' => $skillsMatchedProjects,
+            'sharedGithubProjectsCount' => $sharedGithubProjectsCount,
+            'githubInactivityThresholdDays' => \App\Services\GithubActivityService::INACTIVITY_THRESHOLD_DAYS,
         ]);
     }
 }

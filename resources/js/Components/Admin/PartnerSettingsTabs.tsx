@@ -44,7 +44,7 @@ export default function PartnerSettingsTabs({ active }: Props) {
     ];
 
     return (
-        <div className="max-w-6xl mx-auto">
+        <div className="mb-6">
             <div className="mb-4">
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">{t('Gestion partenaires')}</h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{t('Commissions, templates de prospection et FAQ des partenaires.')}</p>

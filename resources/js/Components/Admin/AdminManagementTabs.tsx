@@ -1,7 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 
-type TabKey = 'emails' | 'brochure' | 'document-templates';
+type TabKey = 'emails' | 'brochure' | 'document-templates' | 'cv-sender';
 
 interface Props {
     active: TabKey;
@@ -41,10 +41,20 @@ export default function AdminManagementTabs({ active }: Props) {
                 </svg>
             ),
         },
+        {
+            key: 'cv-sender',
+            href: '/admin/settings/cv-sender',
+            label: t('Envoi de CV'),
+            icon: (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                </svg>
+            ),
+        },
     ];
 
     return (
-        <div className="max-w-6xl mx-auto mb-6">
+        <div className="mb-6">
             <div className="mb-4">
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">{t('Gestion admin')}</h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{t('Emails transactionnels, brochure commerciale et modèles de documents.')}</p>

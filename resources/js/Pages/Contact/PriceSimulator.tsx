@@ -9,6 +9,11 @@ import {
     formatEUR,
     getFeaturesForType,
 } from './SimulatorData';
+import NoviceQuestionnaire, { NoviceAnswers, NoviceEffects } from './NoviceQuestionnaire';
+import NoviceRecap from './NoviceRecap';
+
+type Familiarity = 'unknown' | 'familiar' | 'novice';
+type NoviceStep = 'questions' | 'recap';
 
 // ─── AnimatedNumber Component ────────────────────────────────────
 
@@ -54,6 +59,7 @@ interface Props {
     selectedType: string;
     setSelectedType: (v: string) => void;
     selectedFeatures: Set<string>;
+    setSelectedFeatures: (next: Set<string>) => void;
     toggleFeature: (id: string) => void;
     selectedDesign: string;
     setSelectedDesign: (v: string) => void;
@@ -69,7 +75,7 @@ interface Props {
 
 export default function PriceSimulator({
     selectedType, setSelectedType,
-    selectedFeatures, toggleFeature,
+    selectedFeatures, setSelectedFeatures, toggleFeature,
     selectedDesign, setSelectedDesign,
     selectedMaintenance, setSelectedMaintenance,
     selectedTimeline, setSelectedTimeline,
@@ -81,6 +87,18 @@ export default function PriceSimulator({
     const featuresForCurrentType = getFeaturesForType(selectedType);
     const step2AnchorRef = useRef<HTMLDivElement | null>(null);
     const prevTypeRef = useRef<string>(selectedType);
+
+    const [familiarity, setFamiliarity] = useState<Familiarity>('unknown');
+    const [noviceStep, setNoviceStep] = useState<NoviceStep>('questions');
+    const [noviceAnswers, setNoviceAnswers] = useState<NoviceAnswers>({});
+    const [noviceIndex, setNoviceIndex] = useState(0);
+
+    useEffect(() => {
+        setFamiliarity('unknown');
+        setNoviceStep('questions');
+        setNoviceAnswers({});
+        setNoviceIndex(0);
+    }, [selectedType]);
 
     useEffect(() => {
         if (!selectedType) return;
@@ -101,6 +119,22 @@ export default function PriceSimulator({
 
         return () => clearTimeout(timer);
     }, [selectedType]);
+
+    const applyNoviceEffects = (effects: NoviceEffects) => {
+        setSelectedFeatures(effects.features);
+        if (effects.design) setSelectedDesign(effects.design);
+        if (effects.maintenance) setSelectedMaintenance(effects.maintenance);
+        if (effects.timeline) setSelectedTimeline(effects.timeline);
+    };
+
+    const handleQuestionnaireComplete = (effects: NoviceEffects) => {
+        applyNoviceEffects(effects);
+        setNoviceStep('recap');
+    };
+
+    const restartQuestionnaire = () => {
+        setNoviceStep('questions');
+    };
 
     const renderFeatureCheckbox = (feature: FeatureOption) => {
         const isSelected = selectedFeatures.has(feature.id);
@@ -256,6 +290,85 @@ export default function PriceSimulator({
                 {/* Step 2 anchor — used for auto-scroll after project type selection */}
                 <div ref={step2AnchorRef} aria-hidden="true" />
 
+                {/* Familiarity question — shown after type is selected (except no_idea) */}
+                {selectedType && selectedType !== 'no_idea' && familiarity === 'unknown' && (
+                    <div className="animate-fade-in">
+                        <div className="mb-6">
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">2. {t('Votre niveau de familiarité')}</h2>
+                            <p className="text-sm text-gray-500 mt-1">{t('Pour adapter le questionnaire à votre profil, dites-nous comment vous vous situez.')}</p>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <button
+                                onClick={() => setFamiliarity('novice')}
+                                className="group relative overflow-hidden text-left p-6 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-teal-400 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+                            >
+                                <div className="w-12 h-12 rounded-xl bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M12 17.25h.008v.008H12v-.008zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('Je ne suis pas familier avec le développement')}</h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                    {t('Nous vous guidons avec un questionnaire simple (Oui/Non) pour identifier vos besoins sans jargon technique.')}
+                                </p>
+                                <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-teal-600 dark:text-teal-400">
+                                    {t('Recommandé')}
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                    </svg>
+                                </div>
+                            </button>
+
+                            <button
+                                onClick={() => setFamiliarity('familiar')}
+                                className="group relative overflow-hidden text-left p-6 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-400 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+                            >
+                                <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                                    </svg>
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('Je suis familier avec le développement')}</h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                    {t('Mode expert : choisissez vous-même les fonctionnalités, le design, la maintenance et le délai.')}
+                                </p>
+                                <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-gray-600 dark:text-gray-400">
+                                    {t('Configuration manuelle')}
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Novice flow — guided questionnaire then recap */}
+                {selectedType && selectedType !== 'no_idea' && familiarity === 'novice' && noviceStep === 'questions' && (
+                    <NoviceQuestionnaire
+                        selectedType={selectedType}
+                        answers={noviceAnswers}
+                        setAnswers={setNoviceAnswers}
+                        currentIndex={noviceIndex}
+                        setCurrentIndex={setNoviceIndex}
+                        onComplete={handleQuestionnaireComplete}
+                        onExit={() => setFamiliarity('familiar')}
+                    />
+                )}
+
+                {selectedType && selectedType !== 'no_idea' && familiarity === 'novice' && noviceStep === 'recap' && (
+                    <NoviceRecap
+                        selectedType={selectedType}
+                        selectedFeatures={selectedFeatures}
+                        selectedDesign={selectedDesign}
+                        selectedMaintenance={selectedMaintenance}
+                        selectedTimeline={selectedTimeline}
+                        priceBreakdown={priceBreakdown}
+                        onGetQuote={onGetQuote}
+                        onEditAnswers={restartQuestionnaire}
+                    />
+                )}
+
                 {/* Step 2: Features or Free description */}
                 {selectedType && selectedType === 'no_idea' && (
                     <div>
@@ -295,11 +408,19 @@ export default function PriceSimulator({
                     </div>
                 )}
 
-                {selectedType && selectedType !== 'no_idea' && (
+                {selectedType && selectedType !== 'no_idea' && familiarity === 'familiar' && (
                     <div>
-                        <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">2. {t('Features')}</h2>
-                            <p className="text-sm text-gray-500 mt-1">{t('Select the features you need. Some are included by default.')}</p>
+                        <div className="mb-6 flex items-center justify-between">
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">2. {t('Features')}</h2>
+                                <p className="text-sm text-gray-500 mt-1">{t('Select the features you need. Some are included by default.')}</p>
+                            </div>
+                            <button
+                                onClick={() => setFamiliarity('novice')}
+                                className="text-xs text-gray-500 dark:text-gray-400 hover:text-teal-600 underline underline-offset-2"
+                            >
+                                {t('Passer en mode guidé')}
+                            </button>
                         </div>
 
                         <div className="space-y-6">
@@ -323,7 +444,7 @@ export default function PriceSimulator({
                 )}
 
                 {/* Step 3: Design & Branding */}
-                {selectedType && selectedType !== 'no_idea' && (
+                {selectedType && selectedType !== 'no_idea' && familiarity === 'familiar' && (
                     <div>
                         <div className="mb-6">
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">3. {t('Design & Branding')}</h2>
@@ -362,7 +483,7 @@ export default function PriceSimulator({
                 )}
 
                 {/* Step 4: Maintenance & Support */}
-                {selectedType && selectedType !== 'no_idea' && (
+                {selectedType && selectedType !== 'no_idea' && familiarity === 'familiar' && (
                     <div>
                         <div className="mb-6">
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">4. {t('Maintenance & Support')}</h2>
@@ -398,7 +519,7 @@ export default function PriceSimulator({
                 )}
 
                 {/* Step 5: Timeline */}
-                {selectedType && selectedType !== 'no_idea' && (
+                {selectedType && selectedType !== 'no_idea' && familiarity === 'familiar' && (
                     <div>
                         <div className="mb-6">
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">5. {t('Timeline')}</h2>
@@ -436,25 +557,27 @@ export default function PriceSimulator({
                     </div>
                 )}
 
-                {/* Disclaimer */}
-                {selectedType && (
+                {/* Disclaimer — only in familiar mode (novice has its own in recap) */}
+                {selectedType && (familiarity === 'familiar' || selectedType === 'no_idea') && (
                     <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
                         <strong>{t('Disclaimer')} :</strong> {t('This estimate is provided for indicative purposes only and does not constitute a binding offer. The final price may vary depending on the specific requirements, complexity, and scope of your project. Contact us for a detailed, personalized quote.')}
                     </div>
                 )}
 
-                {/* Mobile: Price card at bottom */}
+                {/* Mobile: Price card at bottom — only in familiar mode */}
                 <div className="lg:hidden">
-                    {selectedType && <PriceCard />}
+                    {selectedType && familiarity === 'familiar' && <PriceCard />}
                 </div>
             </div>
 
-            {/* Right: Sticky Price Card (desktop only) */}
-            <div className="hidden lg:block w-80 flex-shrink-0">
-                <div className="sticky top-24">
-                    <PriceCard />
+            {/* Right: Sticky Price Card (desktop only) — hidden in novice mode (recap has its own) */}
+            {familiarity === 'familiar' && (
+                <div className="hidden lg:block w-80 flex-shrink-0">
+                    <div className="sticky top-24">
+                        <PriceCard />
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

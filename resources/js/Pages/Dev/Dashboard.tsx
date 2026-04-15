@@ -30,9 +30,11 @@ interface Props {
     earningsLast6Months?: { month: string; amount: number }[];
     pendingApprovalHours?: number;
     skillsMatchedProjects?: any[];
+    sharedGithubProjectsCount?: number;
+    githubInactivityThresholdDays?: number;
 }
 
-export default function DevDashboard({ myProjects, pendingProjects, stats, monthlyCompleted = [], totalBudgetManaged = 0, devSettings, earningsThisMonth = 0, earningsLast6Months = [], pendingApprovalHours = 0, skillsMatchedProjects = [] }: Props) {
+export default function DevDashboard({ myProjects, pendingProjects, stats, monthlyCompleted = [], totalBudgetManaged = 0, devSettings, earningsThisMonth = 0, earningsLast6Months = [], pendingApprovalHours = 0, skillsMatchedProjects = [], sharedGithubProjectsCount = 0, githubInactivityThresholdDays = 3 }: Props) {
     const { t } = useTranslation();
     const tour = useTour('dev_dashboard', devDashboardSteps.length);
 
@@ -62,6 +64,19 @@ export default function DevDashboard({ myProjects, pendingProjects, stats, month
                     <p className="text-gray-400 text-sm mt-2">{t('Browse pending projects and claim the ones you want to work on.')}</p>
                 </div>
             </div>
+
+            {/* GitHub inactivity notice */}
+            {sharedGithubProjectsCount > 0 && (
+                <div className="mb-6 flex items-start gap-3 rounded-2xl border border-amber-200 dark:border-amber-900/40 bg-amber-50 dark:bg-amber-900/20 p-4">
+                    <svg className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <div className="flex-1">
+                        <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">{t('GitHub partagé avec le client')}</p>
+                        <p className="text-xs text-amber-800 dark:text-amber-300/80 mt-1">
+                            {t("{{count}} de vos projets partagent l'activité GitHub avec le client. Si aucun commit n'est effectué pendant {{days}} jours, une notification quotidienne vous sera envoyée (9h00 heure belge) pour vous rappeler que le client voit votre inactivité. Vous pouvez demander à l'admin de désactiver le partage à tout moment.", { count: sharedGithubProjectsCount, days: githubInactivityThresholdDays })}
+                        </p>
+                    </div>
+                </div>
+            )}
 
             {/* Dev portal extra cards */}
             {(devSettings?.showEarnings || devSettings?.requireApproval || devSettings?.showSkillsMatching) && (

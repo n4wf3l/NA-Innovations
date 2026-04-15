@@ -66,6 +66,12 @@ class Kernel extends ConsoleKernel
             \App\Services\WorkflowService::sendInvoiceDueReminders();
         })->dailyAt('09:30')->name('invoice-due-reminders');
 
+        // Notify developers when their shared GitHub repo has been inactive for >=3 days
+        // Runs daily at 09:00 Europe/Brussels (handles DST automatically)
+        $schedule->call(function () {
+            \App\Services\GithubActivityService::notifyInactiveDevelopers();
+        })->dailyAt('09:00')->timezone('Europe/Brussels')->name('github-inactivity-notify');
+
         // Process partner reminders every 15 minutes
         $schedule->call(function () {
             $dueReminders = \App\Models\PartnerReminder::due()->with('user')->get();
