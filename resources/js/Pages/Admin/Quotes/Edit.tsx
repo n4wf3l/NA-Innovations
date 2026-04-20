@@ -325,7 +325,7 @@ export default function QuoteEdit({ quote, clients, leads }: Props) {
                                             <FieldError name={`items.${index}.description`} />
                                         </td>
                                         <td className="py-2 px-2">
-                                            <input type="number" value={item.quantity} onChange={e => updateItem(index, 'quantity', parseFloat(e.target.value) || 0)} className={`w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400 ${errorRing(`items.${index}.quantity`)}`} min="0.01" step="0.01" />
+                                            <input type="number" value={item.quantity} onChange={e => updateItem(index, 'quantity', parseFloat(e.target.value) || 0)} className={`w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400 ${errorRing(`items.${index}.quantity`)}`} min="0" step="0.01" />
                                             <FieldError name={`items.${index}.quantity`} />
                                         </td>
                                         <td className="py-2 px-2">

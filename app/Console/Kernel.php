@@ -71,6 +71,13 @@ class Kernel extends ConsoleKernel
         $schedule->command('backup:run')->dailyAt('03:00')->name('backup-run')->onOneServer();
         $schedule->command('backup:monitor')->dailyAt('10:00')->name('backup-monitor')->onOneServer();
 
+        // Digest quotidien par admin — 09:00 Europe/Brussels
+        $schedule->command('nai:admin-digest')
+            ->dailyAt('09:00')
+            ->timezone('Europe/Brussels')
+            ->name('admin-daily-digest')
+            ->onOneServer();
+
         // Rappel aux devs qui n'ont pas encodé de temps depuis >=7 jours sur un projet actif
         // Daily at 09:15 Europe/Brussels — in-app notif uniquement
         $schedule->call(function () {

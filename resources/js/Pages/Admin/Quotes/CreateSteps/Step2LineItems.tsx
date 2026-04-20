@@ -58,7 +58,7 @@ export default function Step2LineItems({
                                 <div className="col-span-4 sm:col-span-2">
                                     <label className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase">{t("Qty")}</label>
                                     <input type="number" value={item.quantity} onChange={e => updateItem(i, 'quantity', parseFloat(e.target.value) || 0)}
-                                        className={`w-full bg-gray-50 dark:bg-gray-700/50 border-0 rounded-lg px-3 py-2.5 text-sm text-gray-900 dark:text-white focus:bg-white dark:focus:bg-gray-700 focus:ring-2 focus:ring-blue-400 ${errorRing(`items.${i}.quantity`)}`} min="0.01" step="0.01" />
+                                        className={`w-full bg-gray-50 dark:bg-gray-700/50 border-0 rounded-lg px-3 py-2.5 text-sm text-gray-900 dark:text-white focus:bg-white dark:focus:bg-gray-700 focus:ring-2 focus:ring-blue-400 ${errorRing(`items.${i}.quantity`)}`} min="0" step="0.01" />
                                     <FieldError name={`items.${i}.quantity`} />
                                 </div>
                                 <div className="col-span-4 sm:col-span-2">

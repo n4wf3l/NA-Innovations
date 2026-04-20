@@ -1,6 +1,32 @@
-# NA Innovations — Plateforme SaaS
+# NA Innovations — Plateforme interne
 
-Plateforme tout-en-un pour agences de développement et freelances : gestion de projets, facturation, portails clients/partenaires/développeurs, site vitrine public avec blog et simulateur de prix, multi-tenant, multilingue (FR/NL/EN), PWA, installable.
+Plateforme tout-en-un **construite par Nawfel Ajari pour NA Innovations**, son agence de développement basée en Belgique. Couvre gestion de projets, facturation, portails clients/partenaires/développeurs, site vitrine public avec blog et simulateur de prix, multilingue (FR/NL/EN), PWA installable.
+
+---
+
+## Contexte & positionnement — À lire avant tout
+
+> **Ce projet n'est pas un SaaS à revendre.**
+
+Il s'agit d'une plateforme **interne sur mesure** pour piloter l'activité de NA Innovations, monter la boîte, et automatiser les tâches répétitives. Je serai **l'admin principal de ma propre plateforme**, utilisée au quotidien pour gérer mes projets, mes clients, mes devis, mon équipe.
+
+Cette précision change la grille de lecture du document :
+
+| Dimension | Vision SaaS public | **Vision interne (ce projet)** |
+|---|---|---|
+| Objectif "complet" | Feature parity avec concurrents, industrialisation | **Couvrir mon workflow réel de A à Z sans que je sorte de la plateforme** |
+| Multi-tenant | Isolation stricte entre N agences clientes | **Isolation admin A vs admin B au sein de ma propre structure** (co-gérants, équipe interne) |
+| Scale | Milliers de req/min, APM, SLA signés | **Charge maîtrisée : mon équipe + mes clients** |
+| Rollback industriel | Blue/green, canary, zero-downtime CI/CD | **Process manuel documenté suffit** |
+| Monitoring | APM payant obligatoire | **Sentry free tier + logs + backups = largement suffisant** |
+| Paiement en ligne | Incontournable pour un SaaS | **Skippé volontairement — virements gérés manuellement** |
+
+**Lecture du scoring ChatGPT (feedback externe du 2026-04)** :
+- Fonctionnellement / produit : **9/10** ← pertinent pour mon usage
+- Pour usage interne réel : **8.5/10** ← c'est la seule note qui compte ici
+- Pour commercialisation SaaS : 6.5-7.5/10 ← **non applicable, je ne commercialise pas la plateforme**
+
+Donc les "⚠" dans la section production-readiness plus bas sont à lire sous l'angle "à faire avant d'y être à l'aise en tant que seul admin principal", pas "à faire avant de signer un SLA avec un client SaaS".
 
 ---
 
@@ -309,7 +335,9 @@ Plateforme tout-en-un pour agences de développement et freelances : gestion de 
 
 ## Production-readiness / DevOps
 
-Cette section distingue ce qui est **déjà en place** (✓), **prêt à brancher** (→), et **à industrialiser avant une mise en prod sérieuse** (⚠). Transparence totale pour éviter les mauvaises surprises.
+> **Rappel de contexte** : plateforme interne, pas SaaS public. Les "⚠" ci-dessous sont des *recommandations* pour mon confort d'admin unique, pas des bloquants commerciaux.
+
+Cette section distingue ce qui est **déjà en place** (✓), **prêt à brancher** (→), et **à industrialiser si je veux dormir tranquille** (⚠). Transparence totale pour éviter les mauvaises surprises.
 
 ### Tests automatisés
 
@@ -385,22 +413,24 @@ Un vrai DR plan n'est pas encore documenté. Squelette à remplir avant de signe
 
 ### Résumé production-readiness
 
-| Domaine | État | Avant mise en prod |
+| Domaine | État | Avant mise en prod (usage interne NA Innovations) |
 |---|---|---|
-| Tests automatisés | ✓ 81 tests | Brancher CI |
+| Tests automatisés | ✓ 81 tests | Brancher CI GitHub Actions (1h) |
 | Pages d'erreur | ✓ brandées | — |
-| Logs | ✓ fichier | Brancher Sentry + Slack |
-| Déploiement | ✓ checklist | Choisir Forge / Ploi / custom |
-| Rollback | ✓ migrate:rollback | Scripter `rollback.sh` |
-| Backups | ✓ snapshot manuel | Scheduler cron + S3 |
-| DR plan | ✓ runbook | Définir RTO/RPO + contacts astreinte |
-| Monitoring | ⚠ logs fichiers | Uptime + APM si SLA |
-| Secrets | ✓ chiffrement DB | Manager secrets en prod |
-| Performance | ✓ cache + indexes | Redis + CDN si charge |
+| Logs | ✓ fichier | Ajouter le DSN Sentry dans `.env` |
+| Déploiement | ✓ checklist | Choisir un hébergeur (Forge / Ploi / VPS perso) |
+| Rollback | ✓ migrate:rollback | Scripter `rollback.sh` (optionnel) |
+| Backups | ✓ spatie/laravel-backup auto quotidien | Ajouter upload distant (B2 gratuit recommandé) |
+| DR plan | ✓ runbook | Compléter contacts astreinte |
+| Monitoring | ⚠ logs fichiers | Sentry DSN suffit pour mon volume |
+| Secrets | ✓ chiffrement DB | `.env` en clair OK sur mon propre serveur |
+| Performance | ✓ cache + indexes | Redis + CDN non nécessaires à mon échelle |
 
 ---
 
 *Document généré au stade actuel du développement. À mettre à jour au fil des itérations.*
+
+*Plateforme interne NA Innovations — pas de roadmap SaaS commerciale.*
 
 ---
 

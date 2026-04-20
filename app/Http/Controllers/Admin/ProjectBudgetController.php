@@ -349,7 +349,7 @@ class ProjectBudgetController extends BaseAdminController
         $validated = $request->validate([
             'label' => 'required|string|max:255',
             'type' => 'required|in:income,expense',
-            'amount' => 'required|numeric|min:0.01',
+            'amount' => 'required|numeric|min:0',
             'frequency' => 'required|in:one_time,monthly,quarterly,annual',
             'trigger' => 'required|in:immediate,from_date,on_project_completed',
             'start_date' => 'required_if:trigger,from_date|nullable|date',
@@ -371,7 +371,7 @@ class ProjectBudgetController extends BaseAdminController
         $validated = $request->validate([
             'label' => 'required|string|max:255',
             'type' => 'required|in:income,expense',
-            'amount' => 'required|numeric|min:0.01',
+            'amount' => 'required|numeric|min:0',
             'frequency' => 'required|in:one_time,monthly,quarterly,annual',
             'trigger' => 'required|in:immediate,from_date,on_project_completed',
             'start_date' => 'required_if:trigger,from_date|nullable|date',

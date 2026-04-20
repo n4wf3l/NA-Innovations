@@ -132,7 +132,7 @@ class InvoiceController extends BaseAdminController
             'notes' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.description' => 'required|string',
-            'items.*.quantity' => 'required|numeric|min:0.01',
+            'items.*.quantity' => 'required|numeric|min:0',
             'items.*.unit_price' => 'required|numeric|min:0',
             'items.*.unit' => 'nullable|string|max:50',
             'locale' => 'nullable|string|in:fr,en,nl',
@@ -301,7 +301,7 @@ class InvoiceController extends BaseAdminController
             'notes' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.description' => 'required|string',
-            'items.*.quantity' => 'required|numeric|min:0.01',
+            'items.*.quantity' => 'required|numeric|min:0',
             'items.*.unit_price' => 'required|numeric|min:0',
             'items.*.unit' => 'nullable|string|max:50',
         ]);
@@ -463,7 +463,7 @@ class InvoiceController extends BaseAdminController
     public function recordPayment(Request $request, Invoice $invoice)
     {
         $validated = $request->validate([
-            'amount' => 'required|numeric|min:0.01',
+            'amount' => 'required|numeric|min:0',
             'method' => 'nullable|string|in:bank_transfer,cash,card,paypal,other',
             'reference' => 'nullable|string|max:255',
             'payment_date' => 'nullable|date',

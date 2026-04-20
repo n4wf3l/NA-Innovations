@@ -349,7 +349,7 @@ function BudgetLineModal({ projectId, line, onClose }: { projectId: number; line
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('Amount')} *</label>
-                            <input type="number" value={form.data.amount} onChange={e => form.setData('amount', e.target.value)} className={inputC} step="0.01" min="0.01" required />
+                            <input type="number" value={form.data.amount} onChange={e => form.setData('amount', e.target.value)} className={inputC} step="0.01" min="0" required />
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">

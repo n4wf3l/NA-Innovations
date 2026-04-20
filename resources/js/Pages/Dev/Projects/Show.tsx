@@ -465,7 +465,7 @@ export default function ProjectShow({ project, myTimeEntries, totalHours, myNote
                                         </div>
                                         <div>
                                             <label className={labelCls}>{t('Hours')}</label>
-                                            <input type="number" step="0.25" min="0.25" max="24" className={input} value={timeForm.data.hours} onChange={e => timeForm.setData('hours', e.target.value)} />
+                                            <input type="number" step="0.25" min="0" max="24" className={input} value={timeForm.data.hours} onChange={e => timeForm.setData('hours', e.target.value)} />
                                         </div>
                                         <div>
                                             <label className={labelCls}>{t('Category')}</label>
@@ -519,7 +519,7 @@ export default function ProjectShow({ project, myTimeEntries, totalHours, myNote
                                                         <form onSubmit={handleEditTimeSubmit} className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-3 space-y-2">
                                                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                                                 <input type="date" className={input} value={editTimeForm.data.date} onChange={e => editTimeForm.setData('date', e.target.value)} />
-                                                                <input type="number" step="0.25" min="0.25" max="24" className={input} value={editTimeForm.data.hours} onChange={e => editTimeForm.setData('hours', e.target.value)} />
+                                                                <input type="number" step="0.25" min="0" max="24" className={input} value={editTimeForm.data.hours} onChange={e => editTimeForm.setData('hours', e.target.value)} />
                                                                 <SearchableSelect
                                                                     value={editTimeForm.data.task_category}
                                                                     onChange={(val) => editTimeForm.setData('task_category', val)}

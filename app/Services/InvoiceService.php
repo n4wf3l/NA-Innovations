@@ -53,6 +53,15 @@ class InvoiceService
         // Trigger workflow if invoice just became fully paid
         if (!$wasPaid && $invoice->status === 'paid') {
             WorkflowService::onInvoiceFullyPaid($invoice);
+        } else {
+            // Partial or out-of-sequence payment — notify admins in-app so they don't miss it
+            NotificationService::sendToAdmins('payment-received-admin', [
+                'invoice_number' => $invoice->invoice_number,
+                'client_name' => $invoice->client_name,
+                'amount' => number_format($payment->amount, 2, ',', '.'),
+                'remaining' => number_format($invoice->amount_due, 2, ',', '.'),
+                'status' => $invoice->status,
+            ], actionUrl: "/admin/invoices/{$invoice->id}");
         }
 
         return $payment;

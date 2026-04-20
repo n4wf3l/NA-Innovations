@@ -27,7 +27,7 @@ class TimeEntryController extends Controller
 
         $validated = $request->validate([
             'date' => 'required|date',
-            'hours' => 'required|numeric|min:0.25|max:24',
+            'hours' => 'required|numeric|min:0|max:24',
             'description' => 'required|string|max:500',
             'task_category' => 'nullable|string|in:development,design,meeting,testing,deployment,other',
             'is_billable' => 'boolean',
@@ -57,7 +57,7 @@ class TimeEntryController extends Controller
 
         $validated = $request->validate([
             'date' => 'required|date',
-            'hours' => 'required|numeric|min:0.25|max:24',
+            'hours' => 'required|numeric|min:0|max:24',
             'description' => 'required|string|max:500',
             'task_category' => 'nullable|string|in:development,design,meeting,testing,deployment,other',
             'is_billable' => 'boolean',

@@ -156,7 +156,7 @@ export default function InvoiceShow({ invoice, emailTemplates }: Props) {
                     <form onSubmit={handleRecordPayment} className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Amount")} *</label>
-                            <input type="number" value={paymentForm.data.amount} onChange={e => paymentForm.setData('amount', e.target.value)} className="w-full bg-gray-50 dark:bg-gray-700/50 border-0 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-400" step="0.01" min="0.01" required />
+                            <input type="number" value={paymentForm.data.amount} onChange={e => paymentForm.setData('amount', e.target.value)} className="w-full bg-gray-50 dark:bg-gray-700/50 border-0 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-400" step="0.01" min="0" required />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Method")}</label>
