@@ -163,22 +163,33 @@ class TeamController extends BaseAdminController
             'approved_at' => now(),
         ]);
 
+        $welcomeVars = [
+            'user_name' => $user->name,
+            'email' => $user->email,
+            'portal_url' => url('/login'),
+        ];
+
+        $welcomeSlug = match ($user->role) {
+            'referral_partner' => 'partner-welcome',
+            'developer' => 'developer-welcome',
+            'admin' => 'admin-welcome',
+            default => 'admin-welcome',
+        };
+
         if ($user->role === 'referral_partner') {
-            ReferralPartner::create([
+            $partner = ReferralPartner::create([
                 'user_id' => $user->id,
                 'referral_code' => strtoupper(Str::random(8)),
                 'default_commission_rate' => 10,
                 'payment_method' => 'bank_transfer',
                 'is_active' => true,
             ]);
+            $welcomeVars['referral_code'] = $partner->referral_code;
+            $welcomeVars['commission_rate'] = rtrim(rtrim(number_format((float) $partner->default_commission_rate, 2, ',', ''), '0'), ',');
         }
 
-        // Send welcome email with password reset link
-        NotificationService::send($user, 'client-welcome', [
-            'client_name' => $user->name,
-            'email' => $user->email,
-            'portal_url' => url('/login'),
-        ], transactional: true);
+        // Send role-specific welcome email
+        NotificationService::send($user, $welcomeSlug, $welcomeVars, transactional: true);
 
         // Send password reset link so user can set their own password
         try {
