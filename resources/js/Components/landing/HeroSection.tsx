@@ -82,7 +82,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
     const navActiveColor = navOnLight && !isDark ? 'text-teal-600' : 'text-teal-300';
 
     return (
-        <div id="hero-section" className="flex flex-col bg-gray-900 relative overflow-hidden" style={{ minHeight: '100vh' }}>
+        <div id="hero-section" data-snap="section" className="flex flex-col bg-gray-900 relative overflow-hidden" style={{ minHeight: '100vh' }}>
             {/* Animated background words */}
             <div aria-hidden="true">
                 <span className="hero-word hero-word-1">DEVELOPMENT</span>

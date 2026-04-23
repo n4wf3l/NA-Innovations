@@ -464,6 +464,15 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
             .catch(() => setChatAvailable(false));
     }, []);
 
+    // Mobile scroll-snap: one swipe = one section. Disabled when user prefers reduced motion.
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        if (reduced) return;
+        document.documentElement.classList.add('snap-landing');
+        return () => document.documentElement.classList.remove('snap-landing');
+    }, []);
+
     const portfolioSection = useInView();
     const statsSection = useInView();
     const testimonialsSection = useInView();
@@ -538,12 +547,30 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                 .scale-in { animation: scaleIn 0.5s ease-out forwards; opacity: 0; }
                 @keyframes portfolioFadeIn { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
                 .portfolio-card-animate { animation: portfolioFadeIn 0.8s ease-out forwards; opacity: 0; }
+
+                /* Mobile scroll-snap — one swipe = one section */
+                @media (max-width: 767px) {
+                    html.snap-landing {
+                        scroll-snap-type: y mandatory;
+                        scroll-behavior: smooth;
+                    }
+                    html.snap-landing section,
+                    html.snap-landing [data-snap="section"] {
+                        scroll-snap-align: start;
+                        scroll-snap-stop: normal;
+                    }
+                }
+                @media (prefers-reduced-motion: reduce) {
+                    html.snap-landing {
+                        scroll-snap-type: none !important;
+                    }
+                }
             `}</style>
 
             <HeroSection heroSection={heroSection} branding={branding} socialLinks={socialLinks} socialIcons={socialIcons} navLinks={navLinks} locale={locale} auth={auth} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
 
             {/* ═══ Second screen: Estimate + Stats + AI ═══ */}
-            <div id="estimate-banner" className={`flex flex-col ${chatAvailable ? 'min-h-screen' : ''}`}>
+            <div id="estimate-banner" data-snap="section" className={`flex flex-col ${chatAvailable ? 'min-h-screen' : ''}`}>
                 {/* Free Estimate Banner — Europe only */}
                 {showSimulator && (
                 <div className="bg-gradient-to-r from-gray-100 via-teal-50 to-gray-100 dark:from-gray-900 dark:via-teal-900/40 dark:to-gray-900 border-y border-teal-200 dark:border-teal-500/20 py-3">
