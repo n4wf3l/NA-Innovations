@@ -118,7 +118,7 @@ export default function Pricing({ seo }: Props) {
                                                 const typeObj = projectTypeOptions.find(t => t.id === typeId);
                                                 return typeObj ? (
                                                     <span key={typeId} className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-2.5 py-1 rounded-full font-medium">
-                                                        {typeObj.name}
+                                                        {t(typeObj.name)}
                                                     </span>
                                                 ) : null;
                                             })}
@@ -169,11 +169,11 @@ export default function Pricing({ seo }: Props) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {projectTypeOptions.filter(t => t.id !== 'no_idea' && t.basePrice > 0).map((type, idx) => (
+                                {projectTypeOptions.filter(opt => opt.id !== 'no_idea' && opt.basePrice > 0).map((type, idx) => (
                                     <tr key={type.id} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/50'}>
                                         <td className="px-6 py-4">
-                                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{type.name}</p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{type.description}</p>
+                                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{t(type.name)}</p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t(type.description)}</p>
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <span className="text-lg font-bold text-gray-900 dark:text-white">{formatEUR(type.basePrice)}</span>

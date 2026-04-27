@@ -238,7 +238,7 @@ export default function PriceSimulator({
                         </svg>
                     </button>
                     <p className="text-[10px] text-gray-400 text-center mt-3 leading-tight hidden lg:block">
-                        This is an estimate only. Final pricing depends on project scope.
+                        {t('This is an estimate only. Final pricing depends on project scope.')}
                     </p>
                 </>
             )}
@@ -280,7 +280,7 @@ export default function PriceSimulator({
                                     </div>
                                     <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">{t(type.name)}</h3>
                                     <p className="text-xs text-gray-500 mb-2">{t(type.description)}</p>
-                                    <span className="text-xs font-bold text-teal-600">from {formatEUR(type.basePrice)}</span>
+                                    <span className="text-xs font-bold text-teal-600">{t('from')} {formatEUR(type.basePrice)}</span>
                                 </button>
                             );
                         })}
@@ -386,11 +386,11 @@ export default function PriceSimulator({
                                     <div>
                                         <h4 className="text-sm font-bold text-teal-900 dark:text-teal-300">{t('Some examples to inspire you:')}</h4>
                                         <ul className="mt-2 text-xs text-teal-700 dark:text-teal-400 space-y-1">
-                                            <li>• "Je veux un site pour mon restaurant où les clients peuvent réserver une table"</li>
-                                            <li>• "J'ai besoin d'une application pour gérer les rendez-vous de mon salon de coiffure"</li>
-                                            <li>• "Je veux vendre mes produits en ligne avec livraison en Belgique"</li>
-                                            <li>• "J'ai un site WordPress qui est lent, je veux le refaire en plus moderne"</li>
-                                            <li>• "Je veux un portail où mes clients peuvent suivre leurs commandes"</li>
+                                            <li>• {t('simulator.example.restaurant')}</li>
+                                            <li>• {t('simulator.example.salon')}</li>
+                                            <li>• {t('simulator.example.shop')}</li>
+                                            <li>• {t('simulator.example.wordpress')}</li>
+                                            <li>• {t('simulator.example.portal')}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -401,7 +401,7 @@ export default function PriceSimulator({
                                 onChange={e => setNoIdeaDescription(e.target.value)}
                                 rows={6}
                                 className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-2xl px-5 py-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-teal-400 focus:ring-teal-400 resize-none"
-                                placeholder="Décrivez ce que vous souhaitez : votre activité, ce que le site ou l'application doit faire, vos clients, etc."
+                                placeholder={t('Describe what you want: your activity, what the site or app should do, your customers, etc.')}
                             />
                             <p className="text-xs text-gray-400">{t('Our team will analyze your need and propose the most suitable solution with a detailed quote.')}</p>
                         </div>
@@ -433,7 +433,7 @@ export default function PriceSimulator({
 
                             {featuresForCurrentType.specific.length > 0 && (
                                 <div>
-                                    <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">{featuresForCurrentType.specificLabel}</h3>
+                                    <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">{t(featuresForCurrentType.specificLabel)}</h3>
                                     <div className="space-y-2">
                                         {featuresForCurrentType.specific.map(renderFeatureCheckbox)}
                                     </div>
@@ -509,7 +509,7 @@ export default function PriceSimulator({
                                             <span className="text-sm text-gray-800 dark:text-gray-200">{t(option.name)}</span>
                                         </div>
                                         <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${option.price === 0 ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}>
-                                            {option.price === 0 ? t('Free') : `+${formatEUR(option.price)}${option.suffix ? ' ' + option.suffix : ''}`}
+                                            {option.price === 0 ? t('Free') : `+${formatEUR(option.price)}${option.suffix ? ' ' + t(option.suffix) : ''}`}
                                         </span>
                                     </button>
                                 );

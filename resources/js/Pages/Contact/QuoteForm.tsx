@@ -69,7 +69,7 @@ export default function QuoteForm({ quoteForm, setQuoteForm, onSubmit, processin
                             value={quoteForm.company}
                             onChange={(e) => setQuoteForm({ ...quoteForm, company: e.target.value })}
                             className={inputClasses}
-                            placeholder="Your Company"
+                            placeholder={t('Your Company')}
                         />
                     </div>
                     <div>
@@ -89,7 +89,7 @@ export default function QuoteForm({ quoteForm, setQuoteForm, onSubmit, processin
                         value={quoteForm.service}
                         onChange={(v) => setQuoteForm({ ...quoteForm, service: v })}
                         options={Object.entries(projectTypes).map(([key, label]) => ({ value: key, label: label as string }))}
-                        placeholder="Select a project type"
+                        placeholder={t('Select a project type')}
                         required
                         searchable
                     />
@@ -101,14 +101,14 @@ export default function QuoteForm({ quoteForm, setQuoteForm, onSubmit, processin
                             value={quoteForm.budget}
                             onChange={(v) => setQuoteForm({ ...quoteForm, budget: v })}
                             options={[
-                                { value: '1000', label: 'Less than 1,000 EUR' },
-                                { value: '3000', label: '1,000 - 5,000 EUR' },
-                                { value: '7500', label: '5,000 - 10,000 EUR' },
-                                { value: '15000', label: '10,000 - 25,000 EUR' },
-                                { value: '35000', label: '25,000 - 50,000 EUR' },
-                                { value: '75000', label: '50,000+ EUR' },
+                                { value: '1000', label: t('Less than 1,000 EUR') },
+                                { value: '3000', label: t('1,000 - 5,000 EUR') },
+                                { value: '7500', label: t('5,000 - 10,000 EUR') },
+                                { value: '15000', label: t('10,000 - 25,000 EUR') },
+                                { value: '35000', label: t('25,000 - 50,000 EUR') },
+                                { value: '75000', label: t('50,000+ EUR') },
                             ]}
-                            placeholder="Select a budget range"
+                            placeholder={t('Select a budget range')}
                             required
                         />
                     </div>
@@ -118,13 +118,13 @@ export default function QuoteForm({ quoteForm, setQuoteForm, onSubmit, processin
                             value={quoteForm.timeline}
                             onChange={(v) => setQuoteForm({ ...quoteForm, timeline: v })}
                             options={[
-                                { value: 'ASAP', label: 'As soon as possible' },
-                                { value: '1-2 months', label: '1-2 months' },
-                                { value: '3-6 months', label: '3-6 months' },
-                                { value: '6+ months', label: '6+ months' },
-                                { value: 'flexible', label: 'Flexible / No rush' },
+                                { value: 'ASAP', label: t('As soon as possible') },
+                                { value: '1-2 months', label: t('1-2 months') },
+                                { value: '3-6 months', label: t('3-6 months') },
+                                { value: '6+ months', label: t('6+ months') },
+                                { value: 'flexible', label: t('Flexible / No rush') },
                             ]}
-                            placeholder="Select a timeline"
+                            placeholder={t('Select a timeline')}
                             required
                         />
                     </div>
@@ -135,7 +135,7 @@ export default function QuoteForm({ quoteForm, setQuoteForm, onSubmit, processin
                         value={quoteForm.message}
                         onChange={(e) => setQuoteForm({ ...quoteForm, message: e.target.value })}
                         className={`${inputClasses} min-h-[160px] resize-y`}
-                        placeholder="Describe your project, goals, and any specific requirements..."
+                        placeholder={t('Describe your project, goals, and any specific requirements...')}
                         required
                     />
                 </div>

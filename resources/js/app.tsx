@@ -1,5 +1,5 @@
 import '../css/app.css';
-import './lib/i18n'; // Initialize i18n before anything else
+import i18n from './lib/i18n'; // Initialize i18n before anything else
 import { createRoot } from 'react-dom/client';
 import { createInertiaApp, router } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
@@ -27,6 +27,16 @@ router.on('finish', () => {
     if (lastClickedEl) {
         lastClickedEl.removeAttribute('data-loading');
         lastClickedEl = null;
+    }
+});
+
+// Sync i18next with Inertia page locale on every navigation
+// (the language switch uses router.get which doesn't reload the page)
+router.on('success', (event) => {
+    const newLocale = (event.detail.page.props as any)?.locale;
+    if (newLocale && i18n.language !== newLocale) {
+        i18n.changeLanguage(newLocale);
+        document.documentElement.lang = newLocale;
     }
 });
 

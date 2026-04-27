@@ -313,7 +313,7 @@ export default function Contact({ projectTypes, turnstileSiteKey, simulatorMode 
                     </div>
                     <div>
                         <label className={labelClasses}>{t('Company (optional)')}</label>
-                        <input type="text" value={simulatorForm.company} onChange={(e) => setSimulatorForm({ ...simulatorForm, company: e.target.value })} className={inputClasses} placeholder="Your Company" />
+                        <input type="text" value={simulatorForm.company} onChange={(e) => setSimulatorForm({ ...simulatorForm, company: e.target.value })} className={inputClasses} placeholder={t('Your Company')} />
                     </div>
                     {turnstileSiteKey && (
                         <div className="flex justify-center pt-2"><div ref={modalTurnstileRef} /></div>
