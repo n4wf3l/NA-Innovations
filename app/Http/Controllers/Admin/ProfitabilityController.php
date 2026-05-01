@@ -155,18 +155,22 @@ class ProfitabilityController extends BaseAdminController
         $totalCommissions = (float) $projectRows->sum('commission');
         $totalMargin = $totalRevenue - $totalDevCost - $totalCommissions;
 
+        $unlocked = $this->financialUnlocked();
+
         return Inertia::render('Admin/Profitability/Index', [
-            'summary' => [
+            'summary' => $unlocked ? [
                 'revenue' => round($totalRevenue, 2),
                 'dev_cost' => round($totalDevCost, 2),
                 'commissions' => round($totalCommissions, 2),
                 'margin' => round($totalMargin, 2),
                 'margin_pct' => $totalRevenue > 0 ? round(($totalMargin / $totalRevenue) * 100, 1) : null,
+            ] : [
+                'revenue' => 0, 'dev_cost' => 0, 'commissions' => 0, 'margin' => 0, 'margin_pct' => null,
             ],
-            'projects' => $projectRows,
-            'clients' => $clientRows,
-            'developers' => $devRows,
-            'partners' => $partnerRows,
+            'projects' => $unlocked ? $projectRows : [],
+            'clients' => $unlocked ? $clientRows : [],
+            'developers' => $unlocked ? $devRows : [],
+            'partners' => $unlocked ? $partnerRows : [],
         ]);
     }
 }

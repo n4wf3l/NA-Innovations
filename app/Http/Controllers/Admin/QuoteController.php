@@ -54,7 +54,7 @@ class QuoteController extends BaseAdminController
             'quotes' => $quotes,
             'totalQuotes' => $totalQuotes,
             'acceptedQuotes' => $acceptedQuotes,
-            'pendingValue' => $pendingValue,
+            'pendingValue' => $this->financialUnlocked() ? $pendingValue : 0,
             'conversionRate' => $conversionRate,
         ]);
     }
@@ -210,6 +210,20 @@ class QuoteController extends BaseAdminController
                    'body' => __('pdf.quote_email_body', ['name' => '{{ client_name }}', 'number' => $quote->quote_number, 'total' => '{{ total }}', 'valid_until' => '{{ valid_until }}'], $loc)];
         }
 
+        // Redact monetary fields when financial PIN is locked
+        if (!$this->financialUnlocked()) {
+            foreach (['subtotal', 'tax_amount', 'total', 'deposit_amount', 'discount_amount'] as $f) {
+                if (isset($quote->$f)) $quote->$f = 0;
+            }
+            foreach ($quote->items as $item) {
+                $item->unit_price = 0;
+                $item->total = 0;
+            }
+            foreach ($versions as $v) {
+                $v->total = 0;
+            }
+        }
+
         return Inertia::render('Admin/Quotes/Show', [
             'quote' => $quote,
             'emailTemplates' => $emailTemplates,
@@ -222,6 +236,11 @@ class QuoteController extends BaseAdminController
      */
     public function edit(Quote $quote)
     {
+        if (!$this->financialUnlocked()) {
+            return redirect()->route('admin.quotes.show', $quote)
+                ->with('error', __('Déverrouille le PIN financier pour modifier les montants.'));
+        }
+
         $quote->load('items');
         $clients = User::where('role', 'client')->orderBy('name')->get();
         $leads = Lead::orderBy('created_at', 'desc')->get();

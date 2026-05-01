@@ -49,14 +49,16 @@ class CommissionController extends BaseAdminController
         $totalBlocked = Commission::where('status', 'blocked')->sum('commission_amount');
         $totalAmount = Commission::sum('commission_amount');
 
+        $unlocked = $this->financialUnlocked();
+
         return Inertia::render('Admin/Commissions/Index', [
             'commissions' => $commissions,
             'partners' => $partners,
             'totalCommissions' => $totalCommissions,
-            'totalPending' => $totalPending,
-            'totalPaid' => $totalPaid,
-            'totalBlocked' => $totalBlocked,
-            'totalAmount' => $totalAmount,
+            'totalPending' => $unlocked ? $totalPending : 0,
+            'totalPaid' => $unlocked ? $totalPaid : 0,
+            'totalBlocked' => $unlocked ? $totalBlocked : 0,
+            'totalAmount' => $unlocked ? $totalAmount : 0,
         ]);
     }
 
@@ -73,6 +75,17 @@ class CommissionController extends BaseAdminController
             'invoice',
             'blockedBy:id,name',
         ]);
+
+        if (!$this->financialUnlocked()) {
+            $commission->base_amount = 0;
+            $commission->commission_amount = 0;
+            $commission->commission_rate = 0;
+            if ($commission->invoice) {
+                foreach (['subtotal', 'tax_amount', 'total', 'amount_paid', 'amount_due'] as $f) {
+                    if (isset($commission->invoice->$f)) $commission->invoice->$f = 0;
+                }
+            }
+        }
 
         return Inertia::render('Admin/Commissions/Show', [
             'commission' => $commission,

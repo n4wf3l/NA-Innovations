@@ -114,21 +114,23 @@ class DashboardController extends BaseAdminController
         $activityPeakHour = collect($activityChart)->sortByDesc('count')->first()['hour'] ?? '--';
         $activityTotal = collect($activityChart)->sum('count');
 
+        $unlocked = $this->financialUnlocked();
+
         return Inertia::render('Admin/Dashboard', [
-            'revenueMonth' => $revenueMonth,
-            'revenueLastMonth' => $revenueLastMonth,
-            'revenueChange' => $revenueChange,
+            'revenueMonth' => $unlocked ? $revenueMonth : 0,
+            'revenueLastMonth' => $unlocked ? $revenueLastMonth : 0,
+            'revenueChange' => $unlocked ? $revenueChange : 0,
             'activeProjects' => $activeProjects,
             'openLeads' => $openLeads,
             'newLeadsThisMonth' => $newLeadsThisMonth,
             'leadsChange' => $leadsChange,
             'wonThisMonth' => $wonThisMonth,
             'wonLastMonth' => $wonLastMonth,
-            'pendingInvoices' => $pendingInvoices,
+            'pendingInvoices' => $unlocked ? $pendingInvoices : 0,
             'recentLeads' => $recentLeads,
-            'overdueInvoices' => $overdueInvoices,
-            'expiringServices' => $expiringServices,
-            'pendingCommissions' => $pendingCommissions,
+            'overdueInvoices' => $unlocked ? $overdueInvoices : [],
+            'expiringServices' => $unlocked ? $expiringServices : [],
+            'pendingCommissions' => $unlocked ? $pendingCommissions : 0,
             'projects' => $projects,
             'dashboardPrefs' => $dashboardPrefs,
             'notifyAdminEmails' => $notifyAdminEmails,

@@ -58,12 +58,14 @@ class InvoiceController extends BaseAdminController
             ->where('due_date', '<', now())
             ->sum('amount_due');
 
+        $unlocked = $this->financialUnlocked();
+
         return Inertia::render('Admin/Invoices/Index', [
             'invoices' => $invoices,
             'totalInvoices' => $totalInvoices,
-            'totalBilled' => $totalBilled,
-            'totalPaid' => $totalPaid,
-            'totalOverdue' => $totalOverdue,
+            'totalBilled' => $unlocked ? $totalBilled : 0,
+            'totalPaid' => $unlocked ? $totalPaid : 0,
+            'totalOverdue' => $unlocked ? $totalOverdue : 0,
         ]);
     }
 
@@ -256,6 +258,20 @@ class InvoiceController extends BaseAdminController
                    'body' => __('pdf.invoice_email_body', ['name' => '{{ client_name }}', 'number' => $invoice->invoice_number, 'total' => '{{ total }}', 'due_date' => '{{ due_date }}'], $loc)];
         }
 
+        // Redact monetary fields when financial PIN is locked
+        if (!$this->financialUnlocked()) {
+            foreach (['subtotal', 'tax_amount', 'total', 'amount_paid', 'amount_due'] as $f) {
+                $invoice->$f = 0;
+            }
+            foreach ($invoice->items as $item) {
+                $item->unit_price = 0;
+                $item->total = 0;
+            }
+            foreach ($invoice->payments as $payment) {
+                $payment->amount = 0;
+            }
+        }
+
         return Inertia::render('Admin/Invoices/Show', [
             'invoice' => $invoice,
             'emailTemplates' => $emailTemplates,
@@ -267,6 +283,11 @@ class InvoiceController extends BaseAdminController
      */
     public function edit(Invoice $invoice)
     {
+        if (!$this->financialUnlocked()) {
+            return redirect()->route('admin.invoices.show', $invoice)
+                ->with('error', __('Déverrouille le PIN financier pour modifier les montants.'));
+        }
+
         $invoice->load('items');
         $clients = User::where('role', 'client')->orderBy('name')->get();
 

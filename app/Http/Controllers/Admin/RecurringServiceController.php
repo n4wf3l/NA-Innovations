@@ -51,12 +51,14 @@ class RecurringServiceController extends BaseAdminController
             ->selectRaw('SUM(billed_price - real_cost) as margin')
             ->value('margin') ?? 0;
 
+        $unlocked = $this->financialUnlocked();
+
         return Inertia::render('Admin/Services/Index', [
             'services' => $services,
             'totalServices' => $totalServices,
             'activeServices' => $activeServices,
-            'monthlyRevenue' => $monthlyRevenue,
-            'totalMargin' => $totalMargin,
+            'monthlyRevenue' => $unlocked ? $monthlyRevenue : 0,
+            'totalMargin' => $unlocked ? $totalMargin : 0,
         ]);
     }
 
@@ -118,6 +120,12 @@ class RecurringServiceController extends BaseAdminController
     {
         $service->load('client', 'projet', 'renewals', 'notes.user');
 
+        if (!$this->financialUnlocked()) {
+            foreach (['real_cost', 'billed_price'] as $f) {
+                if (isset($service->$f)) $service->$f = 0;
+            }
+        }
+
         return Inertia::render('Admin/Services/Show', [
             'service' => $service,
         ]);
@@ -128,6 +136,11 @@ class RecurringServiceController extends BaseAdminController
      */
     public function edit(RecurringService $service)
     {
+        if (!$this->financialUnlocked()) {
+            return redirect()->route('admin.services.show', $service)
+                ->with('error', __('Déverrouille le PIN financier pour modifier les montants.'));
+        }
+
         $clients = User::where('role', 'client')->orderBy('name')->get();
         $projects = Projet::orderBy('nom_societe')->get();
 

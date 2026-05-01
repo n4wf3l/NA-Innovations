@@ -169,23 +169,25 @@ class ProjectBudgetController extends BaseAdminController
             'total_all' => \App\Models\Commission::sum('commission_amount'),
         ];
 
+        $unlocked = $this->financialUnlocked();
+
         return Inertia::render('Admin/Revenue/Index', [
-            'projection' => $projection,
-            'breakEvenMonth' => $breakEvenMonth,
-            'actualIncome' => round($actualIncome, 2),
-            'actualExpenses' => round($actualExpenses, 2),
+            'projection' => $unlocked ? $projection : [],
+            'breakEvenMonth' => $unlocked ? $breakEvenMonth : null,
+            'actualIncome' => $unlocked ? round($actualIncome, 2) : 0,
+            'actualExpenses' => $unlocked ? round($actualExpenses, 2) : 0,
             'until' => $until,
             'allProjects' => $allProjects,
             'selectedProjectIds' => $selectedIds,
-            'budgetLines' => $budgetLines,
-            'revenueByMonth' => $revenueByMonth,
+            'budgetLines' => $unlocked ? $budgetLines : [],
+            'revenueByMonth' => $unlocked ? $revenueByMonth : [],
             'leadsBySource' => $leadsBySource,
             'projectsByStatus' => $projectsByStatus,
-            'thisMonthRevenue' => round($thisMonth, 2),
-            'lastMonthRevenue' => round($lastMonth, 2),
-            'momChange' => $momChange,
-            'topClients' => $topClients,
-            'commissionStats' => $commissionStats,
+            'thisMonthRevenue' => $unlocked ? round($thisMonth, 2) : 0,
+            'lastMonthRevenue' => $unlocked ? round($lastMonth, 2) : 0,
+            'momChange' => $unlocked ? $momChange : 0,
+            'topClients' => $unlocked ? $topClients : [],
+            'commissionStats' => $unlocked ? $commissionStats : ['total_paid' => 0, 'total_pending' => 0, 'total_all' => 0],
             'simulations' => FinancialSimulation::with('product:id,name')
                 ->orderByDesc('updated_at')
                 ->get()

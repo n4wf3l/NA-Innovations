@@ -3,6 +3,7 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, usePage } from '@inertiajs/react';
 import Badge from '@/Components/ui/Badge';
 import ProtectedAmount, { protectedValue } from '@/Components/ui/ProtectedAmount';
+import OnboardingEmptyState from '@/Components/Admin/OnboardingEmptyState';
 import { PageProps } from '@/types';
 import { formatDate } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
@@ -86,8 +87,18 @@ function MiniRing({ value, max, color = '#8b5cf6', size = 40 }: { value: number;
 }
 
 export default function Dashboard({ revenueMonth, revenueLastMonth, revenueChange, activeProjects, openLeads, newLeadsThisMonth, leadsChange, wonThisMonth, wonLastMonth, pendingInvoices, recentLeads, overdueInvoices, expiringServices, pendingCommissions, projects, dashboardPrefs: initialPrefs, notifyAdminEmails: initialNotifyEmails, activityChart = [], activityNow = 0, activityPeak = 0, activityPeakHour = '--', activityTotal = 0 }: Props) {
-    const { financialUnlocked } = usePage<PageProps>().props;
+    const { financialUnlocked, auth } = usePage<PageProps>().props;
     const { t } = useTranslation();
+
+    // Show onboarding empty-state when the tenant is fresh (no data anywhere)
+    const isFreshTenant = activeProjects === 0
+        && openLeads === 0
+        && newLeadsThisMonth === 0
+        && pendingInvoices === 0
+        && wonThisMonth === 0
+        && wonLastMonth === 0
+        && (projects?.length ?? 0) === 0
+        && (recentLeads?.length ?? 0) === 0;
 
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [prefs, setPrefs] = useState<DashboardPrefs>(initialPrefs);
@@ -160,6 +171,8 @@ export default function Dashboard({ revenueMonth, revenueLastMonth, revenueChang
     return (
         <AdminLayout title={t("Dashboard")} header={t("Dashboard")}>
             <Head title={t("Dashboard")} />
+
+            {isFreshTenant && <OnboardingEmptyState name={auth?.user?.name ?? ''} />}
 
             {/* Settings gear */}
             <div className="flex justify-end mb-5 relative" ref={settingsRef}>
