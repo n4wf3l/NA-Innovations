@@ -83,7 +83,7 @@
         @if($po->quote)
             <div class="quote-ref">
                 <strong>{{ __('pdf.quote_reference') }}:</strong> {{ $po->quote->quote_number }}
-                @if($po->quote->title) — {{ $po->quote->title }}@endif
+                @if($po->quote->title) - {{ $po->quote->title }}@endif
             </div>
         @endif
 

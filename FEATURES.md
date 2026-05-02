@@ -1,10 +1,10 @@
-# NA Innovations — Plateforme interne
+# NA Innovations - Plateforme interne
 
 Plateforme tout-en-un **construite par Nawfel Ajari pour NA Innovations**, son agence de développement basée en Belgique. Couvre gestion de projets, facturation, portails clients/partenaires/développeurs, site vitrine public avec blog et simulateur de prix, multilingue (FR/NL/EN), PWA installable.
 
 ---
 
-## Contexte & positionnement — À lire avant tout
+## Contexte & positionnement - À lire avant tout
 
 > **Ce projet n'est pas un SaaS à revendre.**
 
@@ -19,7 +19,7 @@ Cette précision change la grille de lecture du document :
 | Scale | Milliers de req/min, APM, SLA signés | **Charge maîtrisée : mon équipe + mes clients** |
 | Rollback industriel | Blue/green, canary, zero-downtime CI/CD | **Process manuel documenté suffit** |
 | Monitoring | APM payant obligatoire | **Sentry free tier + logs + backups = largement suffisant** |
-| Paiement en ligne | Incontournable pour un SaaS | **Skippé volontairement — virements gérés manuellement** |
+| Paiement en ligne | Incontournable pour un SaaS | **Skippé volontairement - virements gérés manuellement** |
 
 **Lecture du scoring ChatGPT (feedback externe du 2026-04)** :
 - Fonctionnellement / produit : **9/10** ← pertinent pour mon usage
@@ -52,54 +52,54 @@ Donc les "⚠" dans la section production-readiness plus bas sont à lire sous l
 ## Portail administrateur
 
 ### Pilotage commercial
-- **Dashboard** — KPIs consolidés (CA du mois, factures en retard, leads chauds, alertes services), activité récente.
-- **TopBar d'activité** — graphique temps réel de l'activité système (modes horaire / journalier / mensuel).
-- **Clients** — CRUD, historique projets, vue financière, notes internes, documents joints, timeline d'événements.
-- **Leads** — pipeline visuel **Kanban drag-drop** (nouveau → contacté → brief → devis → gagné/perdu), conversion automatique en client, source de provenance, enrichissement progressif.
-- **Revenue** — reporting financier + **graphiques** (comparaisons mensuelles, top clients, répartition par type de projet).
-- **Calendar** — événements projet, deadlines, factures échues, paiements de commissions à venir.
+- **Dashboard** - KPIs consolidés (CA du mois, factures en retard, leads chauds, alertes services), activité récente.
+- **TopBar d'activité** - graphique temps réel de l'activité système (modes horaire / journalier / mensuel).
+- **Clients** - CRUD, historique projets, vue financière, notes internes, documents joints, timeline d'événements.
+- **Leads** - pipeline visuel **Kanban drag-drop** (nouveau → contacté → brief → devis → gagné/perdu), conversion automatique en client, source de provenance, enrichissement progressif.
+- **Revenue** - reporting financier + **graphiques** (comparaisons mensuelles, top clients, répartition par type de projet).
+- **Calendar** - événements projet, deadlines, factures échues, paiements de commissions à venir.
 
 ### Facturation, devis, paiements
-- **Devis** — wizard 3 étapes, génération PDF, envoi email, lien public token-based (acceptation sans compte via URL signée), conversion automatique en facture.
-- **Factures** — wizard 3 étapes, PDF, relances auto (J-7, J-3, J-1, jour J, +1sem, +2sem), suivi statuts (envoyée, vue, payée, en retard, partiel), avoirs / notes de crédit, numérotation configurable.
-- **Paiements** — enregistrement par méthode (virement, cash, Stripe, autre), rapprochement partiel.
-- **Services récurrents** — abonnements externes revendus (hébergement, domaines, SaaS tiers), renouvellement auto, alertes tiered (J-30, J-15, J-7, J-1), suspension auto à expiration + 14 jours.
-- **Commissions partenaires** — tracking, statuts (pending / confirmée / programmée / payée), dates de paiement.
-- **Budget projet** — lignes budgétaires prévisionnelles vs réel, détail de rentabilité par projet.
-- **Payouts développeur** — versements aux devs, approbation admin.
+- **Devis** - wizard 3 étapes, génération PDF, envoi email, lien public token-based (acceptation sans compte via URL signée), conversion automatique en facture.
+- **Factures** - wizard 3 étapes, PDF, relances auto (J-7, J-3, J-1, jour J, +1sem, +2sem), suivi statuts (envoyée, vue, payée, en retard, partiel), avoirs / notes de crédit, numérotation configurable.
+- **Paiements** - enregistrement par méthode (virement, cash, Stripe, autre), rapprochement partiel.
+- **Services récurrents** - abonnements externes revendus (hébergement, domaines, SaaS tiers), renouvellement auto, alertes tiered (J-30, J-15, J-7, J-1), suspension auto à expiration + 14 jours.
+- **Commissions partenaires** - tracking, statuts (pending / confirmée / programmée / payée), dates de paiement.
+- **Budget projet** - lignes budgétaires prévisionnelles vs réel, détail de rentabilité par projet.
+- **Payouts développeur** - versements aux devs, approbation admin.
 
 ### Gestion projet
-- **Projets** — cycle de vie complet (planning → en cours → review → terminé / en pause / annulé), phases, milestones, budget vs réel, heures estimées vs consignées.
-- **Intégration GitHub** — liaison repo par projet, affichage commits, option commits visibles au client, détection d'inactivité (>3 jours → notification), OAuth login pour dev.
-- **Timeline morphable** — audit visuel par projet (emails envoyés, statut changé, devis accepté, paiement reçu…).
-- **Documents morphables** — attachables à n'importe quelle entité, upload PDF/images, visibilité client togglable, signatures électroniques.
-- **Briefs client** — soumission structurée, révisions, validation admin.
-- **Co-propriété de projet** — pivot `projet_admins`, plusieurs admins owners, badge « projet partagé ».
-- **Messagerie projet** — échanges admin/dev/client par projet (DevMessages).
-- **Time entries** — consignation du temps par dev, **workflow d'approbation admin** avant facturation.
-- **Milestones** — jalons de livraison ordonnés, next milestone visible client.
+- **Projets** - cycle de vie complet (planning → en cours → review → terminé / en pause / annulé), phases, milestones, budget vs réel, heures estimées vs consignées.
+- **Intégration GitHub** - liaison repo par projet, affichage commits, option commits visibles au client, détection d'inactivité (>3 jours → notification), OAuth login pour dev.
+- **Timeline morphable** - audit visuel par projet (emails envoyés, statut changé, devis accepté, paiement reçu…).
+- **Documents morphables** - attachables à n'importe quelle entité, upload PDF/images, visibilité client togglable, signatures électroniques.
+- **Briefs client** - soumission structurée, révisions, validation admin.
+- **Co-propriété de projet** - pivot `projet_admins`, plusieurs admins owners, badge « projet partagé ».
+- **Messagerie projet** - échanges admin/dev/client par projet (DevMessages).
+- **Time entries** - consignation du temps par dev, **workflow d'approbation admin** avant facturation.
+- **Milestones** - jalons de livraison ordonnés, next milestone visible client.
 
 ### Équipe
-- **Team management** — rôles (admin, dev, partenaire, client), approbation des inscriptions pending, activation/désactivation, **envoi d'identifiants par email 1-clic**, taux horaire par dev, liste des clients.
-- **Audit log** — traçabilité complète (qui, quoi, quand, IP, user-agent) sur toute action.
+- **Team management** - rôles (admin, dev, partenaire, client), approbation des inscriptions pending, activation/désactivation, **envoi d'identifiants par email 1-clic**, taux horaire par dev, liste des clients.
+- **Audit log** - traçabilité complète (qui, quoi, quand, IP, user-agent) sur toute action.
 - **Approbation accès Knowledge Base** partenaires avec validation NDA électronique.
 
 ### Site & contenu (CMS)
-- **Pages CMS** — création de pages publiques custom, slug, SEO, visibilité.
-- **Landing sections** — éditeur modulaire avec **drag-reorder** des sections homepage.
-- **Blog / Posts** — rédaction, publication, catégories, tags, SEO par article.
-- **Portfolio** — projets réalisés avec galeries d'images multiples, stack technique, **embed YouTube**.
-- **Produits / catalogue services** — gestion, pricing, features.
-- **Testimonials** — modération des témoignages clients, affichage configurable sur landing.
+- **Pages CMS** - création de pages publiques custom, slug, SEO, visibilité.
+- **Landing sections** - éditeur modulaire avec **drag-reorder** des sections homepage.
+- **Blog / Posts** - rédaction, publication, catégories, tags, SEO par article.
+- **Portfolio** - projets réalisés avec galeries d'images multiples, stack technique, **embed YouTube**.
+- **Produits / catalogue services** - gestion, pricing, features.
+- **Testimonials** - modération des témoignages clients, affichage configurable sur landing.
 - **FAQ publique** + **FAQ partenaires** (séparées, catégories, drag-reorder).
 
 ### Paramètres (6 groupes)
 
 **Gestion admin** (tabs unifiés)
-- **Emails transactionnels** — 20+ templates éditables en WYSIWYG, placeholders dynamiques, versions FR/NL/EN par template.
-- **Brochure commerciale** — upload PDF, téléchargeable depuis contact public.
-- **Modèles de documents** — NDA, contrat, PV de réception, spec technique, CGV — éditables, catégories (juridique/projet/livraison), aperçu PDF live, tabs.
-- **Envoi de CV** — module dédié pour envoyer le CV d'un dev à un prospect.
+- **Emails transactionnels** - 20+ templates éditables en WYSIWYG, placeholders dynamiques, versions FR/NL/EN par template.
+- **Brochure commerciale** - upload PDF, téléchargeable depuis contact public.
+- **Modèles de documents** - NDA, contrat, PV de réception, spec technique, CGV - éditables, catégories (juridique/projet/livraison), aperçu PDF live, tabs.
+- **Envoi de CV** - module dédié pour envoyer le CV d'un dev à un prospect.
 
 **Gestion partenaires** (tabs)
 - Taux de commission (par défaut / par partenaire / par type de projet).
@@ -110,107 +110,107 @@ Donc les "⚠" dans la section production-readiness plus bas sont à lire sous l
 - Configuration du portail dev (toggle features, affichage taux horaire, approbation temps requise).
 
 **Settings transverses**
-- **Branding** — logo, couleurs d'accent, nom société, TVA, adresse, OG images — appliqué au site, emails, PDF.
-- **Signature email** — signature HTML personnalisée avec logo, appliquée aux envois.
-- **NDA settings** — mode PDF uploadé OU texte édité en WYSIWYG.
-- **SEO** — meta, Open Graph, keywords par page.
-- **Chatbot** — config Gemini/OpenAI, **upload de PDFs de base de connaissance**, check de disponibilité API.
-- **Sidebar personnalisable** — drag-and-drop de l'ordre, masquage, **4 styles** visuels, **couleurs d'accent** personnalisables **par admin**.
+- **Branding** - logo, couleurs d'accent, nom société, TVA, adresse, OG images - appliqué au site, emails, PDF.
+- **Signature email** - signature HTML personnalisée avec logo, appliquée aux envois.
+- **NDA settings** - mode PDF uploadé OU texte édité en WYSIWYG.
+- **SEO** - meta, Open Graph, keywords par page.
+- **Chatbot** - config Gemini/OpenAI, **upload de PDFs de base de connaissance**, check de disponibilité API.
+- **Sidebar personnalisable** - drag-and-drop de l'ordre, masquage, **4 styles** visuels, **couleurs d'accent** personnalisables **par admin**.
 
 ### Simulator admin
-- **Admin/Simulator** — visualisation des simulations de prix soumises par les visiteurs du site public (historique, conversion).
+- **Admin/Simulator** - visualisation des simulations de prix soumises par les visiteurs du site public (historique, conversion).
 
 ---
 
 ## Portail client
 
-- **Dashboard** — projets en cours, actions requises (signatures, briefs à compléter), échéances.
-- **Projets** — vue détaillée, commits GitHub (si autorisés), URL preview/staging, liens utiles, documents partagés, phase courante, next milestone.
-- **Devis** — consultation, **acceptation avec signature électronique** via SignaturePad.
-- **Factures** — consultation, téléchargement PDF, historique paiements.
-- **Documents** — téléchargement des docs partagés.
-- **Purchase Orders** — soumission et suivi.
-- **Support** — tickets d'assistance avec historique.
-- **Profil** — update infos, préférences notifications.
+- **Dashboard** - projets en cours, actions requises (signatures, briefs à compléter), échéances.
+- **Projets** - vue détaillée, commits GitHub (si autorisés), URL preview/staging, liens utiles, documents partagés, phase courante, next milestone.
+- **Devis** - consultation, **acceptation avec signature électronique** via SignaturePad.
+- **Factures** - consultation, téléchargement PDF, historique paiements.
+- **Documents** - téléchargement des docs partagés.
+- **Purchase Orders** - soumission et suivi.
+- **Support** - tickets d'assistance avec historique.
+- **Profil** - update infos, préférences notifications.
 
 ---
 
 ## Portail partenaire affilié
 
-- **Dashboard personnalisable drag-drop** — tiles réorganisables (persistance localStorage), leads convertis, commissions gagnées, métriques mensuelles, pipeline.
-- **Montants protégés** — composant `ProtectedAmount` masque les commissions par défaut (toggle œil), déverrouillage par **PIN financier** avec compte à rebours.
-- **Gestion des leads** — soumission nouveau lead avec brief, suivi statut, notification à la conversion.
-- **Prospecting** — templates d'emails à envoyer aux prospects.
-- **Prospects** — **Kanban drag-drop privé** (colonnes persistées par partenaire), rappels de relance.
-- **Commissions** — historique par projet, statuts, date de paiement prévue.
-- **Reminders** — rappels auto (emails + in-app, toutes les 15 min via cron).
-- **Knowledge Base** — accès après signature d'un NDA électronique intégré à l'interface.
-- **Guide & Help** — onboarding step-by-step, documentation.
+- **Dashboard personnalisable drag-drop** - tiles réorganisables (persistance localStorage), leads convertis, commissions gagnées, métriques mensuelles, pipeline.
+- **Montants protégés** - composant `ProtectedAmount` masque les commissions par défaut (toggle œil), déverrouillage par **PIN financier** avec compte à rebours.
+- **Gestion des leads** - soumission nouveau lead avec brief, suivi statut, notification à la conversion.
+- **Prospecting** - templates d'emails à envoyer aux prospects.
+- **Prospects** - **Kanban drag-drop privé** (colonnes persistées par partenaire), rappels de relance.
+- **Commissions** - historique par projet, statuts, date de paiement prévue.
+- **Reminders** - rappels auto (emails + in-app, toutes les 15 min via cron).
+- **Knowledge Base** - accès après signature d'un NDA électronique intégré à l'interface.
+- **Guide & Help** - onboarding step-by-step, documentation.
 
 ---
 
 ## Portail développeur
 
-- **Dashboard** — projets actifs/en attente/terminés, alertes GitHub inactivity, tendance de complétion 6 mois, taux horaire perso.
-- **Projets disponibles** — browse + **claim** des projets pending.
-- **Earnings** — revenus mensuels, historique 6 mois, paiements en attente d'approbation.
-- **Profil** — skills, spécialités, taux horaire, token GitHub, photo.
-- **Time entries** — consignation du temps par projet, workflow d'approbation admin, statut pending/approved/rejected.
-- **Team** — membres de l'équipe et projets partagés.
+- **Dashboard** - projets actifs/en attente/terminés, alertes GitHub inactivity, tendance de complétion 6 mois, taux horaire perso.
+- **Projets disponibles** - browse + **claim** des projets pending.
+- **Earnings** - revenus mensuels, historique 6 mois, paiements en attente d'approbation.
+- **Profil** - skills, spécialités, taux horaire, token GitHub, photo.
+- **Time entries** - consignation du temps par projet, workflow d'approbation admin, statut pending/approved/rejected.
+- **Team** - membres de l'équipe et projets partagés.
 
 ---
 
 ## Site public & marketing
 
-- **Landing page** — sections personnalisables depuis admin (hero, stats, features, témoignages, CTA).
-- **Pricing** — grille tarifaire éditable.
-- **Services** — catalogue (icônes + descriptions).
-- **Portfolio** — cas clients avec galeries + vidéos YouTube embed.
-- **About** — mission, valeurs, équipe.
-- **Blog** — articles, catégories, tags, SEO, pagination.
-- **Contact** — double mode :
+- **Landing page** - sections personnalisables depuis admin (hero, stats, features, témoignages, CTA).
+- **Pricing** - grille tarifaire éditable.
+- **Services** - catalogue (icônes + descriptions).
+- **Portfolio** - cas clients avec galeries + vidéos YouTube embed.
+- **About** - mission, valeurs, équipe.
+- **Blog** - articles, catégories, tags, SEO, pagination.
+- **Contact** - double mode :
   - **Demande de devis classique** avec captcha Turnstile + **upload de pièces jointes**.
-  - **Simulateur de prix interactif** (géo-restreint Europe via détection timezone) — choix type, features, design, maintenance, délai → estimation temps réel, compteur animé, **auto-scroll vers la section suivante** après choix initial (avec respect de `prefers-reduced-motion`).
-- **Chatbot IA flottant** — Gemini/OpenAI + base de connaissance PDF.
-- **Bouton WhatsApp flottant** — contact direct.
+  - **Simulateur de prix interactif** (géo-restreint Europe via détection timezone) - choix type, features, design, maintenance, délai → estimation temps réel, compteur animé, **auto-scroll vers la section suivante** après choix initial (avec respect de `prefers-reduced-motion`).
+- **Chatbot IA flottant** - Gemini/OpenAI + base de connaissance PDF.
+- **Bouton WhatsApp flottant** - contact direct.
 - **Cookie banner** (si activé dans paramètres).
-- **PWA installable** — prompt d'installation sur desktop/mobile, détection de mode offline.
-- **SEO avancé** — hrefLang multi-lingue, canonical URLs, Open Graph, Twitter Cards, preconnect Google Fonts, `loading="lazy"` sur images.
+- **PWA installable** - prompt d'installation sur desktop/mobile, détection de mode offline.
+- **SEO avancé** - hrefLang multi-lingue, canonical URLs, Open Graph, Twitter Cards, preconnect Google Fonts, `loading="lazy"` sur images.
 
 ---
 
 ## Composants réutilisables & UI kit
 
-- **RichTextEditor** — éditeur WYSIWYG pour templates emails, documents, NDA, landing sections.
-- **SignaturePad** — signature électronique pour devis/documents légaux.
-- **KanbanBoard** — drag-drop natif pour leads et prospects.
-- **DataTable** — table triable avec pagination, recherche.
-- **SearchableSelect** — dropdown avec recherche, auto-complétion.
-- **ProtectedAmount** — masquage de montants sensibles (style carte bancaire masquée).
-- **PinUnlockButton** — déverrouillage avec PIN + timer.
-- **Skeleton loaders** — placeholders de chargement pour toutes les vues listantes.
-- **ModuleBanner** — bandeau de section avec breadcrumb.
-- **LoginSplash** — écran de splash animé au login avec branding.
-- **GuidedTour** — tours interactifs configurables (onboarding admin, partner, dev).
-- **OriginalLanguageBadge** — indique la langue originale d'un contenu traduit.
-- **Tooltips custom** — positionnement auto avec flèche.
-- **Confirm dialogs** — via hook `useConfirm`, modaux portal'd avec variants (default, danger).
-- **Toast notifications** — messages flash Laravel affichés en top-right.
-- **Mobile menu** — burger responsive.
-- **PWA InstallPrompt** — détection et invitation à installer la PWA.
+- **RichTextEditor** - éditeur WYSIWYG pour templates emails, documents, NDA, landing sections.
+- **SignaturePad** - signature électronique pour devis/documents légaux.
+- **KanbanBoard** - drag-drop natif pour leads et prospects.
+- **DataTable** - table triable avec pagination, recherche.
+- **SearchableSelect** - dropdown avec recherche, auto-complétion.
+- **ProtectedAmount** - masquage de montants sensibles (style carte bancaire masquée).
+- **PinUnlockButton** - déverrouillage avec PIN + timer.
+- **Skeleton loaders** - placeholders de chargement pour toutes les vues listantes.
+- **ModuleBanner** - bandeau de section avec breadcrumb.
+- **LoginSplash** - écran de splash animé au login avec branding.
+- **GuidedTour** - tours interactifs configurables (onboarding admin, partner, dev).
+- **OriginalLanguageBadge** - indique la langue originale d'un contenu traduit.
+- **Tooltips custom** - positionnement auto avec flèche.
+- **Confirm dialogs** - via hook `useConfirm`, modaux portal'd avec variants (default, danger).
+- **Toast notifications** - messages flash Laravel affichés en top-right.
+- **Mobile menu** - burger responsive.
+- **PWA InstallPrompt** - détection et invitation à installer la PWA.
 
 ---
 
 ## Intégrations
 
 - **GitHub OAuth** + liaison repo + commits API (cache 15min).
-- **DomPDF** — génération PDF native.
-- **Laravel Sanctum** — API tokens.
-- **Mailer SMTP** — support Postmark / Resend / SES / Mailprotect / tout SMTP.
-- **Cloudflare Turnstile** — bot protection.
-- **i18next** — FR / EN / NL côté front.
-- **Gemini / OpenAI API** — chatbot IA.
-- **YouTube Embed API** — vidéos portfolio.
+- **DomPDF** - génération PDF native.
+- **Laravel Sanctum** - API tokens.
+- **Mailer SMTP** - support Postmark / Resend / SES / Mailprotect / tout SMTP.
+- **Cloudflare Turnstile** - bot protection.
+- **i18next** - FR / EN / NL côté front.
+- **Gemini / OpenAI API** - chatbot IA.
+- **YouTube Embed API** - vidéos portfolio.
 
 ---
 
@@ -227,9 +227,9 @@ Donc les "⚠" dans la section production-readiness plus bas sont à lire sous l
 **Transverse** :
 - **Soft deletes** sur 36+ modèles.
 - **Activity log** exhaustif.
-- **Documents & notes morphables** — attachables partout.
-- **Timeline d'événements morphable** — historique par entité.
-- **Emails envoyés morphables** — audit complet des communications.
+- **Documents & notes morphables** - attachables partout.
+- **Timeline d'événements morphable** - historique par entité.
+- **Emails envoyés morphables** - audit complet des communications.
 - **Lazy loading** images natif.
 
 **Cron scheduled** :
@@ -245,18 +245,18 @@ Donc les "⚠" dans la section production-readiness plus bas sont à lire sous l
 
 ## Multi-tenant
 
-- **Isolation stricte** — admin A ne voit jamais les données d'admin B (10+ modèles critiques scopés).
-- **Global scopes Eloquent** — sécurité par défaut : impossible d'oublier un filtre.
-- **Co-propriété de projet** — pivot `projet_admins`, projet partageable entre admins.
+- **Isolation stricte** - admin A ne voit jamais les données d'admin B (10+ modèles critiques scopés).
+- **Global scopes Eloquent** - sécurité par défaut : impossible d'oublier un filtre.
+- **Co-propriété de projet** - pivot `projet_admins`, projet partageable entre admins.
 - **Bypass explicite** pour opérations système (crons, super-admin, co-owner picker).
-- **Middleware `ResolveAdminTenant`** — contexte auto à chaque requête `/admin/*`.
+- **Middleware `ResolveAdminTenant`** - contexte auto à chaque requête `/admin/*`.
 
 ---
 
 ## Sécurité & conformité
 
-- **2FA TOTP** — Google Authenticator, QR SVG généré sans service externe, codes de récupération chiffrés.
-- **PIN financier** — déverrouillage ponctuel pour afficher commissions/montants sensibles, timer.
+- **2FA TOTP** - Google Authenticator, QR SVG généré sans service externe, codes de récupération chiffrés.
+- **PIN financier** - déverrouillage ponctuel pour afficher commissions/montants sensibles, timer.
 - **Chiffrement en base** :
   - Credentials projets (user, password, URL admin)
   - Variables `.env` des projets livrés
@@ -264,29 +264,29 @@ Donc les "⚠" dans la section production-readiness plus bas sont à lire sous l
   - Secrets 2FA + codes de récupération
 - **Rôles** : admin / développeur / client / referral_partner.
 - **CSRF** Laravel natif.
-- **Password reset** — flow complet (email + token signed).
-- **Security headers middleware** — CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy.
+- **Password reset** - flow complet (email + token signed).
+- **Security headers middleware** - CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy.
 - **Cloudflare Turnstile** sur formulaires publics.
-- **RGPD-ready** — soft deletes, activity log, locales par user.
-- **Documents légaux** — NDA, contrat, CGV, PV, spec technique configurables, signature électronique, export PDF.
-- **Sanitization** — strip_tags sur toute entrée utilisateur publique.
+- **RGPD-ready** - soft deletes, activity log, locales par user.
+- **Documents légaux** - NDA, contrat, CGV, PV, spec technique configurables, signature électronique, export PDF.
+- **Sanitization** - strip_tags sur toute entrée utilisateur publique.
 
 ---
 
 ## Design & UX
 
-- **Dark mode complet** (class strategy) — sur 100 % des vues admin + publiques.
+- **Dark mode complet** (class strategy) - sur 100 % des vues admin + publiques.
 - **Animations custom** :
-  - `animate-page-in` — transition douce à chaque navigation Inertia
-  - `animate-fade-in` — backdrops modaux
-  - `animate-modal` — ouverture de modaux
-  - `animate-slide-up` — toasts
-  - `animate-scale-in` — menus déroulants
-- **Respect `prefers-reduced-motion`** — auto-scroll simulator désactivé si activé côté user.
-- **Custom scrollbars** (`custom-scroll`) — UI léger, thin, coloré en thème.
-- **Gradients modernes** — bannières de section avec blur effects.
-- **Responsive mobile-first** — tous les portails utilisables sur smartphone.
-- **Typographie soignée** — font custom Bebas pour titres, Inter pour body.
+  - `animate-page-in` - transition douce à chaque navigation Inertia
+  - `animate-fade-in` - backdrops modaux
+  - `animate-modal` - ouverture de modaux
+  - `animate-slide-up` - toasts
+  - `animate-scale-in` - menus déroulants
+- **Respect `prefers-reduced-motion`** - auto-scroll simulator désactivé si activé côté user.
+- **Custom scrollbars** (`custom-scroll`) - UI léger, thin, coloré en thème.
+- **Gradients modernes** - bannières de section avec blur effects.
+- **Responsive mobile-first** - tous les portails utilisables sur smartphone.
+- **Typographie soignée** - font custom Bebas pour titres, Inter pour body.
 - **Breadcrumbs contextuels** via ModuleBanner.
 - **Loading states** partout (skeletons + spinners).
 - **Accordions** (ex : modèles de documents par catégorie).
@@ -296,24 +296,24 @@ Donc les "⚠" dans la section production-readiness plus bas sont à lire sous l
 
 ## Exports, backups & analytics
 
-- **Export CSV** — factures, leads, commissions, par plage de dates.
-- **Export PDF** — factures, devis, documents légaux, PV de réception, brochure.
-- **Database snapshot / restore** — `SnapshotSeeder` sérialise toute la BDD en JSON (incluant assets storage/) → restauration one-shot (utile pour migrations inter-environnements, sinistres, démos).
-- **Notification polling** — endpoint léger pour notifications temps-réel in-app.
-- **Log d'emails envoyés** (`SentEmail`) — morphable, audit complet par entité (projet, client, lead, facture).
+- **Export CSV** - factures, leads, commissions, par plage de dates.
+- **Export PDF** - factures, devis, documents légaux, PV de réception, brochure.
+- **Database snapshot / restore** - `SnapshotSeeder` sérialise toute la BDD en JSON (incluant assets storage/) → restauration one-shot (utile pour migrations inter-environnements, sinistres, démos).
+- **Notification polling** - endpoint léger pour notifications temps-réel in-app.
+- **Log d'emails envoyés** (`SentEmail`) - morphable, audit complet par entité (projet, client, lead, facture).
 
 ---
 
 ## Automation & règles métier
 
-- **AutomationRule** — moteur de règles (modèle en place, extensible).
+- **AutomationRule** - moteur de règles (modèle en place, extensible).
 - **Workflows automatiques** :
   - Quote accepted → création invoice + notification admin.
   - Quote rejected → notification admin.
   - Invoice paid → commission du partenaire passe en « scheduled ».
   - Service expiré → projet mis en pause automatiquement après 14 j.
   - Lead converti → notification au partenaire référent.
-- **NotificationService** — système unifié (email + in-app), transactionnel ou marketing, respectant les préférences utilisateur.
+- **NotificationService** - système unifié (email + in-app), transactionnel ou marketing, respectant les préférences utilisateur.
 
 ---
 
@@ -342,7 +342,7 @@ Cette section distingue ce qui est **déjà en place** (✓), **prêt à branche
 ### Tests automatisés
 
 - ✓ **81 tests PHPUnit** (Feature + Unit) couvrant : auth, 2FA, password reset/update, email verification, registration, profile, admin access, client portal, dashboard, invoices, quotes, workflow (devis → facture → commission), search, cron jobs.
-- ✓ **Isolation stricte** — `phpunit.xml` pointe sur SQLite :memory:, impossible qu'un test touche la BDD de dev/prod.
+- ✓ **Isolation stricte** - `phpunit.xml` pointe sur SQLite :memory:, impossible qu'un test touche la BDD de dev/prod.
 - ✓ **Seeders de fixtures** pour recréer un état reproductible à chaque run.
 - → **CI automatisée** à brancher en 1h : GitHub Actions / GitLab CI avec job `php artisan test` + `npm run build`. Template minimal prêt à copier dans `.github/workflows/ci.yml`.
 
@@ -350,56 +350,56 @@ Cette section distingue ce qui est **déjà en place** (✓), **prêt à branche
 
 - ✓ **Handler d'exceptions custom** (`app/Exceptions/Handler.php`) avec pages Inertia brandées pour **404, 403, 419, 429, 500, 503** (plus de pages blanches Laravel par défaut).
 - ✓ **Response adaptée** selon le type : JSON pour les requêtes `/api/*`, pages React sinon.
-- ✓ **Données sensibles masquées** dans les flash d'erreur (`password`, `current_password`, `password_confirmation`, `financial_pin`) — pas de leak dans les logs.
-- ✓ **Graceful degradation** — `LogActivity` wrappé dans try/catch pour ne jamais casser la requête si le logger échoue, `Password::sendResetLink` dans try/catch, etc.
+- ✓ **Données sensibles masquées** dans les flash d'erreur (`password`, `current_password`, `password_confirmation`, `financial_pin`) - pas de leak dans les logs.
+- ✓ **Graceful degradation** - `LogActivity` wrappé dans try/catch pour ne jamais casser la requête si le logger échoue, `Password::sendResetLink` dans try/catch, etc.
 
 ### Monitoring, logs & alerting
 
-- ✓ **Logs Laravel** — stack/single driver, rotation native configurable via `config/logging.php` (daily, size-based).
-- ✓ **Activity log applicatif** — 100 % des actions admin tracées avec acteur, entité, IP, user-agent.
-- → **Sentry / Bugsnag** — 1h d'intégration pour capture automatique des exceptions + stack traces + release tracking. Channel `sentry` à ajouter dans `config/logging.php`.
-- → **Slack / Discord webhook** — alerting via le driver `slack` natif Laravel (déjà disponible) sur niveaux `error`/`critical`. Ajouter le webhook dans `.env`.
-- → **Uptime monitoring** — UptimeRobot / Better Stack / Pingdom à pointer sur une route `/health` (à créer en 2 lignes).
-- → **Log aggregation** — Papertrail / Loggly / Datadog si besoin de recherche cross-serveur.
-- ⚠ **APM** (New Relic / Datadog) non installé — recommandé si trafic > 1000 req/min ou SLA signés.
+- ✓ **Logs Laravel** - stack/single driver, rotation native configurable via `config/logging.php` (daily, size-based).
+- ✓ **Activity log applicatif** - 100 % des actions admin tracées avec acteur, entité, IP, user-agent.
+- → **Sentry / Bugsnag** - 1h d'intégration pour capture automatique des exceptions + stack traces + release tracking. Channel `sentry` à ajouter dans `config/logging.php`.
+- → **Slack / Discord webhook** - alerting via le driver `slack` natif Laravel (déjà disponible) sur niveaux `error`/`critical`. Ajouter le webhook dans `.env`.
+- → **Uptime monitoring** - UptimeRobot / Better Stack / Pingdom à pointer sur une route `/health` (à créer en 2 lignes).
+- → **Log aggregation** - Papertrail / Loggly / Datadog si besoin de recherche cross-serveur.
+- ⚠ **APM** (New Relic / Datadog) non installé - recommandé si trafic > 1000 req/min ou SLA signés.
 
 ### Déploiement & rollback
 
-- ✓ **[DEPLOYMENT.md](DEPLOYMENT.md)** — checklist détaillée (cron, migrations, permissions, clés, assets).
-- ✓ **Migrations réversibles** — tous les scripts ont une méthode `down()` fonctionnelle, donc `migrate:rollback` marche.
-- ✓ **Manifest PWA** versionné — cache busting automatique à chaque build.
+- ✓ **[DEPLOYMENT.md](DEPLOYMENT.md)** - checklist détaillée (cron, migrations, permissions, clés, assets).
+- ✓ **Migrations réversibles** - tous les scripts ont une méthode `down()` fonctionnelle, donc `migrate:rollback` marche.
+- ✓ **Manifest PWA** versionné - cache busting automatique à chaque build.
 - ✓ **`php artisan optimize`** (route cache, config cache, view cache) supporté.
-- → **Laravel Forge / Envoyer / Ploi** — hooks de déploiement zero-downtime (symlink swap) compatibles natif.
-- → **Blue/green ou canary** — à configurer côté infra (Nginx upstream, load balancer), pas côté app.
+- → **Laravel Forge / Envoyer / Ploi** - hooks de déploiement zero-downtime (symlink swap) compatibles natif.
+- → **Blue/green ou canary** - à configurer côté infra (Nginx upstream, load balancer), pas côté app.
 - ⚠ **Rollback actuel** = `git revert` + `php artisan migrate:rollback` + `npm run build` en manuel. À scripter (`rollback.sh`) pour sécuriser les runs.
-- ⚠ **Maintenance mode** — `php artisan down` disponible, mais pas de page de maintenance brandée (template à personnaliser).
+- ⚠ **Maintenance mode** - `php artisan down` disponible, mais pas de page de maintenance brandée (template à personnaliser).
 
 ### Backups & restauration
 
-- ✓ **`SnapshotSeeder`** — export JSON complet de la BDD + tous les assets `storage/app/public/` dans `database/seeders/snapshot.json` + `database/seeders/assets/`. Restauration en 1 commande : `php artisan db:seed --class=SnapshotSeeder`.
-- ✓ **Usage validé en conditions réelles** — utilisé avec succès lors d'une perte accidentelle de BDD dev (restauration complète en < 30 s).
+- ✓ **`SnapshotSeeder`** - export JSON complet de la BDD + tous les assets `storage/app/public/` dans `database/seeders/snapshot.json` + `database/seeders/assets/`. Restauration en 1 commande : `php artisan db:seed --class=SnapshotSeeder`.
+- ✓ **Usage validé en conditions réelles** - utilisé avec succès lors d'une perte accidentelle de BDD dev (restauration complète en < 30 s).
 - ✓ **Dump manuel possible** via `mysqldump` standard (MySQL natif).
-- → **Backups cron vers S3 / Spaces / Backblaze** — script shell simple à scheduler (`mysqldump | gzip | aws s3 cp`), rétention 30/90/365j recommandée.
-- → **Managed DB backups** — si tu passes par Digital Ocean Managed Database, AWS RDS, PlanetScale, Supabase, Neon… ils font les snapshots automatiques (PITR) pour toi sans code à écrire.
+- → **Backups cron vers S3 / Spaces / Backblaze** - script shell simple à scheduler (`mysqldump | gzip | aws s3 cp`), rétention 30/90/365j recommandée.
+- → **Managed DB backups** - si tu passes par Digital Ocean Managed Database, AWS RDS, PlanetScale, Supabase, Neon… ils font les snapshots automatiques (PITR) pour toi sans code à écrire.
 - ⚠ **Pas de backup automatique** actuellement. Avant production : scheduler un `mysqldump` quotidien vers un stockage externe (pas sur le même serveur).
 
 ### Plan de Disaster Recovery (DR)
 
 Un vrai DR plan n'est pas encore documenté. Squelette à remplir avant de signer des SLA :
 
-- ⚠ **RTO (Recovery Time Objective)** — à définir (ex : 4h).
-- ⚠ **RPO (Recovery Point Objective)** — à définir (ex : perte max de 1h de données = backup horaire).
-- ✓ **[INCIDENT_RUNBOOK.md](INCIDENT_RUNBOOK.md)** — runbook d'astreinte : classification de sévérité (SEV1/2/3), rôles pendant un incident, playbooks par scénario (site down, DB corrompue, fuite inter-tenant, credentials compromis, emails KO, cron mort, DomPDF, factures incohérentes, login, cache/queue, GitHub), restauration depuis backup (3 scénarios), communication clients (templates), template de postmortem, commandes rapides.
-- ⚠ **Postmortems** — modèle de rapport post-incident (cause, impact, actions correctives).
-- ⚠ **Contacts d'astreinte** — qui appeler à 3h du matin.
-- ⚠ **Testing DR** — une restauration complète depuis backup à tester au moins 1× par trimestre.
+- ⚠ **RTO (Recovery Time Objective)** - à définir (ex : 4h).
+- ⚠ **RPO (Recovery Point Objective)** - à définir (ex : perte max de 1h de données = backup horaire).
+- ✓ **[INCIDENT_RUNBOOK.md](INCIDENT_RUNBOOK.md)** - runbook d'astreinte : classification de sévérité (SEV1/2/3), rôles pendant un incident, playbooks par scénario (site down, DB corrompue, fuite inter-tenant, credentials compromis, emails KO, cron mort, DomPDF, factures incohérentes, login, cache/queue, GitHub), restauration depuis backup (3 scénarios), communication clients (templates), template de postmortem, commandes rapides.
+- ⚠ **Postmortems** - modèle de rapport post-incident (cause, impact, actions correctives).
+- ⚠ **Contacts d'astreinte** - qui appeler à 3h du matin.
+- ⚠ **Testing DR** - une restauration complète depuis backup à tester au moins 1× par trimestre.
 
 ### Environnements
 
 - ✓ **`.env` séparé** par environnement (local / staging / production).
 - ✓ **`APP_ENV` & `APP_DEBUG`** togglables (debug désactivé auto en prod bloque l'affichage de stack traces).
-- ✓ **Secrets chiffrés** — tokens GitHub, credentials projets, env projets, secrets 2FA, PIN financier : tout est `encrypted` cast côté Eloquent, jamais en clair même en cas de dump BDD volé.
-- → **Config secrets manager** — AWS Secrets Manager / Doppler / 1Password Secrets Automation recommandé au lieu de `.env` en clair sur le serveur.
+- ✓ **Secrets chiffrés** - tokens GitHub, credentials projets, env projets, secrets 2FA, PIN financier : tout est `encrypted` cast côté Eloquent, jamais en clair même en cas de dump BDD volé.
+- → **Config secrets manager** - AWS Secrets Manager / Doppler / 1Password Secrets Automation recommandé au lieu de `.env` en clair sur le serveur.
 
 ### Performance
 
@@ -407,16 +407,16 @@ Un vrai DR plan n'est pas encore documenté. Squelette à remplir avant de signe
 - ✓ **Lazy loading images** natif HTML.
 - ✓ **Vite code splitting** côté front, chunks séparés.
 - ✓ **Indexes DB** sur toutes les FK, colonnes de recherche (email, status, admin_id, projet_id).
-- → **Redis / Memcached** — driver cache & session à switcher en prod (actuellement `file` / `database`).
+- → **Redis / Memcached** - driver cache & session à switcher en prod (actuellement `file` / `database`).
 - → **CDN** (Cloudflare / BunnyCDN) pour assets statiques.
-- → **Queue worker** (Horizon si Redis) pour emails et jobs lourds — actuellement queue=sync en dev.
+- → **Queue worker** (Horizon si Redis) pour emails et jobs lourds - actuellement queue=sync en dev.
 
 ### Résumé production-readiness
 
 | Domaine | État | Avant mise en prod (usage interne NA Innovations) |
 |---|---|---|
 | Tests automatisés | ✓ 81 tests | Brancher CI GitHub Actions (1h) |
-| Pages d'erreur | ✓ brandées | — |
+| Pages d'erreur | ✓ brandées | - |
 | Logs | ✓ fichier | Ajouter le DSN Sentry dans `.env` |
 | Déploiement | ✓ checklist | Choisir un hébergeur (Forge / Ploi / VPS perso) |
 | Rollback | ✓ migrate:rollback | Scripter `rollback.sh` (optionnel) |
@@ -430,11 +430,11 @@ Un vrai DR plan n'est pas encore documenté. Squelette à remplir avant de signe
 
 *Document généré au stade actuel du développement. À mettre à jour au fil des itérations.*
 
-*Plateforme interne NA Innovations — pas de roadmap SaaS commerciale.*
+*Plateforme interne NA Innovations - pas de roadmap SaaS commerciale.*
 
 ---
 
-# Session d'intégration — Avril 2026
+# Session d'intégration - Avril 2026
 
 Cette section documente le périmètre exact traité lors de la session d'audit et d'intégration : **ce qui est 100% opérationnel**, **ce qui est à moitié terminé / nécessite une action de ta part**, et **ce qui a été sciemment exclu**.
 
@@ -446,7 +446,7 @@ Objectif de la session : **combler les manques sauf paiement en ligne**, et uniq
 
 ---
 
-## ✅ Intégré — totalement opérationnel
+## ✅ Intégré - totalement opérationnel
 
 ### 1. Coût dev réel
 
@@ -480,9 +480,9 @@ Objectif de la session : **combler les manques sauf paiement en ligne**, et uniq
 **Quoi** : dump MySQL quotidien + archive du code (hors vendor/node_modules) vers le disque local.
 
 **Plannings** :
-- `backup:clean` — 02:30 — nettoie les vieux backups selon la rétention
-- `backup:run` — 03:00 — crée le nouveau backup (testé : 39 KB DB-only → OK)
-- `backup:monitor` — 10:00 — alerte si un backup manque
+- `backup:clean` - 02:30 - nettoie les vieux backups selon la rétention
+- `backup:run` - 03:00 - crée le nouveau backup (testé : 39 KB DB-only → OK)
+- `backup:monitor` - 10:00 - alerte si un backup manque
 
 **Notification email** : en cas d'échec, envoi automatique à `BACKUP_NOTIFY_EMAIL` (à définir dans `.env`).
 
@@ -525,12 +525,12 @@ Objectif de la session : **combler les manques sauf paiement en ligne**, et uniq
 
 **Data model** :
 - Table `project_deliverables` (title, description, is_completed, completed_by, sort_order, created_by)
-- Flag `deliverables_checklist_enabled` sur `users` (default false) — exposé dans `auth.user`
+- Flag `deliverables_checklist_enabled` sur `users` (default false) - exposé dans `auth.user`
 
 **3 modes** (composant React unique `DeliverablesChecklist.tsx`) :
-- `admin` — CRUD complet : ajouter, éditer, supprimer, cocher/décocher
-- `dev` — read-only + cocher/décocher (si flag activé par l'admin)
-- `dev-disabled` — affichage passif avec message "contactez un admin"
+- `admin` - CRUD complet : ajouter, éditer, supprimer, cocher/décocher
+- `dev` - read-only + cocher/décocher (si flag activé par l'admin)
+- `dev-disabled` - affichage passif avec message "contactez un admin"
 
 **Affichage** : progress bar automatique (x/y complétés, %) + audit (qui a complété quoi).
 
@@ -592,7 +592,7 @@ Objectif de la session : **combler les manques sauf paiement en ligne**, et uniq
 
 ---
 
-### 8. Dashboard rentabilité — `/admin/profitability`
+### 8. Dashboard rentabilité - `/admin/profitability`
 
 **Quoi** : page admin dédiée qui agrège toute la donnée financière en une vue claire.
 
@@ -622,11 +622,11 @@ Objectif de la session : **combler les manques sauf paiement en ligne**, et uniq
 
 ---
 
-### 9. WhatsApp — approche simple (sans API)
+### 9. WhatsApp - approche simple (sans API)
 
 **Quoi** : composant React `WhatsAppButton` qui ouvre `https://wa.me/<phone>?text=<message>` dans un nouvel onglet. L'admin tape ensuite "envoyer" manuellement dans WhatsApp.
 
-**Zéro setup, zéro coût, zéro compte business** — juste un lien deep link.
+**Zéro setup, zéro coût, zéro compte business** - juste un lien deep link.
 
 **Features du composant** :
 - Auto-normalise les numéros belges : `+32 490 22 19 12` / `0490221912` / `32490221912` → tous fonctionnels.
@@ -669,11 +669,11 @@ Objectif de la session : **combler les manques sauf paiement en ligne**, et uniq
 
 **Fichier** : [INCIDENT_RUNBOOK.md](INCIDENT_RUNBOOK.md)
 
-**À compléter** : contacts d'astreinte (téléphones, SLA hébergeur / registrar / SMTP) — à remplir avant mise en prod.
+**À compléter** : contacts d'astreinte (téléphones, SLA hébergeur / registrar / SMTP) - à remplir avant mise en prod.
 
 ---
 
-## ⚠️ À moitié — nécessite une action de ta part
+## ⚠️ À moitié - nécessite une action de ta part
 
 ### Sentry (error monitoring)
 
@@ -681,12 +681,12 @@ Objectif de la session : **combler les manques sauf paiement en ligne**, et uniq
 
 **Ce qui est fait** :
 - Package `sentry/sentry-laravel` installé.
-- Exception handler relié (`app/Exceptions/Handler.php`) — capture automatique de toutes les exceptions non gérées.
+- Exception handler relié (`app/Exceptions/Handler.php`) - capture automatique de toutes les exceptions non gérées.
 - `config/sentry.php` publié.
 - `.env.example` enrichi : `SENTRY_LARAVEL_DSN=`, `SENTRY_TRACES_SAMPLE_RATE=0.0`.
 - **No-op gracieux** si DSN vide → ne plante pas en prod si tu oublies.
 
-**À faire** (2 minutes, 100% gratuit — 5000 erreurs/mois) :
+**À faire** (2 minutes, 100% gratuit - 5000 erreurs/mois) :
 1. Créer un compte sur [sentry.io](https://sentry.io) (gratuit).
 2. Créer un projet type Laravel.
 3. Copier le DSN (format `https://xxx@yyy.ingest.sentry.io/zzz`).
@@ -712,7 +712,7 @@ Renseigner `BACKUP_NOTIFY_EMAIL` dans `.env` pour recevoir les alertes d'échec.
 
 ---
 
-## ❌ Skippé exprès — non intégré volontairement
+## ❌ Skippé exprès - non intégré volontairement
 
 ### Paiement en ligne (Stripe / Mollie)
 
@@ -738,16 +738,16 @@ Renseigner `BACKUP_NOTIFY_EMAIL` dans `.env` pour recevoir les alertes d'échec.
 
 ---
 
-## 📋 Audit gaps — non traités (ni intégrés, ni skippés explicitement)
+## 📋 Audit gaps - non traités (ni intégrés, ni skippés explicitement)
 
 Points soulevés dans l'audit initial mais considérés comme secondaires par rapport à ce qui a été traité. À attaquer dans une future session si besoin :
 
-- **Intégration Google Calendar** — sync deadlines projet / milestones.
-- **CI/CD** — GitHub Actions pour tests + deploy auto.
-- **Couverture de tests** — étendre la suite existante (~1400 lignes) vers un meilleur coverage.
-- **Upload backups distant** — actuellement en local uniquement. Basculer sur S3 / Backblaze B2 / DigitalOcean Spaces quand nécessaire (modifier `config/backup.php` → `disks`).
-- **Versioning des mises à jour de TOS / CGV** — pas traité, à prévoir si activité SaaS publique.
-- **Rentabilité avancée** — forecasting, burn rate par projet, prévisionnel de marge. Le dashboard actuel est descriptif, pas prédictif.
+- **Intégration Google Calendar** - sync deadlines projet / milestones.
+- **CI/CD** - GitHub Actions pour tests + deploy auto.
+- **Couverture de tests** - étendre la suite existante (~1400 lignes) vers un meilleur coverage.
+- **Upload backups distant** - actuellement en local uniquement. Basculer sur S3 / Backblaze B2 / DigitalOcean Spaces quand nécessaire (modifier `config/backup.php` → `disks`).
+- **Versioning des mises à jour de TOS / CGV** - pas traité, à prévoir si activité SaaS publique.
+- **Rentabilité avancée** - forecasting, burn rate par projet, prévisionnel de marge. Le dashboard actuel est descriptif, pas prédictif.
 
 ---
 
@@ -770,7 +770,7 @@ Toutes appliquées en développement. À déployer en prod via `php artisan migr
 
 ## Packages ajoutés à composer.json
 
-- `spatie/laravel-backup` `^9.3` — backups automatiques
-- `sentry/sentry-laravel` `^4.25` — monitoring erreurs prod
+- `spatie/laravel-backup` `^9.3` - backups automatiques
+- `sentry/sentry-laravel` `^4.25` - monitoring erreurs prod
 
 Aucun autre package ajouté pendant la session (respecte la règle CLAUDE.md "pas d'installation externe sauf demande explicite").

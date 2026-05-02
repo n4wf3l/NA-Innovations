@@ -520,7 +520,7 @@ class RealDataSeeder extends Seeder
                 'lieu'                  => 'Brussels',
                 'developer_id'          => $nawfel->id,
                 'status'                => 'in_progress',
-                'description'           => "Cabs — Complete taxi fleet management SaaS. Real-time GPS tracking of all drivers, daily/monthly/annual cash reports, live shift monitoring, driver profiles, fleet analytics. Built for the Belgian and Dutch taxi market, compatible with Uber and Heetch. Mobile app for drivers + desktop dashboard for owners.\nTeam: Nawfel Ajari (lead + admin), Kristian Vasiaj (backend), Ismael Bouzrouti (dev).\nBusiness model: B2B subscription — Starter 99 EUR/month (max 5 vehicles), Premium 149.99 EUR/month (GPS + advanced features), Enterprise on request.",
+                'description'           => "Cabs - Complete taxi fleet management SaaS. Real-time GPS tracking of all drivers, daily/monthly/annual cash reports, live shift monitoring, driver profiles, fleet analytics. Built for the Belgian and Dutch taxi market, compatible with Uber and Heetch. Mobile app for drivers + desktop dashboard for owners.\nTeam: Nawfel Ajari (lead + admin), Kristian Vasiaj (backend), Ismael Bouzrouti (dev).\nBusiness model: B2B subscription - Starter 99 EUR/month (max 5 vehicles), Premium 149.99 EUR/month (GPS + advanced features), Enterprise on request.",
                 'start_date'            => '2025-09-01',
                 'deadline'              => '2026-06-01',
                 'budget'                => 0,
@@ -1733,7 +1733,7 @@ Website: nainnovations.be');
         Setting::set('chatbot.enabled', 'true');
 
         // =====================================================================
-        // RWDM ACADEMY — 14th project (internship, no revenue)
+        // RWDM ACADEMY - 14th project (internship, no revenue)
         // =====================================================================
 
         $rwdmClient = User::updateOrCreate(
@@ -1780,7 +1780,7 @@ Website: nainnovations.be');
         );
 
         // =====================================================================
-        // PORTFOLIO — Published projects for the landing page
+        // PORTFOLIO - Published projects for the landing page
         // =====================================================================
 
         $portfolioData = [
@@ -1861,7 +1861,7 @@ Website: nainnovations.be');
                 'category' => 'Mobile Application',
                 'live_url' => null,
                 'is_featured' => false,
-                'is_published' => false, // Not started yet — planning phase
+                'is_published' => false, // Not started yet - planning phase
             ],
             [
                 'project' => $projVericore,
@@ -1888,7 +1888,7 @@ Website: nainnovations.be');
                 'category' => 'SaaS Platform',
                 'live_url' => null,
                 'is_featured' => true,
-                'is_published' => false, // Own product — shown in /products only
+                'is_published' => false, // Own product - shown in /products only
             ],
         ];
 
@@ -1915,7 +1915,7 @@ Website: nainnovations.be');
         }
 
         // =====================================================================
-        // BLOG POSTS — 3 articles for the landing page
+        // BLOG POSTS - 3 articles for the landing page
         // =====================================================================
 
         $post = new \App\Models\Post;

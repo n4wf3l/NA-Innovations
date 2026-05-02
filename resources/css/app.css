@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Kanban — hide native scrollbar on the real container; the sticky ghost below handles it */
+/* Kanban - hide native scrollbar on the real container; the sticky ghost below handles it */
 .kanban-scroll-hidden {
     scrollbar-width: none;
 }
@@ -11,8 +11,8 @@
     display: none;
 }
 
-/* Sticky ghost scrollbar — fixed at the bottom of the viewport so it's always visible */
-/* Custom-rendered horizontal scrollbar — we draw the track and thumb
+/* Sticky ghost scrollbar - fixed at the bottom of the viewport so it's always visible */
+/* Custom-rendered horizontal scrollbar - we draw the track and thumb
    ourselves with a colored div, because native ::-webkit-scrollbar is
    unreliable across platforms (especially Windows). */
 .kanban-ghost-scroll {
@@ -97,7 +97,7 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Theme transition — circular reveal animation */
+/* Theme transition - circular reveal animation */
 ::view-transition-old(root),
 ::view-transition-new(root) {
     animation: none;
@@ -110,7 +110,7 @@
     z-index: 9999;
 }
 
-/* Dashboard layouts handle their own scroll — lock body only when a layout is active */
+/* Dashboard layouts handle their own scroll - lock body only when a layout is active */
 html.dashboard-layout, html.dashboard-layout body {
     overflow: hidden;
     height: 100%;
@@ -269,7 +269,7 @@ body.splash-done .topbar-animate {
     color: #f3f4f6 !important; /* gray-100 */
 }
 
-/* Links in prose content — visible in both light and dark, override inline styles */
+/* Links in prose content - visible in both light and dark, override inline styles */
 .prose a,
 .prose a[href],
 .prose a[style] {
@@ -393,7 +393,7 @@ body.splash-done .topbar-animate {
     to { width: 0%; }
 }
 
-/* Modern scrollbar for main content — appears on hover, ultra smooth */
+/* Modern scrollbar for main content - appears on hover, ultra smooth */
 .custom-scroll {
     scrollbar-width: none; /* Firefox: hide default */
     -ms-overflow-style: none; /* IE: hide default */
@@ -402,7 +402,7 @@ body.splash-done .topbar-animate {
 }
 .custom-scroll::-webkit-scrollbar { width: 0; } /* Hide by default */
 
-/* Show a custom overlay scrollbar via a pseudo-approach won't work — use thin visible approach */
+/* Show a custom overlay scrollbar via a pseudo-approach won't work - use thin visible approach */
 .custom-scroll {
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;
@@ -427,7 +427,7 @@ body.splash-done .topbar-animate {
 .dark .custom-scroll:hover::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
 .dark .custom-scroll:hover { scrollbar-color: rgba(255,255,255,0.15) transparent; }
 
-/* Page-level scrollbar — dark theme on the landing page (and any html.dark) */
+/* Page-level scrollbar - dark theme on the landing page (and any html.dark) */
 html.dark {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.18) transparent;

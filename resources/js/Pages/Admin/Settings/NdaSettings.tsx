@@ -205,7 +205,7 @@ export default function NdaSettings({ ndaMode, ndaText, ndaPdfPath }: Props) {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12H9.75m3 0H9.75m3-6.75H9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                     <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t('Glissez votre PDF ici ou cliquez pour sélectionner')}</p>
-                                    <p className="text-xs text-gray-400">{t('PDF uniquement — max 10 Mo')}</p>
+                                    <p className="text-xs text-gray-400">{t('PDF uniquement - max 10 Mo')}</p>
                                 </div>
                             )}
                             <input id="nda-pdf-input" type="file" accept=".pdf" onChange={uploadPdf} className="hidden" />

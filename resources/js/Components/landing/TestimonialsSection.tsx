@@ -19,15 +19,32 @@ export default function TestimonialsSection({ testimonials, sectionRef, isVisibl
     const { t } = useTranslation();
 
     return (
-        <section id="section-testimonials" className="py-20 bg-gray-900 relative overflow-hidden scroll-mt-2" ref={sectionRef}>
+        <section
+            id="section-testimonials"
+            className="bg-gray-900 relative scroll-mt-[-16px] flex flex-col"
+            ref={sectionRef}
+            style={{
+                minHeight: '100svh',
+                paddingTop: 'clamp(2rem, 6vh, 6rem)',
+                paddingBottom: 'clamp(2rem, 6vh, 6rem)',
+                justifyContent: 'safe center',
+            }}
+        >
             <div className="absolute inset-0 opacity-[0.02]" aria-hidden="true">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(94,234,212,0.4),transparent_50%)]" />
             </div>
-            <div className="max-w-6xl mx-auto px-4 relative z-10">
-                <div className="text-center mb-16">
-                    <h2 className="text-7xl md:text-9xl font-semibold text-white bebas" style={{ letterSpacing: '2px' }}>{t('What Our Clients Say')}</h2>
-                    <hr className="mt-6 border-white/10 max-w-md mx-auto" />
-                    <OriginalLanguageBadge light className="mt-4 justify-center" />
+            <div className="max-w-6xl mx-auto px-4 relative z-10 w-full">
+                <div className="text-center" style={{ marginBottom: 'clamp(1rem, 3vh, 4rem)' }}>
+                    <h2
+                        className="font-semibold text-white bebas"
+                        style={{ letterSpacing: '2px', fontSize: 'clamp(2.5rem, min(10vw, 12vh), 8rem)', lineHeight: 1.2 }}
+                    >
+                        {t('What Our Clients Say')}
+                    </h2>
+                    <hr className="border-white/10 max-w-md mx-auto" style={{ marginTop: 'clamp(0.5rem, 1.5vh, 1.5rem)' }} />
+                    <div style={{ marginTop: 'clamp(0.5rem, 1.5vh, 1rem)' }}>
+                        <OriginalLanguageBadge light className="justify-center" />
+                    </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {testimonials.map((testimonial, i) => (

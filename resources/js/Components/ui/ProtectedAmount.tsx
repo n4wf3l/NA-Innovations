@@ -59,14 +59,14 @@ export default function ProtectedAmount({ amount, className = '' }: ProtectedAmo
 
     useEffect(() => {
         if (financialUnlocked && !prevUnlocked.current) {
-            // Just unlocked — animate reveal
+            // Just unlocked - animate reveal
             setAnimState('reveal');
             const t = setTimeout(() => setAnimState('idle'), 600);
             prevUnlocked.current = true;
             return () => clearTimeout(t);
         }
         if (!financialUnlocked && prevUnlocked.current) {
-            // Just locked — animate hide
+            // Just locked - animate hide
             setAnimState('hide');
             const t = setTimeout(() => { setAnimState('idle'); prevUnlocked.current = false; }, 400);
             return () => clearTimeout(t);

@@ -99,7 +99,7 @@ export default function ProjectEdit({ project, clients, developers, leads, proje
         next_milestone_date: toDateInput(project.next_milestone_date),
     });
 
-    // Useful links editor state — array of {label,url}
+    // Useful links editor state - array of {label,url}
     const [linksList, setLinksList] = useState<{ label: string; url: string }[]>(
         Array.isArray(project.useful_links) ? project.useful_links : []
     );
@@ -404,7 +404,7 @@ export default function ProjectEdit({ project, clients, developers, leads, proje
 
                     <div className="space-y-2 mb-4">
                         {coOwners.length === 0 && (
-                            <p className="text-xs text-gray-400 italic">{t('Aucun propriétaire — situation anormale.')}</p>
+                            <p className="text-xs text-gray-400 italic">{t('Aucun propriétaire - situation anormale.')}</p>
                         )}
                         {coOwners.map(owner => (
                             <div key={owner.id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-700">
@@ -443,7 +443,7 @@ export default function ProjectEdit({ project, clients, developers, leads, proje
                                 onChange={e => setCoOwnerPick(e.target.value)}
                                 className={inputClass + ' flex-1'}
                             >
-                                <option value="">{t('— Sélectionner un admin à ajouter —')}</option>
+                                <option value="">{t('- Sélectionner un admin à ajouter -')}</option>
                                 {otherAdmins.map(a => (
                                     <option key={a.id} value={a.id}>{a.name} ({a.email})</option>
                                 ))}

@@ -150,7 +150,7 @@ export default function TwoFactorSetup({ enabled: initialEnabled }: Props) {
                     </div>
                 )}
 
-                {/* IDLE — show enable/disable button */}
+                {/* IDLE - show enable/disable button */}
                 {step === 'idle' && (
                     <div>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
@@ -180,7 +180,7 @@ export default function TwoFactorSetup({ enabled: initialEnabled }: Props) {
                     </div>
                 )}
 
-                {/* SETUP — show QR code */}
+                {/* SETUP - show QR code */}
                 {step === 'setup' && (
                     <div className="space-y-5">
                         <div className="flex flex-col items-center">
@@ -232,7 +232,7 @@ export default function TwoFactorSetup({ enabled: initialEnabled }: Props) {
                     </div>
                 )}
 
-                {/* RECOVERY — show recovery codes after enabling */}
+                {/* RECOVERY - show recovery codes after enabling */}
                 {step === 'recovery' && (
                     <div className="space-y-4">
                         <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50">
@@ -271,7 +271,7 @@ export default function TwoFactorSetup({ enabled: initialEnabled }: Props) {
                     </div>
                 )}
 
-                {/* DISABLE — ask for code to confirm */}
+                {/* DISABLE - ask for code to confirm */}
                 {step === 'disable' && (
                     <div className="space-y-4">
                         <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">

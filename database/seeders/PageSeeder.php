@@ -18,10 +18,10 @@ class PageSeeder extends Seeder
 
 <h3>How It Works</h3>
 <ol>
-<li><strong>Submit a Client</strong> — Use the "Submit a Client" button to refer someone who needs web or mobile development services.</li>
-<li><strong>We Reach Out</strong> — Our team contacts the client within 24 hours with a professional proposal.</li>
-<li><strong>Project Starts</strong> — If the client accepts, the project is assigned to a developer.</li>
-<li><strong>You Get Paid</strong> — Your commission is calculated on each payment we receive from the client.</li>
+<li><strong>Submit a Client</strong> - Use the "Submit a Client" button to refer someone who needs web or mobile development services.</li>
+<li><strong>We Reach Out</strong> - Our team contacts the client within 24 hours with a professional proposal.</li>
+<li><strong>Project Starts</strong> - If the client accepts, the project is assigned to a developer.</li>
+<li><strong>You Get Paid</strong> - Your commission is calculated on each payment we receive from the client.</li>
 </ol>
 
 <h3>Commission Structure</h3>
@@ -34,9 +34,9 @@ class PageSeeder extends Seeder
 
 <h3>What Counts as a Referral</h3>
 <ul>
-<li>The client must be <strong>new</strong> — not an existing client of NA Innovations.</li>
+<li>The client must be <strong>new</strong> - not an existing client of NA Innovations.</li>
 <li>The client must be submitted through the platform (not informally).</li>
-<li>The referral is attributed to you for <strong>12 months</strong> — any project from that client within 12 months earns you commission.</li>
+<li>The referral is attributed to you for <strong>12 months</strong> - any project from that client within 12 months earns you commission.</li>
 </ul>
 
 <h3>Payment Methods</h3>
@@ -50,7 +50,7 @@ class PageSeeder extends Seeder
 <h3>Important Rules</h3>
 <ul>
 <li>You cannot refer yourself or your own company.</li>
-<li>Commission is only earned on <strong>paid</strong> invoices — if the client doesn\'t pay, no commission is due.</li>
+<li>Commission is only earned on <strong>paid</strong> invoices - if the client doesn\'t pay, no commission is due.</li>
 <li>If a project is cancelled after partial payment, commission is earned only on the amount actually paid.</li>
 <li>NA Innovations reserves the right to modify commission rates with 30 days notice.</li>
 </ul>',

@@ -22,11 +22,11 @@ return new class extends Migration
 <p>Voici ce qui s'est passé sur ta plateforme le <strong>{{ date }}</strong> :</p>
 <ul>
     <li><strong>{{ pending_quotes }}</strong> devis en attente (envoyés ou consultés)</li>
-    <li><strong>{{ overdue_invoices }}</strong> factures en retard — <strong>{{ overdue_amount }} €</strong></li>
+    <li><strong>{{ overdue_invoices }}</strong> factures en retard - <strong>{{ overdue_amount }} €</strong></li>
     <li><strong>{{ projects_in_review }}</strong> projets passés en review cette semaine</li>
     <li><strong>{{ services_expiring_7d }}</strong> services à renouveler dans les 7 jours</li>
     <li><strong>{{ new_leads_24h }}</strong> nouveaux leads (24 dernières heures)</li>
-    <li><strong>{{ payments_24h_count }}</strong> paiements reçus hier — <strong>{{ payments_24h_amount }} €</strong></li>
+    <li><strong>{{ payments_24h_count }}</strong> paiements reçus hier - <strong>{{ payments_24h_amount }} €</strong></li>
     <li><strong>{{ commissions_pending }}</strong> commissions en attente</li>
 </ul>
 <p><a href="{{ dashboard_url }}"><strong>Ouvrir le dashboard →</strong></a></p>
@@ -38,11 +38,11 @@ HTML;
 <p>Here's what happened on your platform on <strong>{{ date }}</strong>:</p>
 <ul>
     <li><strong>{{ pending_quotes }}</strong> quotes awaiting (sent or viewed)</li>
-    <li><strong>{{ overdue_invoices }}</strong> overdue invoices — <strong>{{ overdue_amount }} €</strong></li>
+    <li><strong>{{ overdue_invoices }}</strong> overdue invoices - <strong>{{ overdue_amount }} €</strong></li>
     <li><strong>{{ projects_in_review }}</strong> projects moved to review this week</li>
     <li><strong>{{ services_expiring_7d }}</strong> services expiring within 7 days</li>
     <li><strong>{{ new_leads_24h }}</strong> new leads (last 24 hours)</li>
-    <li><strong>{{ payments_24h_count }}</strong> payments received yesterday — <strong>{{ payments_24h_amount }} €</strong></li>
+    <li><strong>{{ payments_24h_count }}</strong> payments received yesterday - <strong>{{ payments_24h_amount }} €</strong></li>
     <li><strong>{{ commissions_pending }}</strong> commissions pending</li>
 </ul>
 <p><a href="{{ dashboard_url }}"><strong>Open the dashboard →</strong></a></p>
@@ -54,11 +54,11 @@ HTML;
 <p>Dit is wat er op <strong>{{ date }}</strong> gebeurd is op je platform:</p>
 <ul>
     <li><strong>{{ pending_quotes }}</strong> offertes in behandeling (verzonden of bekeken)</li>
-    <li><strong>{{ overdue_invoices }}</strong> facturen over tijd — <strong>{{ overdue_amount }} €</strong></li>
+    <li><strong>{{ overdue_invoices }}</strong> facturen over tijd - <strong>{{ overdue_amount }} €</strong></li>
     <li><strong>{{ projects_in_review }}</strong> projecten in review deze week</li>
     <li><strong>{{ services_expiring_7d }}</strong> diensten vervallen binnen 7 dagen</li>
     <li><strong>{{ new_leads_24h }}</strong> nieuwe leads (laatste 24 uur)</li>
-    <li><strong>{{ payments_24h_count }}</strong> betalingen ontvangen gisteren — <strong>{{ payments_24h_amount }} €</strong></li>
+    <li><strong>{{ payments_24h_count }}</strong> betalingen ontvangen gisteren - <strong>{{ payments_24h_amount }} €</strong></li>
     <li><strong>{{ commissions_pending }}</strong> commissies in afwachting</li>
 </ul>
 <p><a href="{{ dashboard_url }}"><strong>Open het dashboard →</strong></a></p>
@@ -69,19 +69,19 @@ HTML;
             [
                 'locale' => 'fr',
                 'name' => 'Digest quotidien admin',
-                'subject' => 'Ton digest NA Innovations — {{ date }}',
+                'subject' => 'Ton digest NA Innovations - {{ date }}',
                 'body' => $bodyFr,
             ],
             [
                 'locale' => 'en',
                 'name' => 'Admin daily digest',
-                'subject' => 'Your NA Innovations digest — {{ date }}',
+                'subject' => 'Your NA Innovations digest - {{ date }}',
                 'body' => $bodyEn,
             ],
             [
                 'locale' => 'nl',
                 'name' => 'Admin dagelijkse digest',
-                'subject' => 'Je NA Innovations digest — {{ date }}',
+                'subject' => 'Je NA Innovations digest - {{ date }}',
                 'body' => $bodyNl,
             ],
         ];

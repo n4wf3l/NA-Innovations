@@ -60,7 +60,7 @@ export default function Services({ services }: Props) {
     useScrollReveal();
 
     return (
-        <PublicLayout title="Services" description="Web development, mobile apps, SaaS platforms — end-to-end digital solutions tailored to your business needs.">
+        <PublicLayout title="Services" description="Web development, mobile apps, SaaS platforms - end-to-end digital solutions tailored to your business needs.">
             {/* Hero Section */}
             <section className="bg-gray-900 relative overflow-hidden py-32">
                 <div aria-hidden="true">

@@ -54,7 +54,7 @@ class InvoiceService
         if (!$wasPaid && $invoice->status === 'paid') {
             WorkflowService::onInvoiceFullyPaid($invoice);
         } else {
-            // Partial or out-of-sequence payment — notify admins in-app so they don't miss it
+            // Partial or out-of-sequence payment - notify admins in-app so they don't miss it
             NotificationService::sendToAdmins('payment-received-admin', [
                 'invoice_number' => $invoice->invoice_number,
                 'client_name' => $invoice->client_name,

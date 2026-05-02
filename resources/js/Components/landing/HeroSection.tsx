@@ -82,7 +82,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
     const navActiveColor = navOnLight && !isDark ? 'text-teal-600' : 'text-teal-300';
 
     return (
-        <div id="hero-section" data-snap="section" className="flex flex-col bg-gray-900 relative overflow-hidden" style={{ minHeight: '100vh' }}>
+        <div id="hero-section" data-snap="section" className="flex flex-col bg-gray-900 relative overflow-hidden" style={{ height: '100svh', minHeight: '600px' }}>
             {/* Animated background words */}
             <div aria-hidden="true">
                 <span className="hero-word hero-word-1">DEVELOPMENT</span>
@@ -95,7 +95,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                 <span className="hero-word hero-word-8">CODE</span>
             </div>
 
-            {/* Navbar — Top (static in hero) */}
+            {/* Navbar - Top (static in hero) */}
             <div className={`flex justify-between items-center self-center w-full max-w-[1298px] px-4 py-5 relative z-20 transition-opacity duration-500 ${scrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                 <Link href="/" className="flex items-center gap-3">
                     <img src="/white-logo-small.png" alt={branding.company_name} className="h-10 w-auto" />
@@ -139,7 +139,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                 </div>
             </div>
 
-            {/* Mobile menu — Slide-in drawer */}
+            {/* Mobile menu - Slide-in drawer */}
             {mobileMenuRender && (
                 <div className="md:hidden fixed inset-0 z-[9998]">
                     <style>{`
@@ -364,7 +364,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                 </div>
             )}
 
-            {/* Mini Sidebar — slides in from left on scroll */}
+            {/* Mini Sidebar - slides in from left on scroll */}
             <div className={`hidden md:flex fixed left-0 top-1/2 -translate-y-1/2 z-[998] flex-col items-center gap-1.5 py-5 px-2 bg-gray-900/90 dark:bg-gray-950/90 backdrop-blur-xl rounded-r-2xl border border-l-0 border-white/10 shadow-2xl transition-all duration-700 ${
                 scrolled ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
             }`}>
@@ -441,7 +441,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                 <button onClick={() => setShowLangModal(true)} className="group relative w-11 h-11 flex items-center justify-center rounded-xl text-gray-500 hover:text-teal-300 hover:bg-white/10 transition-all duration-200">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802" /></svg>
                     <span className="absolute left-full ml-3 px-4 py-2 bg-gray-900 text-white text-base font-bold rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-200 pointer-events-none shadow-xl bebas" style={{ letterSpacing: '2px' }}>
-                        {locale.toUpperCase()} — {t('Language')}
+                        {locale.toUpperCase()} - {t('Language')}
                     </span>
                 </button>
             </div>
@@ -463,20 +463,32 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
             `}</style>
 
             {/* Hero content */}
-            <div className="flex-1 flex flex-col items-center justify-center relative px-4 py-12">
-                <div className="w-full max-w-[1100px] border border-white/20 p-8 md:p-14 relative z-10 hero-border-anim">
-                    {/* No language badge here — hero text is translated via t() */}
+            <div className="flex-1 flex flex-col items-center justify-center relative px-4 min-h-0" style={{ paddingTop: 'clamp(1rem, 3vh, 3rem)', paddingBottom: 'clamp(1rem, 3vh, 3rem)' }}>
+                <div className="w-full max-w-[1100px] border border-white/20 relative z-10 hero-border-anim" style={{ padding: 'clamp(1.25rem, 3.5vh, 3.5rem)' }}>
+                    {/* No language badge here - hero text is translated via t() */}
                     <div className="text-sm md:text-base lg:text-xl font-medium text-neutral-400 bebas hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d1" style={{ letterSpacing: '2px' }}>
                         {heroSection?.subtitle || t('Web Development, Mobile & Software Solutions')}
                     </div>
-                    <div className="mt-8 text-6xl sm:text-7xl lg:text-8xl font-bold text-white hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d2">
+                    <div
+                        lang={locale}
+                        className="font-bold text-white hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d2"
+                        style={{
+                            marginTop: 'clamp(0.75rem, 2.5vh, 2rem)',
+                            fontSize: 'clamp(2.25rem, min(6vw, 9vh), 5rem)',
+                            lineHeight: 1.05,
+                            textWrap: 'balance',
+                            hyphens: 'auto',
+                            WebkitHyphens: 'auto',
+                            msHyphens: 'auto',
+                        } as React.CSSProperties}
+                    >
                         {heroSection?.title || t('Innovative solutions designed for you.')}
                     </div>
-                    <p className="mt-8 text-sm lg:text-base bebas text-white/60 hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d3" style={{ letterSpacing: '1px' }}>
+                    <p className="text-sm lg:text-base bebas text-white/60 hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d3" style={{ letterSpacing: '1px', marginTop: 'clamp(0.75rem, 2.5vh, 2rem)' }}>
                         {heroSection?.description || t('From idea to application')}
                     </p>
 
-                    <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-6 hero-anim hero-anim-d4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 hero-anim hero-anim-d4" style={{ marginTop: 'clamp(1rem, 3vh, 2.5rem)' }}>
                         <SpinnerLink href="/contact#quote"
                             className="inline-flex items-center gap-3 px-10 py-5 bg-teal-400 text-gray-900 text-xl font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_40px_rgba(94,234,212,0.3)] bebas hero-btn-anim hero-btn-d1"
                             style={{ letterSpacing: '3px' }}>
@@ -503,7 +515,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
 
                 {/* Scroll arrow handled by fixed global ScrollNextButton */}
             </div>
-            {/* Language Modal — Fullscreen */}
+            {/* Language Modal - Fullscreen */}
             {showLangModal && (
                 <div className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-500 ease-out ${langModalClosing ? 'opacity-0' : 'animate-[langFadeIn_0.4s_ease-out]'}`} onClick={() => closeLangModal()}>
                     <style>{`

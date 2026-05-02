@@ -51,8 +51,8 @@ export default function PendingTimeEntries({ entries }: Props) {
                             {entries.data.map(e => (
                                 <tr key={e.id}>
                                     <td className="px-6 py-3 text-gray-700 dark:text-gray-300">{new Date(e.date).toLocaleDateString()}</td>
-                                    <td className="px-6 py-3 text-gray-700 dark:text-gray-300">{e.user?.name || '—'}</td>
-                                    <td className="px-6 py-3 text-gray-700 dark:text-gray-300">{e.project?.nom_societe || '—'}</td>
+                                    <td className="px-6 py-3 text-gray-700 dark:text-gray-300">{e.user?.name || '-'}</td>
+                                    <td className="px-6 py-3 text-gray-700 dark:text-gray-300">{e.project?.nom_societe || '-'}</td>
                                     <td className="px-6 py-3 text-gray-700 dark:text-gray-300">{e.hours}</td>
                                     <td className="px-6 py-3 text-gray-500 dark:text-gray-400 max-w-md truncate">{e.description}</td>
                                     <td className="px-6 py-3 text-right space-x-2">

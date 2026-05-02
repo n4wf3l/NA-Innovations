@@ -95,7 +95,7 @@ export default function PostEdit({ post, categories }: Props) {
 
     return (
         <AdminLayout title={t("Edit Post")} header={t("Edit Post")}>
-            <Head title={`${t("Edit")} — ${post.title}`} />
+            <Head title={`${t("Edit")} - ${post.title}`} />
 
             <div className="mb-6 flex items-center justify-between">
                 <Link href="/admin/posts" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">

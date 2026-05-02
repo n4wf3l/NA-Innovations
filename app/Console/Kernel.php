@@ -40,7 +40,7 @@ class Kernel extends ConsoleKernel
                     'user_id' => $prospect->user_id,
                     'type' => 'prospect_follow_up',
                     'title' => 'Relance : ' . $prospect->name,
-                    'message' => $prospect->notes ? $prospect->name . ' — ' . \Illuminate\Support\Str::limit($prospect->notes, 100) : 'Il est temps de relancer ' . $prospect->name,
+                    'message' => $prospect->notes ? $prospect->name . ' - ' . \Illuminate\Support\Str::limit($prospect->notes, 100) : 'Il est temps de relancer ' . $prospect->name,
                     'action_url' => '/partner/prospects',
                     'is_read' => false,
                 ]);
@@ -71,7 +71,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('backup:run')->dailyAt('03:00')->name('backup-run')->onOneServer();
         $schedule->command('backup:monitor')->dailyAt('10:00')->name('backup-monitor')->onOneServer();
 
-        // Digest quotidien par admin — 09:00 Europe/Brussels
+        // Digest quotidien par admin - 09:00 Europe/Brussels
         $schedule->command('nai:admin-digest')
             ->dailyAt('09:00')
             ->timezone('Europe/Brussels')
@@ -79,7 +79,7 @@ class Kernel extends ConsoleKernel
             ->onOneServer();
 
         // Rappel aux devs qui n'ont pas encodé de temps depuis >=7 jours sur un projet actif
-        // Daily at 09:15 Europe/Brussels — in-app notif uniquement
+        // Daily at 09:15 Europe/Brussels - in-app notif uniquement
         $schedule->call(function () {
             $threshold = now()->subDays(7);
             $devsWithActiveProjects = \App\Models\User::where('role', 'developer')
@@ -131,7 +131,7 @@ class Kernel extends ConsoleKernel
                     'user_id' => $reminder->user_id,
                     'type' => 'reminder',
                     'title' => __('Rappel : relancer :name', ['name' => $reminder->contact_name]),
-                    'message' => $reminder->notes ? $reminder->contact_name . ' — ' . \Illuminate\Support\Str::limit($reminder->notes, 100) : __('Il est temps de relancer :name', ['name' => $reminder->contact_name]),
+                    'message' => $reminder->notes ? $reminder->contact_name . ' - ' . \Illuminate\Support\Str::limit($reminder->notes, 100) : __('Il est temps de relancer :name', ['name' => $reminder->contact_name]),
                     'action_url' => '/partner/reminders',
                     'is_read' => false,
                 ]);
@@ -149,7 +149,7 @@ class Kernel extends ConsoleKernel
                             \Illuminate\Support\Facades\Mail::to($reminder->user->email)->send(new \App\Mail\TemplateMail($subject, $body));
                         }
                     } catch (\Exception $e) {
-                        // Silent fail — don't break the loop
+                        // Silent fail - don't break the loop
                     }
                 }
 

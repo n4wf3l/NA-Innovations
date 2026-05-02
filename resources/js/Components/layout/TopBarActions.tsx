@@ -232,7 +232,7 @@ export default function TopBarActions({ notifications: initialNotifications = []
                 </button>
             )}
 
-            {/* Support Tickets — all roles */}
+            {/* Support Tickets - all roles */}
             {auth.user && (() => {
                 const supportUrl = auth.user.role === 'admin' ? '/admin/support'
                     : auth.user.role === 'client' ? '/client/support'

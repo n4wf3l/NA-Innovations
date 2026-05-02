@@ -25,7 +25,7 @@ class RegistrationTest extends TestCase
             'role' => 'developer',
         ]);
 
-        // User is NOT auto-logged in — redirected to pending approval
+        // User is NOT auto-logged in - redirected to pending approval
         $this->assertGuest();
         $response->assertRedirect(route('pending-approval'));
 

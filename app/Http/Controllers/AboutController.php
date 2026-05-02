@@ -14,7 +14,7 @@ class AboutController extends Controller
         $about = LandingSection::where('section_key', 'about')->first();
 
         $seo = [
-            'title' => Setting::get('seo.about_title', 'À propos — NA Innovations'),
+            'title' => Setting::get('seo.about_title', 'À propos - NA Innovations'),
             'description' => Setting::get('seo.about_description', ''),
         ];
 

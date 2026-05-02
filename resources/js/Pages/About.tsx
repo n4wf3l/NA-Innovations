@@ -81,13 +81,13 @@ export default function About({ about, seo }: Props) {
                                 ) : (
                                     <>
                                         <p>
-                                            <strong className="text-gray-900 dark:text-white">{t('NA Innovations conçoit des produits digitaux sur mesure')}</strong> {t('pour les entreprises qui veulent transformer une idée en réalité — site web, application mobile, SaaS ou logiciel métier.')}
+                                            <strong className="text-gray-900 dark:text-white">{t('NA Innovations conçoit des produits digitaux sur mesure')}</strong> {t('pour les entreprises qui veulent transformer une idée en réalité - site web, application mobile, SaaS ou logiciel métier.')}
                                         </p>
                                         <p>
-                                            <strong className="text-gray-900 dark:text-white">{t('Notre promesse :')}</strong> {t('des solutions optimisées, sécurisées et maintenables, pensées pour générer du résultat business — pas juste « faire un site ».')}
+                                            <strong className="text-gray-900 dark:text-white">{t('Notre promesse :')}</strong> {t('des solutions optimisées, sécurisées et maintenables, pensées pour générer du résultat business - pas juste « faire un site ».')}
                                         </p>
                                         <p>
-                                            <strong className="text-gray-900 dark:text-white">{t('Ce qui nous rend différents :')}</strong> {t('un espace client intégré. Dès la signature, vous ouvrez un compte sur notre plateforme et suivez en direct l\'avancement de votre projet, les livrables, les échanges et la facturation — de A à Z. Zéro zone d\'ombre.')}
+                                            <strong className="text-gray-900 dark:text-white">{t('Ce qui nous rend différents :')}</strong> {t('un espace client intégré. Dès la signature, vous ouvrez un compte sur notre plateforme et suivez en direct l\'avancement de votre projet, les livrables, les échanges et la facturation - de A à Z. Zéro zone d\'ombre.')}
                                         </p>
                                     </>
                                 )}

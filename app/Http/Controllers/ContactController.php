@@ -33,13 +33,13 @@ class ContactController extends Controller
         }
         RateLimiter::hit($key, 3600); // 1 hour window
 
-        // 2. Honeypot check — hidden field "website" must be empty
+        // 2. Honeypot check - hidden field "website" must be empty
         if ($request->filled('website')) {
-            // Bot detected — silently accept but don't process
+            // Bot detected - silently accept but don't process
             return redirect()->back()->with('success', 'Your message has been sent!');
         }
 
-        // 3. Timing check — form must take at least 3 seconds to fill
+        // 3. Timing check - form must take at least 3 seconds to fill
         if ($request->filled('_form_loaded_at')) {
             $loadedAt = (int) $request->input('_form_loaded_at');
             if ($loadedAt > 0 && (time() - $loadedAt) < 3) {
@@ -74,7 +74,7 @@ class ContactController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'message' => 'required|string|max:5000',
-            'website' => 'nullable|max:0', // honeypot — must be empty
+            'website' => 'nullable|max:0', // honeypot - must be empty
         ];
 
         if ($isSimulator) {
@@ -109,7 +109,7 @@ class ContactController extends Controller
         $firstName = $nameParts[0];
         $lastName = $nameParts[1] ?? '';
 
-        // 5. Store attachments on LOCAL disk (not public) — admin downloads via controller
+        // 5. Store attachments on LOCAL disk (not public) - admin downloads via controller
         $attachmentPaths = [];
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
@@ -124,7 +124,7 @@ class ContactController extends Controller
             }
         }
 
-        // 6. Build notes — sanitize input (strip HTML tags)
+        // 6. Build notes - sanitize input (strip HTML tags)
         $cleanMessage = strip_tags($request->message);
         $notes = '';
         if ($isSimulator) {
@@ -188,7 +188,7 @@ class ContactController extends Controller
             $notes .= "Subject: " . strip_tags($request->input('service')) . "\n\nMessage:\n{$cleanMessage}";
         }
 
-        // 7. Create Lead — assign to primary admin (public contact form has no tenant context)
+        // 7. Create Lead - assign to primary admin (public contact form has no tenant context)
         $defaultAdminId = \App\Models\User::withoutGlobalScope(\App\Models\Scopes\UserAdminTenantScope::class)
             ->where('role', 'admin')->orderBy('id')->value('id');
 
@@ -244,7 +244,7 @@ class ContactController extends Controller
             ]);
         }
 
-        // 9. Send email to admin (via template — controllable by toggle)
+        // 9. Send email to admin (via template - controllable by toggle)
         $this->sendViaTemplate('contact-form-admin', \App\Models\Setting::get('company.email', config('mail.from.address')), [
             'client_name' => strip_tags($request->name),
             'client_email' => $request->email,
@@ -253,7 +253,7 @@ class ContactController extends Controller
             'message' => strip_tags($request->message),
         ]);
 
-        // 10. Send confirmation email to the guest (via template — controllable by toggle)
+        // 10. Send confirmation email to the guest (via template - controllable by toggle)
         $confirmSlug = $isSimulator ? 'simulator-confirmation' : ($isQuote ? 'quote-request-confirmation' : 'contact-confirmation');
         $this->sendViaTemplate($confirmSlug, $request->email, [
             'client_name' => strip_tags($request->name),
@@ -293,7 +293,7 @@ class ContactController extends Controller
     private function sendViaTemplate(string $slug, string $to, array $variables): void
     {
         try {
-            $locale = app()->getLocale(); // fr, en, or nl — set by visitor's language preference
+            $locale = app()->getLocale(); // fr, en, or nl - set by visitor's language preference
 
             // Try visitor's locale first, fallback to 'en', then any available
             $template = \App\Models\EmailTemplate::where('slug', $slug)
@@ -308,7 +308,7 @@ class ContactController extends Controller
                     ->where('is_active', true)
                     ->first();
 
-            if (!$template) return; // Template disabled or missing — don't send
+            if (!$template) return; // Template disabled or missing - don't send
 
             $subject = $template->subject;
             $body = $template->body;

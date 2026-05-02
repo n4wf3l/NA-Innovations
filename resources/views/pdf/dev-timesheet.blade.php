@@ -29,7 +29,7 @@
 <body>
     <div class="page">
         <h1>{{ __('pdf.timesheet') }}</h1>
-        <div class="subtitle">{{ $developer->name }} — {{ $from->format('d/m/Y') }} {{ __('pdf.to') }} {{ $to->format('d/m/Y') }}</div>
+        <div class="subtitle">{{ $developer->name }} - {{ $from->format('d/m/Y') }} {{ __('pdf.to') }} {{ $to->format('d/m/Y') }}</div>
         <div class="accent-line"></div>
 
         <div class="summary-box">
@@ -62,7 +62,7 @@
                             <td>{{ $entry->date->format('d/m/Y') }}</td>
                             <td>{{ $entry->description }}</td>
                             <td class="text-center">{{ $entry->task_category ?? '-' }}</td>
-                            <td class="text-center">{{ $entry->is_billable ? '✓' : '—' }}</td>
+                            <td class="text-center">{{ $entry->is_billable ? '✓' : '-' }}</td>
                             <td class="text-right">{{ number_format($entry->hours, 2) }}h</td>
                         </tr>
                     @endforeach

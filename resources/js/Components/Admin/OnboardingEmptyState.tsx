@@ -23,7 +23,7 @@ export default function OnboardingEmptyState({ name }: Props) {
         {
             n: 1,
             titleKey: 'Personnaliser ton branding',
-            descKey: 'Logo, couleurs, nom de société — appliqué automatiquement sur le site, les emails et tes PDF.',
+            descKey: 'Logo, couleurs, nom de société - appliqué automatiquement sur le site, les emails et tes PDF.',
             href: '/admin/settings/branding',
             cta: 'Configurer le branding',
             color: 'from-violet-500 to-purple-600',

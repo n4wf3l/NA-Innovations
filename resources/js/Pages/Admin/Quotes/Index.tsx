@@ -89,7 +89,7 @@ export default function QuotesIndex({ quotes, totalQuotes, acceptedQuotes, pendi
                                                     <ProtectedAmount amount={quote.total} />
                                                 </p>
                                                 <p className="text-[11px] text-gray-400 dark:text-gray-500">
-                                                    {formatDate(quote.issue_date)} → {quote.valid_until ? formatDate(quote.valid_until) : '—'}
+                                                    {formatDate(quote.issue_date)} → {quote.valid_until ? formatDate(quote.valid_until) : '-'}
                                                 </p>
                                             </div>
 

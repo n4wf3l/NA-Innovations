@@ -148,7 +148,7 @@ export default function SaaSShow({ product }: Props) {
                 </div>
             </section>
 
-            {/* Description — full-width cinematic section */}
+            {/* Description - full-width cinematic section */}
             {product.description && (
                 <section className="bg-gray-950 py-20 sm:py-28 relative overflow-hidden">
                     <div className="absolute inset-0 opacity-5">
@@ -195,7 +195,7 @@ export default function SaaSShow({ product }: Props) {
                                 );
                             }
 
-                            // Plain text description — drop cap + highlight
+                            // Plain text description - drop cap + highlight
                             const firstChar = desc.charAt(0);
                             const rest = desc.substring(1);
                             const parts = rest.split(new RegExp(`(${product.name})`, 'gi'));
@@ -219,7 +219,11 @@ export default function SaaSShow({ product }: Props) {
 
             {/* Video */}
             {product.show_video && product.video_url && (() => {
-                const match = product.video_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+                // Supports: watch?v=ID, embed/ID, shorts/ID, live/ID, v/ID, youtu.be/ID,
+                // youtube-nocookie.com, m.youtube.com (mobile), and ?v=ID anywhere in the URL.
+                const match = product.video_url.match(
+                    /(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+                );
                 if (!match) return null;
                 return (
                     <section className="bg-black py-16 sm:py-24">
@@ -238,7 +242,7 @@ export default function SaaSShow({ product }: Props) {
                 );
             })()}
 
-            {/* Features — alternating layout */}
+            {/* Features - alternating layout */}
             {features.length > 0 && (
                 <section className="bg-black py-20 sm:py-28">
                     <div className="max-w-6xl mx-auto px-6 md:px-12">
@@ -264,7 +268,7 @@ export default function SaaSShow({ product }: Props) {
                 </section>
             )}
 
-            {/* Pricing — full-width centered */}
+            {/* Pricing - full-width centered */}
             <section className="bg-gray-950 py-20 sm:py-28 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-violet-900/20 via-transparent to-transparent" />
                 <div className="relative max-w-5xl mx-auto px-6 md:px-12">

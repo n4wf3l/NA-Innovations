@@ -111,7 +111,7 @@ export default function PartnerLeadsIndex({ leads, commissionRate }: Props) {
                                         <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-1">{formatProjectType(lead.service_interest)}</p>
                                     )}
 
-                                    {/* "Hands-off" banner — shown only when the client has accepted
+                                    {/* "Hands-off" banner - shown only when the client has accepted
                                         and the project has moved forward (NA handles everything) */}
                                     {['signed', 'in_progress', 'won', 'paid'].includes(lead.status) && (
                                         <div className="mb-4 flex items-start gap-2 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl px-3 py-2.5">
@@ -176,7 +176,7 @@ export default function PartnerLeadsIndex({ leads, commissionRate }: Props) {
                                                         </span>
                                                     </Link>
                                                 </td>
-                                                <td className="px-5 py-3.5 text-gray-500">{lead.company_name || '—'}</td>
+                                                <td className="px-5 py-3.5 text-gray-500">{lead.company_name || '-'}</td>
                                                 <td className="px-5 py-3.5 text-gray-500">{formatProjectType(lead.service_interest)}</td>
                                                 <td className="px-5 py-3.5">
                                                     <div className="flex flex-col gap-1">
@@ -193,11 +193,11 @@ export default function PartnerLeadsIndex({ leads, commissionRate }: Props) {
                                                     {myShare(lead.estimated_budget) ? (
                                                         <span className="font-bold text-gray-900 dark:text-white"><ProtectedAmount amount={myShare(lead.estimated_budget)!} /></span>
                                                     ) : (
-                                                        <span className="text-gray-300">—</span>
+                                                        <span className="text-gray-300">-</span>
                                                     )}
                                                 </td>
                                                 <td className="px-5 py-3.5 text-right text-gray-400 text-xs">
-                                                    {lead.estimated_budget ? <ProtectedAmount amount={lead.estimated_budget} /> : '—'}
+                                                    {lead.estimated_budget ? <ProtectedAmount amount={lead.estimated_budget} /> : '-'}
                                                 </td>
                                                 <td className="px-5 py-3.5 text-gray-400">{formatDate(lead.created_at)}</td>
                                             </tr>

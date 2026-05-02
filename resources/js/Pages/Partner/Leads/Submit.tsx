@@ -84,7 +84,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
     });
     const toggleView = (mode: 'split' | 'classic') => { setViewMode(mode); localStorage.setItem('partner_submit_view', mode); };
 
-    // Quick mode for mobile — simplified form
+    // Quick mode for mobile - simplified form
     const [quickMode, setQuickMode] = useState(false);
 
     const selectedType = projectTypes.find((p: any) => p.value === data.service_interest);
@@ -139,7 +139,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
 
     const hint = 'text-[11px] text-gray-400 dark:text-gray-500 mt-1 leading-relaxed';
 
-    // Form fields as a render function (NOT a component — avoids remount on re-render)
+    // Form fields as a render function (NOT a component - avoids remount on re-render)
     const renderFormFields = (inputStyle: string) => (
         <>
             <div className="grid grid-cols-2 gap-3">
@@ -237,7 +237,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                 </div>
             </div>
 
-            {/* Explanatory legend — context for the partner */}
+            {/* Explanatory legend - context for the partner */}
             <div className="mb-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 border border-indigo-200 dark:border-indigo-700/50 rounded-2xl p-5">
                 <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-xl bg-indigo-500/10 dark:bg-indigo-400/10 flex items-center justify-center flex-shrink-0">
@@ -297,7 +297,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
             {quickMode && (
                 <div className="mb-4 bg-rose-50 dark:bg-rose-500/5 border border-rose-200 dark:border-rose-500/20 rounded-xl px-4 py-3 flex items-center gap-3">
                     <svg className="w-5 h-5 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
-                    <p className="text-sm text-rose-700 dark:text-rose-300 flex-1">{t('Mode rapide — remplissez juste l\'essentiel. Vous pourrez compléter les détails plus tard.')}</p>
+                    <p className="text-sm text-rose-700 dark:text-rose-300 flex-1">{t('Mode rapide - remplissez juste l\'essentiel. Vous pourrez compléter les détails plus tard.')}</p>
                     <button onClick={() => setQuickMode(false)} className="text-xs text-rose-500 hover:text-rose-700 font-semibold whitespace-nowrap">{t('Mode complet')}</button>
                 </div>
             )}
@@ -308,7 +308,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                     <form onSubmit={openModal} noValidate className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
                         <div className="bg-gradient-to-r from-rose-500 to-pink-600 p-5">
                             <h2 className="text-lg font-bold text-white">{t('Soumission rapide')}</h2>
-                            <p className="text-rose-200 text-xs mt-0.5">{t('Juste l\'essentiel — 30 secondes')}</p>
+                            <p className="text-rose-200 text-xs mt-0.5">{t('Juste l\'essentiel - 30 secondes')}</p>
                         </div>
                         <div className="p-5 space-y-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -336,7 +336,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                                 <select value={data.service_interest} onChange={e => setData('service_interest', e.target.value)} className={input}>
                                     <option value="">{t('Sélectionner le type')}</option>
                                     {projectTypes.map((pt: any) => (
-                                        <option key={pt.value} value={pt.value}>{pt.label} — {pt.commission_rate}%</option>
+                                        <option key={pt.value} value={pt.value}>{pt.label} - {pt.commission_rate}%</option>
                                     ))}
                                 </select>
                                 {selectedType && (
@@ -427,7 +427,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                 </div>
             )}
 
-            {/* Email Modal — single scrollable container with everything inside */}
+            {/* Email Modal - single scrollable container with everything inside */}
             {showModal && createPortal(
                 <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,zIndex:9999}} className="overflow-y-auto custom-scroll bg-black/70 backdrop-blur-md animate-fade-in" onClick={() => !processing && setShowModal(false)}>
                     <div className="min-h-full flex items-center justify-center p-4 sm:p-8">
@@ -436,7 +436,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                             onClick={e => e.stopPropagation()}
                             className="relative w-full max-w-2xl bg-white dark:bg-gray-900 rounded-3xl shadow-2xl animate-modal my-auto"
                         >
-                            {/* Close button — floating top right */}
+                            {/* Close button - floating top right */}
                             <button
                                 onClick={() => !processing && setShowModal(false)}
                                 className="absolute top-5 right-5 z-10 w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
@@ -497,7 +497,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                                     <p className="text-sm text-blue-600 dark:text-blue-400">{t("PDF attached automatically")}</p>
                                 </div>
 
-                                {/* Send email toggle — partner can choose not to bother the client */}
+                                {/* Send email toggle - partner can choose not to bother the client */}
                                 <label className={`mb-8 flex items-start gap-3 rounded-xl p-4 border cursor-pointer transition-colors ${
                                     data.send_email
                                         ? 'bg-rose-50 dark:bg-rose-500/10 border-rose-200 dark:border-rose-500/30'
@@ -522,7 +522,7 @@ export default function PartnerLeadSubmit({ emailTemplate, partnerName, projectT
                                     </div>
                                 </label>
 
-                                {/* Action buttons — at the bottom of the content, not sticky */}
+                                {/* Action buttons - at the bottom of the content, not sticky */}
                                 <div className="flex items-center gap-3">
                                     <button
                                         type="button"

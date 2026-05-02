@@ -62,7 +62,7 @@ class DocumentTemplateController extends BaseAdminController
             'payment_terms' => '30% à la commande, 70% à la livraison',
             'delivery_date' => now()->addMonths(2)->format('d/m/Y'),
             'deliverables' => 'Site web complet, code source, documentation technique, formation administrateur',
-            'remarks' => 'RAS — Livraison conforme au cahier des charges.',
+            'remarks' => 'RAS - Livraison conforme au cahier des charges.',
             'tech_stack' => 'Laravel 10, React 18, TypeScript, Tailwind CSS, MySQL',
             'features' => 'Authentification, tableau de bord, gestion de contenu, API REST, notifications',
             'architecture' => 'Architecture MVC avec API REST, base de données relationnelle, déploiement sur serveur VPS',

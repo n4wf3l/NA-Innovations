@@ -65,7 +65,7 @@ class ProjectController extends Controller
 
         $totalHours = $myTimeEntries->sum('hours');
 
-        // Notes — decloisoned or own only
+        // Notes - decloisoned or own only
         $notesCollection = $settings['decloisonedNotes']
             ? $project->notes
             : $project->notes->where('user_id', $user->id);

@@ -92,13 +92,13 @@ class MigrationSeeder extends Seeder
 
         // Seed default SEO settings
         $seoSettings = [
-            ['group' => 'seo', 'key' => 'seo.home_title', 'value' => 'NA Innovations — Développement Web & Mobile à Bruxelles', 'type' => 'string'],
+            ['group' => 'seo', 'key' => 'seo.home_title', 'value' => 'NA Innovations - Développement Web & Mobile à Bruxelles', 'type' => 'string'],
             ['group' => 'seo', 'key' => 'seo.home_description', 'value' => 'Agence de développement web et mobile à Bruxelles. Sites vitrines, e-commerce, applications sur mesure. Devis gratuit.', 'type' => 'string'],
-            ['group' => 'seo', 'key' => 'seo.projects_title', 'value' => 'Portfolio — NA Innovations', 'type' => 'string'],
+            ['group' => 'seo', 'key' => 'seo.projects_title', 'value' => 'Portfolio - NA Innovations', 'type' => 'string'],
             ['group' => 'seo', 'key' => 'seo.projects_description', 'value' => 'Découvrez nos réalisations : sites web, applications mobiles et plateformes digitales.', 'type' => 'string'],
-            ['group' => 'seo', 'key' => 'seo.contact_title', 'value' => 'Contact — NA Innovations', 'type' => 'string'],
+            ['group' => 'seo', 'key' => 'seo.contact_title', 'value' => 'Contact - NA Innovations', 'type' => 'string'],
             ['group' => 'seo', 'key' => 'seo.contact_description', 'value' => 'Contactez NA Innovations pour votre projet web ou mobile. Devis gratuit sous 24h.', 'type' => 'string'],
-            ['group' => 'seo', 'key' => 'seo.about_title', 'value' => 'À propos — NA Innovations', 'type' => 'string'],
+            ['group' => 'seo', 'key' => 'seo.about_title', 'value' => 'À propos - NA Innovations', 'type' => 'string'],
             ['group' => 'seo', 'key' => 'seo.about_description', 'value' => 'Découvrez NA Innovations, agence de développement digital basée à Bruxelles.', 'type' => 'string'],
         ];
 

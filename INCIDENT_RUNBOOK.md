@@ -1,4 +1,4 @@
-# Runbook d'incident — NA Innovations
+# Runbook d'incident - NA Innovations
 
 > **Objectif** : guider la personne d'astreinte pour détecter, diagnostiquer et résoudre les incidents en production avec le minimum de stress et le maximum de rigueur.
 >
@@ -17,7 +17,7 @@
 7. [Restauration depuis backup](#restauration-depuis-backup)
 8. [Communication aux clients](#communication-aux-clients)
 9. [Post-incident : postmortem](#post-incident--postmortem)
-10. [Annexes — commandes rapides](#annexes--commandes-rapides)
+10. [Annexes - commandes rapides](#annexes--commandes-rapides)
 
 ---
 
@@ -37,9 +37,9 @@
 
 Pour un SEV1, nommer dès le début :
 
-- **Incident Commander (IC)** — coordonne, décide, communique. **Ne fait rien techniquement.** Son seul job : garder la tête froide et éviter que 3 personnes fassent 3 manipulations contradictoires.
-- **Tech Lead** — fait les manipulations. Propose, exécute après accord IC si destructif.
-- **Communicator** — rédige les updates (Slack / email clients / statut public). Libère le Tech Lead pour qu'il bosse.
+- **Incident Commander (IC)** - coordonne, décide, communique. **Ne fait rien techniquement.** Son seul job : garder la tête froide et éviter que 3 personnes fassent 3 manipulations contradictoires.
+- **Tech Lead** - fait les manipulations. Propose, exécute après accord IC si destructif.
+- **Communicator** - rédige les updates (Slack / email clients / statut public). Libère le Tech Lead pour qu'il bosse.
 
 **Pour SEV2/3** : la même personne peut cumuler les rôles, mais garder l'ordre mental : coordonner → agir → communiquer.
 
@@ -73,10 +73,10 @@ Pour un SEV1, nommer dès le début :
 
 Dès qu'une alerte tombe, **avant tout diagnostic** :
 
-1. **Horodater** — noter l'heure exacte du début perçu de l'incident.
-2. **Capturer** — screenshot de l'erreur, copier-coller les logs visibles.
-3. **Reproduire** — est-ce que tu observes le problème toi aussi ? Ou juste remonté par un user ?
-4. **Scope** — est-ce 1 client, plusieurs, tous ? 1 feature, plusieurs, toute la plateforme ?
+1. **Horodater** - noter l'heure exacte du début perçu de l'incident.
+2. **Capturer** - screenshot de l'erreur, copier-coller les logs visibles.
+3. **Reproduire** - est-ce que tu observes le problème toi aussi ? Ou juste remonté par un user ?
+4. **Scope** - est-ce 1 client, plusieurs, tous ? 1 feature, plusieurs, toute la plateforme ?
 5. **Nommer IC** (si SEV1).
 6. **Ouvrir le canal** `#incidents` et poster :
    ```
@@ -326,7 +326,7 @@ php artisan tinker
 ```
 
 **Questions à poser avant de toucher** :
-1. La facture a-t-elle été envoyée au client (status `sent` ou plus) ? Si oui, **ne pas modifier** — créer une nouvelle version ou un avoir.
+1. La facture a-t-elle été envoyée au client (status `sent` ou plus) ? Si oui, **ne pas modifier** - créer une nouvelle version ou un avoir.
 2. Un paiement a-t-il déjà été encaissé ? Si oui, ne surtout pas altérer les montants historiques.
 
 **Règle** : en Belgique, une facture envoyée ne se modifie pas. Créer **avoir / note de crédit** puis refacturer correctement.
@@ -447,7 +447,7 @@ php artisan up
 
 ### Scénario 3 : Point-in-time recovery (si managed DB)
 
-Si tu es sur Digital Ocean Managed / AWS RDS / PlanetScale, aller directement dans la console provider — PITR en quelques clics, pas de commande à taper.
+Si tu es sur Digital Ocean Managed / AWS RDS / PlanetScale, aller directement dans la console provider - PITR en quelques clics, pas de commande à taper.
 
 ---
 
@@ -490,7 +490,7 @@ Notification à l'APD Belgique (Autorité de Protection des Données) **dans les
 ### Template
 
 ```markdown
-# Postmortem — <titre incident>
+# Postmortem - <titre incident>
 
 **Date** : YYYY-MM-DD
 **Sévérité** : SEV1 / SEV2 / SEV3
@@ -501,12 +501,12 @@ Notification à l'APD Belgique (Autorité de Protection des Données) **dans les
 <Ce qui s'est passé, qui a été impacté, comment on a résolu.>
 
 ## Timeline
-- HH:MM — premier signal (alerte / user report / monitoring)
-- HH:MM — diagnostic initial
-- HH:MM — hypothèse X écartée
-- HH:MM — root cause identifiée
-- HH:MM — fix déployé
-- HH:MM — vérification complète, incident clos
+- HH:MM - premier signal (alerte / user report / monitoring)
+- HH:MM - diagnostic initial
+- HH:MM - hypothèse X écartée
+- HH:MM - root cause identifiée
+- HH:MM - fix déployé
+- HH:MM - vérification complète, incident clos
 
 ## Impact
 - Combien d'utilisateurs touchés.
@@ -535,7 +535,7 @@ Notification à l'APD Belgique (Autorité de Protection des Données) **dans les
 
 ---
 
-## Annexes — commandes rapides
+## Annexes - commandes rapides
 
 ### Maintenance
 
@@ -590,7 +590,7 @@ php artisan migrate:rollback     # rollback de la dernière migration
 1. **Pas de modification destructive sans backup frais.**
 2. **Annoncer avant d'agir, surtout si plusieurs personnes sont connectées au serveur.**
 3. **Logger tout ce qu'on fait** dans le canal `#incidents` pour la timeline du postmortem.
-4. **Ne pas blâmer** — postmortems blameless, on cherche les causes systémiques.
+4. **Ne pas blâmer** - postmortems blameless, on cherche les causes systémiques.
 5. **Prévenir les clients** de manière proactive. Mieux vaut surcommuniquer.
 6. **Après résolution** : prendre 15 min pour écrire les actions correctives tant que c'est frais.
 7. **Tester le runbook** : une fois par trimestre, simuler un incident (game day) pour vérifier que les procédures marchent vraiment.

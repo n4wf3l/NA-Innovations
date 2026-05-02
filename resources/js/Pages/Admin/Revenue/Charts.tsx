@@ -266,7 +266,7 @@ export function LeadConversionCard({ data }: { data: LeadSource[] }) {
                 <div key={s.source}>
                     <div className="flex items-center justify-between mb-1">
                         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{sourceLabels[s.source] || s.source}</span>
-                        <span className="text-xs text-gray-400 dark:text-gray-500">{s.won}/{s.total} — {s.rate}%</span>
+                        <span className="text-xs text-gray-400 dark:text-gray-500">{s.won}/{s.total} - {s.rate}%</span>
                     </div>
                     <div className="w-full h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                         <div className="h-full bg-emerald-500 dark:bg-emerald-400 rounded-full transition-all" style={{ width: `${Math.min(s.rate, 100)}%` }} />

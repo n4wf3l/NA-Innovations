@@ -64,7 +64,7 @@ function DashboardTile({ id, title, collapsed, hidden, onToggleCollapse, onToggl
     if (hidden) return null;
     return (
         <div ref={setNodeRef} style={style} className={`group/tile transition-shadow duration-200 ${isDragging ? 'shadow-2xl ring-2 ring-rose-500/30 rounded-2xl' : ''}`}>
-            {/* Tile control bar — always visible */}
+            {/* Tile control bar - always visible */}
             <div className="flex items-center justify-between mb-2 px-2 py-1.5 opacity-60 hover:opacity-100 group-hover/tile:opacity-100 transition-opacity">
                 <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing flex items-center gap-2 text-gray-400 hover:text-rose-500 dark:hover:text-rose-400 p-1 rounded-lg transition-colors" title="Glisser pour réorganiser">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" /></svg>
@@ -165,7 +165,7 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
             />
             <TourTriggerButton onClick={tour.restart} accentColor="rose" />
 
-            {/* Hidden tiles bar — appears only when something is hidden */}
+            {/* Hidden tiles bar - appears only when something is hidden */}
             {hiddenCount > 0 && (
                 <div className="flex items-center justify-end gap-2 mb-4 flex-wrap">
                     <span className="text-xs text-gray-400">{t('Blocs masqués')} :</span>
@@ -262,7 +262,7 @@ export default function PartnerDashboard({ partner, stats, recentLeads, recentCo
 
                     {/* Explanation */}
                     <p className="mt-5 text-xs text-white/30 leading-relaxed max-w-xl">
-                        {t('Vous touchez une commission sur chaque client que vous nous apportez. Deux options : soumettez-le directement via "Soumettre un client" (le système sait que c\'est vous), ou partagez ce lien — si quelqu\'un passe par là, il sera automatiquement rattaché à votre compte.')}
+                        {t('Vous touchez une commission sur chaque client que vous nous apportez. Deux options : soumettez-le directement via "Soumettre un client" (le système sait que c\'est vous), ou partagez ce lien - si quelqu\'un passe par là, il sera automatiquement rattaché à votre compte.')}
                     </p>
                 </div>
             </div>

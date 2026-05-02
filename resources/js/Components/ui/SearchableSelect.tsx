@@ -108,7 +108,7 @@ export default function SearchableSelect({ options, value, onChange, placeholder
                         <span className="flex items-center gap-2">
                             {selected.icon}
                             <span>{selected.label}</span>
-                            {selected.sublabel && <span className="text-gray-400 dark:text-gray-500 text-xs">— {selected.sublabel}</span>}
+                            {selected.sublabel && <span className="text-gray-400 dark:text-gray-500 text-xs">- {selected.sublabel}</span>}
                         </span>
                     ) : (
                         placeholder || t('Select...')

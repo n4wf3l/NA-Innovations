@@ -217,7 +217,7 @@ class LeadController extends Controller
 
         $successMsg = $shouldSendEmail
             ? "Lead created for {$validated['first_name']} {$validated['last_name']}. The outreach email has been sent."
-            : "Lead created for {$validated['first_name']} {$validated['last_name']}. No email was sent — our team will contact them.";
+            : "Lead created for {$validated['first_name']} {$validated['last_name']}. No email was sent - our team will contact them.";
 
         return redirect()->route('partner.leads.index')
             ->with('success', $successMsg);

@@ -44,7 +44,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
     const toggleTheme = (e: React.MouseEvent) => setTheme(isDark ? 'light' : 'dark', e.nativeEvent);
     const pageUrl = typeof window !== 'undefined' ? window.location.href : appUrl;
     const siteName = branding?.company_name || 'NA Innovations';
-    const metaDesc = description || branding?.tagline || 'Web Development, Mobile & Software — NA Innovations';
+    const metaDesc = description || branding?.tagline || 'Web Development, Mobile & Software - NA Innovations';
     const metaImage = ogImage || (branding?.logo_path ? `${appUrl}/storage/${branding.logo_path}` : `${appUrl}/NAlogo2.png`);
 
     const orgJsonLd = {
@@ -97,7 +97,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
                 {/* Open Graph */}
                 <meta property="og:type" content="website" />
                 <meta property="og:site_name" content={siteName} />
-                <meta property="og:title" content={`${title || siteName} — ${siteName}`} />
+                <meta property="og:title" content={`${title || siteName} - ${siteName}`} />
                 <meta property="og:description" content={metaDesc} />
                 <meta property="og:image" content={metaImage} />
                 <meta property="og:url" content={pageUrl} />
@@ -105,7 +105,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
 
                 {/* Twitter Card */}
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content={`${title || siteName} — ${siteName}`} />
+                <meta name="twitter:title" content={`${title || siteName} - ${siteName}`} />
                 <meta name="twitter:description" content={metaDesc} />
                 <meta name="twitter:image" content={metaImage} />
 
@@ -235,7 +235,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
                     </div>
                 </div>
 
-                {/* Mobile menu — Fullscreen overlay */}
+                {/* Mobile menu - Fullscreen overlay */}
                 {mobileMenuOpen && (
                     <div className="md:hidden fixed inset-0 z-[9998] overflow-hidden">
                         <style>{`
@@ -382,7 +382,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
                 )}
             </nav>
 
-            {/* Language Modal — Fullscreen */}
+            {/* Language Modal - Fullscreen */}
             {showLangModal && (
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center animate-[langFadeIn_0.4s_ease-out]" onClick={() => setShowLangModal(false)}>
                     <style>{`
@@ -501,7 +501,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
                 </div>
             </footer>
 
-            {/* Fixed portal access — bottom left, icon only */}
+            {/* Fixed portal access - bottom left, icon only */}
             <a
                 href={auth?.user ? '/dashboard' : '/login'}
                 className="fixed bottom-6 left-6 z-50 w-11 h-11 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-teal-300 hover:border-teal-300/30 hover:bg-gray-900 transition-all duration-300 group"
@@ -514,7 +514,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
                 )}
             </a>
 
-            {/* Scroll to top — bottom right, above WhatsApp */}
+            {/* Scroll to top - bottom right, above WhatsApp */}
             <button
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className={`fixed bottom-[136px] right-6 z-50 w-11 h-11 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-teal-300 hover:border-teal-300/30 hover:bg-gray-900 transition-all duration-500 group ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
@@ -523,10 +523,10 @@ export default function PublicLayout({ children, title, description, ogImage, js
                 <svg className="w-5 h-5 transition-transform duration-300 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" /></svg>
             </button>
 
-            {/* WhatsApp floating button — above chatbot */}
+            {/* WhatsApp floating button - above chatbot */}
             <WhatsAppButton phoneNumber={socialLinks.whatsapp || ''} />
 
-            {/* AI Chatbot widget — bottom right */}
+            {/* AI Chatbot widget - bottom right */}
             <ChatWidget />
         </>
     );

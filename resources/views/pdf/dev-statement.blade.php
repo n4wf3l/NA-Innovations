@@ -28,7 +28,7 @@
 <body>
     <div class="page">
         <h1>{{ __('pdf.earning_statement') }}</h1>
-        <div class="subtitle">{{ $developer->name }} — {{ $monthLabel }}</div>
+        <div class="subtitle">{{ $developer->name }} - {{ $monthLabel }}</div>
         <div class="accent-line"></div>
 
         <div class="info-block">
@@ -62,7 +62,7 @@
                 <tr>
                     <td>{{ __('pdf.non_billable') }}</td>
                     <td class="text-right">{{ number_format($nonBillableHours, 2) }}h</td>
-                    <td class="text-right">—</td>
+                    <td class="text-right">-</td>
                 </tr>
             </tbody>
         </table>
@@ -73,7 +73,7 @@
         </div>
 
         <div class="footer">
-            {{ __('pdf.generated_on') }} {{ now()->format('d/m/Y H:i') }} — {{ __('pdf.confidential_document') }}
+            {{ __('pdf.generated_on') }} {{ now()->format('d/m/Y H:i') }} - {{ __('pdf.confidential_document') }}
         </div>
     </div>
 </body>

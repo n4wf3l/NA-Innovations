@@ -38,7 +38,7 @@
 <body>
     <div class="page">
         <h1>{{ __('pdf.monthly_financial_report') }}</h1>
-        <div class="subtitle">{{ $monthLabel }} — {{ __('pdf.generated_on') }} {{ now()->format('d/m/Y H:i') }}</div>
+        <div class="subtitle">{{ $monthLabel }} - {{ __('pdf.generated_on') }} {{ now()->format('d/m/Y H:i') }}</div>
         <div class="accent-line"></div>
 
         {{-- KPI Cards --}}
@@ -122,7 +122,7 @@
         </table>
 
         <div class="footer">
-            {{ __('pdf.confidential_document') }} — {{ __('pdf.generated_on') }} {{ now()->format('d/m/Y H:i') }}
+            {{ __('pdf.confidential_document') }} - {{ __('pdf.generated_on') }} {{ now()->format('d/m/Y H:i') }}
         </div>
     </div>
 </body>

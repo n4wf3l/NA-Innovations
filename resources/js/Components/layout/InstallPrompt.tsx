@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-// Read branding from DOM directly — InstallPrompt is mounted outside the
+// Read branding from DOM directly - InstallPrompt is mounted outside the
 // Inertia <App> tree so usePage() is not available here.
 function readBrandingFromDom(): { companyName: string; logoUrl: string | null } {
     try {

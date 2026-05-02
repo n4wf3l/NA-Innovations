@@ -38,7 +38,16 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            // Physical write location:
+            //   - default (Combell shared hosting): public/uploads - bypasses the
+            //     broken /www/public/storage symlink. The /storage URL is rewritten
+            //     to /uploads via .htaccess so all hardcoded /storage/... links
+            //     keep working transparently.
+            //   - PUBLIC_DISK_USE_SYMLINK=true: standard Laravel storage:link
+            //     setup (use when SSH is available).
+            'root' => env('PUBLIC_DISK_USE_SYMLINK', false)
+                ? storage_path('app/public')
+                : public_path('uploads'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,

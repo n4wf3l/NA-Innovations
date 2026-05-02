@@ -68,8 +68,8 @@ const THEME_CHANGE_EVENT = 'na-theme-change';
 
 export function useTheme() {
     const [theme, setThemeState] = useState<Theme>(() => {
-        if (typeof window === 'undefined') return 'light';
-        return (localStorage.getItem('na_theme') as Theme) || 'light';
+        if (typeof window === 'undefined') return 'dark';
+        return (localStorage.getItem('na_theme') as Theme) || 'dark';
     });
 
     useEffect(() => {

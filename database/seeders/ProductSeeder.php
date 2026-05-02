@@ -65,7 +65,7 @@ class ProductSeeder extends Seeder
             ['slug' => 'restoconnect'],
             [
                 'name' => 'RestoConnect',
-                'tagline' => 'Votre propre plateforme de commande en ligne — fini les 30% de commission',
+                'tagline' => 'Votre propre plateforme de commande en ligne - fini les 30% de commission',
                 'description' => '<h2>Reprenez le contrôle de vos commandes en ligne</h2>
 <p>RestoConnect permet aux restaurants, cafés et commerces alimentaires de disposer de leur propre système de commande en ligne, sans passer par des plateformes qui prélèvent jusqu\'à 30% de commission sur chaque commande.</p>
 

@@ -31,7 +31,7 @@ export default function LoginSplash() {
     const theme = themes[role] || themes.client;
     const name = (auth.user?.name || '').split(' ')[0];
 
-    // Synchronous init — must show BEFORE first paint
+    // Synchronous init - must show BEFORE first paint
     const shouldShow = isLogin && (typeof window === 'undefined' || !sessionStorage.getItem('login_splash_active'));
 
     const [show, setShow] = useState(shouldShow);

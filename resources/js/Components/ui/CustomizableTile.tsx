@@ -3,7 +3,7 @@
  *
  * Wraps any content with an always-visible (but discreet) control bar that
  * lets the user drag-reorder, collapse and hide the tile. No "edit mode"
- * needed — controls are inline and accessible at all times.
+ * needed - controls are inline and accessible at all times.
  *
  * Usage:
  *   <DndContext ...>

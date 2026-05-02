@@ -387,7 +387,7 @@ class QuoteController extends BaseAdminController
     }
 
     /**
-     * Mark quote as accepted — triggers full workflow.
+     * Mark quote as accepted - triggers full workflow.
      */
     public function accept(Quote $quote)
     {

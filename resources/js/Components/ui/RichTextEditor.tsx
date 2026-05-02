@@ -81,7 +81,7 @@ export default function RichTextEditor({ value, onChange, placeholder, minHeight
         setActiveFormats(formats);
     }, []);
 
-    // Paste as clean text — strip external styles/backgrounds.
+    // Paste as clean text - strip external styles/backgrounds.
     // If the pasted content is raw HTML source code, insert as HTML so tags render.
     const handlePaste = useCallback((e: React.ClipboardEvent) => {
         e.preventDefault();
@@ -190,7 +190,7 @@ export default function RichTextEditor({ value, onChange, placeholder, minHeight
                                     </div>
                                 ) : (
                                     <div className="px-4 py-2.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20">
-                                        <span className="text-xs text-amber-600 dark:text-amber-400">{t('Aucun texte sélectionné — le lien sera inséré à la position du curseur')}</span>
+                                        <span className="text-xs text-amber-600 dark:text-amber-400">{t('Aucun texte sélectionné - le lien sera inséré à la position du curseur')}</span>
                                     </div>
                                 )}
                             </div>

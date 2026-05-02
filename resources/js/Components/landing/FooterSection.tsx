@@ -30,7 +30,7 @@ export default function FooterSection({ branding, socialLinks, socialIcons, navL
                     )}
                 </div>
 
-                {/* Columns — grid centered */}
+                {/* Columns - grid centered */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center sm:text-left">
                     <div>
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">{t('Quick Links')}</h3>

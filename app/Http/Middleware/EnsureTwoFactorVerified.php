@@ -27,7 +27,7 @@ class EnsureTwoFactorVerified
             return $next($request);
         }
 
-        // 2FA is enabled — check if verified in this session
+        // 2FA is enabled - check if verified in this session
         if (!session('2fa_verified')) {
             // Logout and redirect to 2FA challenge
             $userId = $user->id;

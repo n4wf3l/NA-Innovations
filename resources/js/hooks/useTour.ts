@@ -43,7 +43,7 @@ export function useTour(tourKey: TourKey, totalSteps: number): UseTourReturn {
                 body: JSON.stringify({ tour_key: tourKey }),
             });
         } catch {
-            // Silent fail — not critical
+            // Silent fail - not critical
         }
     }, [tourKey]);
 

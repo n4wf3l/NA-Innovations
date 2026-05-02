@@ -3,7 +3,7 @@
  *
  * Reads the admin-uploaded logo and company name from Inertia shared props
  * (`branding.logo_path`, `branding.company_name`). If the admin has uploaded
- * a custom logo, it is used everywhere — otherwise we fall back to the
+ * a custom logo, it is used everywhere - otherwise we fall back to the
  * built-in dark/white logo files.
  *
  * Props:
@@ -38,7 +38,7 @@ export default function AppLogo({ variant = 'auto', size = 'md', className = '' 
     const altText = branding?.company_name || 'NA Innovations';
 
     if (customLogo) {
-        // Custom uploaded logo — single file used regardless of background
+        // Custom uploaded logo - single file used regardless of background
         return <img src={customLogo} alt={altText} className={`${sizeClass} w-auto object-contain ${className}`} />;
     }
 

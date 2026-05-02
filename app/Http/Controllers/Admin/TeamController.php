@@ -86,7 +86,7 @@ class TeamController extends BaseAdminController
     }
 
     /**
-     * Reject a pending user — soft delete + notify.
+     * Reject a pending user - soft delete + notify.
      */
     public function reject(User $user)
     {
@@ -95,7 +95,7 @@ class TeamController extends BaseAdminController
             'user_name' => $user->name,
         ], transactional: true);
 
-        // Soft delete instead of force delete — keep trace
+        // Soft delete instead of force delete - keep trace
         $user->update(['approved_at' => now()]); // mark as "processed" so it doesn't reappear in pending
         $user->delete();
 
@@ -144,7 +144,7 @@ class TeamController extends BaseAdminController
 
     /**
      * Admin creates an account directly.
-     * No password in the form — user sets their own via reset link.
+     * No password in the form - user sets their own via reset link.
      */
     public function store(Request $request)
     {
@@ -158,7 +158,7 @@ class TeamController extends BaseAdminController
             'name' => $validated['name'],
             'email' => $validated['email'],
             'role' => $validated['role'],
-            'password' => bcrypt(Str::random(32)), // random password — user will set their own
+            'password' => bcrypt(Str::random(32)), // random password - user will set their own
             'is_active' => true,
             'approved_at' => now(),
         ]);

@@ -223,7 +223,7 @@ export default function Dashboard({ revenueMonth, revenueLastMonth, revenueChang
             {/* ═══ BENTO KPIs ═══ */}
             {prefs.kpis !== false && (
                 <div className="stagger-children grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    {/* Revenue — hero card with sparkline */}
+                    {/* Revenue - hero card with sparkline */}
                     <div className={`${glass} p-6 relative overflow-hidden col-span-2 lg:col-span-1`}>
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 mb-3">
@@ -241,7 +241,7 @@ export default function Dashboard({ revenueMonth, revenueLastMonth, revenueChang
                         </div>
                     </div>
 
-                    {/* Active Projects — with ring */}
+                    {/* Active Projects - with ring */}
                     <div className={`${glass} p-6`}>
                         <div className="flex items-start justify-between">
                             <div>
@@ -313,10 +313,10 @@ export default function Dashboard({ revenueMonth, revenueLastMonth, revenueChang
             {/* ═══ BENTO GRID: Projects + Leads + Alerts ═══ */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-                {/* LEFT: Active Projects — 2 cols wide */}
+                {/* LEFT: Active Projects - 2 cols wide */}
                 {prefs.projects !== false && (
                     <div className="lg:col-span-2 space-y-5">
-                        {/* Active projects — large cards */}
+                        {/* Active projects - large cards */}
                         {activeProjectsList.length > 0 && (
                             <div>
                                 <div className="flex items-center justify-between mb-3">
@@ -372,7 +372,7 @@ export default function Dashboard({ revenueMonth, revenueLastMonth, revenueChang
                             </div>
                         )}
 
-                        {/* Completed projects — compact list */}
+                        {/* Completed projects - compact list */}
                         {completedProjectsList.length > 0 && (
                             <div>
                                 <div className="flex items-center gap-2 mb-3">
@@ -408,7 +408,7 @@ export default function Dashboard({ revenueMonth, revenueLastMonth, revenueChang
                     </div>
                 )}
 
-                {/* RIGHT: Leads + Alerts stacked — 1 col */}
+                {/* RIGHT: Leads + Alerts stacked - 1 col */}
                 <div className="space-y-5">
                     {/* Recent Leads */}
                     {prefs.recent_leads !== false && (
@@ -459,7 +459,7 @@ export default function Dashboard({ revenueMonth, revenueLastMonth, revenueChang
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-xs font-bold text-red-700 dark:text-red-400 truncate">{t('Overdue')}: {inv.invoice_number}</p>
-                                            <p className="text-[11px] text-red-500 dark:text-red-400/70 truncate">{inv.client_name} — <ProtectedAmount amount={inv.amount_due} /></p>
+                                            <p className="text-[11px] text-red-500 dark:text-red-400/70 truncate">{inv.client_name} - <ProtectedAmount amount={inv.amount_due} /></p>
                                         </div>
                                     </div>
                                 ))}

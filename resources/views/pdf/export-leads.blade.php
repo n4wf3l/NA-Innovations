@@ -100,7 +100,7 @@
                 <tr>
                     <td>{{ $lead->first_name }} {{ $lead->last_name }}</td>
                     <td>{{ $lead->email }}</td>
-                    <td>{{ $lead->company_name ?? '—' }}</td>
+                    <td>{{ $lead->company_name ?? '-' }}</td>
                     <td>{{ ucfirst(str_replace('_', ' ', $lead->source)) }}</td>
                     <td>
                         <span class="status status-{{ $lead->status }}">{{ ucfirst(str_replace('_', ' ', $lead->status)) }}</span>
@@ -109,10 +109,10 @@
                         @if($lead->estimated_budget)
                             &euro; {{ number_format($lead->estimated_budget, 2, ',', '.') }}
                         @else
-                            —
+                            -
                         @endif
                     </td>
-                    <td>{{ $lead->referralPartner?->user?->name ?? '—' }}</td>
+                    <td>{{ $lead->referralPartner?->user?->name ?? '-' }}</td>
                     <td>{{ $lead->created_at?->format('d/m/Y') }}</td>
                 </tr>
                 @endforeach

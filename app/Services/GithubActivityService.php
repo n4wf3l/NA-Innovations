@@ -75,7 +75,7 @@ class GithubActivityService
         NotificationLog::create([
             'user_id' => $dev->id,
             'type' => 'github_inactivity',
-            'title' => __('Inactivité GitHub — :project', ['project' => $projectName]),
+            'title' => __('Inactivité GitHub - :project', ['project' => $projectName]),
             'message' => __(':client voit que vous n\'avez pas poussé de commit depuis :days jours sur :project.', [
                 'client' => $clientName,
                 'days' => $daysInactive,

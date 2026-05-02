@@ -30,7 +30,7 @@ class AuthenticatedSessionController extends Controller
 
         $user = $request->user();
 
-        // 2FA check — if enabled, logout and redirect to 2FA challenge
+        // 2FA check - if enabled, logout and redirect to 2FA challenge
         if ($user->two_factor_enabled && $user->two_factor_secret) {
             $userId = $user->id;
             $remember = $request->boolean('remember');

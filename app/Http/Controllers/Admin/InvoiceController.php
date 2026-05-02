@@ -558,7 +558,7 @@ class InvoiceController extends BaseAdminController
             'client_company' => $invoice->client_company,
             'client_address' => $invoice->client_address,
             'client_vat' => $invoice->client_vat,
-            'title' => __('Avoir') . ' — ' . $invoice->invoice_number,
+            'title' => __('Avoir') . ' - ' . $invoice->invoice_number,
             'type' => 'credit_note',
             'credit_note_for' => $invoice->id,
             'subtotal' => -abs($invoice->subtotal),

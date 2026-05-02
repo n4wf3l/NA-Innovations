@@ -238,7 +238,7 @@ class RecurringServiceController extends BaseAdminController
                 $project->timelineEvents()->create([
                     'user_id' => auth()->id(),
                     'event_type' => 'status_change',
-                    'title' => 'Projet réactivé — service renouvelé',
+                    'title' => 'Projet réactivé - service renouvelé',
                     'description' => "Le service {$service->name} a été renouvelé. Le projet est remis en ligne.",
                 ]);
             }
@@ -265,7 +265,7 @@ class RecurringServiceController extends BaseAdminController
                 $project->timelineEvents()->create([
                     'user_id' => auth()->id(),
                     'event_type' => 'status_change',
-                    'title' => 'Projet mis en pause — service suspendu',
+                    'title' => 'Projet mis en pause - service suspendu',
                     'description' => "Le service {$service->name} a été suspendu manuellement. Le projet est mis en pause.",
                 ]);
             }
@@ -279,7 +279,7 @@ class RecurringServiceController extends BaseAdminController
                 $project->timelineEvents()->create([
                     'user_id' => auth()->id(),
                     'event_type' => 'status_change',
-                    'title' => 'Projet réactivé — service réactivé',
+                    'title' => 'Projet réactivé - service réactivé',
                     'description' => "Le service {$service->name} a été réactivé. Le projet est remis en ligne.",
                 ]);
             }

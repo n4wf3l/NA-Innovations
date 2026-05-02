@@ -44,7 +44,7 @@ function TypedBotMessage({ content, onComplete }: { content: string; onComplete:
             } else {
                 setDisplayed(content.slice(0, indexRef.current));
             }
-        }, 18); // 18ms per character — fast but visible
+        }, 18); // 18ms per character - fast but visible
         return () => clearInterval(interval);
     }, [content]);
 

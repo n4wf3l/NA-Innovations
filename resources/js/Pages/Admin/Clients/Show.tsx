@@ -28,7 +28,7 @@ export default function ClientShow({ client }: Props) {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Left — main content */}
+                {/* Left - main content */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Client header */}
                     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">

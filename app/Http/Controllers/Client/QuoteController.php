@@ -96,7 +96,7 @@ class QuoteController extends Controller
     }
 
     /**
-     * Client accepts a quote — triggers full workflow.
+     * Client accepts a quote - triggers full workflow.
      */
     public function accept(Quote $quote)
     {

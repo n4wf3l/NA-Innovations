@@ -79,7 +79,7 @@ class RegisteredUserController extends Controller
 
         \Illuminate\Support\Facades\Cache::forget('team_counts');
 
-        // Do NOT auto-login — redirect to pending approval page
+        // Do NOT auto-login - redirect to pending approval page
         return redirect()->route('pending-approval');
     }
 

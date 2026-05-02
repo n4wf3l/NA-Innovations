@@ -39,7 +39,7 @@ export default function Contact({ projectTypes, turnstileSiteKey, simulatorMode 
             const hash = window.location.hash.replace('#', '');
             if (hash === 'simulator' || hash === 'quote' || hash === 'contact') return hash;
         }
-        return 'quote'; // default to quote — simulator shown only if in Europe
+        return 'quote'; // default to quote - simulator shown only if in Europe
     });
     // Referral code from URL or manual entry
     const [refCode, setRefCode] = useState(() => typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('ref') || '' : '');
@@ -236,7 +236,7 @@ export default function Contact({ projectTypes, turnstileSiteKey, simulatorMode 
         formData.append('company', quoteForm.company); formData.append('phone', quoteForm.phone);
         formData.append('timeline', quoteForm.timeline); formData.append('message', quoteForm.message);
         formData.append('type', 'quote');
-        formData.append('website', ''); // honeypot — must stay empty
+        formData.append('website', ''); // honeypot - must stay empty
         formData.append('existing_website', (quoteForm as any).website_url || '');
         formData.append('how_found_us', (quoteForm as any).source || '');
         formData.append('preferred_lang', (quoteForm as any).preferred_lang || '');

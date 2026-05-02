@@ -38,7 +38,7 @@
 <body>
     <div class="page">
         <h1>{{ __('pdf.annual_billing_summary') }}</h1>
-        <div class="subtitle">{{ $client->name }} — {{ $year }}</div>
+        <div class="subtitle">{{ $client->name }} - {{ $year }}</div>
         <div class="accent-line"></div>
 
         <div class="info-block">

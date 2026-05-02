@@ -303,13 +303,13 @@
                     <td colspan="2" style="padding-top: 4px;">
                         <strong>Détails des signatures :</strong><br>
                         @if($document->admin_signed_at && $document->adminSigner)
-                            Administrateur : {{ $document->adminSigner->name }} — {{ $document->admin_signed_at->format('d/m/Y à H:i') }}
-                            @if($document->admin_signed_ip) — IP : {{ $document->admin_signed_ip }}@endif
+                            Administrateur : {{ $document->adminSigner->name }} - {{ $document->admin_signed_at->format('d/m/Y à H:i') }}
+                            @if($document->admin_signed_ip) - IP : {{ $document->admin_signed_ip }}@endif
                             <br>
                         @endif
                         @if($document->client_signed_at && $document->clientSigner)
-                            Client : {{ $document->clientSigner->name }} — {{ $document->client_signed_at->format('d/m/Y à H:i') }}
-                            @if($document->client_signed_ip) — IP : {{ $document->client_signed_ip }}@endif
+                            Client : {{ $document->clientSigner->name }} - {{ $document->client_signed_at->format('d/m/Y à H:i') }}
+                            @if($document->client_signed_ip) - IP : {{ $document->client_signed_ip }}@endif
                             <br>
                         @endif
                     </td>
@@ -327,10 +327,10 @@
                     <td colspan="2" style="padding-top: 4px;">
                         <strong>Certificats de signature :</strong><br>
                         @if($document->admin_signature_hash)
-                            Signature certifiée (admin) — Hash: {{ $document->admin_signature_hash }} — Horodatage: {{ $document->admin_signed_at?->toIso8601String() }}<br>
+                            Signature certifiée (admin) - Hash: {{ $document->admin_signature_hash }} - Horodatage: {{ $document->admin_signed_at?->toIso8601String() }}<br>
                         @endif
                         @if($document->client_signature_hash)
-                            Signature certifiée (client) — Hash: {{ $document->client_signature_hash }} — Horodatage: {{ $document->client_signed_at?->toIso8601String() }}<br>
+                            Signature certifiée (client) - Hash: {{ $document->client_signature_hash }} - Horodatage: {{ $document->client_signed_at?->toIso8601String() }}<br>
                         @endif
                     </td>
                 </tr>

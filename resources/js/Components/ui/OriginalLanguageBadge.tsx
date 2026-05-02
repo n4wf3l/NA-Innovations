@@ -5,8 +5,8 @@ import { usePage } from '@inertiajs/react';
  * Petit badge discret indiquant que le contenu est dans la langue originale de l'admin.
  * S'affiche uniquement quand la langue active est différente de la langue du contenu.
  *
- * @param contentLang — langue du contenu (default: 'fr' car l'admin écrit en français)
- * @param light — version claire pour les fonds sombres
+ * @param contentLang - langue du contenu (default: 'fr' car l'admin écrit en français)
+ * @param light - version claire pour les fonds sombres
  */
 export default function OriginalLanguageBadge({ className = '', contentLang = 'fr', light = false }: { className?: string; contentLang?: string; light?: boolean }) {
     const { i18n } = useTranslation();

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
  * Observes all elements with reveal classes (.reveal, .reveal-left, .reveal-right,
  * .reveal-scale, .reveal-stagger) and adds .visible when they enter the viewport.
  *
- * Call once in a page component — it handles all elements on the page.
+ * Call once in a page component - it handles all elements on the page.
  */
 export function useScrollReveal() {
     useEffect(() => {

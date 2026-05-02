@@ -56,7 +56,7 @@ export default function ClientDashboard({ projects, quotes, invoices, sentEmails
                 </div>
             </div>
 
-            {/* Action required banner — aggregates projects needing client input */}
+            {/* Action required banner - aggregates projects needing client input */}
             {projects.some((p: any) => p.client_action_required) && (
                 <div className="mb-6 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-500/10 dark:to-red-500/10 border-2 border-orange-300 dark:border-orange-500/40 rounded-2xl p-5">
                     <div className="flex items-start gap-4">
@@ -185,7 +185,7 @@ export default function ClientDashboard({ projects, quotes, invoices, sentEmails
                             {quotes.map((q: any) => (
                                 <Link key={q.id} href={`/client/quotes/${q.id}`} className="flex items-center justify-between px-6 py-3.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                     <div className="min-w-0">
-                                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{q.quote_number} — {q.title}</p>
+                                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{q.quote_number} - {q.title}</p>
                                         <p className="text-xs text-gray-400">{t('Valid Until')}: {q.valid_until ? formatDate(q.valid_until) : '--'}</p>
                                     </div>
                                     <div className="flex items-center gap-3">

@@ -165,7 +165,7 @@ export default function ProjectShow({ project, emailTemplate, sentEmails = [] }:
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className={`text-sm font-bold ${service.status === 'suspended' ? 'text-red-700 dark:text-red-400' : 'text-amber-700 dark:text-amber-400'}`}>
-                                    {service.status === 'suspended' ? t('Service suspendu') : t('Service expiré')} — {service.name}
+                                    {service.status === 'suspended' ? t('Service suspendu') : t('Service expiré')} - {service.name}
                                 </p>
                                 <p className={`text-xs mt-0.5 ${service.status === 'suspended' ? 'text-red-600 dark:text-red-300' : 'text-amber-600 dark:text-amber-300'}`}>
                                     {service.status === 'suspended'
@@ -190,7 +190,7 @@ export default function ProjectShow({ project, emailTemplate, sentEmails = [] }:
 
                     <ProjectRelatedDocs quotes={quotes} invoices={invoices} services={services} />
 
-                    {/* Payouts — Répartition des paiements */}
+                    {/* Payouts - Répartition des paiements */}
                     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
                         <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700 flex items-center justify-between">
                             <div className="flex items-center gap-2">
@@ -627,7 +627,7 @@ function ExternalDocumentsSection({ projectId, attachments, showUploadModal, set
                                         <button
                                             onClick={() => handleToggleVisibility(doc.id)}
                                             className={`p-1.5 transition-colors ${doc.is_client_visible ? 'text-green-500 hover:text-green-600' : 'text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400'}`}
-                                            title={doc.is_client_visible ? t('Visible to client — click to hide') : t('Hidden from client — click to show')}
+                                            title={doc.is_client_visible ? t('Visible to client - click to hide') : t('Hidden from client - click to show')}
                                         >
                                             {doc.is_client_visible ? (
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>

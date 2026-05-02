@@ -287,7 +287,7 @@ export default function EmailSignature({ signature }: Props) {
                         </div>
                     </div>
 
-                    <p className="text-xs text-gray-400 dark:text-gray-500 text-center">{t('Aperçu en temps réel — les modifications sont visibles immédiatement')}</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 text-center">{t('Aperçu en temps réel - les modifications sont visibles immédiatement')}</p>
                 </div>
             </div>
         </AdminLayout>

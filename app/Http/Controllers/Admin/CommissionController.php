@@ -198,7 +198,7 @@ class CommissionController extends BaseAdminController
     }
 
     /**
-     * Unblock the commission — returns to 'confirmed' status.
+     * Unblock the commission - returns to 'confirmed' status.
      */
     public function unblock(Commission $commission)
     {

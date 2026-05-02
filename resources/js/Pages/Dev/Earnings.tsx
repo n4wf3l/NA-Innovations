@@ -98,8 +98,8 @@ export default function DevEarnings({ months, totalYtd, hourlyRate, pendingEntri
                             {pendingEntries.map(e => (
                                 <li key={e.id} className="px-6 py-3 flex items-center justify-between text-sm">
                                     <div>
-                                        <p className="text-gray-900 dark:text-white font-medium">{e.project?.nom_societe || '—'}</p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(e.date).toLocaleDateString()} — {e.description}</p>
+                                        <p className="text-gray-900 dark:text-white font-medium">{e.project?.nom_societe || '-'}</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(e.date).toLocaleDateString()} - {e.description}</p>
                                     </div>
                                     <span className="text-gray-700 dark:text-gray-300 font-bold">{e.hours} h</span>
                                 </li>

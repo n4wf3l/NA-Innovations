@@ -224,7 +224,7 @@ export default function PortfolioEdit({ project, portfolio }: Props) {
                                 {/* Video YouTube */}
                                 {(() => {
                                     const url = (data.video_url || '').trim();
-                                    const isYouTube = !url || /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)[a-zA-Z0-9_-]{11}/.test(url);
+                                    const isYouTube = !url || /(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)[a-zA-Z0-9_-]{11}/.test(url);
                                     return (
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <div className="md:col-span-2">
@@ -251,6 +251,8 @@ export default function PortfolioEdit({ project, portfolio }: Props) {
                                                             <ul className="mt-1 space-y-0.5 text-red-500 dark:text-red-400/80">
                                                                 <li>• https://www.youtube.com/watch?v=abc123</li>
                                                                 <li>• https://youtu.be/abc123</li>
+                                                                <li>• https://www.youtube.com/shorts/abc123</li>
+                                                                <li>• https://www.youtube.com/live/abc123</li>
                                                                 <li>• https://www.youtube.com/embed/abc123</li>
                                                             </ul>
                                                         </div>
@@ -310,7 +312,7 @@ export default function PortfolioEdit({ project, portfolio }: Props) {
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M2.25 18V6a2.25 2.25 0 012.25-2.25h15A2.25 2.25 0 0121.75 6v12A2.25 2.25 0 0119.5 20.25H4.5A2.25 2.25 0 012.25 18z" />
                                         </svg>
                                         <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t('Glissez vos images ici')}</p>
-                                        <p className="text-xs text-gray-400 dark:text-gray-500">{t('ou cliquez pour sélectionner')} — JPG, PNG, WebP — max 5 Mo — {t('plusieurs fichiers possibles')}</p>
+                                        <p className="text-xs text-gray-400 dark:text-gray-500">{t('ou cliquez pour sélectionner')} - JPG, PNG, WebP - max 5 Mo - {t('plusieurs fichiers possibles')}</p>
                                     </div>
                                 )}
                                 <input id="portfolio-image-input" type="file" accept=".jpg,.jpeg,.png,.webp" multiple onChange={handleImageUpload} className="hidden" />

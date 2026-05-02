@@ -119,6 +119,11 @@ class ProjectController extends BaseAdminController
 
         $projet = Projet::create($validated);
 
+        // Link the creating admin as the project's owner so it appears in their tenant scope
+        $projet->admins()->syncWithoutDetaching([
+            auth()->id() => ['role' => 'owner'],
+        ]);
+
         // Create timeline event for project creation
         $projet->timelineEvents()->create([
             'user_id' => auth()->id(),

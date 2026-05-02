@@ -54,7 +54,7 @@ export default function Step3Settings({
                 {/* Summary */}
                 <div className="space-y-4">
                     <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 text-white">
-                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">{t("Invoice")} — {t("Quote Summary")}</h3>
+                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">{t("Invoice")} - {t("Quote Summary")}</h3>
                         <p className="text-lg font-bold">{form.title || t('Untitled')}</p>
                         <p className="text-gray-400 text-sm mt-1">{form.client_name} {form.client_company ? `· ${form.client_company}` : ''}</p>
                         <div className="mt-2 flex items-center gap-2">

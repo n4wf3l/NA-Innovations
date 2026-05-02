@@ -305,7 +305,7 @@ export default function DocumentCard({ document: doc, project, onSign, onEdit, o
                             <ul className="space-y-2">
                                 {doc.signature_history.filter(h => h.revoked_at).map(h => (
                                     <li key={h.id} className="text-xs text-orange-800 dark:text-orange-300">
-                                        <strong>{h.signer_role === 'admin' ? t('Admin') : t('Client')}</strong> {h.signer?.name ? `(${h.signer.name})` : ''} — {t('Signée le')} {formatDate(h.signed_at)} — {t('Révoquée le')} {formatDate(h.revoked_at!)} {h.revoker?.name ? t('par {{name}}', { name: h.revoker.name }) : ''}
+                                        <strong>{h.signer_role === 'admin' ? t('Admin') : t('Client')}</strong> {h.signer?.name ? `(${h.signer.name})` : ''} - {t('Signée le')} {formatDate(h.signed_at)} - {t('Révoquée le')} {formatDate(h.revoked_at!)} {h.revoker?.name ? t('par {{name}}', { name: h.revoker.name }) : ''}
                                         {h.revocation_reason && <span className="block italic opacity-80 mt-0.5">{h.revocation_reason}</span>}
                                     </li>
                                 ))}

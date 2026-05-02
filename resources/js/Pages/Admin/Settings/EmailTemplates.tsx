@@ -352,7 +352,7 @@ export default function EmailTemplates({ templates, signature }: Props) {
                                 </div>
                             )}
 
-                            {/* Body — editor or preview */}
+                            {/* Body - editor or preview */}
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
                                     {previewMode ? t('Preview') : t('Email Body')}
@@ -574,11 +574,11 @@ export default function EmailTemplates({ templates, signature }: Props) {
                         <div className="px-6 py-3 border-b border-gray-100 dark:border-gray-700 flex flex-wrap items-center gap-4 text-xs">
                             <div className="flex items-center gap-1.5">
                                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                                <span className="text-gray-500 dark:text-gray-400">{t('Transactional')} — {t('always sent, cannot be disabled by user')}</span>
+                                <span className="text-gray-500 dark:text-gray-400">{t('Transactional')} - {t('always sent, cannot be disabled by user')}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                                <span className="text-gray-500 dark:text-gray-400">{t('Informational')} — {t('user can disable in preferences')}</span>
+                                <span className="text-gray-500 dark:text-gray-400">{t('Informational')} - {t('user can disable in preferences')}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                                 <span className="w-3 h-3 rounded bg-gray-200 dark:bg-gray-600 flex items-center justify-center">

@@ -139,7 +139,7 @@ export default function GuidedTour({
                 top = targetRect.y - tooltipH - TOOLTIP_GAP;
                 arrowSide = 'bottom';
             } else {
-                // Not enough space either way — dock to bottom of viewport
+                // Not enough space either way - dock to bottom of viewport
                 top = vh - tooltipH - 16;
                 arrowSide = 'none';
             }
@@ -388,7 +388,7 @@ export default function GuidedTour({
                             </label>
                         )}
 
-                        {/* Mobile swipe hint — first step only */}
+                        {/* Mobile swipe hint - first step only */}
                         {currentStep === 0 && isMobile && (
                             <p className="text-[10px] text-gray-300 dark:text-gray-600 text-center mt-2">
                                 {t('Swipez pour naviguer')} ←→
@@ -397,7 +397,7 @@ export default function GuidedTour({
                     </div>
                 </div>
 
-                {/* Arrow — hidden when docked or on mobile */}
+                {/* Arrow - hidden when docked or on mobile */}
                 {tooltipPos.arrowSide !== 'none' && !isMobile && (
                     <>
                         {tooltipPos.arrowSide === 'top' && (

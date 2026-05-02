@@ -254,7 +254,7 @@ export default function ProspectsIndex({ kanbanProspects: initialKanban, stats, 
                                         <p className="text-xs font-bold text-rose-700 dark:text-rose-300 uppercase tracking-wide">{t('Vos leads soumis')}</p>
                                     </div>
                                     <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                                        {t('Les cartes avec le badge "Soumis à NA" arrivent automatiquement dans la colonne Soumis dès que vous les transmettez via "Soumettre un client". Elles sont en lecture seule — c\'est NA Innovations qui gère leur statut.')}
+                                        {t('Les cartes avec le badge "Soumis à NA" arrivent automatiquement dans la colonne Soumis dès que vous les transmettez via "Soumettre un client". Elles sont en lecture seule - c\'est NA Innovations qui gère leur statut.')}
                                     </p>
                                 </div>
                             </div>
@@ -361,7 +361,7 @@ export default function ProspectsIndex({ kanbanProspects: initialKanban, stats, 
                         {prospect.follow_up_date && (
                             <div className={`mt-2 flex items-center gap-1.5 text-[10px] font-medium px-2 py-1 rounded-lg ${isOverdue(prospect) ? 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400' : 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'}`}>
                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                {isOverdue(prospect) ? t('En retard') + ' — ' : ''}{new Date(prospect.follow_up_date).toLocaleDateString('fr-BE', { day: 'numeric', month: 'short' })}
+                                {isOverdue(prospect) ? t('En retard') + ' - ' : ''}{new Date(prospect.follow_up_date).toLocaleDateString('fr-BE', { day: 'numeric', month: 'short' })}
                             </div>
                         )}
                         {prospect.notes && <p className="text-[10px] text-gray-400 mt-1.5 line-clamp-2">{prospect.notes}</p>}

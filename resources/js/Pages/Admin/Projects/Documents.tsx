@@ -142,7 +142,7 @@ export default function Documents({ project, documents, templates }: Props) {
                         <span>{t('Documents')}</span>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">{t('Documents du projet')}</h1>
-                    <p className="text-teal-200 text-sm">{project.nom_societe}{project.client ? ` — ${project.client.name}` : ''}</p>
+                    <p className="text-teal-200 text-sm">{project.nom_societe}{project.client ? ` - ${project.client.name}` : ''}</p>
                 </div>
             </div>
 

@@ -36,7 +36,7 @@ class DevPortalDummySeeder extends Seeder
 
         $dev = User::where('role', 'developer')->first();
         if (!$dev) {
-            $this->command?->warn('No developer user found — skipping dummy data.');
+            $this->command?->warn('No developer user found - skipping dummy data.');
             return;
         }
 

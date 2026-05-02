@@ -38,7 +38,7 @@ class PurchaseOrder extends Model
     ];
 
     // ──────────────────────────────────────────────
-    // Boot — Auto-generate PO number
+    // Boot - Auto-generate PO number
     // ──────────────────────────────────────────────
 
     protected static function boot()

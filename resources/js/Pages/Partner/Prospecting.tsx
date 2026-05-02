@@ -201,7 +201,7 @@ export default function Prospecting({ kbAccessStatus = 'none', kbNdaSignedAt, nd
                         /* NDA Form */
                         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden">
                             {/* NDA Document */}
-                            {/* NDA Content — dynamic from admin settings */}
+                            {/* NDA Content - dynamic from admin settings */}
                             <div className="p-8 border-b border-gray-200 dark:border-gray-700">
                                 <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                                     <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -501,7 +501,7 @@ Est-ce que je pourrais vous envoyer une courte présentation par e-mail ? Cela n
 
                 </div>{/* end animate-tab-in wrapper */}
 
-                {/* Bottom CTA — always visible */}
+                {/* Bottom CTA - always visible */}
                 <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-8 text-center">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                         {t('Vous avez trouvé un client potentiel ?')}

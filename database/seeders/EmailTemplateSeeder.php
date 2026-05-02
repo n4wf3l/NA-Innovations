@@ -15,7 +15,7 @@ class EmailTemplateSeeder extends Seeder
             // PROSPECT → ADMIN
             // ═══════════════════════════════════════════════
 
-            // #2 — Prospect receives confirmation after contact form
+            // #2 - Prospect receives confirmation after contact form
             [
                 'slug' => 'contact-confirmation',
                 'category' => 'lead',
@@ -41,7 +41,7 @@ class EmailTemplateSeeder extends Seeder
             // ADMIN → CLIENT
             // ═══════════════════════════════════════════════
 
-            // #3 — Quote sent to client (already exists, keep slug)
+            // #3 - Quote sent to client (already exists, keep slug)
             [
                 'slug' => 'quote-sent',
                 'category' => 'quote',
@@ -63,7 +63,7 @@ class EmailTemplateSeeder extends Seeder
                 ],
             ],
 
-            // #4 — Invoice sent to client (already exists, keep slug)
+            // #4 - Invoice sent to client (already exists, keep slug)
             [
                 'slug' => 'invoice-sent',
                 'category' => 'invoice',
@@ -85,7 +85,7 @@ class EmailTemplateSeeder extends Seeder
                 ],
             ],
 
-            // #5 — Client account created (manual)
+            // #5 - Client account created (manual)
             [
                 'slug' => 'client-welcome',
                 'category' => 'account',
@@ -107,7 +107,7 @@ class EmailTemplateSeeder extends Seeder
                 ],
             ],
 
-            // #6 — Invoice overdue reminder
+            // #6 - Invoice overdue reminder
             [
                 'slug' => 'invoice-overdue',
                 'category' => 'invoice',
@@ -129,7 +129,7 @@ class EmailTemplateSeeder extends Seeder
                 ],
             ],
 
-            // #6b — Invoice due date reminder (before due date: J-7, J-3, J-1)
+            // #6b - Invoice due date reminder (before due date: J-7, J-3, J-1)
             [
                 'slug' => 'invoice-due-reminder',
                 'category' => 'invoice',
@@ -151,7 +151,7 @@ class EmailTemplateSeeder extends Seeder
                 ],
             ],
 
-            // #7 — Payment confirmation
+            // #7 - Payment confirmation
             [
                 'slug' => 'payment-confirmation',
                 'category' => 'invoice',
@@ -173,7 +173,7 @@ class EmailTemplateSeeder extends Seeder
                 ],
             ],
 
-            // #8 — Project status update
+            // #8 - Project status update
             [
                 'slug' => 'project-status-update',
                 'category' => 'project',
@@ -195,7 +195,7 @@ class EmailTemplateSeeder extends Seeder
                 ],
             ],
 
-            // #9 — Project completed
+            // #9 - Project completed
             [
                 'slug' => 'project-completed',
                 'category' => 'project',
@@ -221,7 +221,7 @@ class EmailTemplateSeeder extends Seeder
             // CLIENT → ADMIN
             // ═══════════════════════════════════════════════
 
-            // #10 — Client accepted quote → notify admin
+            // #10 - Client accepted quote → notify admin
             [
                 'slug' => 'quote-accepted-admin',
                 'category' => 'quote',
@@ -231,7 +231,7 @@ class EmailTemplateSeeder extends Seeder
                 'nl' => ['name' => 'Offerte geaccepteerd (Admin)', 'subject' => 'Offerte #{{ quote_number }} geaccepteerd door {{ client_name }}', 'body' => '<p>{{ client_name }} heeft offerte <strong>#{{ quote_number }}</strong> ({{ total }}) geaccepteerd.</p><p>Workflow gestart: klant aangemaakt, project geïnitialiseerd, voorschotfactuur gegenereerd.</p>'],
             ],
 
-            // #11 — Client rejected quote → notify admin
+            // #11 - Client rejected quote → notify admin
             [
                 'slug' => 'quote-rejected-admin',
                 'category' => 'quote',
@@ -241,7 +241,7 @@ class EmailTemplateSeeder extends Seeder
                 'nl' => ['name' => 'Offerte afgewezen (Admin)', 'subject' => 'Offerte #{{ quote_number }} afgewezen door {{ client_name }}', 'body' => '<p>{{ client_name }} heeft offerte <strong>#{{ quote_number }}</strong> afgewezen.</p><p>Reden: {{ reason }}</p>'],
             ],
 
-            // #12 — Client comment → notify admin+dev
+            // #12 - Client comment → notify admin+dev
             [
                 'slug' => 'client-comment',
                 'category' => 'project',
@@ -251,7 +251,7 @@ class EmailTemplateSeeder extends Seeder
                 'nl' => ['name' => 'Klantcommentaar', 'subject' => 'Nieuw commentaar op {{ project_name }} van {{ client_name }}', 'body' => '<p><strong>{{ client_name }}</strong> heeft een opmerking achtergelaten op project <strong>{{ project_name }}</strong>:</p><blockquote>{{ comment }}</blockquote>'],
             ],
 
-            // #13 — Client viewed quote → notify admin
+            // #13 - Client viewed quote → notify admin
             [
                 'slug' => 'quote-viewed-admin',
                 'category' => 'quote',
@@ -265,7 +265,7 @@ class EmailTemplateSeeder extends Seeder
             // PARTENAIRE
             // ═══════════════════════════════════════════════
 
-            // #14 — Partner outreach to prospect
+            // #14 - Partner outreach to prospect
             [
                 'slug' => 'partner-lead-outreach',
                 'category' => 'lead',
@@ -275,7 +275,7 @@ class EmailTemplateSeeder extends Seeder
                 'nl' => ['name' => 'Partner outreach', 'subject' => 'NA Innovations - Wij helpen u graag met uw project', 'body' => '<p>Beste {{ client_name }},</p><p>Ik neem contact met u op namens <strong>NA Innovations</strong>, een web- en mobiel ontwikkelingsbureau.</p><p>Wij zouden graag meer willen weten over uw projectbehoeften.</p><p>Met vriendelijke groeten,<br>{{ partner_name }}<br><em>namens NA Innovations</em></p>'],
             ],
 
-            // #15 — Partner submits lead → notify admin
+            // #15 - Partner submits lead → notify admin
             [
                 'slug' => 'new-lead-admin',
                 'category' => 'lead',
@@ -285,7 +285,7 @@ class EmailTemplateSeeder extends Seeder
                 'nl' => ['name' => 'Nieuwe lead (Admin)', 'subject' => 'Nieuwe lead van {{ partner_name }}: {{ client_name }}', 'body' => '<p>Een nieuwe lead is ingediend door partner <strong>{{ partner_name }}</strong>.</p><p>Klant: <strong>{{ client_name }}</strong> ({{ client_email }})<br>Interesse: {{ service_interest }}<br>Budget: {{ estimated_budget }}</p>'],
             ],
 
-            // #16 — Lead won → notify partner
+            // #16 - Lead won → notify partner
             [
                 'slug' => 'lead-won-partner',
                 'category' => 'commission',
@@ -295,7 +295,7 @@ class EmailTemplateSeeder extends Seeder
                 'nl' => ['name' => 'Lead gewonnen (Partner)', 'subject' => 'Goed nieuws! Uw verwijzing {{ client_name }} heeft getekend', 'body' => '<p>Beste {{ partner_name }},</p><p>Uw verwijzing <strong>{{ client_name }}</strong> heeft onze offerte geaccepteerd en het project <strong>{{ project_name }}</strong> is gestart.</p><p>Uw commissietarief: <strong>{{ commission_rate }}%</strong></p><p>U ontvangt uw commissie zodra de betalingen zijn verwerkt.</p><p>Bedankt!<br><strong>NA Innovations</strong></p>'],
             ],
 
-            // #17 — Commission earned → notify partner
+            // #17 - Commission earned → notify partner
             [
                 'slug' => 'commission-earned',
                 'category' => 'commission',
@@ -305,7 +305,7 @@ class EmailTemplateSeeder extends Seeder
                 'nl' => ['name' => 'Commissie verdiend', 'subject' => 'Commissie verdiend: {{ commission_amount }} EUR', 'body' => '<p>Beste {{ partner_name }},</p><p>U heeft een commissie verdiend van <strong>{{ commission_amount }} EUR</strong> op een betaling voor factuur <strong>#{{ invoice_number }}</strong> (klant: {{ client_name }}).</p><p>Bekijk uw commissies in het partnerportaal.</p><p><strong>NA Innovations</strong></p>'],
             ],
 
-            // #20 — Commission paid → notify partner
+            // #20 - Commission paid → notify partner
             [
                 'slug' => 'commission-paid',
                 'category' => 'commission',
@@ -319,7 +319,7 @@ class EmailTemplateSeeder extends Seeder
             // DEV
             // ═══════════════════════════════════════════════
 
-            // #21 — Dev claims project → notify admin
+            // #21 - Dev claims project → notify admin
             [
                 'slug' => 'project-claimed-admin',
                 'category' => 'project',
@@ -329,7 +329,7 @@ class EmailTemplateSeeder extends Seeder
                 'nl' => ['name' => 'Project geclaimd (Admin)', 'subject' => '{{ dev_name }} heeft project {{ project_name }} geclaimd', 'body' => '<p>Ontwikkelaar <strong>{{ dev_name }}</strong> heeft project <strong>{{ project_name }}</strong> geclaimd.</p>'],
             ],
 
-            // #22 — Admin assigns project to dev
+            // #22 - Admin assigns project to dev
             [
                 'slug' => 'project-assigned-dev',
                 'category' => 'project',
@@ -343,7 +343,7 @@ class EmailTemplateSeeder extends Seeder
             // SERVICES
             // ═══════════════════════════════════════════════
 
-            // #25-28 — Service expiry alert (generic for all tiers)
+            // #25-28 - Service expiry alert (generic for all tiers)
             [
                 'slug' => 'service-expiry-alert',
                 'category' => 'service',
@@ -353,7 +353,7 @@ class EmailTemplateSeeder extends Seeder
                 'nl' => ['name' => 'Service vervalmelding', 'subject' => 'Servicemelding: {{ service_name }} verloopt over {{ days_left }} dagen', 'body' => '<p>Service <strong>{{ service_name }}</strong> ({{ provider }}) voor project <strong>{{ project_name }}</strong> verloopt op <strong>{{ expiry_date }}</strong> ({{ days_left }} dagen).</p><p>Automatische verlenging: <strong>{{ auto_renew }}</strong></p>'],
             ],
 
-            // #29 — Service renewed
+            // #29 - Service renewed
             [
                 'slug' => 'service-renewed',
                 'category' => 'service',
@@ -367,7 +367,7 @@ class EmailTemplateSeeder extends Seeder
             // INSCRIPTION / ACCOUNTS
             // ═══════════════════════════════════════════════
 
-            // #33 — Quote expiring soon → client
+            // #33 - Quote expiring soon → client
             [
                 'slug' => 'quote-expiring',
                 'category' => 'quote',
@@ -377,7 +377,7 @@ class EmailTemplateSeeder extends Seeder
                 'nl' => ['name' => 'Offerte verloopt binnenkort', 'subject' => 'Uw offerte #{{ quote_number }} verloopt binnenkort', 'body' => '<p>Beste {{ client_name }},</p><p>Uw offerte <strong>#{{ quote_number }}</strong> ({{ total }}) verloopt op <strong>{{ valid_until }}</strong>.</p><p>Gelieve te accepteren of contact met ons op te nemen voor de vervaldatum.</p><p><strong>NA Innovations</strong></p>'],
             ],
 
-            // #34 — Registration → notify admin
+            // #34 - Registration → notify admin
             [
                 'slug' => 'registration-pending-admin',
                 'category' => 'account',
@@ -387,7 +387,7 @@ class EmailTemplateSeeder extends Seeder
                 'nl' => ['name' => 'Nieuwe registratie (Admin)', 'subject' => 'Nieuwe registratie in afwachting: {{ user_name }}', 'body' => '<p>Een nieuwe <strong>{{ role }}</strong> registratie wacht op uw goedkeuring.</p><p>Naam: <strong>{{ user_name }}</strong><br>E-mail: <strong>{{ user_email }}</strong></p><p>Ga naar Teambeheer om goed te keuren of af te wijzen.</p>'],
             ],
 
-            // #35 — Account approved
+            // #35 - Account approved
             [
                 'slug' => 'account-approved',
                 'category' => 'account',
@@ -397,7 +397,7 @@ class EmailTemplateSeeder extends Seeder
                 'nl' => ['name' => 'Account goedgekeurd', 'subject' => 'Uw NA Innovations account is goedgekeurd', 'body' => '<p>Beste {{ user_name }},</p><p>Uw account is goedgekeurd. U kunt nu inloggen op uw portaal.</p><p><strong>NA Innovations</strong></p>'],
             ],
 
-            // #36 — Account rejected
+            // #36 - Account rejected
             [
                 'slug' => 'account-rejected',
                 'category' => 'account',
@@ -411,7 +411,7 @@ class EmailTemplateSeeder extends Seeder
             // SUPPORT
             // ═══════════════════════════════════════════════
 
-            // #37 — Client creates support ticket → notify admin
+            // #37 - Client creates support ticket → notify admin
             [
                 'slug' => 'support-ticket',
                 'category' => 'support',
@@ -433,7 +433,7 @@ class EmailTemplateSeeder extends Seeder
                 ],
             ],
 
-            // #38 — Admin replies to support ticket → notify client
+            // #38 - Admin replies to support ticket → notify client
             [
                 'slug' => 'support-reply',
                 'category' => 'support',

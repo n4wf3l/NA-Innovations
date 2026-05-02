@@ -123,7 +123,7 @@ class TwoFactorController extends Controller
     }
 
     /**
-     * Show the 2FA challenge page (Blade — during login flow).
+     * Show the 2FA challenge page (Blade - during login flow).
      */
     public function challenge()
     {

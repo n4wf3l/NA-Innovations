@@ -46,7 +46,7 @@ class PostSeeder extends Seeder
                 'title' => 'Pourquoi chaque entreprise a besoin d\'un portail client en 2026',
                 'slug' => 'portail-client-entreprise-2026',
                 'subject' => 'Transformation digitale',
-                'excerpt' => 'Un portail client n\'est plus un luxe — c\'est une nécessité. Découvrez pourquoi et comment un portail client peut transformer votre relation avec vos clients.',
+                'excerpt' => 'Un portail client n\'est plus un luxe - c\'est une nécessité. Découvrez pourquoi et comment un portail client peut transformer votre relation avec vos clients.',
                 'description' => 'L\'importance du portail client.',
                 'content' => '<h2>Le problème</h2><p>Vos clients vous envoient des emails pour savoir où en est leur projet. Ils appellent pour demander une facture. Ils ne retrouvent pas leur devis. Ça vous prend du temps, et ça frustre le client.</p><h2>La solution : le portail client</h2><p>Un espace dédié où le client peut :</p><ul><li>Suivre l\'avancement de son projet en temps réel</li><li>Consulter et accepter ses devis</li><li>Voir et télécharger ses factures</li><li>Communiquer avec votre équipe</li><li>Signer des documents en ligne</li></ul><h2>Les bénéfices</h2><p><strong>Pour vous</strong> : moins d\'emails, moins d\'appels, plus de temps pour développer. <strong>Pour le client</strong> : transparence totale, autonomie, professionnalisme.</p><h2>Comment on fait chez NA Innovations</h2><p>Chaque client NA Innovations a accès à un portail dédié dès que son projet démarre. C\'est inclus dans nos prestations, pas en supplément.</p>',
                 'category' => 'Business',

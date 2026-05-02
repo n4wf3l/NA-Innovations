@@ -16,7 +16,7 @@ export const clientDashboardSteps: TourStep[] = [
     {
         target: 'stats-grid',
         title: 'Vos chiffres clés',
-        description: 'Projets actifs, devis en attente, factures impayées et montant total dû — tout est résumé ici.',
+        description: 'Projets actifs, devis en attente, factures impayées et montant total dû - tout est résumé ici.',
         placement: 'bottom',
     },
     {
@@ -45,19 +45,19 @@ export const clientDashboardSteps: TourStep[] = [
     },
     {
         target: 'nav-projects',
-        title: 'Menu — Projets',
+        title: 'Menu - Projets',
         description: 'Tous vos projets avec leur avancement, timeline et documents associés.',
         placement: 'right',
     },
     {
         target: 'nav-documents',
-        title: 'Menu — Documents',
-        description: 'Vos devis, NDA, contrats et propositions reçues — tous vos documents au même endroit.',
+        title: 'Menu - Documents',
+        description: 'Vos devis, NDA, contrats et propositions reçues - tous vos documents au même endroit.',
         placement: 'right',
     },
     {
         target: 'nav-invoices',
-        title: 'Menu — Factures',
+        title: 'Menu - Factures',
         description: 'L\'historique complet de vos factures avec les montants, dates d\'échéance et statuts de paiement.',
         placement: 'right',
     },
@@ -92,7 +92,7 @@ export const partnerDashboardSteps: TourStep[] = [
     {
         target: 'hero-banner',
         title: 'Votre espace partenaire',
-        description: 'Retrouvez votre code de parrainage et votre lien unique. Partagez ce lien à vos contacts — chaque client signé vous rapporte une commission !',
+        description: 'Retrouvez votre code de parrainage et votre lien unique. Partagez ce lien à vos contacts - chaque client signé vous rapporte une commission !',
         placement: 'bottom',
     },
     {
@@ -104,7 +104,7 @@ export const partnerDashboardSteps: TourStep[] = [
     {
         target: 'stats-grid',
         title: 'Vos performances',
-        description: 'Leads envoyés, taux de conversion, gains totaux et commissions en attente — vos KPIs en un coup d\'œil.',
+        description: 'Leads envoyés, taux de conversion, gains totaux et commissions en attente - vos KPIs en un coup d\'œil.',
         placement: 'bottom',
     },
     {
@@ -139,13 +139,13 @@ export const partnerDashboardSteps: TourStep[] = [
     },
     {
         target: 'nav-leads',
-        title: 'Menu — Mes Leads',
+        title: 'Menu - Mes Leads',
         description: 'La liste complète de tous vos leads avec filtres par statut, recherche et détails.',
         placement: 'right',
     },
     {
         target: 'nav-commissions',
-        title: 'Menu — Commissions',
+        title: 'Menu - Commissions',
         description: 'L\'historique détaillé de toutes vos commissions avec les montants, taux et statuts.',
         placement: 'right',
     },
@@ -186,7 +186,7 @@ export const devDashboardSteps: TourStep[] = [
     {
         target: 'stats-grid',
         title: 'Vos statistiques',
-        description: 'Projets actifs, complétés, en attente de réclamation et total assigné — votre activité en un coup d\'œil.',
+        description: 'Projets actifs, complétés, en attente de réclamation et total assigné - votre activité en un coup d\'œil.',
         placement: 'bottom',
     },
     {
@@ -215,7 +215,7 @@ export const devDashboardSteps: TourStep[] = [
     },
     {
         target: 'nav-projects',
-        title: 'Menu — Projets',
+        title: 'Menu - Projets',
         description: 'Retrouvez tous vos projets (actifs et en attente) avec filtres, détails complets et historique.',
         placement: 'right',
     },

@@ -154,7 +154,7 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                     </svg>
                     <div>
                         <p className={`text-sm font-bold ${s.status === 'suspended' ? 'text-red-700 dark:text-red-400' : 'text-amber-700 dark:text-amber-400'}`}>
-                            {s.status === 'suspended' ? t('Service suspendu') : t('Service expiré')} — {s.name}
+                            {s.status === 'suspended' ? t('Service suspendu') : t('Service expiré')} - {s.name}
                         </p>
                         <p className={`text-xs mt-1 ${s.status === 'suspended' ? 'text-red-600/80 dark:text-red-300/80' : 'text-amber-600/80 dark:text-amber-300/80'}`}>
                             {t('Veuillez nous contacter pour renouveler votre service et réactiver votre projet.')}
@@ -234,7 +234,7 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                 </div>
             </div>
 
-            {/* Admin-set "Action required" banner — top priority */}
+            {/* Admin-set "Action required" banner - top priority */}
             {project.client_action_required && (
                 <div className="mb-6 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-500/10 dark:to-red-500/10 border-2 border-orange-300 dark:border-orange-500/40 rounded-2xl p-5 animate-fade-in">
                     <div className="flex items-start gap-4">
@@ -441,7 +441,7 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                                         <div className="space-y-5">
                                             {unifiedTimeline.map(entry => (
                                                 <div key={entry.id} className="relative flex items-start ml-4 pl-6">
-                                                    {/* Dot — color by type */}
+                                                    {/* Dot - color by type */}
                                                     <div className={`absolute -left-1.5 top-1.5 w-3 h-3 rounded-full border-2 ${
                                                         entry.type === 'commit'
                                                             ? 'bg-violet-500 border-violet-500'
@@ -593,7 +593,7 @@ export default function ClientProjectShow({ project, quotes, invoices, services,
                                                         <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
                                                     </div>
                                                     <div className="min-w-0">
-                                                        <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{q.quote_number} — {q.title}</p>
+                                                        <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{q.quote_number} - {q.title}</p>
                                                         <p className="text-xs text-gray-400 dark:text-gray-500">{formatDate(q.issue_date)} · {formatCurrency(q.total)}</p>
                                                     </div>
                                                 </div>

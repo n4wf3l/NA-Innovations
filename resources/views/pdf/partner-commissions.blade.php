@@ -113,7 +113,7 @@
         </table>
 
         <div class="footer">
-            {{ __('pdf.generated_on') }} {{ now()->format('d/m/Y H:i') }} — {{ __('pdf.confidential_document') }}
+            {{ __('pdf.generated_on') }} {{ now()->format('d/m/Y H:i') }} - {{ __('pdf.confidential_document') }}
         </div>
     </div>
 </body>

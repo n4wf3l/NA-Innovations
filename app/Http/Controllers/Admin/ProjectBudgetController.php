@@ -15,7 +15,7 @@ use Inertia\Inertia;
 class ProjectBudgetController extends BaseAdminController
 {
     /**
-     * Global revenue page — all projects combined, filterable.
+     * Global revenue page - all projects combined, filterable.
      */
     public function global(Request $request)
     {
@@ -103,7 +103,7 @@ class ProjectBudgetController extends BaseAdminController
 
         // ── ANALYTICS DATA ──
 
-        // 1. Revenue by month (last 12 months) — actual payments
+        // 1. Revenue by month (last 12 months) - actual payments
         $revenueByMonth = [];
         for ($i = 11; $i >= 0; $i--) {
             $monthStart = now()->subMonths($i)->startOfMonth();

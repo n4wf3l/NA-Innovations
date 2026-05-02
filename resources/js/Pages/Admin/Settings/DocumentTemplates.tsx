@@ -41,19 +41,19 @@ const templateInfo: Record<string, InfoEntry> = {
     'nda': {
         fr: {
             purpose: 'Modèle signé par chaque client payant avant qu\'on ne partage specs, accès back-office, maquettes ou données business.',
-            audience: 'Nous (NA Innovations) et le client dont on développe la plateforme — dès la phase devis.',
+            audience: 'Nous (NA Innovations) et le client dont on développe la plateforme - dès la phase devis.',
             consequences: 'Sans NDA signé côté client, aucun recours si le client diffuse nos specs techniques à un concurrent, ou si on est accusé de fuite de ses données.',
             avoided: 'Fuites de données client, réutilisation de notre savoir-faire par des tiers, litiges sur la propriété des idées.',
         },
         nl: {
             purpose: 'Sjabloon dat elke betalende klant ondertekent vóór we specs, back-office toegang, mockups of businessdata delen.',
-            audience: 'Wij (NA Innovations) en de klant voor wie we het platform bouwen — al vanaf de offertefase.',
+            audience: 'Wij (NA Innovations) en de klant voor wie we het platform bouwen - al vanaf de offertefase.',
             consequences: 'Zonder ondertekende NDA geen verhaal als de klant onze technische specs aan een concurrent doorspeelt, of als wij beschuldigd worden van een datalek.',
             avoided: 'Lekken van klantdata, hergebruik van onze knowhow door derden, geschillen over eigenaarschap.',
         },
         en: {
             purpose: 'Template signed by every paying client before we share specs, back-office access, mockups or business data.',
-            audience: 'Us (NA Innovations) and the client whose platform we build — starting from the quote stage.',
+            audience: 'Us (NA Innovations) and the client whose platform we build - starting from the quote stage.',
             consequences: 'Without a signed NDA on the client side, no recourse if the client passes our specs to a competitor or accuses us of leaking their data.',
             avoided: 'Client data leaks, third-party reuse of our know-how, disputes over idea ownership.',
         },
@@ -61,19 +61,19 @@ const templateInfo: Record<string, InfoEntry> = {
     'service-contract': {
         fr: {
             purpose: 'Contrat de prestation qu\'on fait signer au client pour cadrer chaque mission facturée : périmètre, prix, délais, responsabilités.',
-            audience: 'Nous et le client payant — à signer avant tout démarrage de développement.',
+            audience: 'Nous et le client payant - à signer avant tout démarrage de développement.',
             consequences: 'Sans ce contrat, impayés non recouvrables, scope creep non refacturable, et le client peut contester ce qui était inclus.',
             avoided: 'Missions qui dérapent sans budget supplémentaire, factures contestées, procédures au tribunal de commerce.',
         },
         nl: {
             purpose: 'Dienstenovereenkomst die we de klant laten tekenen om elke gefactureerde opdracht te kaderen: scope, prijs, deadlines, verantwoordelijkheden.',
-            audience: 'Wij en de betalende klant — te ondertekenen vóór elke ontwikkelingsstart.',
+            audience: 'Wij en de betalende klant - te ondertekenen vóór elke ontwikkelingsstart.',
             consequences: 'Zonder dit contract onbetaalde facturen niet inbaar, scope creep niet door te factureren, en kan de klant betwisten wat inbegrepen was.',
             avoided: 'Opdrachten die ontsporen zonder extra budget, betwiste facturen, handelsrechtbankprocedures.',
         },
         en: {
             purpose: 'Service agreement we have the client sign to frame each billed engagement: scope, price, deadlines, responsibilities.',
-            audience: 'Us and the paying client — to sign before any development kickoff.',
+            audience: 'Us and the paying client - to sign before any development kickoff.',
             consequences: 'Without this contract, unpaid invoices can\'t be recovered, scope creep can\'t be rebilled, and the client can contest what was included.',
             avoided: 'Runaway engagements with no extra budget, contested invoices, commercial court proceedings.',
         },
@@ -101,19 +101,19 @@ const templateInfo: Record<string, InfoEntry> = {
     'technical-spec': {
         fr: {
             purpose: 'Cahier des charges détaillé qui fige noir sur blanc ce qu\'on livrera au client : fonctionnalités, stack, intégrations, limites.',
-            audience: 'Notre équipe dev, le client qui valide le périmètre, et le chef de projet — référence commune pour toute la mission.',
+            audience: 'Notre équipe dev, le client qui valide le périmètre, et le chef de projet - référence commune pour toute la mission.',
             consequences: 'Sans specs validées, le client dira « je pensais que c\'était inclus », on redéveloppera des features à nos frais et on explosera le budget.',
             avoided: 'Refontes gratuites, mésentente sur le périmètre, dépassement de budget, conflits en fin de projet.',
         },
         nl: {
             purpose: 'Gedetailleerd lastenboek dat zwart op wit vastlegt wat we aan de klant leveren: functies, stack, integraties, beperkingen.',
-            audience: 'Ons devteam, de klant die de scope valideert, en de projectleider — gemeenschappelijke referentie voor de hele opdracht.',
+            audience: 'Ons devteam, de klant die de scope valideert, en de projectleider - gemeenschappelijke referentie voor de hele opdracht.',
             consequences: 'Zonder gevalideerde specs zal de klant zeggen "ik dacht dat dat inbegrepen was", herontwikkelen we functies op onze kosten en ontploft het budget.',
             avoided: 'Gratis herzieningen, scope-onenigheid, budgetoverschrijding, conflicten op het einde van het project.',
         },
         en: {
             purpose: 'Detailed specification that locks down in writing what we\'ll deliver to the client: features, stack, integrations, limits.',
-            audience: 'Our dev team, the client validating the scope, and the project manager — shared reference for the whole engagement.',
+            audience: 'Our dev team, the client validating the scope, and the project manager - shared reference for the whole engagement.',
             consequences: 'Without validated specs, the client will say "I thought that was included", we\'ll rebuild features at our expense and blow the budget.',
             avoided: 'Free rebuilds, scope disagreements, budget overruns, end-of-project conflicts.',
         },

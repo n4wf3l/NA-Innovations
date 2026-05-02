@@ -61,23 +61,23 @@ class LandingSectionSeeder extends Seeder
         LandingSection::updateOrCreate(['section_key' => 'terms'], [
             'title' => 'Conditions Générales de Vente',
             'description' => '<p><strong>Dernière mise à jour :</strong> 29 mars 2026</p>'
-                . '<h2>Article 1 — Identification du prestataire</h2>'
+                . '<h2>Article 1 - Identification du prestataire</h2>'
                 . '<p>NA Innovations BV, société à responsabilité limitée de droit belge, inscrite à la Banque-Carrefour des Entreprises sous le numéro <strong>1025.939.504</strong>, numéro de TVA <strong>BE 1025.939.504</strong>, dont le siège social est établi au 170 Nijverheidskaai, 1070 Anderlecht, Belgique (ci-après « le Prestataire »).</p>'
-                . '<p>Email : <a href="mailto:info@nainnovations.be">info@nainnovations.be</a> — Téléphone : +32 490 22 19 12</p>'
+                . '<p>Email : <a href="mailto:info@nainnovations.be">info@nainnovations.be</a> - Téléphone : +32 490 22 19 12</p>'
 
-                . '<h2>Article 2 — Champ d\'application</h2>'
+                . '<h2>Article 2 - Champ d\'application</h2>'
                 . '<p>Les présentes conditions générales s\'appliquent à toutes les prestations de services fournies par le Prestataire, notamment : le développement de sites web, d\'applications mobiles, de logiciels sur mesure, de plateformes SaaS, ainsi que les services d\'hébergement, de maintenance et de conseil. Toute commande implique l\'acceptation pleine et entière des présentes conditions, conformément aux articles VI.83 et suivants du Code de droit économique belge.</p>'
                 . '<p>Les présentes conditions prévalent sur les conditions générales du Client, sauf accord écrit contraire.</p>'
 
-                . '<h2>Article 3 — Devis et commande</h2>'
+                . '<h2>Article 3 - Devis et commande</h2>'
                 . '<p>Tout devis émis par le Prestataire est valable <strong>30 jours calendaires</strong> à compter de sa date d\'émission, sauf mention contraire. Le devis détaille la nature des prestations, le prix, le délai estimé et les conditions de paiement.</p>'
-                . '<p>L\'acceptation du devis par le Client — que ce soit par signature, par email ou via le portail en ligne — constitue une commande ferme et définitive. L\'acceptation en ligne fait foi conformément au Règlement eIDAS (UE 910/2014) et à la loi belge du 21 juillet 2016 sur les services de confiance.</p>'
+                . '<p>L\'acceptation du devis par le Client - que ce soit par signature, par email ou via le portail en ligne - constitue une commande ferme et définitive. L\'acceptation en ligne fait foi conformément au Règlement eIDAS (UE 910/2014) et à la loi belge du 21 juillet 2016 sur les services de confiance.</p>'
 
-                . '<h2>Article 4 — Prix et TVA</h2>'
+                . '<h2>Article 4 - Prix et TVA</h2>'
                 . '<p>Les prix sont exprimés en euros (€) et s\'entendent <strong>hors TVA</strong>, sauf mention contraire. La TVA belge au taux en vigueur (actuellement 21 %) est applicable. Pour les clients assujettis établis dans un autre État membre de l\'UE disposant d\'un numéro de TVA intracommunautaire valide, la TVA est autoliquidée (reverse charge) conformément à la directive 2006/112/CE.</p>'
                 . '<p>Le Prestataire se réserve le droit de réviser ses tarifs en cas de modification substantielle du périmètre de la commande. Toute modification fera l\'objet d\'un avenant écrit.</p>'
 
-                . '<h2>Article 5 — Paiement</h2>'
+                . '<h2>Article 5 - Paiement</h2>'
                 . '<p>Sauf mention contraire sur la facture, les modalités de paiement sont les suivantes :</p>'
                 . '<ul>'
                 . '<li><strong>Acompte de 30 %</strong> du montant total à la commande ;</li>'
@@ -85,35 +85,35 @@ class LandingSectionSeeder extends Seeder
                 . '</ul>'
                 . '<p>Les factures sont payables dans un délai de <strong>30 jours</strong> à compter de la date d\'émission, par virement bancaire. En cas de retard de paiement, un intérêt de retard de <strong>10 % par an</strong> est applicable de plein droit et sans mise en demeure, conformément à la loi du 2 août 2002 concernant la lutte contre le retard de paiement dans les transactions commerciales. Une indemnité forfaitaire de <strong>40 €</strong> pour frais de recouvrement est également due de plein droit (conformément à l\'article 6 de ladite loi).</p>'
 
-                . '<h2>Article 6 — Délais de livraison</h2>'
+                . '<h2>Article 6 - Délais de livraison</h2>'
                 . '<p>Les délais de livraison sont communiqués à titre indicatif et ne constituent pas des délais de rigueur. Le Prestataire s\'engage à informer le Client de tout retard prévisible. Un retard raisonnable ne peut donner lieu à la résiliation du contrat ni à des dommages et intérêts, sauf négligence grave ou intentionnelle du Prestataire.</p>'
                 . '<p>Le Client s\'engage à fournir les éléments nécessaires (contenus, visuels, accès, validations) dans les délais convenus. Tout retard imputable au Client reporte d\'autant les délais de livraison.</p>'
 
-                . '<h2>Article 7 — Propriété intellectuelle</h2>'
+                . '<h2>Article 7 - Propriété intellectuelle</h2>'
                 . '<p>Pendant toute la durée du projet, l\'ensemble des travaux réalisés (code source, designs, créations graphiques, contenus techniques) restent la <strong>propriété exclusive</strong> du Prestataire. Le transfert des droits d\'utilisation au Client n\'intervient qu\'après le <strong>paiement intégral</strong> de toutes les factures liées au projet.</p>'
                 . '<p>Après paiement complet, le Client obtient une <strong>licence d\'utilisation non exclusive</strong> lui permettant d\'exploiter les livrables pour l\'usage convenu. Le Prestataire conserve le droit de mentionner le projet dans son portfolio, sauf opposition écrite du Client.</p>'
                 . '<p>Les composants et bibliothèques open source utilisés restent soumis à leurs licences respectives. Le Prestataire ne transfère pas les droits sur les outils, frameworks et méthodologies internes réutilisables.</p>'
 
-                . '<h2>Article 8 — Confidentialité</h2>'
+                . '<h2>Article 8 - Confidentialité</h2>'
                 . '<p>Chaque partie s\'engage à garder confidentielles les informations de l\'autre partie obtenues dans le cadre du contrat. Cette obligation perdure pendant <strong>3 ans</strong> après la fin de la relation contractuelle. Un accord de non-divulgation (NDA) peut être signé préalablement via la plateforme.</p>'
 
-                . '<h2>Article 9 — Garantie et maintenance</h2>'
+                . '<h2>Article 9 - Garantie et maintenance</h2>'
                 . '<p>Le Prestataire garantit la conformité des livrables au cahier des charges validé. Le Client dispose d\'un délai de <strong>14 jours</strong> après la livraison pour signaler toute non-conformité. Passé ce délai, les livrables sont réputés acceptés.</p>'
                 . '<p>Les corrections de bugs liés au développement sont assurées gratuitement pendant <strong>30 jours</strong> après la livraison. Les évolutions, nouvelles fonctionnalités et modifications du périmètre font l\'objet d\'un devis complémentaire.</p>'
                 . '<p>Les services d\'hébergement et de maintenance récurrents sont facturés selon les conditions du contrat de service concerné, avec renouvellement automatique sauf résiliation notifiée <strong>30 jours</strong> avant l\'échéance.</p>'
 
-                . '<h2>Article 10 — Limitation de responsabilité</h2>'
+                . '<h2>Article 10 - Limitation de responsabilité</h2>'
                 . '<p>La responsabilité totale du Prestataire est limitée au <strong>montant total facturé</strong> pour le projet concerné. Le Prestataire ne peut en aucun cas être tenu responsable des dommages indirects tels que : perte de chiffre d\'affaires, perte de données, atteinte à l\'image, manque à gagner ou toute perte de nature économique indirecte.</p>'
                 . '<p>Le Prestataire ne saurait être tenu responsable des interruptions ou dysfonctionnements causés par des prestataires tiers (hébergeur, registrar, services cloud), ni des cas de force majeure au sens de l\'article 5.226 du Code civil belge.</p>'
 
-                . '<h2>Article 11 — Résiliation</h2>'
+                . '<h2>Article 11 - Résiliation</h2>'
                 . '<p>En cas de résiliation anticipée par le Client, les sommes déjà versées restent acquises au Prestataire à titre d\'indemnisation des travaux réalisés. Le Client est tenu de régler les prestations effectuées jusqu\'à la date de résiliation.</p>'
                 . '<p>Le Prestataire se réserve le droit de suspendre ou de résilier le contrat en cas de défaut de paiement persistant après une mise en demeure restée sans effet pendant <strong>15 jours</strong>.</p>'
 
-                . '<h2>Article 12 — Protection des données</h2>'
-                . '<p>Le Prestataire traite les données personnelles conformément au Règlement général sur la protection des données (RGPD — Règlement UE 2016/679) et à la loi belge du 30 juillet 2018. Pour plus d\'informations, consultez notre <a href="/privacy">Politique de Confidentialité</a>.</p>'
+                . '<h2>Article 12 - Protection des données</h2>'
+                . '<p>Le Prestataire traite les données personnelles conformément au Règlement général sur la protection des données (RGPD - Règlement UE 2016/679) et à la loi belge du 30 juillet 2018. Pour plus d\'informations, consultez notre <a href="/privacy">Politique de Confidentialité</a>.</p>'
 
-                . '<h2>Article 13 — Droit applicable et juridiction</h2>'
+                . '<h2>Article 13 - Droit applicable et juridiction</h2>'
                 . '<p>Les présentes conditions sont régies par le <strong>droit belge</strong>. En cas de litige, les parties s\'engagent à rechercher une solution amiable dans un délai de 30 jours. À défaut d\'accord, les <strong>tribunaux de l\'arrondissement judiciaire de Bruxelles</strong> seront seuls compétents.</p>'
                 . '<p>Le Client consommateur peut également recourir à la plateforme européenne de règlement des litiges en ligne : <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr</a>.</p>',
             'is_active' => true,
@@ -123,7 +123,7 @@ class LandingSectionSeeder extends Seeder
         LandingSection::updateOrCreate(['section_key' => 'privacy'], [
             'title' => 'Politique de Confidentialité',
             'description' => '<p><strong>Dernière mise à jour :</strong> 29 mars 2026</p>'
-                . '<p>La présente politique de confidentialité décrit la manière dont NA Innovations BV collecte, utilise et protège vos données personnelles, conformément au Règlement général sur la protection des données (RGPD — Règlement UE 2016/679) et à la loi belge du 30 juillet 2018 relative à la protection des personnes physiques à l\'égard des traitements de données à caractère personnel.</p>'
+                . '<p>La présente politique de confidentialité décrit la manière dont NA Innovations BV collecte, utilise et protège vos données personnelles, conformément au Règlement général sur la protection des données (RGPD - Règlement UE 2016/679) et à la loi belge du 30 juillet 2018 relative à la protection des personnes physiques à l\'égard des traitements de données à caractère personnel.</p>'
 
                 . '<h2>1. Responsable du traitement</h2>'
                 . '<p><strong>NA Innovations BV</strong><br>'
@@ -158,8 +158,8 @@ class LandingSectionSeeder extends Seeder
                 . '<h2>4. Durée de conservation</h2>'
                 . '<p>Nous conservons vos données personnelles selon les durées suivantes :</p>'
                 . '<ul>'
-                . '<li><strong>Données de compte client :</strong> pendant toute la durée de la relation commerciale, puis <strong>5 ans</strong> après la dernière interaction (obligation comptable belge — Art. III.86 du Code de droit économique).</li>'
-                . '<li><strong>Factures et données comptables :</strong> <strong>7 ans</strong> à compter de la clôture de l\'exercice (obligation fiscale belge — Art. 315 du CIR 92).</li>'
+                . '<li><strong>Données de compte client :</strong> pendant toute la durée de la relation commerciale, puis <strong>5 ans</strong> après la dernière interaction (obligation comptable belge - Art. III.86 du Code de droit économique).</li>'
+                . '<li><strong>Factures et données comptables :</strong> <strong>7 ans</strong> à compter de la clôture de l\'exercice (obligation fiscale belge - Art. 315 du CIR 92).</li>'
                 . '<li><strong>Données de navigation (cookies) :</strong> maximum <strong>13 mois</strong> (recommandation de l\'Autorité de protection des données belge).</li>'
                 . '<li><strong>Candidatures et données de partenaires inactifs :</strong> <strong>2 ans</strong> après la dernière interaction.</li>'
                 . '</ul>'
@@ -170,7 +170,7 @@ class LandingSectionSeeder extends Seeder
                 . '<ul>'
                 . '<li><strong>Notre équipe interne :</strong> administrateurs, développeurs assignés à votre projet.</li>'
                 . '<li><strong>Sous-traitants techniques :</strong> hébergeur (serveurs UE), fournisseur d\'emails transactionnels, service de génération PDF.</li>'
-                . '<li><strong>Partenaires de parrainage :</strong> uniquement les informations nécessaires au calcul de leur commission (nom du projet, montant — jamais vos coordonnées personnelles sans votre accord).</li>'
+                . '<li><strong>Partenaires de parrainage :</strong> uniquement les informations nécessaires au calcul de leur commission (nom du projet, montant - jamais vos coordonnées personnelles sans votre accord).</li>'
                 . '<li><strong>Autorités publiques :</strong> uniquement sur demande légale (administration fiscale, autorités judiciaires).</li>'
                 . '</ul>'
                 . '<p>Nous ne vendons jamais vos données à des tiers. Tous nos sous-traitants sont liés par des contrats de traitement conformes à l\'article 28 du RGPD.</p>'

@@ -7,7 +7,7 @@
  * platform without having to touch each one.
  *
  * Server-side validation (Laravel + Inertia `errors` prop) continues to
- * handle post-submit errors as before — this only intercepts the native
+ * handle post-submit errors as before - this only intercepts the native
  * client-side constraint validation popup.
  */
 

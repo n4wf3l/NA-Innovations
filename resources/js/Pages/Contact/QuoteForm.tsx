@@ -139,7 +139,7 @@ export default function QuoteForm({ quoteForm, setQuoteForm, onSubmit, processin
                         required
                     />
                 </div>
-                {/* Extra info — collapsible to not scare visitors */}
+                {/* Extra info - collapsible to not scare visitors */}
                 <details className="group">
                     <summary className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors py-2">
                         <svg className="w-4 h-4 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>

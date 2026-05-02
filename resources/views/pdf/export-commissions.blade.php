@@ -90,9 +90,9 @@
             <tbody>
                 @foreach($commissions as $c)
                 <tr>
-                    <td>{{ $c->referralPartner?->user?->name ?? '—' }}</td>
-                    <td>{{ $c->invoice?->invoice_number ?? '—' }}</td>
-                    <td>{{ $c->lead ? $c->lead->first_name . ' ' . $c->lead->last_name : '—' }}</td>
+                    <td>{{ $c->referralPartner?->user?->name ?? '-' }}</td>
+                    <td>{{ $c->invoice?->invoice_number ?? '-' }}</td>
+                    <td>{{ $c->lead ? $c->lead->first_name . ' ' . $c->lead->last_name : '-' }}</td>
                     <td class="right">{{ $c->commission_rate }}%</td>
                     <td class="right">&euro; {{ number_format($c->base_amount, 2, ',', '.') }}</td>
                     <td class="right">&euro; {{ number_format($c->commission_amount, 2, ',', '.') }}</td>

@@ -1,4 +1,4 @@
-# Guide des tests — NA Innovations
+# Guide des tests - NA Innovations
 
 ## Lancer les tests
 
@@ -85,7 +85,7 @@ User::factory()->create(['role' => 'client']); // défaut
 
 ### 1. WorkflowTest (`tests/Feature/WorkflowTest.php`)
 
-Le test le plus critique — valide le cycle de vie business complet.
+Le test le plus critique - valide le cycle de vie business complet.
 
 | Test | Ce qu'il vérifie |
 |---|---|

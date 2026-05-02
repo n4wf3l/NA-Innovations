@@ -60,14 +60,14 @@ class WorkflowTest extends TestCase
      */
     protected function mockPdfGeneration(): void
     {
-        // Nothing to mock — PdfService calls are non-critical in tests
+        // Nothing to mock - PdfService calls are non-critical in tests
         // and wrapped in try/catch in WorkflowService
     }
 
     /** @test */
     public function complete_workflow_from_lead_to_commission()
     {
-        // PDF generation wrapped in try/catch — no mock needed
+        // PDF generation wrapped in try/catch - no mock needed
 
         // 1. Create lead with referral partner
         $lead = Lead::create([
@@ -264,7 +264,7 @@ class WorkflowTest extends TestCase
     /** @test */
     public function double_quote_acceptance_is_prevented()
     {
-        // PDF generation wrapped in try/catch — no mock needed
+        // PDF generation wrapped in try/catch - no mock needed
 
         $quote = QuoteService::create([
             'title' => 'Double Accept Test',

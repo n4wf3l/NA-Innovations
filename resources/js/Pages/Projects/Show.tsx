@@ -205,8 +205,8 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                 .gallery-animate { animation: galleryFadeIn 0.6s ease-out forwards; opacity: 0; }
             `}</style>
 
-            {/* Cinematic Fullscreen Hero */}
-            <section className="relative overflow-hidden bg-black" style={{ minHeight: '100vh' }}>
+            {/* Cinematic Hero - fits a single viewport on most resolutions */}
+            <section className="relative overflow-hidden bg-black" style={{ minHeight: '75vh' }}>
                 {/* Background image with zoom animation */}
                 <div className="absolute inset-0" style={{ animation: 'heroZoom 6s ease-out forwards' }}>
                     {heroImage ? (
@@ -229,8 +229,8 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                 <div className="absolute top-8 left-8 w-16 h-16 border-l-2 border-t-2 border-teal-400/30 opacity-0" style={{ animation: 'heroMetaSlide 0.6s ease-out 1.2s forwards' }} />
                 <div className="absolute bottom-8 right-8 w-16 h-16 border-r-2 border-b-2 border-teal-400/30 opacity-0" style={{ animation: 'heroMetaSlide 0.6s ease-out 1.4s forwards' }} />
 
-                {/* Hero content — vertically centered */}
-                <div className="relative z-10 flex flex-col justify-center h-full min-h-[100vh] max-w-7xl mx-auto px-6 md:px-12">
+                {/* Hero content - vertically centered */}
+                <div className="relative z-10 flex flex-col justify-center h-full min-h-[75vh] max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-24">
                     {/* Back link */}
                     <Link
                         href="/projects"
@@ -264,9 +264,9 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                         </span>
                     )}
 
-                    {/* Title — cinematic reveal */}
+                    {/* Title - cinematic reveal */}
                     <h1
-                        className="text-6xl md:text-8xl lg:text-[10rem] font-bold text-white bebas leading-[0.85] opacity-0"
+                        className="text-5xl md:text-7xl lg:text-[7rem] font-bold text-white bebas leading-[0.85] opacity-0"
                         style={{ letterSpacing: '4px', animation: 'heroTitleReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards' }}
                     >
                         {project.title}
@@ -327,7 +327,7 @@ export default function Show({ project, nextProject, previousProject }: Props) {
             {project.show_video && project.video_url && (() => {
                 const url = project.video_url;
                 let embedId = '';
-                const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+                const match = url.match(/(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
                 if (match) embedId = match[1];
                 if (!embedId) return null;
                 return (
@@ -396,7 +396,7 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                                 )}
                             </div>
 
-                            {/* Content sections — styled cards with icons */}
+                            {/* Content sections - styled cards with icons */}
                             {contentSections.map((section, index) => {
                                 const colors = sectionColors[section.title] || { bg: 'bg-gray-50', icon: 'text-gray-500', border: 'border-gray-100' };
                                 const icon = sectionIcons[section.title] || null;
@@ -501,7 +501,7 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                                 </a>
                             )}
 
-                            {/* Testimonial — prominent quote block */}
+                            {/* Testimonial - prominent quote block */}
                             {project.testimonial_text && (
                                 <div className="bg-gray-900 rounded-2xl p-8 text-white relative overflow-hidden reveal-scale">
                                     {/* Large quotation mark SVG */}
@@ -572,7 +572,7 @@ export default function Show({ project, nextProject, previousProject }: Props) {
                 </section>
             )}
 
-            {/* CTA — Vous avez un projet similaire ? */}
+            {/* CTA - Vous avez un projet similaire ? */}
             <section className="py-16 bg-gray-900 relative overflow-hidden">
                 <div className="absolute inset-0 opacity-[0.03] flex items-center justify-center" aria-hidden="true">
                     <span className="text-[15vw] font-bold text-white bebas whitespace-nowrap">{t("LET'S TALK")}</span>

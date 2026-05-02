@@ -13,7 +13,7 @@ class PortfolioSeeder extends Seeder
         $projects = [
             [
                 'nom_societe' => 'TipTong',
-                'title' => 'TipTong — Social Tipping Platform',
+                'title' => 'TipTong - Social Tipping Platform',
                 'client_name' => 'TipTong',
                 'excerpt' => 'Application mobile et plateforme web de pourboire social, permettant aux utilisateurs de donner des tips numériques à des créateurs, artistes et professionnels de service.',
                 'context' => 'TipTong souhaitait révolutionner le concept du pourboire en le rendant digital, social et accessible partout. Le défi était de créer une expérience fluide sur mobile et web.',
@@ -34,7 +34,7 @@ class PortfolioSeeder extends Seeder
             ],
             [
                 'nom_societe' => 'Académie Congo',
-                'title' => 'Académie Congo — Plateforme Éducative',
+                'title' => 'Académie Congo - Plateforme Éducative',
                 'client_name' => 'Académie Congo',
                 'excerpt' => 'Plateforme e-learning complète dédiée à l\'éducation congolaise, offrant des cours en ligne, des exercices interactifs et un suivi de progression.',
                 'context' => 'L\'Académie Congo avait besoin d\'une plateforme moderne pour démocratiser l\'accès à l\'éducation de qualité en RDC et dans la diaspora.',
@@ -55,7 +55,7 @@ class PortfolioSeeder extends Seeder
             ],
             [
                 'nom_societe' => 'BX Cars',
-                'title' => 'BX Cars — Vitrine Automobile',
+                'title' => 'BX Cars - Vitrine Automobile',
                 'client_name' => 'BX Cars',
                 'excerpt' => 'Site vitrine moderne pour un concessionnaire automobile bruxellois, avec catalogue interactif et formulaire de contact intelligent.',
                 'context' => 'BX Cars avait besoin d\'un site professionnel pour présenter son stock de véhicules et générer des leads qualifiés.',
@@ -73,7 +73,7 @@ class PortfolioSeeder extends Seeder
             ],
             [
                 'nom_societe' => 'The Next Level Barbershop',
-                'title' => 'TNL Barbershop — Réservation en Ligne',
+                'title' => 'TNL Barbershop - Réservation en Ligne',
                 'client_name' => 'The Next Level Barbershop',
                 'excerpt' => 'Site web avec système de réservation en ligne pour un barbershop haut de gamme à Bruxelles.',
                 'context' => 'TNL Barbershop souhaitait moderniser sa prise de rendez-vous et réduire les no-shows grâce à un système automatisé.',
@@ -91,7 +91,7 @@ class PortfolioSeeder extends Seeder
             ],
             [
                 'nom_societe' => 'Casa Bonita Family',
-                'title' => 'Casa Bonita — E-commerce Familial',
+                'title' => 'Casa Bonita - E-commerce Familial',
                 'client_name' => 'Casa Bonita Family',
                 'excerpt' => 'Boutique en ligne pour une marque familiale de produits artisanaux, avec gestion de stock et paiement sécurisé.',
                 'context' => 'Casa Bonita Family voulait passer de la vente sur les réseaux sociaux à une boutique en ligne professionnelle.',
@@ -109,7 +109,7 @@ class PortfolioSeeder extends Seeder
             ],
             [
                 'nom_societe' => 'Dina Kenitra',
-                'title' => 'Dina Kenitra — Site Institutionnel',
+                'title' => 'Dina Kenitra - Site Institutionnel',
                 'client_name' => 'Dina Kenitra',
                 'excerpt' => 'Site institutionnel multilingue pour une organisation basée au Maroc, avec gestion de contenu et actualités.',
                 'context' => 'Dina Kenitra avait besoin d\'un site institutionnel professionnel en arabe et en français pour communiquer avec ses membres.',
@@ -127,7 +127,7 @@ class PortfolioSeeder extends Seeder
             ],
             [
                 'nom_societe' => 'Sogno D\'Oro',
-                'title' => 'Sogno D\'Oro — E-commerce Parfumerie',
+                'title' => 'Sogno D\'Oro - E-commerce Parfumerie',
                 'client_name' => 'Sogno D\'Oro',
                 'excerpt' => 'Boutique en ligne élégante pour une marque de parfums de luxe, avec catalogue produits, panier et paiement sécurisé.',
                 'context' => 'Sogno D\'Oro souhaitait lancer sa marque de parfums en ligne avec une identité visuelle haut de gamme reflétant le luxe et le raffinement de ses produits.',
@@ -145,7 +145,7 @@ class PortfolioSeeder extends Seeder
             ],
             [
                 'nom_societe' => 'Vericore',
-                'title' => 'Vericore — Site Vitrine Professionnel',
+                'title' => 'Vericore - Site Vitrine Professionnel',
                 'client_name' => 'Vericore',
                 'excerpt' => 'Site vitrine moderne et professionnel pour une entreprise tech bruxelloise, avec design épuré et optimisation SEO.',
                 'context' => 'Vericore avait besoin d\'une présence en ligne professionnelle pour présenter ses services et générer des leads qualifiés.',
@@ -163,7 +163,7 @@ class PortfolioSeeder extends Seeder
             ],
             [
                 'nom_societe' => 'RWDM Academy',
-                'title' => 'RWDM Academy — Site Vitrine Football',
+                'title' => 'RWDM Academy - Site Vitrine Football',
                 'client_name' => 'RWDM Academy',
                 'excerpt' => 'Site vitrine pour l\'académie de football du RWDM, développé dans le cadre d\'un stage par Nawfel Ajari.',
                 'context' => 'L\'académie de football du RWDM avait besoin d\'un site web pour présenter ses programmes, ses équipes et ses horaires d\'entraînement.',

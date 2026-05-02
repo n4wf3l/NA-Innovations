@@ -93,7 +93,7 @@ class DashboardController extends BaseAdminController
         // Email notification preference
         $notifyAdminEmails = auth()->user()->preferences['notifications']['notify_admin_emails'] ?? true;
 
-        // Activity chart — last 24 hours, grouped by hour
+        // Activity chart - last 24 hours, grouped by hour
         $activityData = \App\Models\ActivityLog::where('created_at', '>=', now()->subHours(24))
             ->selectRaw("DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00') as hour, COUNT(*) as count")
             ->groupBy('hour')

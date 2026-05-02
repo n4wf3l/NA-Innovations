@@ -68,7 +68,7 @@ export default function SimulatorTab({ simulations }: Props) {
                                     </div>
                                     <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-2.5 text-center">
                                         <p className="text-xs text-gray-400 dark:text-gray-500">Break-even</p>
-                                        <p className="text-sm font-bold text-gray-900 dark:text-white">{sim.break_even_month ? `M${sim.break_even_month}` : '—'}</p>
+                                        <p className="text-sm font-bold text-gray-900 dark:text-white">{sim.break_even_month ? `M${sim.break_even_month}` : '-'}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between text-xs text-gray-400 dark:text-gray-500">

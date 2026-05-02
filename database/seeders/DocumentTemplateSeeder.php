@@ -10,7 +10,7 @@ class DocumentTemplateSeeder extends Seeder
     public function run(): void
     {
         // ═══════════════════════════════════════════════════════
-        // Template 1 — Accord de confidentialité (NDA)
+        // Template 1 - Accord de confidentialité (NDA)
         // ═══════════════════════════════════════════════════════
 
         DocumentTemplate::updateOrCreate(
@@ -50,7 +50,7 @@ class DocumentTemplateSeeder extends Seeder
 
     <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 30px 0;">
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 1 — Objet</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 1 - Objet</h3>
     <p style="margin-bottom: 20px;">
         Le présent accord a pour objet de définir les conditions dans lesquelles les parties s'engagent
         à protéger les informations confidentielles échangées dans le cadre du projet
@@ -59,7 +59,7 @@ class DocumentTemplateSeeder extends Seeder
         sous quelque forme que ce soit (écrite, orale, électronique ou visuelle).
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 2 — Durée</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 2 - Durée</h3>
     <p style="margin-bottom: 20px;">
         Les obligations de confidentialité prévues par le présent accord sont en vigueur pour une durée de
         <strong>{{ duration_months }} mois</strong> à compter de la date de signature. À l'expiration de
@@ -67,7 +67,7 @@ class DocumentTemplateSeeder extends Seeder
         reçues pendant la durée de l'accord.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 3 — Obligations des parties</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 3 - Obligations des parties</h3>
     <p style="margin-bottom: 10px;">Chaque partie s'engage à :</p>
     <ul style="margin-bottom: 20px; padding-left: 20px;">
         <li style="margin-bottom: 8px;">Ne pas divulguer, publier ou transmettre les informations confidentielles à des tiers sans l'accord écrit préalable de l'autre partie ;</li>
@@ -77,7 +77,7 @@ class DocumentTemplateSeeder extends Seeder
         <li style="margin-bottom: 8px;">Informer immédiatement l'autre partie en cas de divulgation accidentelle ou non autorisée d'informations confidentielles.</li>
     </ul>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 4 — Exclusions</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 4 - Exclusions</h3>
     <p style="margin-bottom: 20px;">
         Ne sont pas considérées comme confidentielles les informations qui : (a) étaient déjà dans le domaine
         public au moment de leur communication ; (b) sont devenues publiques sans faute de la partie réceptrice ;
@@ -85,7 +85,7 @@ class DocumentTemplateSeeder extends Seeder
         (d) doivent être divulguées en vertu d'une obligation légale ou réglementaire.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 5 — Juridiction</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 5 - Juridiction</h3>
     <p style="margin-bottom: 30px;">
         Le présent accord est régi par le droit applicable en <strong>{{ jurisdiction }}</strong>.
         Tout litige relatif à l'interprétation ou à l'exécution du présent accord sera soumis
@@ -119,7 +119,7 @@ HTML,
         );
 
         // ═══════════════════════════════════════════════════════
-        // Template 2 — Contrat de prestation de services (CGV intégrées)
+        // Template 2 - Contrat de prestation de services (CGV intégrées)
         // ═══════════════════════════════════════════════════════
 
         DocumentTemplate::updateOrCreate(
@@ -159,7 +159,7 @@ HTML,
 
     <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 30px 0;">
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 1 — Objet du contrat</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 1 - Objet du contrat</h3>
     <p style="margin-bottom: 20px;">
         Le présent contrat a pour objet de définir les conditions dans lesquelles le Prestataire s'engage
         à réaliser pour le Client les prestations de services numériques dans le cadre du projet
@@ -167,7 +167,7 @@ HTML,
         les tests et la livraison des éléments décrits dans le devis accepté par le Client.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 2 — Durée et calendrier</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 2 - Durée et calendrier</h3>
     <p style="margin-bottom: 20px;">
         Le contrat entre en vigueur à la date de sa signature par les deux parties. Le calendrier
         de réalisation des prestations est défini d'un commun accord entre les parties. Tout retard
@@ -175,7 +175,7 @@ HTML,
         entraîne un décalage proportionnel du calendrier de livraison.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 3 — Prix et modalités de paiement</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 3 - Prix et modalités de paiement</h3>
     <p style="margin-bottom: 10px;">
         En contrepartie des prestations réalisées, le Client s'engage à verser au Prestataire la somme totale de :
     </p>
@@ -195,7 +195,7 @@ HTML,
         supérieur à 15 jours après échéance.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 4 — Obligations du Prestataire</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 4 - Obligations du Prestataire</h3>
     <ul style="margin-bottom: 20px; padding-left: 20px;">
         <li style="margin-bottom: 8px;">Exécuter les prestations avec diligence et professionnalisme, conformément aux règles de l'art ;</li>
         <li style="margin-bottom: 8px;">Informer le Client de l'avancement des travaux et de toute difficulté rencontrée ;</li>
@@ -203,7 +203,7 @@ HTML,
         <li style="margin-bottom: 8px;">Livrer les prestations conformément aux spécifications convenues dans le devis accepté.</li>
     </ul>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 5 — Obligations du Client</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 5 - Obligations du Client</h3>
     <ul style="margin-bottom: 20px; padding-left: 20px;">
         <li style="margin-bottom: 8px;">Fournir en temps utile tous les éléments nécessaires à la réalisation des prestations (contenus, accès, validations) ;</li>
         <li style="margin-bottom: 8px;">Désigner un interlocuteur unique habilité à prendre des décisions ;</li>
@@ -211,7 +211,7 @@ HTML,
         <li style="margin-bottom: 8px;">Régler les factures aux échéances prévues.</li>
     </ul>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 6 — Propriété intellectuelle</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 6 - Propriété intellectuelle</h3>
     <p style="margin-bottom: 20px;">
         Tous les droits de propriété intellectuelle relatifs aux livrables développés spécifiquement
         pour le Client dans le cadre du présent contrat seront transférés au Client après paiement
@@ -221,7 +221,7 @@ HTML,
         lors de l'exécution du contrat.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 7 — Garantie et maintenance</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 7 - Garantie et maintenance</h3>
     <p style="margin-bottom: 20px;">
         Le Prestataire garantit le bon fonctionnement des livrables pendant une période de 30 jours
         suivant la réception définitive. Cette garantie couvre la correction des anomalies bloquantes
@@ -230,7 +230,7 @@ HTML,
         complémentaires.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 8 — Responsabilité</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 8 - Responsabilité</h3>
     <p style="margin-bottom: 20px;">
         La responsabilité totale du Prestataire au titre du présent contrat ne saurait excéder le
         montant total des sommes effectivement perçues. Le Prestataire ne pourra en aucun cas être
@@ -238,7 +238,7 @@ HTML,
         clientèle, perte de données ou atteinte à l'image de marque.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 9 — Résiliation</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 9 - Résiliation</h3>
     <p style="margin-bottom: 10px;">Le présent contrat peut être résilié :</p>
     <ul style="margin-bottom: 20px; padding-left: 20px;">
         <li style="margin-bottom: 8px;">Par accord mutuel des parties, à tout moment, par notification écrite ;</li>
@@ -246,14 +246,14 @@ HTML,
         <li style="margin-bottom: 8px;">Par le Client, avec un préavis de 30 jours, sous réserve du paiement intégral des prestations déjà réalisées et des frais engagés.</li>
     </ul>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 10 — Force majeure</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 10 - Force majeure</h3>
     <p style="margin-bottom: 20px;">
         Aucune partie ne sera tenue responsable d'un manquement à ses obligations contractuelles
         résultant d'un événement de force majeure tel que défini par l'article 1148 du Code civil.
         La partie invoquant la force majeure devra en informer l'autre partie dans les 48 heures.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 11 — Droit applicable et juridiction</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 11 - Droit applicable et juridiction</h3>
     <p style="margin-bottom: 30px;">
         Le présent contrat est régi par le droit belge. Tout litige relatif à l'interprétation,
         l'exécution ou la résiliation du présent contrat sera soumis aux tribunaux compétents
@@ -268,7 +268,7 @@ HTML,
 
     <div style="display: flex; justify-content: space-between; margin-top: 40px;">
         <div style="width: 45%;">
-            <p style="font-weight: bold; margin-bottom: 8px;">Le Prestataire — {{ company_name }}</p>
+            <p style="font-weight: bold; margin-bottom: 8px;">Le Prestataire - {{ company_name }}</p>
             <p style="margin-bottom: 4px;">Nom : ___________________________</p>
             <p style="margin-bottom: 4px;">Fonction : ___________________________</p>
             <p style="margin-bottom: 4px;">Date : ___________________________</p>
@@ -276,7 +276,7 @@ HTML,
             <div style="height: 80px; border-bottom: 1px solid #333;"></div>
         </div>
         <div style="width: 45%;">
-            <p style="font-weight: bold; margin-bottom: 8px;">Le Client — {{ client_company }}</p>
+            <p style="font-weight: bold; margin-bottom: 8px;">Le Client - {{ client_company }}</p>
             <p style="margin-bottom: 4px;">Nom : {{ client_name }}</p>
             <p style="margin-bottom: 4px;">Fonction : ___________________________</p>
             <p style="margin-bottom: 4px;">Date : ___________________________</p>
@@ -291,7 +291,7 @@ HTML,
         );
 
         // ═══════════════════════════════════════════════════════
-        // Template 3 — Procès-verbal de réception
+        // Template 3 - Procès-verbal de réception
         // ═══════════════════════════════════════════════════════
 
         DocumentTemplate::updateOrCreate(
@@ -326,7 +326,7 @@ HTML,
         </tr>
         <tr>
             <td style="padding: 10px 16px; background: #f3f4f6; font-weight: bold; border: 1px solid #e5e7eb;">Client</td>
-            <td style="padding: 10px 16px; border: 1px solid #e5e7eb;">{{ client_name }} — {{ client_company }}</td>
+            <td style="padding: 10px 16px; border: 1px solid #e5e7eb;">{{ client_name }} - {{ client_company }}</td>
         </tr>
         <tr>
             <td style="padding: 10px 16px; background: #f3f4f6; font-weight: bold; border: 1px solid #e5e7eb;">Date de livraison</td>
@@ -377,7 +377,7 @@ HTML,
             <div style="height: 80px; border-bottom: 1px solid #333;"></div>
         </div>
         <div style="width: 45%;">
-            <p style="font-weight: bold; margin-bottom: 8px;">Le Client — {{ client_company }}</p>
+            <p style="font-weight: bold; margin-bottom: 8px;">Le Client - {{ client_company }}</p>
             <p style="margin-bottom: 4px;">Nom : {{ client_name }}</p>
             <p style="margin-bottom: 4px;">Date : ___________________________</p>
             <p>Signature :</p>
@@ -391,7 +391,7 @@ HTML,
         );
 
         // ═══════════════════════════════════════════════════════
-        // Template 4 — Spécification technique
+        // Template 4 - Spécification technique
         // ═══════════════════════════════════════════════════════
 
         DocumentTemplate::updateOrCreate(
@@ -416,7 +416,7 @@ HTML,
     <h2 style="text-align: center; font-size: 24px; margin-bottom: 8px; color: #111;">Spécification technique</h2>
     <p style="text-align: center; font-size: 14px; color: #666; margin-bottom: 10px;">Technical Specification</p>
     <p style="text-align: center; font-size: 14px; color: #666; margin-bottom: 40px;">
-        Projet : <strong>{{ project_name }}</strong> — Date : {{ date }}
+        Projet : <strong>{{ project_name }}</strong> - Date : {{ date }}
     </p>
 
     <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 30px 0;">
@@ -494,7 +494,7 @@ HTML,
     <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 30px 0;">
 
     <p style="font-style: italic; color: #666; text-align: center;">
-        Document généré le {{ date }} — {{ project_name }}
+        Document généré le {{ date }} - {{ project_name }}
     </p>
 
 </div>
@@ -503,7 +503,7 @@ HTML_TECHSPEC,
         );
 
         // ═══════════════════════════════════════════════════════
-        // Template 5 — Conditions Générales de Vente (CGV)
+        // Template 5 - Conditions Générales de Vente (CGV)
         // ═══════════════════════════════════════════════════════
 
         DocumentTemplate::updateOrCreate(
@@ -539,7 +539,7 @@ HTML_TECHSPEC,
 
     <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 30px 0;">
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 1 — Champ d'application</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 1 - Champ d'application</h3>
     <p style="margin-bottom: 20px;">
         Les présentes CGV s'appliquent à l'ensemble des prestations conclues par le Prestataire auprès
         du Client. Le Client déclare avoir pris connaissance des présentes CGV et les avoir acceptées
@@ -547,7 +547,7 @@ HTML_TECHSPEC,
         aux présentes CGV, à l'exclusion de tout autre document.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 2 — Devis et commandes</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 2 - Devis et commandes</h3>
     <p style="margin-bottom: 20px;">
         Toute prestation fait l'objet d'un devis préalable détaillé. Le devis est valable pour la durée
         qui y est mentionnée. La commande n'est considérée comme ferme et définitive qu'après acceptation
@@ -556,7 +556,7 @@ HTML_TECHSPEC,
         facturation complémentaire.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 3 — Tarifs et paiement</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 3 - Tarifs et paiement</h3>
     <p style="margin-bottom: 10px;">
         Les prix sont indiqués en euros et sont, sauf mention contraire, hors taxes. La TVA applicable
         sera ajoutée au taux en vigueur. Les modalités de paiement applicables au projet
@@ -574,7 +574,7 @@ HTML_TECHSPEC,
         immédiatement toute prestation en cours.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 4 — Exécution des prestations</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 4 - Exécution des prestations</h3>
     <p style="margin-bottom: 20px;">
         Le Prestataire s'engage à exécuter les prestations avec tout le soin et la diligence requis,
         conformément aux règles de l'art de la profession. Le Prestataire est soumis à une obligation
@@ -584,7 +584,7 @@ HTML_TECHSPEC,
         entraîne un report proportionnel du calendrier.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 5 — Réception et validation</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 5 - Réception et validation</h3>
     <p style="margin-bottom: 20px;">
         À la livraison de chaque phase ou livrable, le Client dispose d'un délai de 5 jours ouvrables
         pour formuler ses observations. Passé ce délai, les livrables sont réputés acceptés. Un
@@ -592,7 +592,7 @@ HTML_TECHSPEC,
         Les corrections mineures ne constituent pas un motif de refus de réception.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 6 — Propriété intellectuelle</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 6 - Propriété intellectuelle</h3>
     <p style="margin-bottom: 20px;">
         Le transfert des droits de propriété intellectuelle sur les livrables n'intervient qu'après
         paiement intégral du prix convenu. Jusqu'au paiement complet, le Prestataire conserve
@@ -602,7 +602,7 @@ HTML_TECHSPEC,
         du projet.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 7 — Garantie</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 7 - Garantie</h3>
     <p style="margin-bottom: 20px;">
         Le Prestataire garantit la conformité des livrables aux spécifications convenues pendant une
         durée de 30 jours à compter de la réception définitive. Cette garantie est limitée à la
@@ -610,7 +610,7 @@ HTML_TECHSPEC,
         et adaptations ne sont pas couverts par cette garantie.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 8 — Limitation de responsabilité</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 8 - Limitation de responsabilité</h3>
     <p style="margin-bottom: 20px;">
         La responsabilité totale du Prestataire, toutes causes confondues, est limitée au montant
         total des sommes effectivement versées par le Client au titre du contrat concerné. En aucun
@@ -619,22 +619,22 @@ HTML_TECHSPEC,
         de marque ou le manque à gagner.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 9 — Confidentialité</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 9 - Confidentialité</h3>
     <p style="margin-bottom: 20px;">
         Chaque partie s'engage à traiter comme confidentielles toutes les informations reçues de
         l'autre partie dans le cadre de l'exécution du contrat. Cette obligation de confidentialité
         subsiste pendant une durée de 2 ans après la fin du contrat.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 10 — Protection des données</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 10 - Protection des données</h3>
     <p style="margin-bottom: 20px;">
         Le Prestataire s'engage à traiter les données personnelles conformément au Règlement Général
-        sur la Protection des Données (RGPD — Règlement UE 2016/679). Les données personnelles
+        sur la Protection des Données (RGPD - Règlement UE 2016/679). Les données personnelles
         collectées dans le cadre du contrat ne sont utilisées qu'aux fins de l'exécution des prestations
         et ne sont en aucun cas cédées à des tiers sans le consentement préalable du Client.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 11 — Résiliation</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 11 - Résiliation</h3>
     <p style="margin-bottom: 20px;">
         En cas de manquement grave par l'une des parties à l'une de ses obligations, le contrat
         pourra être résilié de plein droit 15 jours après mise en demeure par lettre recommandée
@@ -642,14 +642,14 @@ HTML_TECHSPEC,
         30 jours, sous réserve du paiement des prestations déjà réalisées et engagées.
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 12 — Force majeure</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 12 - Force majeure</h3>
     <p style="margin-bottom: 20px;">
         Aucune partie ne sera tenue responsable de l'inexécution de ses obligations si cette
         inexécution résulte d'un cas de force majeure au sens de la jurisprudence belge
         (événement imprévisible, irrésistible et extérieur aux parties).
     </p>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 13 — Droit applicable et juridiction</h3>
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Article 13 - Droit applicable et juridiction</h3>
     <p style="margin-bottom: 30px;">
         Les présentes CGV sont soumises au droit belge. En cas de litige, les parties s'engagent
         à rechercher une solution amiable. À défaut d'accord, les tribunaux de l'arrondissement
@@ -665,14 +665,14 @@ HTML_TECHSPEC,
 
     <div style="display: flex; justify-content: space-between; margin-top: 40px;">
         <div style="width: 45%;">
-            <p style="font-weight: bold; margin-bottom: 8px;">Le Prestataire — {{ company_name }}</p>
+            <p style="font-weight: bold; margin-bottom: 8px;">Le Prestataire - {{ company_name }}</p>
             <p style="margin-bottom: 4px;">Nom : ___________________________</p>
             <p style="margin-bottom: 4px;">Date : ___________________________</p>
             <p>Signature :</p>
             <div style="height: 80px; border-bottom: 1px solid #333;"></div>
         </div>
         <div style="width: 45%;">
-            <p style="font-weight: bold; margin-bottom: 8px;">Le Client — {{ client_company }}</p>
+            <p style="font-weight: bold; margin-bottom: 8px;">Le Client - {{ client_company }}</p>
             <p style="margin-bottom: 4px;">Nom : {{ client_name }}</p>
             <p style="margin-bottom: 4px;">Date : ___________________________</p>
             <p>Signature (précédée de la mention « Lu et approuvé ») :</p>

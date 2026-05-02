@@ -219,10 +219,10 @@ export default function ClientDocumentShow({ document: doc, pdfPreviewUrl }: Pro
                                 <h4 className="text-sm font-bold text-green-900 dark:text-green-300">{t('Document signé par les deux parties')}</h4>
                                 <div className="flex flex-wrap gap-4 mt-1 text-xs text-green-700 dark:text-green-400/70">
                                     {doc.admin_signer && doc.admin_signed_at && (
-                                        <span>{doc.admin_signer.name} — {formatDate(doc.admin_signed_at)}</span>
+                                        <span>{doc.admin_signer.name} - {formatDate(doc.admin_signed_at)}</span>
                                     )}
                                     {doc.client_signer && doc.client_signed_at && (
-                                        <span>{doc.client_signer.name} — {formatDate(doc.client_signed_at)}</span>
+                                        <span>{doc.client_signer.name} - {formatDate(doc.client_signed_at)}</span>
                                     )}
                                 </div>
                             </div>

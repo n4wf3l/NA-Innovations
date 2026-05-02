@@ -116,7 +116,7 @@ class ClientPortalTest extends TestCase
         $quote->update(['status' => 'sent', 'sent_at' => now()]);
 
         // Accept without login via token (but route needs no auth)
-        // The workflow uses auth()->id() for timeline — create a temporary admin context
+        // The workflow uses auth()->id() for timeline - create a temporary admin context
         $tempAdmin = User::factory()->create(['role' => 'admin', 'is_active' => true]);
         $response = $this->actingAs($tempAdmin)->post("/quotes/{$quote->id}/accept/{$quote->view_token}");
         $response->assertRedirect();

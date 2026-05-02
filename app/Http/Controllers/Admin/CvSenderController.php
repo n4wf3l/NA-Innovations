@@ -15,7 +15,7 @@ class CvSenderController extends BaseAdminController
 {
     public const MAX_FILES = 4;
 
-    private const DEFAULT_SUBJECT = 'Candidature — {{ sender_name }}';
+    private const DEFAULT_SUBJECT = 'Candidature - {{ sender_name }}';
     private const DEFAULT_BODY = "<p>Bonjour,</p><p>Vous trouverez ci-joint mon CV pour votre considération.</p><p>Je reste à votre disposition pour toute question ou entretien.</p><p>Cordialement,<br>{{ sender_name }}</p>";
 
     public function index()

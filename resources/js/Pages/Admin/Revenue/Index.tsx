@@ -58,7 +58,7 @@ interface Props {
     simulatorProducts: any[];
 }
 
-// Frequency labels use t() at render time — see LineRow
+// Frequency labels use t() at render time - see LineRow
 
 export default function RevenueIndex({ projection, breakEvenMonth, actualIncome, actualExpenses, until, allProjects, selectedProjectIds, budgetLines, revenueByMonth, leadsBySource, projectsByStatus, thisMonthRevenue, lastMonthRevenue, momChange, topClients, commissionStats, simulations, simulatorProducts }: Props) {
     const { t } = useTranslation();

@@ -39,7 +39,7 @@ class ProjectAttachmentController extends BaseAdminController
             'user_id' => auth()->id(),
             'event_type' => 'document_uploaded',
             'title' => "Document ajouté : {$request->name}",
-            'description' => "Catégorie : {$request->category} — {$file->getClientOriginalName()} (" . round($file->getSize() / 1024) . " KB)",
+            'description' => "Catégorie : {$request->category} - {$file->getClientOriginalName()} (" . round($file->getSize() / 1024) . " KB)",
         ]);
 
         return redirect()->back()->with('success', 'Document ajouté avec succès.');

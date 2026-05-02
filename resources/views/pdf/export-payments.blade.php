@@ -93,11 +93,11 @@
                 @foreach($payments as $p)
                 <tr>
                     <td>{{ $p->payment_date }}</td>
-                    <td>{{ $p->invoice?->invoice_number ?? '—' }}</td>
-                    <td>{{ $p->invoice?->client_name ?? '—' }}</td>
+                    <td>{{ $p->invoice?->invoice_number ?? '-' }}</td>
+                    <td>{{ $p->invoice?->client_name ?? '-' }}</td>
                     <td class="right">&euro; {{ number_format($p->amount, 2, ',', '.') }}</td>
                     <td>{{ ucfirst($p->method ?? '') }}</td>
-                    <td>{{ $p->reference ?? '—' }}</td>
+                    <td>{{ $p->reference ?? '-' }}</td>
                     <td>
                         <span class="status status-{{ $p->status ?? 'completed' }}">{{ ucfirst($p->status ?? 'completed') }}</span>
                     </td>
@@ -117,7 +117,7 @@
         <div class="vat-summary">
             <h4>Résumé pour déclaration TVA</h4>
             <p>Total des paiements reçus : <strong>&euro; {{ number_format($totals['total'], 2, ',', '.') }}</strong></p>
-            <p>Période : {{ $filters['from'] ?? 'Début' }} — {{ $filters['to'] ?? 'Aujourd\'hui' }}</p>
+            <p>Période : {{ $filters['from'] ?? 'Début' }} - {{ $filters['to'] ?? 'Aujourd\'hui' }}</p>
             <p>Nombre de paiements : {{ $payments->count() }}</p>
         </div>
 

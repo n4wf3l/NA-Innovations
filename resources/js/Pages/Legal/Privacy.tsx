@@ -13,7 +13,7 @@ export default function Privacy({ content }: Props) {
     useScrollReveal();
 
     return (
-        <PublicLayout title={content?.title || 'Politique de Confidentialité'} description="Politique de confidentialité et protection des données personnelles — NA Innovations BV.">
+        <PublicLayout title={content?.title || 'Politique de Confidentialité'} description="Politique de confidentialité et protection des données personnelles - NA Innovations BV.">
             <Head title={content?.title || t('Privacy Policy')} />
 
             <style>{`

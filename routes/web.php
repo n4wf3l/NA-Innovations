@@ -1,7 +1,6 @@
 <?php
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProjetController;
 use App\Http\Controllers\ContactController;
 
 use App\Http\Controllers\AboutController;
@@ -39,13 +38,10 @@ Route::get('/brochure', function () {
 })->name('public.brochure');
 
 
-Route::get('/dashboard/ajouter-projet', [ProjetController::class, 'create'])->name('projets.create');
-Route::post('/projets', [ProjetController::class, 'store'])->name('projets.store');
 Route::get('/dashboard/ajouter-projet-academique', [AcademicProjetController::class, 'create'])->name('academic_projets.create');
 Route::post('/academic_projets', [AcademicProjetController::class, 'store'])->name('academic_projets.store');
 Route::get('/academic-projects', [AcademicProjetController::class, 'index'])->name('academic_projects.index');
 
-Route::delete('/projets/{projet}', [ProjetController::class, 'destroy'])->name('projets.destroy');
 Route::delete('/academic_projets/{academic_projet}', [AcademicProjetController::class, 'destroy'])->name('academic_projets.destroy');
 
 Route::middleware('auth')->group(function () {
@@ -119,7 +115,7 @@ Route::get('/posts', function (\Illuminate\Http\Request $request) {
         ->pluck('category');
 
     $seo = [
-        'title' => \App\Models\Setting::get('seo.blog_title', 'Blog — NA Innovations'),
+        'title' => \App\Models\Setting::get('seo.blog_title', 'Blog - NA Innovations'),
         'description' => \App\Models\Setting::get('seo.blog_description', 'Articles et actualités sur le développement web et mobile.'),
     ];
 
@@ -206,7 +202,7 @@ Route::put('/api/sidebar-preferences', function (\Illuminate\Http\Request $reque
     return response()->json(['ok' => true]);
 })->middleware('auth')->name('sidebar.preferences');
 
-// Tour completion — saves in user preferences
+// Tour completion - saves in user preferences
 Route::put('/api/tour-completed', function (\Illuminate\Http\Request $request) {
     if (!auth()->check()) abort(403);
     $tourKey = $request->input('tour_key');
@@ -265,7 +261,7 @@ Route::get('/privacy', function () {
 
 Route::get('/pricing', function () {
     $seo = [
-        'title' => \App\Models\Setting::get('seo.pricing_title', 'Tarifs — NA Innovations'),
+        'title' => \App\Models\Setting::get('seo.pricing_title', 'Tarifs - NA Innovations'),
         'description' => \App\Models\Setting::get('seo.pricing_description', 'Nos tarifs indicatifs par type de projet.'),
     ];
     return \Inertia\Inertia::render('Pricing', ['seo' => $seo]);
@@ -599,7 +595,7 @@ Route::prefix('admin')->middleware(['auth', 'admin', 'admin.tenant'])->group(fun
     Route::delete('projects/{project}/budget/{line}', [App\Http\Controllers\Admin\ProjectBudgetController::class, 'destroy'])->name('admin.projects.budget.destroy');
     Route::resource('partners', App\Http\Controllers\Admin\PartnerController::class)->names('admin.partners');
 
-    // Notes (global — works on any entity)
+    // Notes (global - works on any entity)
     Route::post('notes', [App\Http\Controllers\Admin\NoteController::class, 'store'])->name('admin.notes.store');
     Route::patch('notes/{note}/pin', [App\Http\Controllers\Admin\NoteController::class, 'togglePin'])->name('admin.notes.toggle-pin');
     Route::delete('notes/{note}', [App\Http\Controllers\Admin\NoteController::class, 'destroy'])->name('admin.notes.destroy');

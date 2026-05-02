@@ -31,7 +31,7 @@ export default function PartnerShow({ partner, totalLeads, wonLeads, conversionR
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Left — Info + Stats */}
+                {/* Left - Info + Stats */}
                 <div className="space-y-6">
                     {/* Profile card */}
                     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
@@ -127,7 +127,7 @@ export default function PartnerShow({ partner, totalLeads, wonLeads, conversionR
                     </div>
                 </div>
 
-                {/* Right — Leads + Commissions */}
+                {/* Right - Leads + Commissions */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Recent leads */}
                     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">

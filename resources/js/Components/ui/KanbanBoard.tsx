@@ -256,7 +256,7 @@ export default function KanbanBoard<T>({ columns, items, keyExtractor, renderCar
                 </div>
             </DndContext>
 
-            {/* Sticky ghost scrollbar — rendered via portal to document.body
+            {/* Sticky ghost scrollbar - rendered via portal to document.body
                 so it escapes any ancestor with transform/filter/will-change that
                 would otherwise break position: fixed. */}
             {createPortal(

@@ -21,7 +21,7 @@ export function useSimulatorVisible(mode: string = 'europe_only'): boolean {
             setVisible(true);
             return;
         }
-        // europe_only — check timezone
+        // europe_only - check timezone
         try {
             const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
             const inEurope = EUROPE_TIMEZONES.some(prefix => tz.startsWith(prefix));

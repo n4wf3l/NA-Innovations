@@ -16,7 +16,7 @@
 <script>
     (function(){
         var t = localStorage.getItem('na_theme');
-        if (t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        if (t === 'dark' || t === null || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         }
     })();

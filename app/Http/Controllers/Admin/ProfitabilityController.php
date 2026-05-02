@@ -139,7 +139,7 @@ class ProfitabilityController extends BaseAdminController
             $blocked = (float) ($stats->blocked ?? 0);
             return [
                 'id' => $p->id,
-                'name' => $p->user?->name ?? '—',
+                'name' => $p->user?->name ?? '-',
                 'revenue_brought' => round($revenue, 2),
                 'commission_paid' => round($paid, 2),
                 'commission_pending' => round($pending, 2),

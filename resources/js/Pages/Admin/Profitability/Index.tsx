@@ -68,7 +68,7 @@ interface Props {
 }
 
 const fmt = (n: number) => n.toLocaleString('fr-BE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-const pct = (n: number | null) => n === null ? '—' : `${n}%`;
+const pct = (n: number | null) => n === null ? '-' : `${n}%`;
 
 type Tab = 'projects' | 'clients' | 'developers' | 'partners';
 
@@ -173,8 +173,8 @@ export default function Profitability({ summary, projects, clients, developers, 
                                         <Link href={`/admin/projects/${r.id}`} className="font-semibold text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400">{r.name}</Link>
                                         <p className="text-xs text-gray-400 mt-0.5">{r.status}</p>
                                     </td>
-                                    <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{r.client_name || '—'}</td>
-                                    <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{r.developer_name || '—'}</td>
+                                    <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{r.client_name || '-'}</td>
+                                    <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{r.developer_name || '-'}</td>
                                     <td className="px-4 py-3 text-right font-mono text-gray-900 dark:text-white">{fmt(r.revenue)}</td>
                                     <td className="px-4 py-3 text-right font-mono text-rose-500">−{fmt(r.dev_cost)}</td>
                                     <td className="px-4 py-3 text-right font-mono text-rose-500">−{fmt(r.commission)}</td>
@@ -241,7 +241,7 @@ export default function Profitability({ summary, projects, clients, developers, 
                             {filtered.developers.map(r => (
                                 <tr key={r.id} className="border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50/50 dark:hover:bg-gray-700/30">
                                     <td className="px-4 py-3 font-semibold text-gray-900 dark:text-white">{r.name}</td>
-                                    <td className="px-4 py-3 text-right text-gray-600 dark:text-gray-400">{r.hourly_rate ? `${r.hourly_rate} €/h` : '—'}</td>
+                                    <td className="px-4 py-3 text-right text-gray-600 dark:text-gray-400">{r.hourly_rate ? `${r.hourly_rate} €/h` : '-'}</td>
                                     <td className="px-4 py-3 text-right font-mono">{r.hours_approved}h</td>
                                     <td className="px-4 py-3 text-right font-mono text-rose-500">{fmt(r.total_cost)}</td>
                                     <td className="px-4 py-3 text-right font-mono">{fmt(r.revenue_on_projects)}</td>

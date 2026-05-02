@@ -46,7 +46,7 @@ export default function PdfPreviewCard({ previewUrl, downloadUrl, filename, acce
     return (
         <>
             <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
-                {/* Mini PDF preview — click to open fullscreen */}
+                {/* Mini PDF preview - click to open fullscreen */}
                 <button
                     type="button"
                     onClick={() => setShowViewer(true)}
@@ -152,7 +152,7 @@ export default function PdfPreviewCard({ previewUrl, downloadUrl, filename, acce
                         </div>
                     </div>
 
-                    {/* PDF iframe — full interactive */}
+                    {/* PDF iframe - full interactive */}
                     <div className="flex-1 p-2 sm:p-6">
                         <iframe
                             src={`${previewUrl}#view=FitH`}

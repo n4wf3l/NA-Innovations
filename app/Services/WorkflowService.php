@@ -386,7 +386,7 @@ class WorkflowService
 
                 $doc = $project->projectDocuments()->create([
                     'document_template_id' => $template->id,
-                    'title' => __('Procès-verbal de réception') . ' — ' . $project->nom_societe,
+                    'title' => __('Procès-verbal de réception') . ' - ' . $project->nom_societe,
                     'content' => $content,
                     'status' => 'draft',
                     'locale' => 'fr',
@@ -505,7 +505,7 @@ class WorkflowService
                     ]);
 
                     $invoice->items()->create([
-                        'description' => "{$service->name} — renouvellement ({$service->type})",
+                        'description' => "{$service->name} - renouvellement ({$service->type})",
                         'quantity' => 1,
                         'unit' => 'month',
                         'unit_price' => round($service->billed_price / 1.21, 2),
@@ -529,7 +529,7 @@ class WorkflowService
                         'user_id' => null,
                         'event_type' => 'invoice_auto_generated',
                         'title' => "Facture auto-générée pour renouvellement de service",
-                        'description' => "{$service->name} renouvelé — Facture {$invoice->invoice_number} créée ({$invoice->total} EUR)",
+                        'description' => "{$service->name} renouvelé - Facture {$invoice->invoice_number} créée ({$invoice->total} EUR)",
                     ]);
 
                     // Notify client
@@ -599,7 +599,7 @@ class WorkflowService
                     $project->timelineEvents()->create([
                         'user_id' => null,
                         'event_type' => 'status_change',
-                        'title' => 'Projet mis en pause — service expiré',
+                        'title' => 'Projet mis en pause - service expiré',
                         'description' => "Le service {$service->name} est suspendu depuis plus de 14 jours. Le projet est mis en pause en attendant le renouvellement.",
                     ]);
                 }
@@ -633,7 +633,7 @@ class WorkflowService
     // ─── TIERED SERVICE EXPIRY NOTIFICATIONS (Schedulable) ──────────
     /**
      * Send notifications at key milestones before service expiry.
-     * Runs daily — each notification is sent only once (dedup by type+service+days).
+     * Runs daily - each notification is sent only once (dedup by type+service+days).
      */
     public static function sendServiceExpiryNotifications(): void
     {
@@ -673,8 +673,8 @@ class WorkflowService
                 self::notifyAdmins(
                     $dedupKey,
                     "Service alert: {$service->name} expires in {$tier['label']}",
-                    "{$service->name}{$context} — {$service->provider} — expires {$service->expiry_date->format('d/m/Y')}" .
-                    ($service->auto_renew ? ' (auto-renew ON)' : ' — ACTION REQUIRED'),
+                    "{$service->name}{$context} - {$service->provider} - expires {$service->expiry_date->format('d/m/Y')}" .
+                    ($service->auto_renew ? ' (auto-renew ON)' : ' - ACTION REQUIRED'),
                     "/admin/services/{$service->id}"
                 );
 
@@ -776,7 +776,7 @@ class WorkflowService
     // ─── INVOICE DUE DATE REMINDERS (J-7, J-3, J-1) (Schedulable) ──
     /**
      * Send reminders for invoices approaching their due date.
-     * Runs daily — sends at J-7, J-3, J-1 before the due date.
+     * Runs daily - sends at J-7, J-3, J-1 before the due date.
      * Each reminder is sent only once per invoice per tier (dedup via InvoiceReminder).
      */
     public static function sendInvoiceDueReminders(): array
@@ -1006,7 +1006,7 @@ class WorkflowService
         // Find the lead to get referral info
         $lead = $quote->lead_id ? Lead::find($quote->lead_id) : null;
 
-        return Projet::create([
+        $projet = Projet::create([
             'nom_societe' => $quote->client_company ?: $quote->client_name,
             'type_site' => $quote->title,
             'client_id' => $client?->id,
@@ -1015,6 +1015,24 @@ class WorkflowService
             'budget' => $quote->total,
             'description' => $quote->scope_of_work,
         ]);
+
+        // Link admin(s) so the project appears in their tenant scope.
+        // Prefer the currently authenticated admin (HTTP context), otherwise
+        // attach all admins (background/job context) to preserve visibility.
+        $authId = auth()->id();
+        if ($authId) {
+            $projet->admins()->syncWithoutDetaching([
+                $authId => ['role' => 'owner'],
+            ]);
+        } else {
+            $adminIds = User::where('role', 'admin')->pluck('id');
+            if ($adminIds->isNotEmpty()) {
+                $sync = $adminIds->mapWithKeys(fn ($id) => [$id => ['role' => 'owner']])->all();
+                $projet->admins()->syncWithoutDetaching($sync);
+            }
+        }
+
+        return $projet;
     }
 
     // ─── HELPER: Notify Partner ─────────────────────────────────────────

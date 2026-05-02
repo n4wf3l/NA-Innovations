@@ -156,7 +156,7 @@ export default function SimulatorShow({ simulation, products }: Props) {
         const summary = [
             '', '',
             [t('SIMULATION'), name || t('Sans titre')],
-            [t('Produit'), productName || '—'],
+            [t('Produit'), productName || '-'],
             [t('Prix / client / mois'), `${monthlyPrice} €`],
             [t('Horizon'), `${timeHorizon} ${t('mois')}`],
             [t('Équipe'), team.map(m => `${m.name} (${m.monthly_salary}€)`).join(', ')],
@@ -169,7 +169,7 @@ export default function SimulatorShow({ simulation, products }: Props) {
             [t('Revenu total'), `${projection.total_revenue.toFixed(2)} €`],
             [t('Coûts totaux'), `${projection.total_costs.toFixed(2)} €`],
             [t('Profit net'), `${projection.total_profit.toFixed(2)} €`],
-            [t('Break-even'), projection.break_even_month ? `${t('Mois')} ${projection.break_even_month}` : '—'],
+            [t('Break-even'), projection.break_even_month ? `${t('Mois')} ${projection.break_even_month}` : '-'],
             '', '',
         ];
 
@@ -234,7 +234,7 @@ export default function SimulatorShow({ simulation, products }: Props) {
             <div class="kpi"><div class="value">${fc(projection.total_revenue)}</div><div class="label">${t('Revenu total')}</div></div>
             <div class="kpi"><div class="value">${fc(projection.total_costs)}</div><div class="label">${t('Coûts totaux')}</div></div>
             <div class="kpi ${projection.total_profit >= 0 ? 'green' : 'red'}"><div class="value">${fc(projection.total_profit)}</div><div class="label">${t('Profit net')}</div></div>
-            <div class="kpi"><div class="value">${projection.break_even_month ? `${t('Mois')} ${projection.break_even_month}` : '—'}</div><div class="label">Break-even</div></div>
+            <div class="kpi"><div class="value">${projection.break_even_month ? `${t('Mois')} ${projection.break_even_month}` : '-'}</div><div class="label">Break-even</div></div>
         </div>
 
         <div class="two-col">
@@ -272,7 +272,7 @@ export default function SimulatorShow({ simulation, products }: Props) {
 
         ${notes ? `<div class="section"><h2>${t('Notes')}</h2><p style="color:#6b7280">${notes}</p></div>` : ''}
 
-        <div class="footer">${t('Simulation financière générée par')} ${companyName} — ${new Date().toLocaleDateString('fr-BE')}</div>
+        <div class="footer">${t('Simulation financière générée par')} ${companyName} - ${new Date().toLocaleDateString('fr-BE')}</div>
         </body></html>`);
         printWindow.document.close();
         setTimeout(() => printWindow.print(), 300);
@@ -634,7 +634,7 @@ export default function SimulatorShow({ simulation, products }: Props) {
                         </div>
                         <div className={`${card} p-4 text-center`}>
                             <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">{t('Break-even')}</p>
-                            <p className="text-xl font-black text-gray-900 dark:text-white">{projection.break_even_month ? `${t('Mois')} ${projection.break_even_month}` : '—'}</p>
+                            <p className="text-xl font-black text-gray-900 dark:text-white">{projection.break_even_month ? `${t('Mois')} ${projection.break_even_month}` : '-'}</p>
                         </div>
                     </div>
 

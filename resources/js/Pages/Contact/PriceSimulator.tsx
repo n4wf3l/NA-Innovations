@@ -287,10 +287,10 @@ export default function PriceSimulator({
                     </div>
                 </div>
 
-                {/* Step 2 anchor — used for auto-scroll after project type selection */}
+                {/* Step 2 anchor - used for auto-scroll after project type selection */}
                 <div ref={step2AnchorRef} aria-hidden="true" />
 
-                {/* Familiarity question — shown after type is selected (except no_idea) */}
+                {/* Familiarity question - shown after type is selected (except no_idea) */}
                 {selectedType && selectedType !== 'no_idea' && familiarity === 'unknown' && (
                     <div className="animate-fade-in">
                         <div className="mb-6">
@@ -343,7 +343,7 @@ export default function PriceSimulator({
                     </div>
                 )}
 
-                {/* Novice flow — guided questionnaire then recap */}
+                {/* Novice flow - guided questionnaire then recap */}
                 {selectedType && selectedType !== 'no_idea' && familiarity === 'novice' && noviceStep === 'questions' && (
                     <NoviceQuestionnaire
                         selectedType={selectedType}
@@ -503,7 +503,7 @@ export default function PriceSimulator({
                                         }`}
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-teal-400' : 'border-gray-300'}`}>
+                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-teal-400' : 'border-gray-300 dark:border-gray-600'}`}>
                                                 {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-teal-400" />}
                                             </div>
                                             <span className="text-sm text-gray-800 dark:text-gray-200">{t(option.name)}</span>
@@ -539,15 +539,15 @@ export default function PriceSimulator({
                                         }`}
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-teal-400' : 'border-gray-300'}`}>
+                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-teal-400' : 'border-gray-300 dark:border-gray-600'}`}>
                                                 {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-teal-400" />}
                                             </div>
                                             <div>
-                                                <span className="text-sm text-gray-800 block">{t(option.name)}</span>
-                                                <span className="text-xs text-gray-500">{t(option.description)}</span>
+                                                <span className="text-sm text-gray-800 dark:text-gray-100 block">{t(option.name)}</span>
+                                                <span className="text-xs text-gray-500 dark:text-gray-400">{t(option.description)}</span>
                                             </div>
                                         </div>
-                                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${option.multiplier === 0 ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400' : 'bg-amber-100 text-amber-700'}`}>
+                                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${option.multiplier === 0 ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400' : 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300'}`}>
                                             {option.multiplier === 0 ? t('No extra') : `+${option.multiplier * 100}%`}
                                         </span>
                                     </button>
@@ -557,20 +557,20 @@ export default function PriceSimulator({
                     </div>
                 )}
 
-                {/* Disclaimer — only in familiar mode (novice has its own in recap) */}
+                {/* Disclaimer - only in familiar mode (novice has its own in recap) */}
                 {selectedType && (familiarity === 'familiar' || selectedType === 'no_idea') && (
                     <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
                         <strong>{t('Disclaimer')} :</strong> {t('This estimate is provided for indicative purposes only and does not constitute a binding offer. The final price may vary depending on the specific requirements, complexity, and scope of your project. Contact us for a detailed, personalized quote.')}
                     </div>
                 )}
 
-                {/* Mobile: Price card at bottom — only in familiar mode */}
+                {/* Mobile: Price card at bottom - only in familiar mode */}
                 <div className="lg:hidden">
                     {selectedType && familiarity === 'familiar' && <PriceCard />}
                 </div>
             </div>
 
-            {/* Right: Sticky Price Card (desktop only) — hidden in novice mode (recap has its own) */}
+            {/* Right: Sticky Price Card (desktop only) - hidden in novice mode (recap has its own) */}
             {familiarity === 'familiar' && (
                 <div className="hidden lg:block w-80 flex-shrink-0">
                     <div className="sticky top-24">
