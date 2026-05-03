@@ -25,7 +25,6 @@
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact</h2>
                 <div class="text-sm text-gray-600">
                     <p class="mb-2">Email: <a href="mailto:info@nainnovations.be" class="hover:underline">info@nainnovations.be</a></p>
-                    <p class="mb-2">Phone: <a href="tel:+32490221912" class=" hover:underline">+32 490 22 19 12</a></p>
                 </div>
             </div>
             <div class="w-full md:w-1/3 lg:w-1/4 text-center md:text-left">

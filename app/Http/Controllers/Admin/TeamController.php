@@ -161,6 +161,8 @@ class TeamController extends BaseAdminController
             'password' => bcrypt(Str::random(32)), // random password - user will set their own
             'is_active' => true,
             'approved_at' => now(),
+            // Rattache au tenant de l'admin courant pour qu'il soit visible dans /admin/team
+            'admin_id' => auth()->id(),
         ]);
 
         $welcomeVars = [

@@ -1,7 +1,6 @@
 import { Head, Link, usePage, router } from '@inertiajs/react';
 import { useState, useEffect, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import WhatsAppButton from '@/Components/landing/WhatsAppButton';
 import ChatWidget from '@/Components/landing/ChatWidget';
 import { useTheme } from '@/lib/useTheme';
 
@@ -53,7 +52,7 @@ export default function PublicLayout({ children, title, description, ogImage, js
         name: 'NA Innovations BV',
         url: appUrl,
         logo: `${appUrl}/NAlogo2.png`,
-        contactPoint: { '@type': 'ContactPoint', telephone: '+32490221912', contactType: 'customer service', availableLanguage: ['French', 'English', 'Dutch'] },
+        contactPoint: { '@type': 'ContactPoint', email: 'info@nainnovations.be', contactType: 'customer service', availableLanguage: ['French', 'English', 'Dutch'] },
         address: { '@type': 'PostalAddress', streetAddress: '170 Nijverheidskaai', addressLocality: 'Anderlecht', postalCode: '1070', addressCountry: 'BE' },
         sameAs: [],
     };
@@ -474,10 +473,9 @@ export default function PublicLayout({ children, title, description, ogImage, js
                             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">{t('Contact')}</h3>
                             <div className="text-sm text-gray-600 dark:text-gray-400">
                                 <p className="mb-2">{t('Email')}: <a href="mailto:info@nainnovations.be" className="hover:underline">info@nainnovations.be</a></p>
-                                <p className="mb-1">{t('Phone')}: <a href="tel:+32490221912" className="hover:underline">+32 490 22 19 12</a></p>
                                 <p className="mb-2 text-[11px] text-gray-500 dark:text-gray-500 flex items-center gap-1.5 justify-center md:justify-start">
                                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.178 10.21 8.28 14.453 4.5 17.166m5.138-6.291c.94 1.153 2.067 2.152 3.346 2.97m1.48 5.075c-.684-.315-1.377-.687-2.05-1.127" /></svg>
-                                    {t('Disponible en FR · NL · EN')}
+                                    {t('Réponse en FR · NL · EN')}
                                 </p>
                                 <p className="mb-2 mt-4 font-bold">{siteName} BV</p>
                                 <p className="mb-2">{t('Company Registration Number')}: 1025.939.504</p>
@@ -522,9 +520,6 @@ export default function PublicLayout({ children, title, description, ogImage, js
             >
                 <svg className="w-5 h-5 transition-transform duration-300 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" /></svg>
             </button>
-
-            {/* WhatsApp floating button - above chatbot */}
-            <WhatsAppButton phoneNumber={socialLinks.whatsapp || ''} />
 
             {/* AI Chatbot widget - bottom right */}
             <ChatWidget />

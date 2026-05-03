@@ -17,6 +17,15 @@ interface ServiceRenewal {
     status: string;
 }
 
+interface ServiceNote {
+    id: number;
+    content: string;
+    is_private: boolean;
+    is_pinned: boolean;
+    created_at: string;
+    user?: { id: number; name: string };
+}
+
 interface Props {
     service: RecurringService & {
         provider_account?: string;
@@ -36,9 +45,10 @@ interface Props {
         projet?: Project;
         renewals?: ServiceRenewal[];
     };
+    serviceNotes?: ServiceNote[];
 }
 
-export default function ServiceShow({ service }: Props) {
+export default function ServiceShow({ service, serviceNotes = [] }: Props) {
     const { t } = useTranslation();
     const { confirm, ConfirmDialog } = useConfirm();
     const handleDelete = async () => {
@@ -324,15 +334,16 @@ export default function ServiceShow({ service }: Props) {
                         </div>
                     )}
 
-                    {/* Notes */}
-                    {service.notes && (
+                    {/* Free-text notes from the service's "notes" column */}
+                    {typeof service.notes === 'string' && service.notes.trim() && (
                         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-5 shadow-sm">
                             <h4 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-3">{t("Notes")}</h4>
                             <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{service.notes}</p>
                         </div>
                     )}
 
-                    <NotesSection notes={service.notes || []} notableType="service" notableId={service.id} />
+                    {/* Discussion notes (separate from the column to avoid Eloquent name conflict) */}
+                    <NotesSection notes={serviceNotes} notableType="service" notableId={service.id} />
                 </div>
             </div>
             <ConfirmDialog />

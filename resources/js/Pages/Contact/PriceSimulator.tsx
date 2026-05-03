@@ -249,6 +249,16 @@ export default function PriceSimulator({
         <div className="flex flex-col lg:flex-row gap-8">
             {/* Left: Steps */}
             <div className="flex-1 space-y-12">
+                {/* Market-aligned pricing banner — shown before any step */}
+                <div className="p-4 bg-teal-50 dark:bg-teal-500/10 rounded-xl border border-teal-200 dark:border-teal-500/30 flex items-start gap-3">
+                    <svg className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.306a11.95 11.95 0 015.814-5.518l2.74-1.22m0 0l-5.94-2.281m5.94 2.28l-2.28 5.941" />
+                    </svg>
+                    <p className="text-xs text-teal-800 dark:text-teal-200 leading-relaxed">
+                        <strong>{t('Market-aligned pricing')} :</strong> {t('These estimates reflect the current Belgian and European market rates for web, mobile and SaaS development. We position ourselves at fair market value — neither overpriced nor cut-rate.')}
+                    </p>
+                </div>
+
                 {/* Step 1: Project Type */}
                 <div>
                     <div className="mb-6">

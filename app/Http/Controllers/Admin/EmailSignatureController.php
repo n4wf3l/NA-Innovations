@@ -18,7 +18,7 @@ class EmailSignatureController extends BaseAdminController
                 'name' => Setting::get('email_signature.name', 'Nawfel Ajari'),
                 'title' => Setting::get('email_signature.title', 'Founder & Developer'),
                 'company' => Setting::get('email_signature.company', 'NA Innovations BV'),
-                'phone' => Setting::get('email_signature.phone', '+32 490 22 19 12'),
+                'phone' => Setting::get('email_signature.phone', ''),
                 'email' => Setting::get('email_signature.email', 'info@nainnovations.be'),
                 'website' => Setting::get('email_signature.website', 'www.nainnovations.be'),
                 'address' => Setting::get('email_signature.address', '170 Nijverheidskaai, Anderlecht'),

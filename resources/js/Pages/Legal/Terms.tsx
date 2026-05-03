@@ -1,20 +1,16 @@
 import PublicLayout from '@/Layouts/PublicLayout';
-import { Head } from '@inertiajs/react';
-import OriginalLanguageBadge from '@/Components/ui/OriginalLanguageBadge';
+import { Head, usePage } from '@inertiajs/react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
-import { useTranslation } from 'react-i18next';
+import { getTermsContent } from './termsContent';
 
-interface Props {
-    content: { title: string; description: string } | null;
-}
-
-export default function Terms({ content }: Props) {
-    const { t } = useTranslation();
+export default function Terms() {
     useScrollReveal();
+    const { locale } = usePage<{ locale?: string }>().props;
+    const content = getTermsContent(locale);
 
     return (
-        <PublicLayout title={content?.title || 'Conditions Générales'} description="Conditions générales de vente de NA Innovations BV.">
-            <Head title={content?.title || t('Terms & Conditions')} />
+        <PublicLayout title={content.title} description={content.title + ' — NA Innovations BV'}>
+            <Head title={content.title} />
 
             <style>{`
                 .bebas { font-family: 'Bebas Neue', sans-serif; }
@@ -64,25 +60,19 @@ export default function Terms({ content }: Props) {
             <section className="bg-gray-900 py-24">
                 <div className="max-w-4xl mx-auto text-center px-4">
                     <h1 className="text-5xl md:text-7xl font-bold text-white bebas hero-fade" style={{ letterSpacing: '3px' }}>
-                        {content?.title || t('Terms & Conditions')}
+                        {content.title}
                     </h1>
-                    <OriginalLanguageBadge light className="mt-4 justify-center" />
                 </div>
             </section>
 
             {/* Content */}
             <div className="py-20 bg-white dark:bg-gray-900">
                 <div className="max-w-3xl mx-auto px-4 reveal">
-                    <OriginalLanguageBadge className="mb-8" />
-                    {content?.description ? (
-                        <div
-                            className="legal-content"
-                            style={{ lineHeight: 1.8 }}
-                            dangerouslySetInnerHTML={{ __html: content.description }}
-                        />
-                    ) : (
-                        <p className="text-gray-500 dark:text-gray-400">{t('Content coming soon.')}</p>
-                    )}
+                    <div
+                        className="legal-content"
+                        style={{ lineHeight: 1.8 }}
+                        dangerouslySetInnerHTML={{ __html: content.html }}
+                    />
                 </div>
             </div>
         </PublicLayout>

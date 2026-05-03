@@ -32,9 +32,9 @@ function toDateInput(val: string | null | undefined): string {
     return val.substring(0, 10);
 }
 
-const serviceTypes = ['domain', 'hosting', 'ssl', 'email', 'saas', 'maintenance', 'support', 'other'];
-const frequencies = ['monthly', 'quarterly', 'semi_annual', 'annual', 'biennial'];
-const paymentModes = ['manual', 'automatic', 'client_direct'];
+const serviceTypes = ['domain', 'hosting', 'ssl', 'email', 'maintenance', 'other'];
+const frequencies = ['monthly', 'quarterly', 'semi_annual', 'annual', 'biennial', 'triennial'];
+const paymentModes = ['included_in_project', 'billed_separately', 'admin_absorbs'];
 const serviceStatuses = ['active', 'expiring_soon', 'expired', 'cancelled', 'suspended'];
 
 export default function ServiceEdit({ service, clients, projects }: Props) {
@@ -60,7 +60,7 @@ export default function ServiceEdit({ service, clients, projects }: Props) {
         login_url: service.login_url || '',
         credentials_note: service.credentials_note || '',
         description: service.description || '',
-        notes: service.notes || '',
+        notes: typeof service.notes === 'string' ? service.notes : '',
     });
 
     const submit = (e: React.FormEvent) => {

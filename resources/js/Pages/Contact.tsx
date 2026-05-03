@@ -457,17 +457,6 @@ export default function Contact({ projectTypes, turnstileSiteKey, simulatorMode 
                         </div>
                         <div className="text-center">
                             <div className="w-14 h-14 rounded-full bg-teal-50 dark:bg-teal-500/10 text-teal-500 flex items-center justify-center mx-auto mb-4">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
-                            </div>
-                            <h3 className="font-bold text-gray-900 dark:text-white mb-1">{t('Phone')}</h3>
-                            <a href="tel:+32490221912" className="text-sm text-gray-600 dark:text-gray-300 hover:text-teal-500 transition">+32 490 22 19 12</a>
-                            <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1.5 flex items-center justify-center gap-1.5">
-                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.178 10.21 8.28 14.453 4.5 17.166m5.138-6.291c.94 1.153 2.067 2.152 3.346 2.97m1.48 5.075c-.684-.315-1.377-.687-2.05-1.127" /></svg>
-                                {t('Disponible en FR · NL · EN')}
-                            </p>
-                        </div>
-                        <div className="text-center">
-                            <div className="w-14 h-14 rounded-full bg-teal-50 dark:bg-teal-500/10 text-teal-500 flex items-center justify-center mx-auto mb-4">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
                             </div>
                             <h3 className="font-bold text-gray-900 dark:text-white mb-1">{t('Location')}</h3>

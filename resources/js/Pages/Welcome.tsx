@@ -9,7 +9,6 @@ import StatsSection from '@/Components/landing/StatsSection';
 import PortfolioSection from '@/Components/landing/PortfolioSection';
 import TestimonialsSection from '@/Components/landing/TestimonialsSection';
 import FooterSection from '@/Components/landing/FooterSection';
-import WhatsAppButton from '@/Components/landing/WhatsAppButton';
 import { ChatModal } from '@/Components/landing/ChatWidget';
 import SectionNav from '@/Components/landing/SectionNav';
 import { useSimulatorVisible } from '@/hooks/useIsEurope';
@@ -1066,9 +1065,6 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                 { id: 'section-news', label: 'Latest News' },
                 { id: 'section-testimonials', label: 'Testimonials' },
             ]} />
-
-            {/* WhatsApp floating button */}
-            <WhatsAppButton phoneNumber={socialLinks.whatsapp || ''} />
 
             {/* AI Chat Modal */}
             <ChatModal isOpen={chatOpen} onClose={() => setChatOpen(false)} />

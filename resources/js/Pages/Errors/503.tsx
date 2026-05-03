@@ -46,12 +46,8 @@ export default function Maintenance() {
                         </button>
                     </div>
                     <div className="mt-8 flex flex-col items-center justify-center gap-2 text-xs text-gray-600 fade-up-d2">
-                        <div className="flex items-center gap-4">
-                            <a href="mailto:info@nainnovations.be" className="hover:text-teal-400 transition-colors">info@nainnovations.be</a>
-                            <span>·</span>
-                            <a href="tel:+32490221912" className="hover:text-teal-400 transition-colors">+32 490 22 19 12</a>
-                        </div>
-                        <p className="text-[10px] text-gray-500">{t('Disponible en FR · NL · EN')}</p>
+                        <a href="mailto:info@nainnovations.be" className="hover:text-teal-400 transition-colors">info@nainnovations.be</a>
+                        <p className="text-[10px] text-gray-500">{t('Réponse en FR · NL · EN')}</p>
                     </div>
                 </div>
             </div>

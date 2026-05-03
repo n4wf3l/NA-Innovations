@@ -83,7 +83,7 @@ class RecurringServiceController extends BaseAdminController
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|in:domain,hosting,ssl,email,saas,maintenance,support,other',
+            'type' => 'required|string|in:domain,hosting,ssl,email,maintenance,other',
             'provider' => 'nullable|string|max:255',
             'provider_account' => 'nullable|string|max:255',
             'provider_reference' => 'nullable|string|max:255',
@@ -91,12 +91,12 @@ class RecurringServiceController extends BaseAdminController
             'projet_id' => 'nullable|exists:projets,id',
             'purchase_date' => 'nullable|date',
             'expiry_date' => 'required|date',
-            'frequency' => 'required|string|in:monthly,quarterly,semi_annual,annual,biennial',
+            'frequency' => 'required|string|in:monthly,quarterly,semi_annual,annual,biennial,triennial',
             'real_cost' => 'required|numeric|min:0',
             'billed_price' => 'required|numeric|min:0',
             'currency' => 'nullable|string|max:3',
             'status' => 'nullable|string|in:active,expiring_soon,expired,cancelled,suspended',
-            'payment_mode' => 'nullable|string|in:manual,automatic,client_direct',
+            'payment_mode' => 'nullable|string|in:included_in_project,billed_separately,admin_absorbs',
             'auto_renew' => 'nullable|boolean',
             'alert_days_before' => 'nullable|integer|min:0',
             'login_url' => 'nullable|url|max:500',
@@ -118,7 +118,12 @@ class RecurringServiceController extends BaseAdminController
      */
     public function show(RecurringService $service)
     {
-        $service->load('client', 'projet', 'renewals', 'notes.user');
+        // Load related data, but NOT the 'notes' morphMany relation —
+        // it would overwrite the model's `notes` column (free-text) in JSON serialization.
+        $service->load('client', 'projet', 'renewals');
+
+        // Fetch the discussion notes separately to avoid the column/relation conflict.
+        $serviceNotes = $service->notes()->with('user')->latest()->get();
 
         if (!$this->financialUnlocked()) {
             foreach (['real_cost', 'billed_price'] as $f) {
@@ -128,6 +133,7 @@ class RecurringServiceController extends BaseAdminController
 
         return Inertia::render('Admin/Services/Show', [
             'service' => $service,
+            'serviceNotes' => $serviceNotes,
         ]);
     }
 
@@ -158,7 +164,7 @@ class RecurringServiceController extends BaseAdminController
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|in:domain,hosting,ssl,email,saas,maintenance,support,other',
+            'type' => 'required|string|in:domain,hosting,ssl,email,maintenance,other',
             'provider' => 'nullable|string|max:255',
             'provider_account' => 'nullable|string|max:255',
             'provider_reference' => 'nullable|string|max:255',
@@ -166,12 +172,12 @@ class RecurringServiceController extends BaseAdminController
             'projet_id' => 'nullable|exists:projets,id',
             'purchase_date' => 'nullable|date',
             'expiry_date' => 'required|date',
-            'frequency' => 'required|string|in:monthly,quarterly,semi_annual,annual,biennial',
+            'frequency' => 'required|string|in:monthly,quarterly,semi_annual,annual,biennial,triennial',
             'real_cost' => 'required|numeric|min:0',
             'billed_price' => 'required|numeric|min:0',
             'currency' => 'nullable|string|max:3',
             'status' => 'nullable|string|in:active,expiring_soon,expired,cancelled,suspended',
-            'payment_mode' => 'nullable|string|in:manual,automatic,client_direct',
+            'payment_mode' => 'nullable|string|in:included_in_project,billed_separately,admin_absorbs',
             'auto_renew' => 'nullable|boolean',
             'alert_days_before' => 'nullable|integer|min:0',
             'login_url' => 'nullable|url|max:500',

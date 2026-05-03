@@ -106,12 +106,12 @@ class MigrationSeeder extends Seeder
             Setting::firstOrCreate(['key' => $s['key']], $s);
         }
 
-        // WhatsApp floating button
+        // WhatsApp floating button — empty by default (no public phone exposure)
         Setting::firstOrCreate(['key' => 'social.whatsapp'], [
             'group' => 'social',
-            'value' => '+32490221912',
+            'value' => '',
             'type' => 'string',
-            'description' => 'WhatsApp phone number for floating button',
+            'description' => 'WhatsApp phone number for floating button (set in admin to enable)',
         ]);
 
         // Presentation video URL

@@ -12,9 +12,9 @@ interface Props {
 
 const inputClass = 'w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:border-teal-400 focus:ring-teal-400';
 
-const serviceTypes = ['domain', 'hosting', 'ssl', 'email', 'saas', 'maintenance', 'support', 'other'];
-const frequencies = ['monthly', 'quarterly', 'semi_annual', 'annual', 'biennial'];
-const paymentModes = ['manual', 'automatic', 'client_direct'];
+const serviceTypes = ['domain', 'hosting', 'ssl', 'email', 'maintenance', 'other'];
+const frequencies = ['monthly', 'quarterly', 'semi_annual', 'annual', 'biennial', 'triennial'];
+const paymentModes = ['included_in_project', 'billed_separately', 'admin_absorbs'];
 const serviceStatuses = ['active', 'expiring_soon', 'expired', 'cancelled', 'suspended'];
 
 export default function ServiceCreate({ clients, projects }: Props) {

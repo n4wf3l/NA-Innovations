@@ -249,15 +249,9 @@ Route::get('/products/{slug}', function (string $slug) {
     return \Inertia\Inertia::render('Products/SaaSShow', ['product' => $product]);
 })->name('products.saas.show');
 
-Route::get('/terms', function () {
-    $terms = \App\Models\LandingSection::where('section_key', 'terms')->first();
-    return Inertia::render('Legal/Terms', ['content' => $terms]);
-})->name('terms');
+Route::get('/terms', fn () => Inertia::render('Legal/Terms'))->name('terms');
 
-Route::get('/privacy', function () {
-    $privacy = \App\Models\LandingSection::where('section_key', 'privacy')->first();
-    return Inertia::render('Legal/Privacy', ['content' => $privacy]);
-})->name('privacy');
+Route::get('/privacy', fn () => Inertia::render('Legal/Privacy'))->name('privacy');
 
 Route::get('/pricing', function () {
     $seo = [
