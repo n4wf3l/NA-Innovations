@@ -50,8 +50,15 @@ class ProjectController extends Controller
             'timelineEvents' => fn($q) => $q->latest()->take(30),
         ]);
 
-        // SECURITY: never expose internal/sensitive fields to the client
-        $project->makeHidden(['project_credentials', 'project_env', 'estimated_hours', 'github_repo']);
+        // SECURITY: never expose internal/sensitive fields to the client.
+        // github_repo is only hidden when the admin has not explicitly opted-in
+        // to share commits with the client; otherwise the client UI needs the
+        // repo identifier to display the link and trigger the commits fetch.
+        $hidden = ['project_credentials', 'project_env', 'estimated_hours'];
+        if (!$project->show_commits_to_client) {
+            $hidden[] = 'github_repo';
+        }
+        $project->makeHidden($hidden);
 
         // Documents: quotes linked to this project or lead
         $quotes = Quote::where(function ($q) use ($project) {

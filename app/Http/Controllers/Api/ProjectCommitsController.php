@@ -40,8 +40,29 @@ class ProjectCommitsController extends Controller
             return response()->json(['error' => 'No repository linked', 'commits' => []]);
         }
 
-        // Get the token from the user who linked the repo
-        $linkedUser = $project->github_linked_by ? User::find($project->github_linked_by) : null;
+        // Normalize the repo to "owner/repo" format. Tolerate inputs like:
+        //   "/n4wf3l/talentive", " n4wf3l/talentive ",
+        //   "https://github.com/n4wf3l/talentive", "github.com/n4wf3l/talentive.git"
+        $repo = trim($project->github_repo);
+        $repo = preg_replace('#^https?://(www\.)?github\.com/#i', '', $repo);
+        $repo = trim($repo, " /\t\n\r");
+        $repo = preg_replace('/\.git$/i', '', $repo);
+
+        if (!preg_match('#^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$#', $repo)) {
+            return response()->json([
+                'error' => 'Invalid repository format. Expected "owner/repo".',
+                'commits' => [],
+            ]);
+        }
+
+        // Get the token from the user who linked the repo. Bypass the tenant
+        // scope here: a client (or developer) querying their own project must
+        // be able to read the admin's github_token even though the admin is in
+        // a different tenant from the perspective of the requester.
+        $linkedUser = $project->github_linked_by
+            ? User::withoutGlobalScope(\App\Models\Scopes\UserAdminTenantScope::class)
+                ->find($project->github_linked_by)
+            : null;
         $token = $linkedUser?->github_token;
 
         if (!$token) {
@@ -51,26 +72,38 @@ class ProjectCommitsController extends Controller
             ]);
         }
 
-        $cacheKey = "github_commits_{$project->id}";
+        // For clients, optionally hide commits made BEFORE the project's
+        // start_date. If start_date is not set explicitly, no filter is applied
+        // (better to show the existing repo history than hide everything when
+        // a repo is linked to an already-running project).
+        $sinceIso = null;
+        if ($role === 'client' && $project->start_date) {
+            $sinceIso = $project->start_date->copy()->startOfDay()->toIso8601String();
+        }
 
-        $result = Cache::remember($cacheKey, 300, function () use ($project, $token) {
-            return $this->fetchCommits($project->github_repo, $token);
+        $cacheKey = "github_commits_{$project->id}_" . ($sinceIso ?: 'all');
+
+        $result = Cache::remember($cacheKey, 300, function () use ($repo, $token, $sinceIso) {
+            return $this->fetchCommits($repo, $token, $sinceIso);
         });
 
         return response()->json($result);
     }
 
-    private function fetchCommits(string $repo, string $token): array
+    private function fetchCommits(string $repo, string $token, ?string $sinceIso = null): array
     {
         try {
+            $query = ['per_page' => 20];
+            if ($sinceIso) {
+                $query['since'] = $sinceIso;
+            }
+
             $response = Http::withToken($token)
                 ->withHeaders([
                     'Accept' => 'application/vnd.github.v3+json',
                     'User-Agent' => 'NA-Innovations-Platform',
                 ])
-                ->get("https://api.github.com/repos/{$repo}/commits", [
-                    'per_page' => 20,
-                ]);
+                ->get("https://api.github.com/repos/{$repo}/commits", $query);
 
             if ($response->status() === 401) {
                 return [
@@ -80,7 +113,13 @@ class ProjectCommitsController extends Controller
             }
 
             if (!$response->successful()) {
-                return ['error' => 'Could not fetch commits from GitHub', 'commits' => []];
+                $status = $response->status();
+                $hint = match ($status) {
+                    404 => "Repository '{$repo}' not found on GitHub. Check the format (owner/repo) and that the linked user has access.",
+                    403 => 'GitHub rate limit reached or insufficient permissions.',
+                    default => "GitHub API returned status {$status}.",
+                };
+                return ['error' => $hint, 'commits' => []];
             }
 
             $commits = collect($response->json())->map(function ($commit) {

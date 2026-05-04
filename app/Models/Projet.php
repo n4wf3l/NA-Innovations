@@ -78,6 +78,29 @@ class Projet extends Model
     ];
 
     // ──────────────────────────────────────────────
+    // Mutators
+    // ──────────────────────────────────────────────
+
+    /**
+     * Normalize the GitHub repo identifier on save so we always store
+     * "owner/repo" (no leading slash, no URL prefix, no .git suffix).
+     */
+    public function setGithubRepoAttribute(?string $value): void
+    {
+        if ($value === null || trim($value) === '') {
+            $this->attributes['github_repo'] = null;
+            return;
+        }
+
+        $repo = trim($value);
+        $repo = preg_replace('#^https?://(www\.)?github\.com/#i', '', $repo);
+        $repo = trim($repo, " /\t\n\r");
+        $repo = preg_replace('/\.git$/i', '', $repo);
+
+        $this->attributes['github_repo'] = $repo ?: null;
+    }
+
+    // ──────────────────────────────────────────────
     // Relationships
     // ──────────────────────────────────────────────
 

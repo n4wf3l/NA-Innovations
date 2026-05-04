@@ -452,15 +452,35 @@ Route::prefix('client')->middleware(['auth', 'client'])->group(function () {
 
     // Client Testimonial
     Route::post('/testimonial', function (\Illuminate\Http\Request $request) {
-        $request->validate(['message' => 'required|string|max:1000', 'rating' => 'nullable|integer|min:1|max:5']);
+        $request->validate([
+            'message' => 'required|string|max:1000',
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
         $existing = \App\Models\Testimonial::where('user_id', auth()->id())->first();
-        if ($existing) return back()->with('error', 'Vous avez déjà soumis un témoignage.');
-        \App\Models\Testimonial::create(['user_id' => auth()->id(), 'message' => $request->message, 'rating' => $request->rating, 'status' => 'pending']);
+        if ($existing) return back()->with('error', __('Vous avez déjà soumis un témoignage.'));
+        \App\Models\Testimonial::create([
+            'user_id' => auth()->id(),
+            'message' => $request->message,
+            'rating' => (int) $request->rating,
+            'status' => 'pending',
+        ]);
         // Notify admins
-        \App\Models\User::withoutGlobalScope(\App\Models\Scopes\UserAdminTenantScope::class)->where('role', 'admin')->where('is_active', true)->each(fn($admin) =>
-            \App\Models\NotificationLog::create(['user_id' => $admin->id, 'type' => 'testimonial_submitted', 'title' => 'Nouveau témoignage', 'message' => auth()->user()->name . ' a soumis un témoignage.', 'action_url' => '/admin/settings/testimonials', 'is_read' => false])
-        );
-        return back()->with('success', 'Merci ! Votre témoignage a été soumis pour approbation.');
+        try {
+            \App\Models\User::withoutGlobalScope(\App\Models\Scopes\UserAdminTenantScope::class)
+                ->where('role', 'admin')
+                ->where('is_active', true)
+                ->each(fn ($admin) => \App\Models\NotificationLog::create([
+                    'user_id' => $admin->id,
+                    'type' => 'testimonial_submitted',
+                    'title' => 'Nouveau témoignage',
+                    'message' => (auth()->user()->name ?? 'Un client') . ' a soumis un témoignage.',
+                    'action_url' => '/admin/settings/testimonials',
+                    'is_read' => false,
+                ]));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Testimonial admin notify failed: ' . $e->getMessage());
+        }
+        return back()->with('success', __('Merci ! Votre témoignage a été soumis pour approbation.'));
     })->name('client.testimonial.store');
 
     // Project Attachments (external documents)

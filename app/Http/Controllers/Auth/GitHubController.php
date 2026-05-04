@@ -25,9 +25,11 @@ class GitHubController extends Controller
         $request->session()->put('github_oauth_state', $state);
         $request->session()->put('github_oauth_return', url()->previous());
 
+        // Build the callback URL dynamically from the current request so it
+        // auto-adapts to local vs prod (GITHUB_REDIRECT_URI env var ignored).
         $params = http_build_query([
             'client_id' => config('services.github.client_id'),
-            'redirect_uri' => config('services.github.redirect'),
+            'redirect_uri' => route('github.callback'),
             'scope' => 'repo',
             'state' => $state,
         ]);
@@ -53,12 +55,13 @@ class GitHubController extends Controller
             return redirect($returnUrl)->with('error', 'GitHub authorization was cancelled.');
         }
 
-        // Exchange code for access token
+        // Exchange code for access token. The redirect_uri MUST match what was
+        // sent in the authorization step (route('github.callback') above).
         $tokenResponse = Http::acceptJson()->post('https://github.com/login/oauth/access_token', [
             'client_id' => config('services.github.client_id'),
             'client_secret' => config('services.github.client_secret'),
             'code' => $code,
-            'redirect_uri' => config('services.github.redirect'),
+            'redirect_uri' => route('github.callback'),
         ]);
 
         if (!$tokenResponse->successful() || !$tokenResponse->json('access_token')) {

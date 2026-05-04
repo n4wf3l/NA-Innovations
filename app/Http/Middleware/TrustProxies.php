@@ -8,11 +8,14 @@ use Illuminate\Http\Request;
 class TrustProxies extends Middleware
 {
     /**
-     * The trusted proxies for this application.
+     * Trust all proxies. Required on shared hosting (e.g. Combell) where the
+     * web server sits behind a reverse proxy that forwards the original
+     * scheme/host via X-Forwarded-* headers. Without this, Laravel may build
+     * URLs using the internal proxy scheme/host instead of the public domain.
      *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    protected $proxies = '*';
 
     /**
      * The headers that should be used to detect proxies.
