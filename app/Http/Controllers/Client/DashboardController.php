@@ -53,8 +53,8 @@ class DashboardController extends Controller
 
         return Inertia::render('Client/Dashboard', [
             'projects' => $projects,
-            'pendingQuotes' => $pendingQuotes,
-            'unpaidInvoices' => $unpaidInvoices,
+            'quotes' => $pendingQuotes,
+            'invoices' => $unpaidInvoices,
             'sentEmails' => $sentEmails,
             'stats' => $stats,
             'hasTestimonial' => \App\Models\Testimonial::where('user_id', auth()->id())->exists(),

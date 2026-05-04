@@ -92,6 +92,74 @@ class User extends Authenticatable
     ];
 
     // ──────────────────────────────────────────────
+    // Notifications
+    // ──────────────────────────────────────────────
+
+    /**
+     * Override Laravel's default password reset email to use our branded
+     * NA Innovations template instead of the generic Laravel one.
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        // Default to platform's current locale (not the user's stored preference)
+        // so the email matches the language of the page the user just used.
+        $appLocale = app()->getLocale();
+        $locale = in_array($appLocale, ['fr', 'en', 'nl']) ? $appLocale : 'fr';
+
+        $url = url(route('password.reset', [
+            'token' => $token,
+            'email' => $this->getEmailForPasswordReset(),
+        ], false));
+
+        $strings = [
+            'fr' => [
+                'subject' => 'Définissez votre mot de passe',
+                'greeting' => 'Bonjour',
+                'message' => 'Bienvenue sur NA Innovations. Pour accéder à votre espace, cliquez sur le bouton ci-dessous afin de définir votre mot de passe.',
+                'button' => 'Définir mon mot de passe',
+                'expiry' => 'Ce lien expirera dans 60 minutes pour des raisons de sécurité.',
+                'ignore' => 'Si vous n\'êtes pas à l\'origine de cette demande, ignorez simplement cet e-mail.',
+            ],
+            'en' => [
+                'subject' => 'Set your password',
+                'greeting' => 'Hello',
+                'message' => 'Welcome to NA Innovations. To access your account, please click the button below to set your password.',
+                'button' => 'Set my password',
+                'expiry' => 'This link will expire in 60 minutes for security reasons.',
+                'ignore' => 'If you did not request this, you can simply ignore this email.',
+            ],
+            'nl' => [
+                'subject' => 'Stel uw wachtwoord in',
+                'greeting' => 'Hallo',
+                'message' => 'Welkom bij NA Innovations. Om toegang te krijgen tot uw account, klik op de onderstaande knop om uw wachtwoord in te stellen.',
+                'button' => 'Mijn wachtwoord instellen',
+                'expiry' => 'Deze link verloopt binnen 60 minuten om veiligheidsredenen.',
+                'ignore' => 'Als u dit verzoek niet heeft gedaan, kunt u deze e-mail negeren.',
+            ],
+        ];
+
+        $t = $strings[$locale];
+        $name = e($this->name ?: $this->email);
+
+        $body = '<p>' . $t['greeting'] . ' <strong>' . $name . '</strong>,</p>'
+              . '<p>' . $t['message'] . '</p>'
+              . '<p style="text-align: center; margin: 32px 0;">'
+              . '<a href="' . $url . '" style="display: inline-block; background: linear-gradient(135deg, #14b8a6, #0d9488); color: #ffffff; padding: 14px 36px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);">'
+              . $t['button']
+              . '</a></p>'
+              . '<p style="font-size: 12px; color: #6b7280; text-align: center; margin-top: 24px;">' . $t['expiry'] . '</p>'
+              . '<p style="font-size: 12px; color: #9ca3af; text-align: center;">' . $t['ignore'] . '</p>';
+
+        try {
+            \Illuminate\Support\Facades\Mail::to($this->email)->send(
+                new \App\Mail\TemplateMail($t['subject'], $body)
+            );
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("sendPasswordResetNotification failed for {$this->email}: " . $e->getMessage());
+        }
+    }
+
+    // ──────────────────────────────────────────────
     // Role helpers
     // ──────────────────────────────────────────────
 

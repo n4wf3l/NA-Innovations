@@ -86,6 +86,8 @@ class ClientController extends BaseAdminController
         $validated['password'] = Hash::make(Str::random(32));
         $validated['is_active'] = true;
         $validated['approved_at'] = now();
+        // Rattache au tenant de l'admin courant pour qu'il soit visible dans /admin/clients
+        $validated['admin_id'] = auth()->id();
 
         $user = User::create($validated);
 

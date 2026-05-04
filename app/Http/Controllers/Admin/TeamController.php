@@ -61,6 +61,8 @@ class TeamController extends BaseAdminController
         $user->update([
             'is_active' => true,
             'approved_at' => now(),
+            // Rattache au tenant de l'admin qui approuve, sauf si déjà rattaché
+            'admin_id' => $user->admin_id ?? auth()->id(),
         ]);
 
         // Create ReferralPartner record if partner

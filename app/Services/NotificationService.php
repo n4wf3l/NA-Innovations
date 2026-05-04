@@ -77,7 +77,11 @@ class NotificationService
         bool $transactional = false,
         ?string $actionUrl = null,
     ): void {
-        $locale = $recipient->locale ?? 'fr';
+        // Default to platform's current locale (admin's view at the moment of the action),
+        // not the recipient's stored preference. This keeps emails consistent with the
+        // language used by the sender / current user when the action was triggered.
+        $appLocale = app()->getLocale();
+        $locale = in_array($appLocale, ['fr', 'en', 'nl']) ? $appLocale : 'fr';
 
         // 1. Load template from DB
         $template = EmailTemplate::where('slug', $templateSlug)

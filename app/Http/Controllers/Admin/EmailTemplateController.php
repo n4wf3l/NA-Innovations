@@ -24,7 +24,7 @@ class EmailTemplateController extends BaseAdminController
                 'phone' => Setting::get('email_signature.phone', ''),
                 'email' => Setting::get('email_signature.email', 'info@nainnovations.be'),
                 'website' => Setting::get('email_signature.website', 'www.nainnovations.be'),
-                'address' => Setting::get('email_signature.address', '170 Nijverheidskaai, Anderlecht'),
+                'address' => Setting::get('email_signature.address', ''),
                 'linkedin' => Setting::get('email_signature.linkedin', ''),
                 'instagram' => Setting::get('email_signature.instagram', ''),
                 'github' => Setting::get('email_signature.github', ''),

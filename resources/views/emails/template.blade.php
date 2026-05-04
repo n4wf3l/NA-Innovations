@@ -92,7 +92,7 @@
             </div>
             <div class="footer">
                 <p>
-                    {{ config('mail.from.name', 'NA Innovations') }} &mdash; 170 Nijverheidskaai, Anderlecht<br>
+                    {{ config('mail.from.name', 'NA Innovations') }}<br>
                     <a href="mailto:{{ config('mail.from.address') }}">{{ config('mail.from.address') }}</a>
                     &nbsp;&middot;&nbsp;
                     <a href="{{ config('app.url') }}">{{ str_replace(['https://', 'http://'], '', config('app.url')) }}</a>

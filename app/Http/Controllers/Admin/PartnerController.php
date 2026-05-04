@@ -73,6 +73,8 @@ class PartnerController extends BaseAdminController
             'email' => $validated['email'],
             'password' => Hash::make(Str::random(16)),
             'role' => 'referral_partner',
+            // Rattache au tenant de l'admin courant pour visibilité dans /admin/partners
+            'admin_id' => auth()->id(),
         ]);
 
         // Set financial PIN if provided

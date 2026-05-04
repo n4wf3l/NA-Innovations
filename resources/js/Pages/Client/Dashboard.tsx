@@ -24,7 +24,7 @@ interface Props {
     hasTestimonial: boolean;
 }
 
-export default function ClientDashboard({ projects, quotes, invoices, sentEmails = [], stats, hasTestimonial }: Props) {
+export default function ClientDashboard({ projects = [], quotes = [], invoices = [], sentEmails = [], stats, hasTestimonial }: Props) {
     const { t } = useTranslation();
     const { auth } = usePage<PageProps>().props;
     const tour = useTour('client_dashboard', clientDashboardSteps.length);
