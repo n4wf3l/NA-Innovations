@@ -186,12 +186,12 @@ export default function BlogShow({ post, relatedPosts }: Props) {
             {/* Hero with cover image */}
             <section className="relative">
                 {post.image_url ? (
-                    <div className="relative h-[400px] md:h-[500px]">
+                    <div className="relative h-[280px] sm:h-[400px] md:h-[500px]">
                         <img src={post.image_url} alt={post.title} loading="lazy" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent" />
-                        <div className="absolute bottom-0 left-0 right-0 p-8 md:p-16">
+                        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8 md:p-16">
                             <div className="max-w-3xl mx-auto hero-fade">
-                                <div className="flex items-center gap-3 mb-4">
+                                <div className="flex items-center gap-3 mb-3 sm:mb-4">
                                     {post.category && (
                                         <span className="inline-flex items-center rounded-full bg-teal-500 px-3 py-1 text-xs font-bold text-white uppercase tracking-wider">
                                             {post.category}
@@ -201,7 +201,7 @@ export default function BlogShow({ post, relatedPosts }: Props) {
                                         <span className="text-sm text-white/70">{post.reading_time} {t('min read')}</span>
                                     )}
                                 </div>
-                                <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight mb-4">
+                                <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white leading-tight mb-3 sm:mb-4 break-words">
                                     {post.title}
                                 </h1>
                                 <div className="flex items-center gap-4 text-sm text-white/70">

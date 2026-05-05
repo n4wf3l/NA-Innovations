@@ -102,7 +102,7 @@ export default function SaaSShow({ product }: Props) {
                     </span>
 
                     {/* Title */}
-                    <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold text-white leading-[0.85] opacity-0" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '4px', animation: 'prodTitle 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards' }}>
+                    <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-[10rem] font-bold text-white leading-[0.85] opacity-0 break-words" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '2px', animation: 'prodTitle 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards' }}>
                         {product.name}
                     </h1>
 
@@ -123,15 +123,15 @@ export default function SaaSShow({ product }: Props) {
                     )}
 
                     {/* CTA buttons */}
-                    <div className="flex gap-4 mt-10 opacity-0" style={{ animation: 'prodMeta 0.8s ease-out 1.4s forwards' }}>
+                    <div className="flex flex-wrap gap-3 sm:gap-4 mt-8 sm:mt-10 opacity-0" style={{ animation: 'prodMeta 0.8s ease-out 1.4s forwards' }}>
                         {isLaunched && product.live_url && (
-                            <a href={product.live_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-4 bg-violet-500 text-white font-bold rounded-full hover:bg-violet-400 hover:scale-105 transition-all duration-300" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '2px' }}>
+                            <a href={product.live_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-violet-500 text-white font-bold rounded-full hover:bg-violet-400 hover:scale-105 transition-all duration-300 text-sm sm:text-base" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '2px' }}>
                                 {t('Launch App').toUpperCase()}
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
                             </a>
                         )}
                         {product.demo_url && (
-                            <a href={product.demo_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-4 border border-white/20 text-white font-bold rounded-full hover:border-violet-400/50 hover:text-violet-300 transition-all duration-300" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '2px' }}>
+                            <a href={product.demo_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 border border-white/20 text-white font-bold rounded-full hover:border-violet-400/50 hover:text-violet-300 transition-all duration-300 text-sm sm:text-base" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '2px' }}>
                                 {t('Demo').toUpperCase()}
                             </a>
                         )}
@@ -156,7 +156,7 @@ export default function SaaSShow({ product }: Props) {
                         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500 rounded-full blur-[150px]" />
                     </div>
                     <div className="relative max-w-4xl mx-auto px-6 md:px-12">
-                        <h2 className="text-5xl md:text-6xl font-bold text-white mb-4 text-center" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '3px' }}>
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 text-center break-words" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '2px' }}>
                             {t('What is')} {product.name}?
                         </h2>
                         <div className="h-[3px] w-24 bg-gradient-to-r from-violet-400 to-purple-400 mx-auto mb-12" />
@@ -246,7 +246,7 @@ export default function SaaSShow({ product }: Props) {
             {features.length > 0 && (
                 <section className="bg-black py-20 sm:py-28">
                     <div className="max-w-6xl mx-auto px-6 md:px-12">
-                        <h2 className="text-5xl md:text-6xl font-bold text-white text-center mb-4" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '3px' }}>
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white text-center mb-4" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '2px' }}>
                             {t('Everything you need')}
                         </h2>
                         <p className="text-gray-500 text-center mb-16 max-w-xl mx-auto">{t('Powerful features built for professionals')}</p>
@@ -272,7 +272,7 @@ export default function SaaSShow({ product }: Props) {
             <section className="bg-gray-950 py-20 sm:py-28 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-violet-900/20 via-transparent to-transparent" />
                 <div className="relative max-w-5xl mx-auto px-6 md:px-12">
-                    <h2 className="text-5xl md:text-6xl font-bold text-white text-center mb-4" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '3px' }}>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white text-center mb-4" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '2px' }}>
                         {t('Pricing')}
                     </h2>
                     <p className="text-gray-500 text-center mb-16 max-w-md mx-auto">

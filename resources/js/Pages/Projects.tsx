@@ -119,7 +119,7 @@ export default function Projects({ portfolio }: Props) {
                                 <button
                                     key={category}
                                     onClick={() => setActiveFilter(category)}
-                                    className={`px-6 py-2.5 rounded-full font-bold bebas text-lg transition-all duration-300 ${
+                                    className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-bold bebas text-sm sm:text-lg transition-all duration-300 ${
                                         activeFilter === category
                                             ? 'bg-teal-400 text-gray-900 shadow-lg shadow-teal-400/20'
                                             : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-teal-400 hover:text-teal-500'
@@ -154,10 +154,9 @@ export default function Projects({ portfolio }: Props) {
                                             href={`/projects/${project.slug}`}
                                             className={`group block relative overflow-hidden rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 ${
                                                 gridSection.isVisible ? 'project-card-animate' : 'opacity-0'
-                                            } ${isTall ? 'md:row-span-2' : ''}`}
+                                            } ${isTall ? 'md:row-span-2 min-h-[360px] md:min-h-[520px]' : 'min-h-[260px] md:min-h-[340px]'}`}
                                             style={{
                                                 animationDelay: `${index * 100}ms`,
-                                                minHeight: isTall ? '520px' : '340px',
                                             }}
                                         >
                                             {/* Background image */}

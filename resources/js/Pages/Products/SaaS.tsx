@@ -72,7 +72,7 @@ export default function SaaS({ products }: Props) {
                     <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
                 </div>
 
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center">
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32 text-center">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-violet-500/10 border border-violet-500/20 rounded-full text-violet-300 text-xs font-medium mb-6 hero-anim hero-d1">
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
@@ -95,7 +95,7 @@ export default function SaaS({ products }: Props) {
                     {/* Filter tabs + View toggle */}
                     {products.length > 0 && (
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 hero-anim" style={{ animationDelay: '0.5s' }}>
-                            <div className="inline-flex bg-white dark:bg-gray-900 rounded-full p-1 border border-gray-200 dark:border-gray-800 shadow-sm">
+                            <div className="inline-flex bg-white dark:bg-gray-900 rounded-full p-1 border border-gray-200 dark:border-gray-800 shadow-sm max-w-full overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
                                 {([
                                     { key: 'all' as const, label: t('Tous'), count: products.length },
                                     { key: 'launched' as const, label: t('Opérationnels'), count: countLaunched },
@@ -104,14 +104,14 @@ export default function SaaS({ products }: Props) {
                                     <button
                                         key={tab.key}
                                         onClick={() => setFilter(tab.key)}
-                                        className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${
+                                        className={`px-3 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${
                                             filter === tab.key
                                                 ? 'bg-violet-500 text-white shadow-lg shadow-violet-500/25'
                                                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                                         }`}
                                     >
                                         {tab.label}
-                                        <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                                        <span className={`text-[10px] sm:text-xs px-1.5 py-0.5 rounded-full ${
                                             filter === tab.key
                                                 ? 'bg-white/20 text-white'
                                                 : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500'
@@ -217,7 +217,7 @@ export default function SaaS({ products }: Props) {
                                                 )}
 
                                                 {/* Bottom row: Price + CTA */}
-                                                <div className="flex items-center gap-6 mt-8">
+                                                <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-8">
                                                     {isLaunched ? (
                                                         <span className="inline-flex items-center gap-2 px-7 py-3 bg-violet-500 hover:bg-violet-400 text-white text-sm font-bold rounded-full transition-all duration-300 group-hover:shadow-lg group-hover:shadow-violet-500/30 group-hover:scale-105" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '2px' }}>
                                                             {t('Discover').toUpperCase()}

@@ -123,7 +123,7 @@ export default function About({ about, seo }: Props) {
                                 <div className="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-500/10 text-teal-500 flex items-center justify-center mb-6 mx-auto">
                                     {valueIcons[index % valueIcons.length]}
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{value}</h3>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t(value)}</h3>
                             </div>
                         ))}
                     </div>

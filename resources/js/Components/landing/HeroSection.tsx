@@ -1,9 +1,10 @@
-import { Link } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { Link, router } from '@inertiajs/react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import OriginalLanguageBadge from '@/Components/ui/OriginalLanguageBadge';
 import { useTheme } from '@/lib/useTheme';
 import SpinnerLink from '@/Components/landing/SpinnerLink';
+import PublicMobileDrawer from '@/Components/landing/PublicMobileDrawer';
 
 interface NavLink {
     href: string;
@@ -23,24 +24,9 @@ interface Props {
 }
 
 export default function HeroSection({ heroSection, branding, socialLinks, socialIcons, navLinks, locale, auth, mobileMenuOpen, setMobileMenuOpen }: Props) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [showLangModal, setShowLangModal] = useState(false);
     const [langModalClosing, setLangModalClosing] = useState(false);
-    const [mobileMenuRender, setMobileMenuRender] = useState(false);
-    const [mobileMenuClosing, setMobileMenuClosing] = useState(false);
-
-    useEffect(() => {
-        if (mobileMenuOpen) {
-            setMobileMenuClosing(false);
-            setMobileMenuRender(true);
-        } else if (mobileMenuRender) {
-            setMobileMenuClosing(true);
-            const to = setTimeout(() => { setMobileMenuRender(false); setMobileMenuClosing(false); }, 350);
-            return () => clearTimeout(to);
-        }
-    }, [mobileMenuOpen]);
-
-    const closeMobileMenu = () => setMobileMenuOpen(false);
 
     const closeLangModal = () => {
         if (langModalClosing) return;
@@ -56,10 +42,25 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
 
     const [scrolled, setScrolled] = useState(false);
     const [navOnLight, setNavOnLight] = useState(false);
+    const [mobileNavHidden, setMobileNavHidden] = useState(false);
+    const lastScrollYRef = useRef(0);
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 50);
+            const y = Math.max(0, window.scrollY);
+            setScrolled(y > 50);
+
+            const last = lastScrollYRef.current;
+            const delta = y - last;
+            if (Math.abs(delta) > 6) {
+                if (delta > 0 && y > 120) {
+                    setMobileNavHidden(true);
+                } else if (delta < 0) {
+                    setMobileNavHidden(false);
+                }
+                lastScrollYRef.current = y;
+            }
+
             const sections = document.querySelectorAll('[data-section-theme]');
             const navBottom = 80;
             let onLight = false;
@@ -139,230 +140,38 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                 </div>
             </div>
 
-            {/* Mobile menu - Slide-in drawer */}
-            {mobileMenuRender && (
-                <div className="md:hidden fixed inset-0 z-[9998]">
-                    <style>{`
-                        @keyframes hmm-overlay-in { from { opacity: 0; } to { opacity: 1; } }
-                        @keyframes hmm-overlay-out { from { opacity: 1; } to { opacity: 0; } }
-                        @keyframes hmm-modal { from { opacity: 0; transform: translate(-50%, -50%) scale(0.92); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
-                        @keyframes hmm-modal-out { from { opacity: 1; transform: translate(-50%, -50%) scale(1); } to { opacity: 0; transform: translate(-50%, -50%) scale(0.94); } }
-                        @keyframes hmm-row { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-                    `}</style>
-
-                    {/* Overlay sombre flouté */}
-                    <div
-                        onClick={closeMobileMenu}
-                        style={{
-                            position: 'absolute',
-                            inset: 0,
-                            background: 'rgba(3, 6, 14, 0.85)',
-                            backdropFilter: 'blur(24px)',
-                            WebkitBackdropFilter: 'blur(24px)',
-                            animation: mobileMenuClosing
-                                ? 'hmm-overlay-out 300ms ease-in forwards'
-                                : 'hmm-overlay-in 300ms ease-out forwards',
-                        }}
-                    />
-
-                    {/* Modale centrée */}
-                    <aside
-                        style={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            width: 'calc(100% - 2rem)',
-                            maxWidth: '420px',
-                            maxHeight: 'calc(100vh - 2rem)',
-                            background: 'transparent',
-                            border: 'none',
-                            borderRadius: 0,
-                            boxShadow: 'none',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            overflow: 'hidden',
-                            animation: mobileMenuClosing
-                                ? 'hmm-modal-out 320ms cubic-bezier(0.4, 0, 1, 1) forwards'
-                                : 'hmm-modal 400ms cubic-bezier(0.22, 1, 0.36, 1) forwards',
-                            opacity: 0,
-                        }}
+            {/* Mobile floating navbar — appears once scrolled past hero, hides on scroll-down, reappears on scroll-up */}
+            <div
+                className={`md:hidden transition-transform duration-300 ease-out ${
+                    scrolled && !mobileNavHidden ? 'translate-y-0' : '-translate-y-full'
+                }`}
+                style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 997 }}
+            >
+                <div className="flex justify-between items-center px-4 py-3 bg-gray-900/95 dark:bg-gray-950/95 backdrop-blur-xl border-b border-white/10 shadow-lg">
+                    <Link href="/" className="flex items-center gap-2">
+                        <img src="/white-logo-small.png" alt={branding.company_name} className="h-8 w-auto" />
+                    </Link>
+                    <button
+                        className="text-white p-2 -mr-2"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        aria-label={t('Menu')}
                     >
-                        {/* Header drawer */}
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.5rem 1.5rem 1rem', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                <img src="/white-logo-small.png" alt="" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
-                                <span className="bebas" style={{ color: '#ffffff', fontSize: '1rem', fontWeight: 700, letterSpacing: '2px' }}>{branding.company_name}</span>
-                            </div>
-                            <button
-                                onClick={() => setMobileMenuOpen(false)}
-                                aria-label="Fermer"
-                                style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    borderRadius: '10px',
-                                    background: 'rgba(255,255,255,0.04)',
-                                    border: '1px solid rgba(255,255,255,0.08)',
-                                    color: '#ffffff',
-                                    cursor: 'pointer',
-                                    transition: 'background 200ms',
-                                }}
-                            >
-                                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                            </button>
-                        </div>
-
-                        {/* Nav */}
-                        <nav style={{ flex: 1, padding: '1rem 0.75rem', overflowY: 'auto' }}>
-                            {(() => {
-                                const iconMap: Record<string, string> = {
-                                    '/': 'M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25',
-                                    '/services': 'M11.42 15.17l-5.12-5.12a1.5 1.5 0 010-2.12l.88-.88a1.5 1.5 0 012.12 0l2.93 2.93 5.59-5.59a1.5 1.5 0 012.12 0l.88.88a1.5 1.5 0 010 2.12l-7.59 7.59a1.5 1.5 0 01-2.12 0z',
-                                    '/products': 'M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z',
-                                    '/projects': 'M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z',
-                                    '/about': 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z',
-                                    '/posts': 'M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18V7.875c0-.621.504-1.125 1.125-1.125h3.375',
-                                    '/pricing': 'M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z',
-                                };
-                                return navLinks.filter(l => l.href !== '/contact').map((link, idx) => {
-                                    const active = link.href === '/' ? (typeof window !== 'undefined' && window.location.pathname === '/') : (typeof window !== 'undefined' && window.location.pathname.startsWith(link.href));
-                                    const icon = iconMap[link.href] || iconMap['/about'];
-                                    return (
-                                        <Link
-                                            key={link.href}
-                                            href={link.href}
-                                            onClick={() => setMobileMenuOpen(false)}
-                                            style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '0.875rem',
-                                                padding: '0.85rem 1rem',
-                                                margin: '0.2rem 0',
-                                                borderRadius: '12px',
-                                                color: '#ffffff',
-                                                fontSize: '0.95rem',
-                                                fontWeight: 600,
-                                                textDecoration: 'none',
-                                                background: active ? 'rgba(45, 212, 191, 0.1)' : 'transparent',
-                                                border: active ? '1px solid rgba(45, 212, 191, 0.25)' : '1px solid transparent',
-                                                opacity: 0,
-                                                animation: `hmm-row 400ms ease-out ${120 + idx * 50}ms forwards`,
-                                            }}
-                                        >
-                                            <div style={{
-                                                width: '38px',
-                                                height: '38px',
-                                                flexShrink: 0,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                borderRadius: '10px',
-                                                background: active ? 'linear-gradient(135deg, #2dd4bf, #14b8a6)' : 'rgba(255,255,255,0.05)',
-                                                border: active ? 'none' : '1px solid rgba(255,255,255,0.08)',
-                                                boxShadow: active ? '0 8px 20px -8px rgba(45, 212, 191, 0.6)' : 'none',
-                                            }}>
-                                                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8} style={{ color: '#ffffff' }}>
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
-                                                </svg>
-                                            </div>
-                                            <span style={{ flex: 1, color: active ? '#2dd4bf' : '#ffffff' }}>{link.label}</span>
-                                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.2} style={{ color: active ? '#2dd4bf' : 'rgba(255,255,255,0.25)' }}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                            </svg>
-                                        </Link>
-                                    );
-                                });
-                            })()}
-                        </nav>
-
-                        {/* Footer drawer */}
-                        <div style={{ padding: '1.25rem 1.5rem 1.75rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                            <a
-                                href="/contact#quote"
-                                onClick={() => setMobileMenuOpen(false)}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    width: '100%',
-                                    padding: '0.95rem 1rem',
-                                    background: 'linear-gradient(135deg, #2dd4bf, #14b8a6)',
-                                    color: '#ffffff',
-                                    fontSize: '0.9rem',
-                                    fontWeight: 700,
-                                    borderRadius: '12px',
-                                    textDecoration: 'none',
-                                    letterSpacing: '0.5px',
-                                    boxShadow: '0 10px 30px -10px rgba(45, 212, 191, 0.5)',
-                                    opacity: 0,
-                                    animation: `hmm-row 400ms ease-out ${120 + navLinks.filter(l => l.href !== '/contact').length * 50 + 50}ms forwards`,
-                                }}
-                            >
-                                {navLinks.find(l => l.href === '/contact')?.label || t('Free Quote')}
-                            </a>
-
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: '1fr 1fr',
-                                gap: '0.75rem',
-                                marginTop: '1rem',
-                                opacity: 0,
-                                animation: `hmm-row 400ms ease-out ${120 + navLinks.filter(l => l.href !== '/contact').length * 50 + 150}ms forwards`,
-                            }}>
-                                <button
-                                    onClick={toggleTheme}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '0.625rem',
-                                        padding: '0.85rem 1rem',
-                                        borderRadius: '12px',
-                                        background: 'rgba(255,255,255,0.04)',
-                                        border: '1px solid rgba(255,255,255,0.08)',
-                                        color: '#ffffff',
-                                        cursor: 'pointer',
-                                        fontSize: '0.95rem',
-                                        fontWeight: 600,
-                                    }}
-                                >
-                                    {isDark ? (
-                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
-                                    ) : (
-                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
-                                    )}
-                                    <span>{isDark ? t('Light') : t('Dark')}</span>
-                                </button>
-
-                                <button
-                                    onClick={() => { setMobileMenuOpen(false); setShowLangModal(true); }}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '0.625rem',
-                                        padding: '0.85rem 1rem',
-                                        borderRadius: '12px',
-                                        background: 'rgba(255,255,255,0.04)',
-                                        border: '1px solid rgba(255,255,255,0.08)',
-                                        color: '#ffffff',
-                                        cursor: 'pointer',
-                                        fontSize: '0.95rem',
-                                        fontWeight: 600,
-                                        textTransform: 'uppercase',
-                                    }}
-                                >
-                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802" /></svg>
-                                    <span>{locale}</span>
-                                </button>
-                            </div>
-                        </div>
-                    </aside>
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
                 </div>
-            )}
+            </div>
+
+            {/* Mobile menu */}
+            <PublicMobileDrawer
+                isOpen={mobileMenuOpen}
+                onClose={() => setMobileMenuOpen(false)}
+                navLinks={navLinks}
+                branding={branding}
+                locale={locale}
+                onLangClick={() => setShowLangModal(true)}
+            />
 
             {/* Mini Sidebar - slides in from left on scroll */}
             <div className={`hidden md:flex fixed left-0 top-1/2 -translate-y-1/2 z-[998] flex-col items-center gap-1.5 py-5 px-2 bg-gray-900/90 dark:bg-gray-950/90 backdrop-blur-xl rounded-r-2xl border border-l-0 border-white/10 shadow-2xl transition-all duration-700 ${
@@ -533,7 +342,12 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                             ].map((lang, i) => (
                                 <button
                                     key={lang.code}
-                                    onClick={() => { setShowLangModal(false); window.location.href = `/locale/${lang.code}`; }}
+                                    onClick={() => {
+                                        i18n.changeLanguage(lang.code);
+                                        document.documentElement.lang = lang.code;
+                                        setShowLangModal(false);
+                                        router.get(`/locale/${lang.code}`, {}, { preserveScroll: true, preserveState: true });
+                                    }}
                                     className={`group relative px-16 py-5 text-4xl md:text-5xl font-bold tracking-wide transition-all duration-300 bebas ${
                                         locale === lang.code
                                             ? 'text-teal-300'

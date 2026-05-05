@@ -84,10 +84,10 @@ export default function ContactForm({ contactForm, setContactForm, onSubmit, pro
                     <button
                         type="submit"
                         disabled={processing || (!!turnstileSiteKey && !turnstileToken)}
-                        className="inline-flex items-center gap-3 px-10 py-4 bg-teal-400 text-gray-900 text-lg font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_40px_rgba(94,234,212,0.3)] bebas disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-10 py-3 sm:py-4 bg-teal-400 text-gray-900 text-base sm:text-lg font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_40px_rgba(94,234,212,0.3)] bebas disabled:opacity-50 disabled:cursor-not-allowed max-w-full"
                         style={{ letterSpacing: '2px' }}
                     >
-                        {processing ? t('Sending...').toUpperCase() : t('Send Message').toUpperCase()}
+                        <span className="truncate">{processing ? t('Sending...').toUpperCase() : t('Send Message').toUpperCase()}</span>
                     </button>
                 </div>
             </form>

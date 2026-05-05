@@ -266,8 +266,8 @@ export default function Show({ project, nextProject, previousProject }: Props) {
 
                     {/* Title - cinematic reveal */}
                     <h1
-                        className="text-5xl md:text-7xl lg:text-[7rem] font-bold text-white bebas leading-[0.85] opacity-0"
-                        style={{ letterSpacing: '4px', animation: 'heroTitleReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards' }}
+                        className="text-4xl sm:text-5xl md:text-7xl lg:text-[7rem] font-bold text-white bebas leading-[0.85] opacity-0 break-words hyphens-auto"
+                        style={{ letterSpacing: 'clamp(1px, 0.4vw, 4px)', animation: 'heroTitleReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards' }}
                     >
                         {project.title}
                     </h1>

@@ -45,12 +45,12 @@ export default function StatsSection({ publicStats, sectionRef, isVisible }: Pro
     const { t } = useTranslation();
 
     return (
-        <section className="py-16 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden" ref={sectionRef}>
+        <section className="py-12 sm:py-16 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden" ref={sectionRef}>
             <div className="absolute inset-0 opacity-[0.03]" aria-hidden="true">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(94,234,212,0.3),transparent_50%)]" />
             </div>
             <div className="max-w-5xl mx-auto px-4 relative z-10">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
                     {[
                         { value: publicStats.projects_delivered, suffix: '+', label: t('Projects Delivered') },
                         { value: publicStats.active_clients, suffix: '+', label: t('Active Clients') },
@@ -58,10 +58,10 @@ export default function StatsSection({ publicStats, sectionRef, isVisible }: Pro
                         { value: publicStats.years_experience, suffix: '+', label: t('Years Experience') },
                     ].map((stat, i) => (
                         <div key={i} className="text-center">
-                            <div className="text-5xl md:text-6xl font-bold text-teal-400 bebas" style={{ letterSpacing: '2px' }}>
+                            <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-teal-400 bebas" style={{ letterSpacing: '2px' }}>
                                 {isVisible ? <CountUp end={stat.value} suffix={stat.suffix} /> : `0${stat.suffix}`}
                             </div>
-                            <div className="mt-2 text-sm md:text-base text-gray-400 font-medium">{stat.label}</div>
+                            <div className="mt-1 sm:mt-2 text-xs sm:text-sm md:text-base text-gray-400 font-medium">{stat.label}</div>
                         </div>
                     ))}
                 </div>

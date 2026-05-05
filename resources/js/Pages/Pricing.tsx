@@ -161,7 +161,8 @@ export default function Pricing({ seo }: Props) {
                     <h2 className="text-2xl font-black text-gray-900 dark:text-white text-center mb-3 reveal">{t('Price per project type')}</h2>
                     <p className="text-gray-500 dark:text-gray-400 text-center mb-10">{t('Indicative starting prices for each type of project')}</p>
                     <div className="overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm reveal">
-                        <table className="w-full">
+                        <div className="overflow-x-auto">
+                        <table className="w-full min-w-[420px]">
                             <thead>
                                 <tr className="bg-gray-50 dark:bg-gray-800">
                                     <th className="text-left px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('Project type')}</th>
@@ -182,6 +183,7 @@ export default function Pricing({ seo }: Props) {
                                 ))}
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </section>

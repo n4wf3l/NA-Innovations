@@ -182,7 +182,8 @@ export default function QuoteView({ quote }: Props) {
                         <div className="px-6 py-4 border-b border-gray-50 dark:border-gray-700">
                             <h3 className="font-semibold text-gray-900 dark:text-white">{t('Line Items')}</h3>
                         </div>
-                        <table className="w-full text-sm">
+                        <div className="overflow-x-auto">
+                        <table className="w-full text-sm min-w-[480px]">
                             <thead>
                                 <tr className="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-700">
                                     <th className="text-left px-6 py-3 font-medium text-gray-500 dark:text-gray-400">{t('Description')}</th>
@@ -205,6 +206,7 @@ export default function QuoteView({ quote }: Props) {
                                 ))}
                             </tbody>
                         </table>
+                        </div>
                         <div className="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 space-y-2">
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500 dark:text-gray-400">{t('Subtotal')}</span>

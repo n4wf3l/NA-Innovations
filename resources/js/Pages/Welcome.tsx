@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import SpinnerLink from '@/Components/landing/SpinnerLink';
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -241,11 +241,11 @@ function SplashScreen({ branding, onComplete }: { branding: { logo_path: string;
                 </div>
 
                 {/* Language selection - visible in language phase */}
-                <div className={`transition-all duration-700 ${phase === 'language' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none absolute'}`}>
-                    <p className="text-white/30 text-xs text-center mb-8 tracking-[0.2em] uppercase" style={bebas}>
+                <div className={`w-full px-4 transition-all duration-700 ${phase === 'language' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none absolute'}`}>
+                    <p className="text-white/30 text-xs text-center mb-6 sm:mb-8 tracking-[0.2em] uppercase" style={bebas}>
                         {t('Select your language')}
                     </p>
-                    <div className="flex gap-5">
+                    <div className="grid grid-cols-3 gap-2.5 w-full max-w-md mx-auto sm:flex sm:gap-5 sm:w-auto sm:max-w-none">
                         {[
                             { code: 'en', label: 'English', sub: 'EN' },
                             { code: 'fr', label: 'Fran\u00e7ais', sub: 'FR' },
@@ -254,13 +254,13 @@ function SplashScreen({ branding, onComplete }: { branding: { logo_path: string;
                             <button
                                 key={lang.code}
                                 onClick={() => handleSelect(lang.code)}
-                                className="group relative flex flex-col items-center gap-4 w-32 py-8 rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm cursor-pointer transition-all duration-500 hover:border-teal-400/40 hover:bg-teal-400/[0.06] hover:shadow-[0_0_40px_rgba(94,234,212,0.1)] hover:-translate-y-1 active:scale-95"
+                                className="group relative flex flex-col items-center justify-center gap-2 sm:gap-4 w-full sm:w-32 py-5 sm:py-8 rounded-xl sm:rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm cursor-pointer transition-all duration-500 hover:border-teal-400/40 hover:bg-teal-400/[0.06] hover:shadow-[0_0_40px_rgba(94,234,212,0.1)] hover:-translate-y-1 active:scale-95"
                                 style={{ animation: phase === 'language' ? `langCardIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) ${0.1 + i * 0.12}s both` : 'none' }}
                             >
-                                <span className="text-4xl font-black text-white/[0.08] group-hover:text-teal-400/60 transition-all duration-500 group-hover:scale-110" style={bebas}>
+                                <span className="text-3xl sm:text-4xl font-black text-white/[0.08] group-hover:text-teal-400/60 transition-all duration-500 group-hover:scale-110" style={bebas}>
                                     {lang.sub}
                                 </span>
-                                <span className="text-[13px] font-medium text-white/40 group-hover:text-white transition-colors duration-300">
+                                <span className="text-[11px] sm:text-[13px] font-medium text-white/40 group-hover:text-white transition-colors duration-300">
                                     {lang.label}
                                 </span>
                                 {/* Hover bottom line */}
@@ -383,7 +383,7 @@ function AIAssistantSection({ onOpenChat }: { onOpenChat: () => void }) {
 
 export default function Welcome({ portfolio, messages, latestPosts, socialLinks = {}, branding = { logo_path: '', company_name: 'NA Innovations', tagline: '' }, services = [], landingSections = {}, testimonials = [], faqs = [], publicStats, seo, videoUrl, simulatorMode = 'europe_only' }: Props) {
     const { auth, locale } = usePage<{ auth: { user: { id: number } | null }; locale: string }>().props;
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const showSimulator = useSimulatorVisible(simulatorMode);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -496,7 +496,9 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
         setShowSplash(false);
         // Switch locale if different
         if (selectedLocale !== locale) {
-            window.location.href = `/locale/${selectedLocale}`;
+            i18n.changeLanguage(selectedLocale);
+            document.documentElement.lang = selectedLocale;
+            router.get(`/locale/${selectedLocale}`, {}, { preserveScroll: true, preserveState: true });
         }
     };
 
@@ -576,9 +578,9 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
 
                 {/* Scrolling Messages Banner */}
                 {messages.length > 0 && (
-                    <div className="bg-teal-300 text-white text-3xl bebas overflow-hidden py-4" style={{ letterSpacing: '3px' }}>
+                    <div className="bg-teal-300 text-white text-lg sm:text-2xl md:text-3xl bebas overflow-hidden py-3 sm:py-4" style={{ letterSpacing: '2px' }}>
                         <div className="scroll-banner">
-                            {[...messages, ...messages].map((msg, i) => (<span key={i} className="mx-12 whitespace-nowrap">{msg}</span>))}
+                            {[...messages, ...messages].map((msg, i) => (<span key={i} className="mx-6 sm:mx-12 whitespace-nowrap">{msg}</span>))}
                         </div>
                     </div>
                 )}
@@ -588,7 +590,7 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                     <section className="py-20 bg-gray-900">
                         <div className="max-w-4xl mx-auto px-4">
                             <div className="text-center mb-10">
-                                <h2 className="text-5xl font-bold text-white bebas" style={{ letterSpacing: '2px' }}>
+                                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white bebas" style={{ letterSpacing: '2px' }}>
                                     {t('Watch Our Story')}
                                 </h2>
                             </div>
@@ -811,9 +813,9 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                             ))}
                         </div>
                         <div className="text-center" style={{ marginTop: 'clamp(1rem, 2.5vh, 3rem)' }}>
-                            <Link href="/posts" className="inline-flex items-center gap-2 px-8 py-4 border-2 border-black dark:border-white text-black dark:text-white font-bold rounded-full hover:bg-teal-300 hover:border-teal-300 hover:text-white transition-all duration-300 bebas" style={{ letterSpacing: '2px' }}>
-                                {t('View All Articles').toUpperCase()}
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                            <Link href="/posts" className="inline-flex items-center gap-2 px-5 sm:px-8 py-3 sm:py-4 border-2 border-black dark:border-white text-black dark:text-white text-sm sm:text-base font-bold rounded-full hover:bg-teal-300 hover:border-teal-300 hover:text-white transition-all duration-300 bebas max-w-full" style={{ letterSpacing: '2px' }}>
+                                <span className="truncate">{t('View All Articles').toUpperCase()}</span>
+                                <svg className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                             </Link>
                         </div>
                     </div>
@@ -890,9 +892,9 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                         <p className="text-lg text-gray-400" style={{ marginBottom: 'clamp(1.5rem, 4vh, 2.5rem)' }}>
                             {ctaSection?.subtitle || t('Tell us about your idea and we\'ll get back to you within 24 hours with a tailored proposal.')}
                         </p>
-                        <SpinnerLink href={ctaSection?.button_url || '/contact#quote'} className="inline-flex items-center gap-3 px-12 py-6 bg-teal-400 text-gray-900 text-2xl font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_60px_rgba(94,234,212,0.4)] bebas" style={{ letterSpacing: '3px' }}>
-                            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
-                            {(ctaSection?.button_text || t('Request a Quote')).toUpperCase()}
+                        <SpinnerLink href={ctaSection?.button_url || '/contact#quote'} className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-12 py-4 sm:py-6 bg-teal-400 text-gray-900 text-base sm:text-2xl font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-300 hover:shadow-[0_0_60px_rgba(94,234,212,0.4)] bebas max-w-full" style={{ letterSpacing: '2px' }}>
+                            <svg className="w-5 h-5 sm:w-7 sm:h-7 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                            <span className="truncate">{(ctaSection?.button_text || t('Request a Quote')).toUpperCase()}</span>
                         </SpinnerLink>
                         {showSimulator && (
                         <p className="text-gray-500 text-sm" style={{ marginTop: 'clamp(1rem, 2vh, 1.5rem)' }}>

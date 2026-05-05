@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { NavItem } from './Sidebar';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
@@ -16,7 +16,7 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ open, onClose, items, cta, accentColor, currentPath, userName, userInitial }: MobileMenuProps) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [render, setRender] = useState(false);
     const [closing, setClosing] = useState(false);
 
@@ -338,21 +338,28 @@ export default function MobileMenu({ open, onClose, items, cta, accentColor, cur
                     WebkitBackdropFilter: 'blur(8px)',
                 }}>
                     {['en', 'fr', 'nl'].map(code => (
-                        <a
+                        <button
                             key={code}
-                            href={`/locale/${code}`}
+                            type="button"
+                            onClick={() => {
+                                i18n.changeLanguage(code);
+                                document.documentElement.lang = code;
+                                router.get(`/locale/${code}`, {}, { preserveScroll: true, preserveState: true });
+                            }}
                             style={{
                                 padding: '0.5rem 1rem',
                                 fontSize: '0.75rem',
                                 fontWeight: 800,
                                 borderRadius: '0.625rem',
                                 color: '#ffffff',
-                                textDecoration: 'none',
+                                background: 'transparent',
+                                border: 'none',
+                                cursor: 'pointer',
                                 letterSpacing: '0.05em',
                             }}
                         >
                             {code.toUpperCase()}
-                        </a>
+                        </button>
                     ))}
                 </div>
             </div>

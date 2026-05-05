@@ -28,7 +28,7 @@ export default function TopBarActions({ notifications: initialNotifications = []
     const [searchResults, setSearchResults] = useState<any[]>([]);
     const [searching, setSearching] = useState(false);
     const searchRef = useRef<HTMLInputElement>(null);
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     // Live notification polling
     const [liveNotifications, setLiveNotifications] = useState<Notification[]>(initialNotifications);
@@ -363,14 +363,19 @@ export default function TopBarActions({ notifications: initialNotifications = []
                                     <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{t('Language')}</p>
                                     <div className="flex items-center gap-1">
                                         {['en', 'fr', 'nl'].map(code => (
-                                            <a key={code} href={`/locale/${code}`}
+                                            <button key={code} type="button"
+                                                onClick={() => {
+                                                    i18n.changeLanguage(code);
+                                                    document.documentElement.lang = code;
+                                                    router.get(`/locale/${code}`, {}, { preserveScroll: true, preserveState: true });
+                                                }}
                                                 className={`px-2.5 py-1.5 text-[11px] font-bold rounded-lg transition-colors ${
                                                     locale === code
                                                         ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400'
                                                         : 'text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                                                 }`}>
                                                 {code.toUpperCase()}
-                                            </a>
+                                            </button>
                                         ))}
                                     </div>
                                 </div>
