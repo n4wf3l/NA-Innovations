@@ -242,7 +242,7 @@ function SplashScreen({ branding, onComplete }: { branding: { logo_path: string;
 
                 {/* Language selection - visible in language phase */}
                 <div className={`w-full px-4 transition-all duration-700 ${phase === 'language' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none absolute'}`}>
-                    <p className="text-white/30 text-xs text-center mb-6 sm:mb-8 tracking-[0.2em] uppercase" style={bebas}>
+                    <p className="text-white/70 text-xs text-center mb-6 sm:mb-8 tracking-[0.2em] uppercase" style={bebas}>
                         {t('Select your language')}
                     </p>
                     <div className="grid grid-cols-3 gap-2.5 w-full max-w-md mx-auto sm:flex sm:gap-5 sm:w-auto sm:max-w-none">
@@ -254,13 +254,13 @@ function SplashScreen({ branding, onComplete }: { branding: { logo_path: string;
                             <button
                                 key={lang.code}
                                 onClick={() => handleSelect(lang.code)}
-                                className="group relative flex flex-col items-center justify-center gap-2 sm:gap-4 w-full sm:w-32 py-5 sm:py-8 rounded-xl sm:rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm cursor-pointer transition-all duration-500 hover:border-teal-400/40 hover:bg-teal-400/[0.06] hover:shadow-[0_0_40px_rgba(94,234,212,0.1)] hover:-translate-y-1 active:scale-95"
+                                className="group relative flex flex-col items-center justify-center gap-2 sm:gap-4 w-full sm:w-32 py-5 sm:py-8 rounded-xl sm:rounded-2xl border border-white/15 bg-white/[0.04] backdrop-blur-sm cursor-pointer transition-all duration-500 hover:border-teal-400/60 hover:bg-teal-400/[0.08] hover:shadow-[0_0_40px_rgba(94,234,212,0.15)] hover:-translate-y-1 active:scale-95"
                                 style={{ animation: phase === 'language' ? `langCardIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) ${0.1 + i * 0.12}s both` : 'none' }}
                             >
-                                <span className="text-3xl sm:text-4xl font-black text-white/[0.08] group-hover:text-teal-400/60 transition-all duration-500 group-hover:scale-110" style={bebas}>
+                                <span className="text-3xl sm:text-4xl font-black text-white/90 group-hover:text-teal-300 transition-all duration-500 group-hover:scale-110" style={bebas}>
                                     {lang.sub}
                                 </span>
-                                <span className="text-[11px] sm:text-[13px] font-medium text-white/40 group-hover:text-white transition-colors duration-300">
+                                <span className="text-[11px] sm:text-[13px] font-medium text-white/80 group-hover:text-white transition-colors duration-300">
                                     {lang.label}
                                 </span>
                                 {/* Hover bottom line */}
