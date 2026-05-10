@@ -83,7 +83,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
     const navActiveColor = navOnLight && !isDark ? 'text-teal-600' : 'text-teal-300';
 
     return (
-        <div id="hero-section" data-snap="section" className="flex flex-col bg-gray-900 relative overflow-hidden" style={{ height: '100svh', minHeight: '600px' }}>
+        <div id="hero-section" data-snap="section" className="flex flex-col bg-gradient-to-b from-gray-50 to-white dark:bg-none dark:bg-gray-900 relative overflow-hidden" style={{ height: '100svh', minHeight: '600px' }}>
             {/* Animated background words */}
             <div aria-hidden="true">
                 <span className="hero-word hero-word-1">DEVELOPMENT</span>
@@ -99,10 +99,11 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
             {/* Navbar - Top (static in hero) */}
             <div className={`flex justify-between items-center self-center w-full max-w-[1298px] px-4 py-5 relative z-20 transition-opacity duration-500 ${scrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                 <Link href="/" className="flex items-center gap-3">
-                    <img src="/white-logo-small.png" alt={branding.company_name} className="h-10 w-auto" />
+                    <img src="/dark-logo-small.png" alt={branding.company_name} className="h-10 w-auto block dark:hidden" />
+                    <img src="/white-logo-small.png" alt={branding.company_name} className="h-10 w-auto hidden dark:block" />
                 </Link>
 
-                <button className="md:hidden block text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                <button className="md:hidden block text-gray-900 dark:text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         {mobileMenuOpen ? (
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -112,9 +113,9 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                     </svg>
                 </button>
 
-                <div className="hidden md:flex gap-6 items-center pr-5 text-lg font-medium text-white whitespace-nowrap bebas" style={{ letterSpacing: '2px' }}>
+                <div className={`hidden md:flex gap-6 items-center pr-5 text-lg font-medium whitespace-nowrap bebas transition-colors duration-500 ${navTextColor}`} style={{ letterSpacing: '2px' }}>
                     {navLinks.filter(l => l.href !== '/contact').map((link) => (
-                        <Link key={link.href} href={link.href} className={`hover:text-teal-300 transition duration-300 ${link.href === '/' ? 'text-teal-300' : ''}`}>
+                        <Link key={link.href} href={link.href} className={`${navHoverColor} transition duration-300 ${link.href === '/' ? navActiveColor : ''}`}>
                             {link.label}
                         </Link>
                     ))}
@@ -125,7 +126,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                     )}
                     <span className={`w-px h-6 ${navOnLight && !isDark ? 'bg-gray-300' : 'bg-white/20'} transition-colors duration-500`} />
                     {/* Theme toggle */}
-                    <button onClick={toggleTheme} className="w-9 h-9 flex items-center justify-center rounded-full border border-white/10 text-gray-300 hover:text-teal-300 hover:border-teal-300/40 transition-all duration-300" title={isDark ? t('Light mode') : t('Dark mode')}>
+                    <button onClick={toggleTheme} className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-teal-500 dark:hover:text-teal-300 hover:border-teal-400/40 dark:hover:border-teal-300/40 transition-all duration-300" title={isDark ? t('Light mode') : t('Dark mode')}>
                         {isDark ? (
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
                         ) : (
@@ -133,7 +134,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                         )}
                     </button>
                     {/* Language */}
-                    <button onClick={() => setShowLangModal(true)} className="flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors px-2 py-1">
+                    <button onClick={() => setShowLangModal(true)} className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors px-2 py-1">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802" /></svg>
                         <span className="text-xs font-bold uppercase bebas" style={{ letterSpacing: '1px' }}>{locale}</span>
                     </button>
@@ -273,14 +274,14 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
 
             {/* Hero content */}
             <div className="flex-1 flex flex-col items-center justify-center relative px-4 min-h-0" style={{ paddingTop: 'clamp(1rem, 3vh, 3rem)', paddingBottom: 'clamp(1rem, 3vh, 3rem)' }}>
-                <div className="w-full max-w-[1100px] border border-white/20 relative z-10 hero-border-anim" style={{ padding: 'clamp(1.25rem, 3.5vh, 3.5rem)' }}>
+                <div className="w-full max-w-[1100px] border border-gray-300 dark:border-white/20 relative z-10 hero-border-anim transition-colors duration-500" style={{ padding: 'clamp(1.25rem, 3.5vh, 3.5rem)' }}>
                     {/* No language badge here - hero text is translated via t() */}
-                    <div className="text-sm md:text-base lg:text-xl font-medium text-neutral-400 bebas hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d1" style={{ letterSpacing: '2px' }}>
+                    <div className="text-sm md:text-base lg:text-xl font-medium text-gray-500 dark:text-neutral-400 bebas hover:text-teal-600 dark:hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d1" style={{ letterSpacing: '2px' }}>
                         {heroSection?.subtitle || t('Web Development, Mobile & Software Solutions')}
                     </div>
                     <div
                         lang={locale}
-                        className="font-bold text-white hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d2"
+                        className="font-bold text-gray-900 dark:text-white hover:text-teal-600 dark:hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d2"
                         style={{
                             marginTop: 'clamp(0.75rem, 2.5vh, 2rem)',
                             fontSize: 'clamp(2.25rem, min(6vw, 9vh), 5rem)',
@@ -293,7 +294,7 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
                     >
                         {heroSection?.title || t('Innovative solutions designed for you.')}
                     </div>
-                    <p className="text-sm lg:text-base bebas text-white/60 hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d3" style={{ letterSpacing: '1px', marginTop: 'clamp(0.75rem, 2.5vh, 2rem)' }}>
+                    <p className="text-sm lg:text-base bebas text-gray-600 dark:text-white/60 hover:text-teal-600 dark:hover:text-teal-300 transition-colors duration-700 hero-anim hero-anim-d3" style={{ letterSpacing: '1px', marginTop: 'clamp(0.75rem, 2.5vh, 2rem)' }}>
                         {heroSection?.description || t('From idea to application')}
                     </p>
 
@@ -309,10 +310,10 @@ export default function HeroSection({ heroSection, branding, socialLinks, social
 
                         {Object.keys(socialLinks).length > 0 && (
                             <div className="flex gap-4 items-center hero-anim hero-anim-d5">
-                                <span className="hidden sm:block w-px h-8 bg-white/20" />
+                                <span className="hidden sm:block w-px h-8 bg-gray-300 dark:bg-white/20" />
                                 {Object.entries(socialLinks).map(([platform, url]) => (
                                     socialIcons[platform] ? (
-                                        <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-white/20 text-white hover:bg-teal-400 hover:border-teal-400 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+                                        <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-gray-300 dark:border-white/20 text-gray-700 dark:text-white hover:bg-teal-400 hover:border-teal-400 hover:text-gray-900 transition-all duration-300 hover:scale-110">
                                             {socialIcons[platform]}
                                         </a>
                                     ) : null

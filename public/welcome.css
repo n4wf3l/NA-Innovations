@@ -115,10 +115,13 @@ html {
     position: absolute;
     font-family: "Bebas Neue", sans-serif;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.03);
+    color: rgba(15, 23, 42, 0.06);
     white-space: nowrap;
     user-select: none;
     will-change: transform;
+}
+.dark .hero-word {
+    color: rgba(255, 255, 255, 0.03);
 }
 
 .hero-word-1 {

@@ -540,7 +540,8 @@ export default function Welcome({ portfolio, messages, latestPosts, socialLinks 
                 @keyframes floatWord6 { 0%, 100% { transform: translate(0, 0) rotate(2deg); } 50% { transform: translate(-25px, -15px) rotate(-4deg); } }
                 @keyframes floatWord7 { 0%, 100% { transform: translate(0, 0) rotate(-4deg); } 50% { transform: translate(15px, 25px) rotate(2deg); } }
                 @keyframes floatWord8 { 0%, 100% { transform: translate(0, 0) rotate(3deg); } 50% { transform: translate(-30px, 10px) rotate(-3deg); } }
-                .hero-word { position: absolute; font-family: 'Bebas Neue', sans-serif; font-size: clamp(4rem, 15vw, 14rem); color: white; opacity: 0.03; white-space: nowrap; user-select: none; pointer-events: none; }
+                .hero-word { position: absolute; font-family: 'Bebas Neue', sans-serif; font-size: clamp(4rem, 15vw, 14rem); color: rgba(15, 23, 42, 0.06); white-space: nowrap; user-select: none; pointer-events: none; }
+                .dark .hero-word { color: rgba(255, 255, 255, 0.03); }
                 .hero-word-1 { top: 5%; left: 10%; animation: floatWord1 12s ease-in-out infinite; }
                 .hero-word-2 { top: 15%; right: 5%; animation: floatWord2 10s ease-in-out infinite; }
                 .hero-word-3 { top: 35%; left: -5%; animation: floatWord3 14s ease-in-out infinite; }
